@@ -1,0 +1,19 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\Eshop\Core\Registry:
+    class: OxidEsales\Eshop\Core\Registry
+
+  OxidEsales\Eshop\Core\Request:
+    factory: [ '@OxidEsales\Eshop\Core\Registry', 'getRequest' ]
+
+  OxidEsales\ModuleTemplate\Service\:
+    resource: 'src/Service/*'
+    public: true
+
+  OxidEsales\ModuleTemplate\Subscriber\BeforeModelUpdate:
+    class: OxidEsales\ModuleTemplate\Subscriber\BeforeModelUpdate
+    tags: [ 'kernel.event_subscriber' ]
