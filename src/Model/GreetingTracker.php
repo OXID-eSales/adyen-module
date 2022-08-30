@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Model;
+namespace OxidSolutionCatalysts\Adyen\Model;
 
 use OxidEsales\Eshop\Core\Model\BaseModel;
 

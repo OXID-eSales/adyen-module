@@ -7,16 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Integration\Controller;
+namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Controller;
 
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
-use OxidEsales\ModuleTemplate\Controller\GreetingController;
-use OxidEsales\ModuleTemplate\Core\Module as ModuleCore;
-use OxidEsales\ModuleTemplate\Model\GreetingTracker;
-use OxidEsales\ModuleTemplate\Model\User as ModuleUser;
-use OxidEsales\ModuleTemplate\Service\ModuleSettings;
-use OxidEsales\ModuleTemplate\Service\Repository;
-use OxidEsales\ModuleTemplate\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Controller\GreetingController;
+use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
+use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
+use OxidSolutionCatalysts\Adyen\Model\User as ModuleUser;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\Repository;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 /*

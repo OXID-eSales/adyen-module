@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Unit\Model;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
-use OxidEsales\ModuleTemplate\Model\GreetingTracker;
+use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 final class GreetingTrackerTest extends UnitTestCase

@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Service;
+namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
-use OxidEsales\ModuleTemplate\Core\Module;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 /**
  * @extendable-class

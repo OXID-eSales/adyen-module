@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Service;
+namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
-use OxidEsales\ModuleTemplate\Model\GreetingTracker;
-use OxidEsales\ModuleTemplate\Model\User as ModelUser;
-use OxidEsales\ModuleTemplate\Service\Repository as RepositoryService;
+use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
+use OxidSolutionCatalysts\Adyen\Model\User as ModelUser;
+use OxidSolutionCatalysts\Adyen\Service\Repository as RepositoryService;
 
 /**
  * @extendable-class

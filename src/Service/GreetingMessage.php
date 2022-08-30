@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Service;
+namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
 use OxidEsales\Eshop\Core\Request as EshopRequest;
-use OxidEsales\ModuleTemplate\Core\Module as ModuleCore;
-use OxidEsales\ModuleTemplate\Model\User as TemplateModelUser;
-use OxidEsales\ModuleTemplate\Service\ModuleSettings as ModuleSettingsService;
+use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
+use OxidSolutionCatalysts\Adyen\Model\User as TemplateModelUser;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings as ModuleSettingsService;
 
 /**
  * @extendable-class

@@ -1,5 +1,5 @@
 {
-    "name": "oxid-esales/module-template",
+    "name": "oxid-solution-catalysts/adyen-module",
     "description": "",
     "type": "oxideshop-module",
     "keywords": [
@@ -12,7 +12,7 @@
     ],
     "extra": {
         "oxideshop": {
-            "target-directory": "oe/moduletemplate",
+            "target-directory": "osc/adyen",
             "blacklist-filter": [
                 "source/**/*",
                 "vendor/**/*"
@@ -35,8 +35,8 @@
     },
     "autoload": {
         "psr-4": {
-            "OxidEsales\\ModuleTemplate\\": "src/",
-            "OxidEsales\\ModuleTemplate\\Tests\\": "tests/"
+            "OxidSolutionCatalysts\\Adyen\\": "src/",
+            "OxidSolutionCatalysts\\Adyen\\Tests\\": "tests/"
         }
     },
     "scripts": {

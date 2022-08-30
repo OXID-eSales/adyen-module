@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Codeception\Helper;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Helper;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
-use OxidEsales\ModuleTemplate\Tests\Codeception\AcceptanceTester;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 /**
- * @group oe_moduletemplate
- * @group oe_moduletemplate_module
+ * @group osc_adyen
+ * @group osc_adyen_module
  */
 final class ModuleCest
 {

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Unit\Model;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
 use OxidEsales\TestingLibrary\UnitTestCase;

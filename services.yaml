@@ -10,10 +10,10 @@ services:
   OxidEsales\Eshop\Core\Request:
     factory: [ '@OxidEsales\Eshop\Core\Registry', 'getRequest' ]
 
-  OxidEsales\ModuleTemplate\Service\:
+  OxidSolutionCatalysts\Adyen\Service\:
     resource: 'src/Service/*'
     public: true
 
-  OxidEsales\ModuleTemplate\Subscriber\BeforeModelUpdate:
-    class: OxidEsales\ModuleTemplate\Subscriber\BeforeModelUpdate
+  OxidSolutionCatalysts\Adyen\Subscriber\BeforeModelUpdate:
+    class: OxidSolutionCatalysts\Adyen\Subscriber\BeforeModelUpdate
     tags: [ 'kernel.event_subscriber' ]

@@ -7,17 +7,17 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Controller;
+namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
-use OxidEsales\ModuleTemplate\Core\Module as ModuleCore;
-use OxidEsales\ModuleTemplate\Model\GreetingTracker;
-use OxidEsales\ModuleTemplate\Model\User as TemplateModelUser;
-use OxidEsales\ModuleTemplate\Service\GreetingMessage;
-use OxidEsales\ModuleTemplate\Service\ModuleSettings;
-use OxidEsales\ModuleTemplate\Service\Repository;
-use OxidEsales\ModuleTemplate\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
+use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
+use OxidSolutionCatalysts\Adyen\Model\User as TemplateModelUser;
+use OxidSolutionCatalysts\Adyen\Service\GreetingMessage;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\Repository;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * @extendable-class

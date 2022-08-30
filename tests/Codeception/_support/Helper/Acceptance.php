@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Codeception\Helper;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Helper;
 
 use OxidEsales\Facts\Facts;
 
@@ -18,6 +18,6 @@ final class Acceptance extends \Codeception\Module
 {
     public function _beforeSuite($settings = []): void
     {
-        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_moduletemplate');
+        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate osc_adyen');
     }
 }

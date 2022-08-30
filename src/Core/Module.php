@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Core;
+namespace OxidSolutionCatalysts\Adyen\Core;
 
 final class Module
 {
-    public const MODULE_ID = 'oe_moduletemplate';
+    public const MODULE_ID = 'osc_adyen';
 
     public const OETM_GREETING_TEMPLATE_VARNAME = 'oetm_greeting';
 

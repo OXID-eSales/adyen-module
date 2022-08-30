@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Codeception;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception;
 
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\Facts\Facts;
-use OxidEsales\ModuleTemplate\Service\ModuleSettings;
-use OxidEsales\ModuleTemplate\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * Inherited Methods
@@ -82,7 +82,7 @@ final class AcceptanceTester extends \Codeception\Actor
     {
         $command = $active ? 'activate' : 'deactivate';
 
-        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:' . $command . ' oe_moduletemplate');
+        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:' . $command . ' osc_adyen');
     }
 
     public function resetGreetingTracker(): void

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Core;
+namespace OxidSolutionCatalysts\Adyen\Core;
 
 use Exception;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
@@ -50,10 +50,10 @@ final class ModuleEvents
 
         $output = new BufferedOutput();
         $migrations->setOutput($output);
-        $neeedsUpdate = $migrations->execute('migrations:up-to-date', 'oe_moduletemplate');
+        $neeedsUpdate = $migrations->execute('migrations:up-to-date', 'osc_adyen');
 
         if ($neeedsUpdate) {
-            $migrations->execute('migrations:migrate', 'oe_moduletemplate');
+            $migrations->execute('migrations:migrate', 'osc_adyen');
         }
     }
 }

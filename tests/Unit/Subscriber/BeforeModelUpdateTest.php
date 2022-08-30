@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Unit\Subscriber;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Subscriber;
 
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
-use OxidEsales\ModuleTemplate\Model\GreetingTracker;
-use OxidEsales\ModuleTemplate\Service\Tracker;
-use OxidEsales\ModuleTemplate\Subscriber\BeforeModelUpdate;
+use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
+use OxidSolutionCatalysts\Adyen\Service\Tracker;
+use OxidSolutionCatalysts\Adyen\Subscriber\BeforeModelUpdate;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 final class BeforeModelUpdateTest extends UnitTestCase

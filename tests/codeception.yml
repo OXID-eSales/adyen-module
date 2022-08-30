@@ -1,4 +1,4 @@
-namespace: OxidEsales\ModuleTemplate\Tests\Codeception
+namespace: OxidSolutionCatalysts\Adyen\Tests\Codeception
 
 params:
   - Codeception/Config/params.php

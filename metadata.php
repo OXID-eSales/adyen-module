@@ -14,8 +14,8 @@ $sMetadataVersion = '2.1';
  * Module information
  */
 $aModule = [
-    'id'          => 'oe_moduletemplate',
-    'title'       => 'OxidEsales Module Template (OETM)',
+    'id'          => 'osc_adyen',
+    'title'       => 'CHANGE MY TITLE',
     'description' =>  '',
     'thumbnail'   => 'out/pictures/logo.png',
     'version'     => '1.0.0-rc.1',
@@ -23,18 +23,18 @@ $aModule = [
     'url'         => '',
     'email'       => '',
     'extend'      => [
-        \OxidEsales\Eshop\Application\Model\User::class => \OxidEsales\ModuleTemplate\Model\User::class,
-        \OxidEsales\Eshop\Application\Controller\StartController::class => \OxidEsales\ModuleTemplate\Controller\StartController::class
+        \OxidEsales\Eshop\Application\Model\User::class => \OxidSolutionCatalysts\Adyen\Model\User::class,
+        \OxidEsales\Eshop\Application\Controller\StartController::class => \OxidSolutionCatalysts\Adyen\Controller\StartController::class
     ],
     'controllers' => [
-        'oetmgreeting' => \OxidEsales\ModuleTemplate\Controller\GreetingController::class
+        'oetmgreeting' => \OxidSolutionCatalysts\Adyen\Controller\GreetingController::class
     ],
     'templates'   => [
-        'greetingtemplate.tpl' => 'oe/moduletemplate/views/templates/greetingtemplate.tpl',
+        'greetingtemplate.tpl' => 'osc/adyen/views/templates/greetingtemplate.tpl',
     ],
     'events' => [
-        'onActivate' => '\OxidEsales\ModuleTemplate\Core\ModuleEvents::onActivate',
-        'onDeactivate' => '\OxidEsales\ModuleTemplate\Core\ModuleEvents::onDeactivate'
+        'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',
+        'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
     ],
     'blocks'      => [
         [

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Traits;
+namespace OxidSolutionCatalysts\Adyen\Traits;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 
