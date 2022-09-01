@@ -14,7 +14,6 @@ namespace OxidSolutionCatalysts\Adyen\Subscriber;
 use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
 use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
-use OxidSolutionCatalysts\Adyen\Service\Tracker;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -27,11 +26,6 @@ class BeforeModelUpdate extends AbstractShopAwareEventSubscriber
     public function handle(BeforeModelUpdateEvent $event): BeforeModelUpdateEvent
     {
         $payload = $event->getModel();
-
-        if (is_a($payload, EshopModelUser::class)) {
-            $this->getServiceFromContainer(Tracker::class)
-                ->updateTracker($payload);
-        }
 
         return $event;
     }

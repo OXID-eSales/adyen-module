@@ -12,7 +12,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidSolutionCatalysts\Adyen\Model\GreetingTracker;
 use OxidSolutionCatalysts\Adyen\Model\User;
 use PDO;
 
@@ -33,81 +32,5 @@ class Repository
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context             = $context;
-    }
-
-    public function getSavedUserGreeting(string $userId): string
-    {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->queryBuilderFactory->create();
-
-        $parameters = [
-            'oxuserid' => $userId,
-        ];
-
-        $queryBuilder->select(User::OETM_USER_GREETING_FIELD)
-            ->from('oxuser')
-            ->where('oxid = :oxuserid');
-
-        $result = $queryBuilder->setParameters($parameters)
-            ->setMaxResults(1)
-            ->execute();
-
-        $text = '';
-
-        if (is_object($result)) {
-            $text = (string) $result->fetch(PDO::FETCH_COLUMN);
-        }
-
-        return $text;
-    }
-
-    public function getTrackerByUserId(string $userId): GreetingTracker
-    {
-        $tracker = oxNew(GreetingTracker::class);
-        $trackerId = $this->getGreetingTrackerId($userId);
-
-        if ($trackerId) {
-            $tracker->load($trackerId);
-        }
-
-        //if it cannot be loaded from database, create a new object
-        if (!$tracker->isLoaded()) {
-            $tracker->assign(
-                [
-                    'oxuserid' => $userId,
-                    'oxshopid' => $this->context->getCurrentShopId(),
-                ]
-            );
-        }
-
-        return $tracker;
-    }
-
-    private function getGreetingTrackerId(string $userId): string
-    {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->queryBuilderFactory->create();
-
-        $parameters = [
-            'oxuserid' => $userId,
-            'oxshopid' => $this->context->getCurrentShopId(),
-        ];
-
-        $queryBuilder->select('oxid')
-            ->from('oetm_tracker')
-            ->where('oxuserid = :oxuserid')
-            ->andWhere('oxshopid = :oxshopid');
-
-        $result = $queryBuilder->setParameters($parameters)
-            ->setMaxResults(1)
-            ->execute();
-
-        $trackerId = '';
-
-        if (is_object($result)) {
-            $trackerId = (string) $result->fetch(PDO::FETCH_COLUMN);
-        }
-
-        return $trackerId;
     }
 }
