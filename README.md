@@ -2,30 +2,18 @@
 
 Adyen integration for OXID eShop 6.5 and above.
 
+## Documentation
+
+* Official German Adyen Payment for OXID [documentation](https://docs.oxid-esales.com/modules/adyen/de/latest/).
+* Official English Adyen Payment for OXID [documentation](https://docs.oxid-esales.com/modules/adyen/en/latest/).
+
 ## Branch Compatibility
 
 * b-6.5.x module branch is compatible with OXID eShop compilation 6.5
 
-## Install
+## Install for OXID
 
-```bash
-# Install desired version of adyen module
-$ composer require oxid-solution-catalysts/adyen-module ^1.0.0
-
-$ ./vendor/bin/oe-console oe:module:install-configuration source/modules/osc/adyen
-
-$ ./vendor/bin/oe-eshop-doctrine_migration migration:migrate osc_adyen
-```
-
-**NOTE:** The location of the oe-console script depends on whether your root package
-is the oxideshop_ce (```./bin/oe-console```) or if the shop was installed from
-an OXID eShop edition metapackage (```./vendor/bin/oe-console```).
-
-After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
-
-```bash
-$ ./vendor/bin/oe-console oe:module:activate osc_adyen
-```
+* see Official documentation
 
 ## Limitations
 

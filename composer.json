@@ -10,6 +10,12 @@
     "license": [
         "GPL-3.0"
     ],
+    "support": {
+        "source": "https://github.com/OXID-eSales/adyen-module",
+        "issues": "https://github.com/OXID-eSales/adyen-module/issues",
+        "forum": "https://forum.oxid-esales.com",
+        "docs": "https://docs.oxid-esales.com/modules/adyen/en/latest"
+    },
     "extra": {
         "oxideshop": {
             "target-directory": "osc/adyen",
