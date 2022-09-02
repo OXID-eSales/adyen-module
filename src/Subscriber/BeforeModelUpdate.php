@@ -25,7 +25,7 @@ class BeforeModelUpdate extends AbstractShopAwareEventSubscriber
 
     public function handle(BeforeModelUpdateEvent $event): BeforeModelUpdateEvent
     {
-        $payload = $event->getModel();
+        $event->getModel();
 
         return $event;
     }

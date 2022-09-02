@@ -33,8 +33,6 @@ use OxidEsales\ModuleTemplate\Traits\ServiceContainer;
  */
 final class AcceptanceTester extends \Codeception\Actor
 {
-    use _generated\AcceptanceTesterActions;
-
     use \Codeception\Lib\Actor\Shared\Retry;
 
     use ServiceContainer;

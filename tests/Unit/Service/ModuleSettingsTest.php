@@ -51,21 +51,21 @@ final class ModuleSettingsTest extends UnitTestCase
     {
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
 
-        $moduleSettings->saveErrorLogging( true);
+        $moduleSettings->saveErrorLogging(true);
         $this->assertTrue($moduleSettings->isErrorLogging());
 
-        $moduleSettings->saveErrorLogging( false);
+        $moduleSettings->saveErrorLogging(false);
         $this->assertFalse($moduleSettings->isErrorLogging());
     }
 
     public function testModuleAPIKey(): void
     {
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-        $moduleSettings->saveAPIKey( 'test');
+        $moduleSettings->saveAPIKey('test');
         $this->assertEquals('test', $moduleSettings->getAPIKey());
         $this->assertTrue($moduleSettings->checkHealth());
 
-        $moduleSettings->saveAPIKey( '');
+        $moduleSettings->saveAPIKey('');
         $this->assertEquals('', $moduleSettings->getAPIKey());
         $this->assertFalse($moduleSettings->checkHealth());
     }
