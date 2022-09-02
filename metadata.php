@@ -40,5 +40,30 @@ $aModule = [
     'blocks'      => [
     ],
     'settings' => [
+        [
+            'group'       => 'osc_adyen_API',
+            'name'        => 'osc_adyen_OperationMode',
+            'type'        => 'select',
+            'constraints' => 'sandbox|live',
+            'value'       => 'sandbox'
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_SandboxAPIKey',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_LiveAPIKey',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_Debug',
+            'name' => 'osc_adyen_ErrorLogging',
+            'type' => 'bool',
+            'value' => false
+        ],
     ],
 ];
