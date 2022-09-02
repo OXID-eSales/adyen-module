@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\ModuleTemplate\Tests\Codeception;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\Facts\Facts;
-use OxidEsales\ModuleTemplate\Service\ModuleSettings;
-use OxidEsales\ModuleTemplate\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * Inherited Methods
