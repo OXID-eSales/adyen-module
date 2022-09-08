@@ -16,7 +16,9 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_OperationMode_sandbox' => 'Sandbox',
     'SHOP_MODULE_osc_adyen_OperationMode_live' => 'Live',
     'SHOP_MODULE_osc_adyen_SandboxAPIKey' => 'Sandbox API Key',
+    'SHOP_MODULE_osc_adyen_SandboxClientKey' => 'Sandbox Client Key',
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'Live API Key',
+    'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Live Client Key',
 
     'SHOP_MODULE_osc_adyen_ErrorLogging' => 'Error Logging'
 ];

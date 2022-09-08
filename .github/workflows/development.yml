@@ -6,7 +6,7 @@ env:
   PACKAGE_NAME: 'oxid-solution-catalysts/adyen-module'
   MODULE_PATH: 'osc/adyen'
   SONARCLOUD_ORGANIZATION: 'oxid-esales'
-  SONARCLOUD_PROJECT_KEY: 'OXID-eSales_module-adyen'
+  SONARCLOUD_PROJECT_KEY: 'OXID-eSales_adyen-module'
 jobs:
   install_shop_with_module:
     strategy:

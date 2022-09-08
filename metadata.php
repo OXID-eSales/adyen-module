@@ -55,7 +55,19 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_SandboxClientKey',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_API',
             'name' => 'osc_adyen_LiveAPIKey',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_LiveClientKey',
             'type' => 'str',
             'value' => ''
         ],

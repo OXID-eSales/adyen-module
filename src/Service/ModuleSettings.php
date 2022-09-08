@@ -21,7 +21,9 @@ class ModuleSettings
     public const ERROR_LOGGING = 'osc_adyen_ErrorLogging';
 
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
+    public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
+    public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
 
     public const OPERATION_MODE_SANDBOX = 'sandbox';
 
@@ -44,7 +46,8 @@ class ModuleSettings
     public function checkHealth(): bool
     {
         return (
-            (bool)self::getAPIKey()
+            self::getAPIKey() &&
+            self::getClientKey()
         );
     }
 
@@ -86,6 +89,18 @@ class ModuleSettings
     public function saveAPIKey(string $value): void
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_API_KEY : self::LIVE_API_KEY);
+        $this->saveSettingValue($key, $value);
+    }
+
+    public function getClientKey(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
+        return (string)$this->getSettingValue($key);
+    }
+
+    public function saveClientKey(string $value): void
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
         $this->saveSettingValue($key, $value);
     }
 

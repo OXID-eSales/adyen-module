@@ -61,12 +61,28 @@ final class ModuleSettingsTest extends UnitTestCase
     public function testModuleAPIKey(): void
     {
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-        $moduleSettings->saveAPIKey('test');
-        $this->assertEquals('test', $moduleSettings->getAPIKey());
+        $moduleSettings->saveAPIKey('testapi');
+        $moduleSettings->saveClientKey('testclient');
+        $this->assertEquals('testapi', $moduleSettings->getAPIKey());
+        $this->assertEquals('testclient', $moduleSettings->getClientKey());
         $this->assertTrue($moduleSettings->checkHealth());
 
         $moduleSettings->saveAPIKey('');
+        $moduleSettings->saveClientKey('testclient');
         $this->assertEquals('', $moduleSettings->getAPIKey());
+        $this->assertEquals('testclient', $moduleSettings->getClientKey());
+        $this->assertFalse($moduleSettings->checkHealth());
+
+        $moduleSettings->saveAPIKey('testapi');
+        $moduleSettings->saveClientKey('');
+        $this->assertEquals('testapi', $moduleSettings->getAPIKey());
+        $this->assertEquals('', $moduleSettings->getClientKey());
+        $this->assertFalse($moduleSettings->checkHealth());
+
+        $moduleSettings->saveAPIKey('');
+        $moduleSettings->saveClientKey('');
+        $this->assertEquals('', $moduleSettings->getAPIKey());
+        $this->assertEquals('', $moduleSettings->getClientKey());
         $this->assertFalse($moduleSettings->checkHealth());
     }
 }
