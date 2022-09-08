@@ -11,6 +11,8 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 use Exception;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -29,6 +31,10 @@ final class ModuleEvents
     {
         // execute module migrations
         self::executeModuleMigrations();
+
+        // add static contents like payment methods
+        //NOTE: this assumes the module's servies.yaml is already in place at the time this method is called
+        self::addStaticContents();
     }
 
     /**
@@ -55,5 +61,20 @@ final class ModuleEvents
         if ($neeedsUpdate) {
             $migrations->execute('migrations:migrate', 'osc_adyen');
         }
+    }
+
+    /**
+     * add Static Contents like payment methods
+     *
+     * @return void
+     */
+    private static function addStaticContents(): void
+    {
+        /** @var StaticContents $service */
+        $service = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(StaticContents::class);
+
+        $service->ensurePaymentMethods();
     }
 }
