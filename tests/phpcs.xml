@@ -5,9 +5,7 @@
     <!-- Paths to check -->
     <file>../src/</file>
     <file>./</file>
-    <!--
     <file>../translations</file>
-    -->
     <file>../migration</file>
     <exclude-pattern>./tests/Codeception/Config</exclude-pattern>
 
