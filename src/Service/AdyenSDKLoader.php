@@ -10,33 +10,34 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Adyen\Client;
 use Adyen\Config;
 use Adyen\Environment;
+use Monolog\Logger;
 
 class AdyenSDKLoader
 {
     /**
      * @var ModuleSettings
      */
-    private $moduleSettings;
+    private ModuleSettings $moduleSettings;
 
     /**
-     * @var DebugHandler
+     * @var Logger
      */
-    private $debugHandler;
+    private Logger $moduleLogger;
 
     /**
      * @param ModuleSettings $moduleSettings
-     * @param DebugHandler $debugHandler
+     * @param Logger $moduleLogger
      */
     public function __construct(
         ModuleSettings $moduleSettings,
-        DebugHandler $debugHandler
+        Logger $moduleLogger
     ) {
         $this->moduleSettings = $moduleSettings;
-        $this->debugHandler = $debugHandler;
+        $this->moduleLogger = $moduleLogger;
     }
 
     /**
-     * @return Unzer
+     * @return Client
      */
     public function getAdyenSDK(): Client
     {
@@ -49,8 +50,9 @@ class AdyenSDKLoader
                 Environment::TEST :
                 Environment::LIVE
         );
-        $sdk->setLogger($this->debugHandler);
-
+        if ($this->moduleSettings->isLoggingActive()) {
+            $sdk->setLogger($this->moduleLogger);
+        }
         return $sdk;
     }
 }

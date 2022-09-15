@@ -44,11 +44,11 @@ services:
 
   OxidSolutionCatalysts\Adyen\Service\:
     resource: 'src/Service/*'
-    exclude: 'src/Service/{LoggingHandler}'
+    exclude: 'src/Service/{AdyenSDKLoader}'
     public: true
 
-  OxidSolutionCatalysts\Adyen\Service\LoggingHandler:
-    class: OxidSolutionCatalysts\Adyen\Service\LoggingHandler
+  OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader:
+    class: OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader
     public: true
     arguments:
       $moduleLogger: '@OxidSolutionCatalysts\Adyen\Logger'
