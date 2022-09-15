@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Subscriber;
 
-use OxidEsales\Eshop\Application\Model\User as EshopModelUser;
 use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
