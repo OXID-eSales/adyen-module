@@ -18,7 +18,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 class ModuleSettings
 {
     public const OPERATION_MODE = 'osc_adyen_OperationMode';
-    public const ERROR_LOGGING = 'osc_adyen_ErrorLogging';
+    public const LOGGING_ACTIVE = 'osc_adyen_LoggingActive';
 
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
@@ -70,14 +70,14 @@ class ModuleSettings
         $this->saveSettingValue(self::OPERATION_MODE, $value);
     }
 
-    public function isErrorLogging(): bool
+    public function isLoggingActive(): bool
     {
-        return (bool) $this->getSettingValue(self::ERROR_LOGGING);
+        return (bool) $this->getSettingValue(self::LOGGING_ACTIVE);
     }
 
-    public function saveErrorLogging(bool $value): void
+    public function saveLoggingActive(bool $value): void
     {
-        $this->saveSettingValue(self::ERROR_LOGGING, $value);
+        $this->saveSettingValue(self::LOGGING_ACTIVE, $value);
     }
 
     public function getAPIKey(): string
