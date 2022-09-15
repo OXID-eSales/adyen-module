@@ -73,7 +73,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_Debug',
-            'name' => 'osc_adyen_ErrorLogging',
+            'name' => 'osc_adyen_LoggingActive',
             'type' => 'bool',
             'value' => false
         ],

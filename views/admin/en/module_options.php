@@ -20,5 +20,5 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'Live API Key',
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Live Client Key',
 
-    'SHOP_MODULE_osc_adyen_ErrorLogging' => 'Error Logging'
+    'SHOP_MODULE_osc_adyen_LoggingActive' => 'Logging Active?'
 ];

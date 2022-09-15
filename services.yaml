@@ -7,12 +7,51 @@ services:
   OxidEsales\Eshop\Core\Registry:
     class: OxidEsales\Eshop\Core\Registry
 
+  OxidEsales\Eshop\Core\Config:
+    factory: [ '@OxidEsales\Eshop\Core\Registry', 'getConfig' ]
+    public: true
+
+  OxidEsales\Eshop\Core\Session:
+    factory: [ '@OxidEsales\Eshop\Core\Registry', 'getSession' ]
+
+  OxidEsales\Eshop\Core\Language:
+    factory: [ '@OxidEsales\Eshop\Core\Registry', 'getLang' ]
+
+  OxidEsales\Eshop\Core\UtilsDate:
+    factory: [ '@OxidEsales\Eshop\Core\Registry', 'getUtilsDate' ]
+
   OxidEsales\Eshop\Core\Request:
     factory: [ '@OxidEsales\Eshop\Core\Registry', 'getRequest' ]
 
+  OxidSolutionCatalysts\Adyen\Logger:
+    class: Monolog\Logger
+    factory: ['@OxidSolutionCatalysts\Adyen\Logger\Factory', 'create']
+    public: true
+
+  OxidSolutionCatalysts\Adyen\Logger\Factory:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Factory\MonologLoggerFactory
+    public: true
+    arguments:
+      $configuration: '@OxidSolutionCatalysts\Adyen\Logger\Configuration'
+
+  OxidSolutionCatalysts\Adyen\Logger\Configuration:
+    class: OxidEsales\EshopCommunity\Internal\Framework\Logger\Configuration\MonologConfiguration
+    public: true
+    arguments:
+      $loggerName: 'Adyen Payment Logger'
+      $logFilePath: '@=service("OxidSolutionCatalysts\\Adyen\\Service\\Context").getAdyenLogFilePath()'
+      $logLevel: !php/const Psr\Log\LogLevel::INFO
+
   OxidSolutionCatalysts\Adyen\Service\:
     resource: 'src/Service/*'
+    exclude: 'src/Service/{AdyenSDKLoader}'
     public: true
+
+  OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader:
+    class: OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader
+    public: true
+    arguments:
+      $moduleLogger: '@OxidSolutionCatalysts\Adyen\Logger'
 
   OxidSolutionCatalysts\Adyen\Subscriber\BeforeModelUpdate:
     class: OxidSolutionCatalysts\Adyen\Subscriber\BeforeModelUpdate

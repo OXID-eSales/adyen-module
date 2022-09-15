@@ -47,15 +47,15 @@ final class ModuleSettingsTest extends UnitTestCase
         $this->assertEquals(ModuleSettings::OPERATION_MODE_SANDBOX, $moduleSettings->getOperationMode());
     }
 
-    public function testModuleErrorLogging(): void
+    public function testModuleLoggingActive(): void
     {
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
 
-        $moduleSettings->saveErrorLogging(true);
-        $this->assertTrue($moduleSettings->isErrorLogging());
+        $moduleSettings->saveLoggingActive(true);
+        $this->assertTrue($moduleSettings->isLoggingActive());
 
-        $moduleSettings->saveErrorLogging(false);
-        $this->assertFalse($moduleSettings->isErrorLogging());
+        $moduleSettings->saveLoggingActive(false);
+        $this->assertFalse($moduleSettings->isLoggingActive());
     }
 
     public function testModuleAPIKey(): void
