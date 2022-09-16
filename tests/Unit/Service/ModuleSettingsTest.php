@@ -58,31 +58,51 @@ final class ModuleSettingsTest extends UnitTestCase
         $this->assertFalse($moduleSettings->isLoggingActive());
     }
 
-    public function testModuleAPIKey(): void
+    public function testModuleCredentialsKey(): void
     {
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-        $moduleSettings->saveAPIKey('testapi');
-        $moduleSettings->saveClientKey('testclient');
-        $this->assertEquals('testapi', $moduleSettings->getAPIKey());
-        $this->assertEquals('testclient', $moduleSettings->getClientKey());
+        $moduleSettings->saveAPIKey('testapikey');
+        $moduleSettings->saveClientKey('testclientkey');
+        $moduleSettings->saveHmacSignature('testhmacsignature');
+        $moduleSettings->saveMerchantAccount('testmerchantaccount');
+        $moduleSettings->saveNotificationUsername('testnotificationusername');
+        $moduleSettings->saveNotificationPassword('testnotificationpassword');
+        $this->assertEquals('testapikey', $moduleSettings->getAPIKey());
+        $this->assertEquals('testclientkey', $moduleSettings->getClientKey());
+        $this->assertEquals('testhmacsignature', $moduleSettings->getHmacSignature());
+        $this->assertEquals('testmerchantaccount', $moduleSettings->getMerchantAccount());
+        $this->assertEquals('testnotificationusername', $moduleSettings->getNotificationUsername());
+        $this->assertEquals('testnotificationpassword', $moduleSettings->getNotificationPassword());
         $this->assertTrue($moduleSettings->checkHealth());
 
+        // some option is missing
         $moduleSettings->saveAPIKey('');
-        $moduleSettings->saveClientKey('testclient');
+        $moduleSettings->saveClientKey('testclientkey');
+        $moduleSettings->saveHmacSignature('');
+        $moduleSettings->saveMerchantAccount('');
+        $moduleSettings->saveNotificationUsername('');
+        $moduleSettings->saveNotificationPassword('');
         $this->assertEquals('', $moduleSettings->getAPIKey());
-        $this->assertEquals('testclient', $moduleSettings->getClientKey());
+        $this->assertEquals('testclientkey', $moduleSettings->getClientKey());
+        $this->assertEquals('', $moduleSettings->getHmacSignature());
+        $this->assertEquals('', $moduleSettings->getMerchantAccount());
+        $this->assertEquals('', $moduleSettings->getNotificationUsername());
+        $this->assertEquals('', $moduleSettings->getNotificationPassword());
         $this->assertFalse($moduleSettings->checkHealth());
 
-        $moduleSettings->saveAPIKey('testapi');
-        $moduleSettings->saveClientKey('');
-        $this->assertEquals('testapi', $moduleSettings->getAPIKey());
-        $this->assertEquals('', $moduleSettings->getClientKey());
-        $this->assertFalse($moduleSettings->checkHealth());
-
+        // all options are missing
         $moduleSettings->saveAPIKey('');
         $moduleSettings->saveClientKey('');
+        $moduleSettings->saveHmacSignature('');
+        $moduleSettings->saveMerchantAccount('');
+        $moduleSettings->saveNotificationUsername('');
+        $moduleSettings->saveNotificationPassword('');
         $this->assertEquals('', $moduleSettings->getAPIKey());
         $this->assertEquals('', $moduleSettings->getClientKey());
+        $this->assertEquals('', $moduleSettings->getHmacSignature());
+        $this->assertEquals('', $moduleSettings->getMerchantAccount());
+        $this->assertEquals('', $moduleSettings->getNotificationUsername());
+        $this->assertEquals('', $moduleSettings->getNotificationPassword());
         $this->assertFalse($moduleSettings->checkHealth());
     }
 }

@@ -22,11 +22,19 @@ class ModuleSettings
 
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
+    public const SANDBOX_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
+    public const SANDBOX_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
+    public const SANDBOX_NOTIFICATION_USERNAME = 'osc_adyen_LiveNotificationUsername';
+    public const SANDBOX_NOTIFICATION_PASSWORD = 'osc_adyen_LiveNotificationPassword';
+
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
+    public const LIVE_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
+    public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
+    public const LIVE_NOTIFICATION_USERNAME = 'osc_adyen_LiveNotificationUsername';
+    public const LIVE_NOTIFICATION_PASSWORD = 'osc_adyen_LiveNotificationPassword';
 
     public const OPERATION_MODE_SANDBOX = 'sandbox';
-
     public const OPERATION_MODE_LIVE = 'live';
 
     public const OPERATION_MODE_VALUES = [
@@ -47,7 +55,11 @@ class ModuleSettings
     {
         return (
             self::getAPIKey() &&
-            self::getClientKey()
+            self::getClientKey() &&
+            self::getHmacSignature() &&
+            self::getMerchantAccount() &&
+            self::getNotificationUsername() &&
+            self::getNotificationPassword()
         );
     }
 
@@ -101,6 +113,54 @@ class ModuleSettings
     public function saveClientKey(string $value): void
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
+        $this->saveSettingValue($key, $value);
+    }
+
+    public function getHmacSignature(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_HMAC_SIGNATURE : self::LIVE_HMAC_SIGNATURE);
+        return (string)$this->getSettingValue($key);
+    }
+
+    public function saveHmacSignature(string $value): void
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_HMAC_SIGNATURE : self::LIVE_HMAC_SIGNATURE);
+        $this->saveSettingValue($key, $value);
+    }
+
+    public function getMerchantAccount(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
+        return (string)$this->getSettingValue($key);
+    }
+
+    public function saveMerchantAccount(string $value): void
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
+        $this->saveSettingValue($key, $value);
+    }
+
+    public function getNotificationUsername(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_USERNAME : self::LIVE_NOTIFICATION_USERNAME);
+        return (string)$this->getSettingValue($key);
+    }
+
+    public function saveNotificationUsername(string $value): void
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_USERNAME : self::LIVE_NOTIFICATION_USERNAME);
+        $this->saveSettingValue($key, $value);
+    }
+
+    public function getNotificationPassword(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
+        return (string)$this->getSettingValue($key);
+    }
+
+    public function saveNotificationPassword(string $value): void
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
         $this->saveSettingValue($key, $value);
     }
 

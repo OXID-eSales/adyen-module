@@ -57,7 +57,7 @@ final class AcceptanceTester extends \Codeception\Actor
             ->saveOperationMode(ModuleSettings::OPERATION_MODE_LIVE);
     }
 
-    public function setGreetingModeGeneric(): void
+    public function setOperationModeSandbox(): void
     {
         $I = $this;
 
