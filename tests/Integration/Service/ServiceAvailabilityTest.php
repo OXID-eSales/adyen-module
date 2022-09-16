@@ -26,11 +26,11 @@ class ServiceAvailabilityTest extends TestCase
         $this->assertInstanceOf($service, $container->get($service));
     }
 
-    public function serviceAvailabilityDataProvider(): array
+    public static function serviceAvailabilityDataProvider(): array
     {
         return [
             [AdyenSDKLoader::class],
-            [Context::class]
+            [Context::class],
             [ModuleSettings::class],
             [Repository::class],
             [StaticContents::class],
