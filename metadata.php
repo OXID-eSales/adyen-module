@@ -49,6 +49,12 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_LoggingActive',
+            'type' => 'bool',
+            'value' => false
+        ],
+        [
+            'group' => 'osc_adyen_API',
             'name' => 'osc_adyen_SandboxAPIKey',
             'type' => 'str',
             'value' => ''
@@ -61,21 +67,63 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_API',
-            'name' => 'osc_adyen_LiveAPIKey',
+            'name' => 'osc_adyen_SandboxHmacSignature',
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_SandboxMerchantAccount',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_SandboxNotificationUsername',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => 'osc_adyen_SandboxNotificationPassword',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveAPIKey',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveClientKey',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_Debug',
-            'name' => 'osc_adyen_LoggingActive',
-            'type' => 'bool',
-            'value' => false
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveHmacSignature',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveMerchantAccount',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveNotificationUsername',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveNotificationPassword',
+            'type' => 'str',
+            'value' => ''
         ],
     ],
 ];
