@@ -31,13 +31,22 @@ $aModule = [
     'extend'      => [
         \OxidEsales\Eshop\Application\Model\User::class => \OxidSolutionCatalysts\Adyen\Model\User::class,
     ],
-    'templates'   => [
-    ],
     'events' => [
         'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',
         'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
     ],
-    'blocks'      => [
+    'templates' => [
+        // admin
+        'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
+        // frontend - paymentpage
+        'modules/osc/adyen/payment/payment_adyen.tpl' => 'osc/adyen/views/frontend/tpl/payment/payment_adyen.tpl',
+    ],
+    'blocks' => [
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'select_payment',
+            'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
+        ],
     ],
     'settings' => [
         [
