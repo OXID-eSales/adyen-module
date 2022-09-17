@@ -19,6 +19,11 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
  */
 final class CreditCardCest extends BaseCest
 {
+    public function firstTest(AcceptanceTester $I): void
+    {
+        $I->wantToTest('Hello World');
+    }
+
     protected function _getOXID(): array
     {
         return [Module::STANDARD_PAYMENT_ID];
@@ -42,7 +47,5 @@ final class CreditCardCest extends BaseCest
         $orderPage = $this->_choosePayment($this->cardPaymentLabel);
 
         $fixtures = Fixtures::get($name);
-
     }
-
 }
