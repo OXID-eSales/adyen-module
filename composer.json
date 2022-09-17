@@ -12,7 +12,7 @@
     ],
     "support": {
         "source": "https://github.com/OXID-eSales/adyen-module",
-        "issues": "https://github.com/OXID-eSales/adyen-module/issues",
+        "issues": "https://bugs.oxid-esales.com",
         "forum": "https://forum.oxid-esales.com",
         "docs": "https://docs.oxid-esales.com/modules/adyen/en/latest"
     },

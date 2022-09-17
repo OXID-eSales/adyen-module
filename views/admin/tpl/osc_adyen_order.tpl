@@ -12,11 +12,13 @@
     <input type="hidden" name="cl" value="order_main">
 </form>
 
-<div class="errorbox">
-    [{oxmultilang ident="OSC_ADYEN_NO_ADYEN_ORDER"}]
-</div>
-
+[{if !$oView->isAdyenPayment()}]
+    <div class="errorbox">
+        [{oxmultilang ident="OSC_ADYEN_NO_ADYEN_ORDER"}]
+    </div>
+[{else}]
+   <p>This is a Adyen Order</p>
+[{/if}]
 
 [{include file="bottomnaviitem.tpl"}]
-
 [{include file="bottomitem.tpl"}]
