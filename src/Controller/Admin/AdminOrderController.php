@@ -30,7 +30,7 @@ class AdminOrderController extends AdminDetailsController
 
     /**
      * Executes parent method parent::render()
-     * name of template file "oscunzer_order.tpl".
+     * name of template file "osc_adyen_order.tpl".
      *
      * @return string
      */
