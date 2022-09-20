@@ -69,7 +69,10 @@ final class AdminOrderControllerTest extends UnitTestCase
 
         $controller->expects($this->any())->method('getEditObject')->willReturn($order);
 
-        $this->assertSame($controller->isAdyenPayment(), $order->oxorder__oxpaymenttype->value === Module::STANDARD_PAYMENT_ID);
+        $this->assertSame(
+            $controller->isAdyenPayment(),
+            $order->oxorder__oxpaymenttype->value === Module::STANDARD_PAYMENT_ID
+        );
     }
 
     public function testGetEditObject(): void
