@@ -5,6 +5,7 @@
  * See LICENSE file for license details.
  */
 
+use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 /**
  * Metadata version
  */
@@ -34,6 +35,9 @@ $aModule = [
     'events' => [
         'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',
         'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
+    ],
+    'controllers' => [
+        'adyen_admin_order' => AdminOrderController::class,
     ],
     'templates' => [
         // admin
