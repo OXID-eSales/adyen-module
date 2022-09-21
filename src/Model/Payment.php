@@ -16,8 +16,8 @@ namespace OxidSolutionCatalysts\Adyen\Model;
  * the shop user model.
  * NOTE: class must not be final.
  *
- * @mixin \OxidEsales\Eshop\Application\Model\User
+ * @mixin \OxidEsales\Eshop\Application\Model\Payment
  */
-class User extends User_parent
+class Payment extends Payment_parent
 {
 }

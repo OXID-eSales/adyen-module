@@ -29,7 +29,7 @@ class ViewConfig extends ViewConfig_parent
         $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
     }
 
-    public function checkAdyenHealth() : bool
+    public function checkAdyenHealth(): bool
     {
         return $this->moduleSettings->checkHealth();
     }
