@@ -7,8 +7,8 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\Eshop\Application\Model;
+namespace OxidEsales\Eshop\Core;
 
-final class User
+final class ViewConfig
 {
 }
