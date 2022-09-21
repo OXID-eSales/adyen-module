@@ -6,6 +6,7 @@ parameters:
         - stubs/Payment.stub
         - stubs/StartController.stub
         - stubs/ViewConfig.stub
+        - stubs/OrderList.stub
     level: max
     scanFiles:
         - ../../vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
