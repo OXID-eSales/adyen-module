@@ -8,6 +8,7 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use Monolog\Logger;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use PHPUnit\Framework\TestCase;
@@ -15,28 +16,17 @@ use Adyen\Client;
 
 class AdyenSDKLoaderTest extends TestCase
 {
-    public function testSimpleSDKLoading(): void
+    /**
+     * @dataProvider providerSDKLoadingData
+     */
+    public function testSDKLoading($moduleSettingsValues, $loggerName): void
     {
-        $sut = $this->getSut([
-            'getAPIKey' => 'dummyKey',
-            'isLoggingActive' => false
-        ]);
+        $sut = $this->getSut($moduleSettingsValues);
 
         $loadedSdk = $sut->getAdyenSDK();
         $this->assertInstanceOf(Client::class, $loadedSdk);
         $this->assertInstanceOf(Logger::class, $loadedSdk->getLogger());
-        $this->assertSame('adyen-php-api-library', $loadedSdk->getLogger()->getName());
-    }
-
-    public function testLoggingSDKLoading(): void
-    {
-        $sut = $this->getSut([
-            'getAPIKey' => 'dummyKey',
-            'isLoggingActive' => true
-        ]);
-
-        $loadedSdk = $sut->getAdyenSDK();
-        $this->assertSame('Adyen Payment Logger', $loadedSdk->getLogger()->getName());
+        $this->assertSame($loggerName, $loadedSdk->getLogger()->getName());
     }
 
     protected function getSut($moduleSettingValues): AdyenSDKLoader
@@ -46,5 +36,43 @@ class AdyenSDKLoaderTest extends TestCase
         $loggingHandler->method('getName')->willReturn('Adyen Payment Logger');
 
         return new AdyenSDKLoader($moduleSettings, $loggingHandler);
+    }
+
+    public function providerSDKLoadingData(): array
+    {
+        return [
+            [
+                [
+                    'getAPIKey' => 'dummyKey',
+                    'isLoggingActive' => false,
+                    'isSandboxMode' => false
+                ],
+                'adyen-php-api-library'
+            ],
+            [
+                [
+                    'getAPIKey' => 'dummyKey',
+                    'isLoggingActive' => false,
+                    'isSandboxMode' => false
+                ],
+                'adyen-php-api-library'
+            ],
+            [
+                [
+                    'getAPIKey' => 'dummyKey',
+                    'isLoggingActive' => true,
+                    'isSandboxMode' => false
+                ],
+                'Adyen Payment Logger'
+            ],
+            [
+                [
+                    'getAPIKey' => 'dummyKey',
+                    'isLoggingActive' => true,
+                    'isSandboxMode' => true
+                ],
+                'Adyen Payment Logger'
+            ]
+        ];
     }
 }

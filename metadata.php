@@ -5,6 +5,11 @@
  * See LICENSE file for license details.
  */
 
+use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
+use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
+
 /**
  * Metadata version
  */
@@ -14,7 +19,7 @@ $sMetadataVersion = '2.1';
  * Module information
  */
 $aModule = [
-    'id'          => 'osc_adyen',
+    'id' => 'osc_adyen',
     'title' => [
         'de' => 'Adyen Payment für OXID',
         'en' => 'Adyen Payment for OXID'
@@ -23,21 +28,38 @@ $aModule = [
         'de' => 'Nutzung der Online-Bezahldienste von Adyen.',
         'en' => 'Use of the online payment services from Adyen.'
     ],
-    'thumbnail'   => 'out/pictures/logo.png',
-    'version'     => '1.0.0-rc.1',
-    'author'      => 'OXID eSales AG',
-    'url'         => 'https://www.oxid-esales.com',
-    'email'       => 'support@oxid-esales.com',
-    'extend'      => [
-        \OxidEsales\Eshop\Application\Model\User::class => \OxidSolutionCatalysts\Adyen\Model\User::class,
-    ],
-    'templates'   => [
+    'thumbnail' => 'out/pictures/logo.png',
+    'version' => '1.0.0-rc.1',
+    'author' => 'OXID eSales AG',
+    'url' => 'https://www.oxid-esales.com',
+    'email' => 'support@oxid-esales.com',
+    'extend' => [
+        // model
+        \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        // core
+        \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
+        // admin-controller
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
     ],
     'events' => [
         'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',
         'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
     ],
-    'blocks'      => [
+    'controllers' => [
+        'adyen_admin_order' => AdminOrderController::class,
+    ],
+    'templates' => [
+        // admin
+        'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
+        // frontend - paymentpage
+        'modules/osc/adyen/payment/payment_adyen.tpl' => 'osc/adyen/views/frontend/tpl/payment/payment_adyen.tpl',
+    ],
+    'blocks' => [
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'select_payment',
+            'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
+        ],
     ],
     'settings' => [
         [

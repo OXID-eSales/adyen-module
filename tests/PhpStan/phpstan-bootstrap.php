@@ -8,8 +8,18 @@
 declare(strict_types=1);
 
 class_alias(
-    \OxidEsales\Eshop\Application\Model\User::class,
-    \OxidSolutionCatalysts\Adyen\Model\User_parent::class
+    \OxidEsales\Eshop\Application\Model\Payment::class,
+    \OxidSolutionCatalysts\Adyen\Model\Payment_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Core\ViewConfig::class,
+    \OxidSolutionCatalysts\Adyen\Core\ViewConfig_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class,
+    \OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList_parent::class
 );
 
 class_alias(
