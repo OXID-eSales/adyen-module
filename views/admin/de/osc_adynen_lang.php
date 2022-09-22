@@ -14,5 +14,9 @@ $aLang = [
     'charset' => 'UTF-8',
     'tbclorder_adyen' => 'Adyen',
 
-    'OSC_ADYEN_NO_ADYEN_ORDER' => 'Das ist keine Adyen-Bestellung'
+    // osc_adyen_order.tpl
+    'OSC_ADYEN_NO_ADYEN_ORDER' => 'Das ist keine Adyen-Bestellung',
+
+    // extend order_list.tpl
+    'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',
 ];
