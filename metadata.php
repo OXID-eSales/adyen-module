@@ -8,6 +8,8 @@
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
+
 /**
  * Metadata version
  */
@@ -32,8 +34,12 @@ $aModule = [
     'url' => 'https://www.oxid-esales.com',
     'email' => 'support@oxid-esales.com',
     'extend' => [
+        // model
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
-        \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class
+        // core
+        \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
+        // admin-controller
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
     ],
     'events' => [
         'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',

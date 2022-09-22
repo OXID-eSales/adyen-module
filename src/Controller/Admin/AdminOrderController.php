@@ -10,12 +10,15 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * Order class wrapper for Adyen module
  */
 class AdminOrderController extends AdminDetailsController
 {
+    use ServiceContainer;
+
     /**
      * Active order object
      * @var Order
