@@ -89,16 +89,15 @@ class StaticContents
         $paymentModel->save();
 
         foreach ($definitions['descriptions'] as $langAbbr => $data) {
-            if (!isset($iso2LanguageId[$langAbbr])) {
-                continue;
+            if (isset($iso2LanguageId[$langAbbr])) {
+                $paymentModel->loadInLang((int)$iso2LanguageId[$langAbbr], $paymentModel->getId());
+                $paymentModel->assign(
+                    [
+                        'oxdesc' => $data['desc'],
+                        'oxlongdesc' => $data['longdesc']
+                    ]
+                );
             }
-            $paymentModel->loadInLang((int)$iso2LanguageId[$langAbbr], $paymentModel->getId());
-            $paymentModel->assign(
-                [
-                    'oxdesc' => $data['desc'],
-                    'oxlongdesc' => $data['longdesc']
-                ]
-            );
             $paymentModel->save();
         }
     }

@@ -8,6 +8,7 @@
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 
 /**
@@ -36,6 +37,7 @@ $aModule = [
     'extend' => [
         // model
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller

@@ -15,6 +15,8 @@ final class Module
 
     public const STANDARD_PAYMENT_ID = 'oscadyen';
 
+    public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
+
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
         'oxtoamount' => 60000,

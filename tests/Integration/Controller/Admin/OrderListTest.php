@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Core\Request;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 final class OrderListTest extends UnitTestCase
 {
@@ -34,7 +35,7 @@ final class OrderListTest extends UnitTestCase
         // call render to fill viewData
         $controller->render();
         $viewData = $controller->getViewData();
-        $this->assertSame('PSPREFERENCE', $viewData['asearch']['oscadyenhistory']);
+        $this->assertSame('PSPREFERENCE', $viewData['asearch'][Module::ADYEN_HISTORY_TABLE]);
     }
 
     public function testBuildSelectString(): void
@@ -42,7 +43,7 @@ final class OrderListTest extends UnitTestCase
         $requestStub = $this->createPartialMock(Request::class, ['getRequestEscapedParameter']);
         $requestStub->method('getRequestEscapedParameter')
             ->withConsecutive(['addsearchfld'], ['addsearch'])
-            ->willReturnOnConsecutiveCalls('oscadyenhistory', 'test');
+            ->willReturnOnConsecutiveCalls(Module::ADYEN_HISTORY_TABLE, 'test');
         Registry::set(Request::class, $requestStub);
 
         $controller = $this->createPartialMock(OrderList::class, []);
@@ -53,7 +54,7 @@ final class OrderListTest extends UnitTestCase
 
         $result = $controller->_buildSelectString($listObject);
 
-        $this->assertStringContainsString('left join oscadyenhistory', $result);
-        $this->assertStringContainsString("oscadyenhistory.pspreference like '%test%'", $result);
+        $this->assertStringContainsString('left join ' . Module::ADYEN_HISTORY_TABLE, $result);
+        $this->assertStringContainsString(Module::ADYEN_HISTORY_TABLE . ".pspreference like '%test%'", $result);
     }
 }

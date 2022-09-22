@@ -13,6 +13,12 @@ class_alias(
 );
 
 class_alias(
+    \OxidEsales\Eshop\Application\Model\Order::class,
+    \OxidSolutionCatalysts\Adyen\Model\Order_parent::class
+);
+
+
+class_alias(
     \OxidEsales\Eshop\Core\ViewConfig::class,
     \OxidSolutionCatalysts\Adyen\Core\ViewConfig_parent::class
 );

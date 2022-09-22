@@ -15,6 +15,7 @@ use Doctrine\Migrations\AbstractMigration;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\ConfigFile;
 use OxidEsales\Facts\Facts;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -59,10 +60,10 @@ final class Version20220908162100 extends AbstractMigration
      */
     protected function createAdyenHistoryTable(Schema $schema): void
     {
-        if (!$schema->hasTable('oscadyenhistory')) {
-            $historyTable = $schema->createTable('oscadyenhistory');
+        if (!$schema->hasTable(Module::ADYEN_HISTORY_TABLE)) {
+            $historyTable = $schema->createTable(Module::ADYEN_HISTORY_TABLE);
         } else {
-            $historyTable = $schema->getTable('oscadyenhistory');
+            $historyTable = $schema->getTable(Module::ADYEN_HISTORY_TABLE);
         }
 
         if (!$historyTable->hasColumn('OXID')) {

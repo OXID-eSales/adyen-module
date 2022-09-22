@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -34,7 +35,7 @@ class OrderList extends OrderList_parent
 
         $viewData = $this->getViewData();
         $viewData["asearch"] = array_merge($viewData["asearch"], [
-            'oscadyenhistory' => 'PSPREFERENCE'
+            Module::ADYEN_HISTORY_TABLE => 'PSPREFERENCE'
         ]);
         $this->setViewData($viewData);
 
@@ -55,8 +56,9 @@ class OrderList extends OrderList_parent
         $request = Registry::getRequest();
         $searchField = $request->getRequestEscapedParameter('addsearchfld');
         $searchQuery = $request->getRequestEscapedParameter('addsearch');
+        $tableName = Module::ADYEN_HISTORY_TABLE;
 
-        if ('oscadyenhistory' !== $searchField || is_null($listObject)) {
+        if ($tableName !== $searchField || is_null($listObject)) {
             return parent::_buildSelectString($listObject);
         }
 
@@ -64,9 +66,9 @@ class OrderList extends OrderList_parent
         $database = DatabaseProvider::getDb();
 
         $queryPart = "oxorder
-            left join oscadyenhistory
-            on oscadyenhistory.oxorderid = oxorder.oxid
-            where oscadyenhistory.pspreference like " . $database->quote("%{$searchQuery}%") . " and ";
+            left join {$tableName}
+            on {$tableName}.oxorderid = oxorder.oxid
+            where {$tableName}.pspreference like " . $database->quote("%{$searchQuery}%") . " and ";
         return str_replace('oxorder where', $queryPart, $query);
     }
 }
