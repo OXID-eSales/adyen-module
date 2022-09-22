@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception;
 
+use OxidEsales\EshopCommunity\Core\FileCache;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\Facts\Facts;
@@ -33,6 +34,8 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
  */
 final class AcceptanceTester extends \Codeception\Actor
 {
+    use _generated\AcceptanceTesterActions;
+
     use \Codeception\Lib\Actor\Shared\Retry;
 
     use ServiceContainer;
@@ -82,6 +85,11 @@ final class AcceptanceTester extends \Codeception\Actor
         $command = $active ? 'activate' : 'deactivate';
 
         exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:' . $command . ' ' . Module::MODULE_ID);
+    }
+
+    public function clearShopCache(): void
+    {
+        FileCache::clearCache();
     }
 
     public function getShopUrl(): string
