@@ -14,7 +14,7 @@ use OxidSolutionCatalysts\Adyen\Model\Order;
 
 class OrderTest extends UnitTestCase
 {
-    public function testSetPSPReferenceId(): void
+    public function testSetGetPSPReferenceId(): void
     {
         $model = $this->createPartialMock(Order::class, []);
 

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Controller\Admin;
 
-use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -61,7 +61,7 @@ final class AdminOrderControllerTest extends UnitTestCase
     /**
      * @dataProvider providerTestOrderData
      */
-    public function testIsAdyenPayment($orderId, $orderData): void
+    public function testIsAdyenOrder($orderId, $orderData): void
     {
         $controller = $this->createPartialMock(AdminOrderController::class, ['getEditObject']);
         $order = oxNew(Order::class);
@@ -70,8 +70,8 @@ final class AdminOrderControllerTest extends UnitTestCase
         $controller->expects($this->any())->method('getEditObject')->willReturn($order);
 
         $this->assertSame(
-            $controller->isAdyenPayment(),
-            $order->oxorder__oxpaymenttype->value === Module::STANDARD_PAYMENT_ID
+            $controller->isAdyenOrder(),
+            $orderData['oxorder__oxpaymenttype'] === Module::STANDARD_PAYMENT_ID
         );
     }
 
@@ -102,7 +102,8 @@ final class AdminOrderControllerTest extends UnitTestCase
             [
                 '123',
                 [
-                    'oxorder__oxpaymenttype' => Module::STANDARD_PAYMENT_ID
+                    'oxorder__oxpaymenttype' => Module::STANDARD_PAYMENT_ID,
+                    'oxorder__adyenpspreference' => 'test',
                 ]
             ],
             [
