@@ -12,7 +12,7 @@
     <input type="hidden" name="cl" value="order_main">
 </form>
 
-[{if !$oView->isAdyenPayment()}]
+[{if !$oView->isAdyenOrder()}]
     <div class="errorbox">
         [{oxmultilang ident="OSC_ADYEN_NO_ADYEN_ORDER"}]
     </div>
