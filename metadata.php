@@ -55,12 +55,52 @@ $aModule = [
         'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
         // frontend - paymentpage
         'modules/osc/adyen/payment/payment_adyen.tpl' => 'osc/adyen/views/frontend/tpl/payment/payment_adyen.tpl',
+        // frontend - account
+        'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
+        // frontend - mails
+        'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_html.tpl',
+        'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
     ],
     'blocks' => [
         [
             'template' => 'page/checkout/payment.tpl',
             'block' => 'select_payment',
             'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
+        ],
+        [
+            'template' => 'page/account/order.tpl',
+            'block' => 'account_order_history_cart_items',
+            'file' => 'views/frontend/blocks/page/account/account_order_history_cart_items.tpl'
+        ],
+        [
+            'template' => 'email/html/order_cust.tpl',
+            'block' => 'email_html_order_cust_orderemail',
+            'file' => 'views/frontend/blocks/email/html/email_html_order_cust_orderemail.tpl'
+        ],
+        [
+            'template' => 'email/html/order_owner.tpl',
+            'block' => 'email_html_order_owner_orderemail',
+            'file' => 'views/frontend/blocks/email/html/email_html_order_owner_orderemail.tpl'
+        ],
+        [
+            'template' => 'email/html/ordershipped.tpl',
+            'block' => 'email_html_ordershipped_oxordernr',
+            'file' => 'views/frontend/blocks/email/html/email_html_ordershipped_oxordernr.tpl'
+        ],
+        [
+            'template' => 'email/plain/order_cust.tpl',
+            'block' => 'email_plain_order_cust_orderemail',
+            'file' => 'views/frontend/blocks/email/plain/email_plain_order_cust_orderemail.tpl'
+        ],
+        [
+            'template' => 'email/plain/order_owner.tpl',
+            'block' => 'email_plain_order_owner_orderemail',
+            'file' => 'views/frontend/blocks/email/plain/email_plain_order_owner_orderemail.tpl'
+        ],
+        [
+            'template' => 'email/plain/ordershipped.tpl',
+            'block' => 'email_plain_ordershipped_oxordernr',
+            'file' => 'views/frontend/blocks/email/plain/email_plain_ordershipped_oxordernr.tpl'
         ],
     ],
     'settings' => [

@@ -1,0 +1,5 @@
+[{if $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && $order|method_exists:'isAdyenOrder' && $order->isAdyenOrder()}]
+    [{* We include it as template, so that it can be modified in custom themes *}]
+    [{include file="modules/osc/adyen/account/order_adyen.tpl"}]
+[{/if}]
+[{$smarty.block.parent}]

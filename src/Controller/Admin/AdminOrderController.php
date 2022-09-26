@@ -8,8 +8,7 @@
 namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-use OxidEsales\Eshop\Application\Model\Order;
-use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -53,19 +52,17 @@ class AdminOrderController extends AdminDetailsController
     }
 
     /**
-     * Method checks is order has adyen payment
+     * Method checks is this a AdyenOrder
      *
      * @return bool
      */
-    public function isAdyenPayment(): bool
+    public function isAdyenOrder(): bool
     {
         $order = $this->getEditObject();
         return (
             $order &&
-            strpos(
-                $order->getFieldData('oxpaymenttype'),
-                Module::STANDARD_PAYMENT_ID
-            ) !== false);
+            $order->isAdyenOrder()
+        );
     }
 
     /**
