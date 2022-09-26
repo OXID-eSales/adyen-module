@@ -1,0 +1,5 @@
+[{if $order|method_exists:'isAdyenOrder' && $order->isAdyenOrder()}]
+    [{* We include it as template, so that it can be modified in custom themes *}]
+    [{include file="modules/osc/adyen/email/order_adyen_plain.tpl"}]
+[{/if}]
+[{$smarty.block.parent}]
