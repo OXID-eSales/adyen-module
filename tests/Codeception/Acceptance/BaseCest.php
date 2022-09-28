@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use Codeception\Util\Fixtures;
-use OxidEsales\Codeception\Page\Checkout\ThankYou;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
@@ -59,10 +58,11 @@ abstract class BaseCest
 
         $basketItem = Fixtures::get('product');
         $basketSteps = new BasketSteps($this->I);
-        $basketSteps->addProductToBasket($basketItem['oxid'], $this->amount);
+        $basketSteps->addProductToBasket($basketItem['id'], $this->amount);
 
         $homePage = $this->I->openShop();
-        $homePage->loginUser(Fixtures::get('userName'), Fixtures::get('userPassword'));
+        $clientData = Fixtures::get('client');
+        $homePage->loginUser($clientData['username'], $clientData['password']);
 
         $this->paymentSelection = $homePage->openMiniBasket()->openCheckout();
     }
@@ -71,10 +71,8 @@ abstract class BaseCest
      * @param string $label
      * @return Page
      */
-    protected function _choosePayment(): Page
+    protected function _choosePayment(string $label): Page
     {
-        $label = "//label[@for='" . $this->_getPaymentId() . "']";
-
         $this->I->waitForElement($label);
         $this->I->click($label);
 
@@ -82,15 +80,13 @@ abstract class BaseCest
     }
 
     /**
-     * @return mixed
-     * @throws \Exception
+     * @return void
      */
     protected function _checkSuccessfulPayment()
     {
-        $this->I->wait(10);
-        $thankYouPage = new ThankYou($this->I);
-        $orderNumber = $thankYouPage->grabOrderNumber();
-        return $orderNumber;
+        $this->I->waitForDocumentReadyState();
+        $this->I->waitForPageLoad();
+        $this->I->waitForText(Translator::translate('THANK_YOU'));
     }
 
     /**
@@ -131,6 +127,4 @@ abstract class BaseCest
     }
 
     abstract protected function _getOXID(): array;
-
-    abstract protected function _getPaymentId() : string;
 }

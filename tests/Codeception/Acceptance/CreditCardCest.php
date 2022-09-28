@@ -29,11 +29,6 @@ final class CreditCardCest extends BaseCest
         return [Module::STANDARD_PAYMENT_ID];
     }
 
-    protected function _getPaymentId(): string
-    {
-        return Module::STANDARD_PAYMENT_ID;
-    }
-
     /**
      * @param AcceptanceTester $I
      * @return void
@@ -49,7 +44,7 @@ final class CreditCardCest extends BaseCest
      */
     private function _submitCreditCardPayment(string $name)
     {
-        $orderPage = $this->_choosePayment();
+        $orderPage = $this->_choosePayment($this->cardPaymentLabel);
 
         $fixtures = Fixtures::get($name);
     }
