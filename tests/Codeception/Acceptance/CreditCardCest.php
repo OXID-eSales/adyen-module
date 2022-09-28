@@ -29,6 +29,11 @@ final class CreditCardCest extends BaseCest
         return [Module::STANDARD_PAYMENT_ID];
     }
 
+    protected function _getPaymentId(): string
+    {
+        return Module::STANDARD_PAYMENT_ID;
+    }
+
     /**
      * @param AcceptanceTester $I
      * @return void
