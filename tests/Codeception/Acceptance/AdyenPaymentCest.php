@@ -4,6 +4,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
@@ -16,7 +17,7 @@ final class AdyenPaymentCest extends BaseCest
 
     protected function _getPaymentId(): string
     {
-        return "payment_oscadyen";
+        return "payment_" . Module::STANDARD_PAYMENT_ID;
     }
 
     /**
@@ -41,8 +42,10 @@ final class AdyenPaymentCest extends BaseCest
         $orderHistoryPage = new UserOrderHistory($I);
         $I->amOnPage($orderHistoryPage->URL);
 
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE") . ' Adyen');
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE") .
-            ' ' . $orderNumber);
+        $langCode = Registry::getLang()->getLanguageAbbr();
+        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
+            . ': ' . Module::PAYMENT_DEFINTIONS[Module::STANDARD_PAYMENT_ID]['descriptions'][$langCode]['desc']);
+        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
+            . ': ' . $orderNumber);
     }
 }
