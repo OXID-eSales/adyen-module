@@ -87,7 +87,7 @@ abstract class BaseCest
      */
     protected function _checkSuccessfulPayment()
     {
-        $this->I->wait(10);
+        $this->I->waitForPageLoad();
         $thankYouPage = new ThankYou($this->I);
         $orderNumber = $thankYouPage->grabOrderNumber();
         return $orderNumber;
