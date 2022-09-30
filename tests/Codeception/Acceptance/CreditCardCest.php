@@ -19,14 +19,14 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
  */
 final class CreditCardCest extends BaseCest
 {
-    public function firstTest(AcceptanceTester $I): void
-    {
-        $I->wantToTest('Hello World');
-    }
-
     protected function _getOXID(): array
     {
         return [Module::STANDARD_PAYMENT_ID];
+    }
+
+    protected function _getPaymentId(): string
+    {
+        return Module::STANDARD_PAYMENT_ID;
     }
 
     /**

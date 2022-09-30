@@ -9,100 +9,283 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
+/**
+ * @coversDefaultClass ModuleSettings
+ */
 final class ModuleSettingsTest extends UnitTestCase
 {
     use ServiceContainer;
 
-    public function testModuleOperationModeDefault(): void
-    {
-        $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+    /**
+     * @dataProvider getGetterDataProvider
+     */
+    public function testGetter(
+        array $values,
+        string $gettingMethod,
+        $gettingValue
+    ): void {
 
-        $moduleSettings->saveOperationMode('');
-        $this->assertEquals(ModuleSettings::OPERATION_MODE_SANDBOX, $moduleSettings->getOperationMode());
-        $this->assertTrue($moduleSettings->isSandBoxMode());
+        $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
+        $bridgeStub->method('get')->willReturnMap($values);
+
+        $sut = new ModuleSettings(
+            $bridgeStub
+        );
+
+        $this->assertSame($gettingValue, $sut->$gettingMethod());
     }
 
-    public function testModuleOperationMode(): void
-    {
-        $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
 
-        $moduleSettings->saveOperationMode(ModuleSettings::OPERATION_MODE_SANDBOX);
-        $this->assertEquals(ModuleSettings::OPERATION_MODE_SANDBOX, $moduleSettings->getOperationMode());
-        $this->assertTrue($moduleSettings->isSandBoxMode());
+    /**
+     * @dataProvider getSetterDataProvider
+     */
+    public function testSetter(
+        string $settingMethod,
+        string $settingName,
+        $settingValue
+    ): void {
 
-        $moduleSettings->saveOperationMode(ModuleSettings::OPERATION_MODE_LIVE);
-        $this->assertEquals(ModuleSettings::OPERATION_MODE_LIVE, $moduleSettings->getOperationMode());
-        $this->assertFalse($moduleSettings->isSandBoxMode());
+        $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
+        $bridgeStub->expects($this->once())->method('save')->with($settingName, $settingValue, Module::MODULE_ID);
+
+        $sut = new ModuleSettings(
+            $bridgeStub
+        );
+
+        $sut->$settingMethod($settingValue);
     }
 
-    public function testModuleOperationModeIncorrectValue(): void
+    public function getGetterDataProvider(): array
     {
-        $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-
-        $moduleSettings->saveOperationMode('some_other_value');
-        $this->assertEquals(ModuleSettings::OPERATION_MODE_SANDBOX, $moduleSettings->getOperationMode());
+        return [
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
+                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
+                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
+                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
+                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
+                ],
+                'gettingMethod' => 'checkHealth',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
+                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
+                ],
+                'gettingMethod' => 'checkHealth',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                ],
+                'gettingMethod' => 'isSandBoxMode',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                ],
+                'gettingMethod' => 'isSandBoxMode',
+                'gettingValue' => false
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                ],
+                'gettingMethod' => 'getOperationMode',
+                'gettingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                ],
+                'gettingMethod' => 'getOperationMode',
+                'gettingValue' => ModuleSettings::OPERATION_MODE_LIVE
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
+                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                ],
+                'gettingMethod' => 'getAPIKey',
+                'gettingValue' => 'sandboxAPIKey'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
+                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                ],
+                'gettingMethod' => 'getAPIKey',
+                'gettingValue' => 'liveAPIKey'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
+                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                ],
+                'gettingMethod' => 'getClientKey',
+                'gettingValue' => 'sandboxClientKey'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
+                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                ],
+                'gettingMethod' => 'getClientKey',
+                'gettingValue' => 'liveClientKey'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
+                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                ],
+                'gettingMethod' => 'getHmacSignature',
+                'gettingValue' => 'sandboxHmacSignature'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
+                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                ],
+                'gettingMethod' => 'getHmacSignature',
+                'gettingValue' => 'liveHmacSignature'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                ],
+                'gettingMethod' => 'getMerchantAccount',
+                'gettingValue' => 'sandboxMerchantAccount'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                ],
+                'gettingMethod' => 'getMerchantAccount',
+                'gettingValue' => 'liveMerchantAccount'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
+                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
+                ],
+                'gettingMethod' => 'getNotificationUsername',
+                'gettingValue' => 'sandboxNotificationUsername'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
+                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
+                ],
+                'gettingMethod' => 'getNotificationUsername',
+                'gettingValue' => 'liveNotificationUsername'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
+                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
+                ],
+                'gettingMethod' => 'getNotificationPassword',
+                'gettingValue' => 'sandboxNotificationPassword'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
+                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
+                ],
+                'gettingMethod' => 'getNotificationPassword',
+                'gettingValue' => 'liveNotificationPassword'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_LoggingActive', Module::MODULE_ID, true],
+                ],
+                'gettingMethod' => 'isLoggingActive',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_LoggingActive', Module::MODULE_ID, false],
+                ],
+                'gettingMethod' => 'isLoggingActive',
+                'gettingValue' => false
+            ]
+        ];
     }
 
-    public function testModuleLoggingActive(): void
+    public function getSetterDataProvider(): array
     {
-        $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-
-        $moduleSettings->saveLoggingActive(true);
-        $this->assertTrue($moduleSettings->isLoggingActive());
-
-        $moduleSettings->saveLoggingActive(false);
-        $this->assertFalse($moduleSettings->isLoggingActive());
-    }
-
-    public function testModuleCredentialsKey(): void
-    {
-        $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-        $moduleSettings->saveAPIKey('testapikey');
-        $moduleSettings->saveClientKey('testclientkey');
-        $moduleSettings->saveHmacSignature('testhmacsignature');
-        $moduleSettings->saveMerchantAccount('testmerchantaccount');
-        $moduleSettings->saveNotificationUsername('testnotificationusername');
-        $moduleSettings->saveNotificationPassword('testnotificationpassword');
-        $this->assertEquals('testapikey', $moduleSettings->getAPIKey());
-        $this->assertEquals('testclientkey', $moduleSettings->getClientKey());
-        $this->assertEquals('testhmacsignature', $moduleSettings->getHmacSignature());
-        $this->assertEquals('testmerchantaccount', $moduleSettings->getMerchantAccount());
-        $this->assertEquals('testnotificationusername', $moduleSettings->getNotificationUsername());
-        $this->assertEquals('testnotificationpassword', $moduleSettings->getNotificationPassword());
-        $this->assertTrue($moduleSettings->checkHealth());
-
-        // some option is missing
-        $moduleSettings->saveAPIKey('');
-        $moduleSettings->saveClientKey('testclientkey');
-        $moduleSettings->saveHmacSignature('');
-        $moduleSettings->saveMerchantAccount('');
-        $moduleSettings->saveNotificationUsername('');
-        $moduleSettings->saveNotificationPassword('');
-        $this->assertEquals('', $moduleSettings->getAPIKey());
-        $this->assertEquals('testclientkey', $moduleSettings->getClientKey());
-        $this->assertEquals('', $moduleSettings->getHmacSignature());
-        $this->assertEquals('', $moduleSettings->getMerchantAccount());
-        $this->assertEquals('', $moduleSettings->getNotificationUsername());
-        $this->assertEquals('', $moduleSettings->getNotificationPassword());
-        $this->assertFalse($moduleSettings->checkHealth());
-
-        // all options are missing
-        $moduleSettings->saveAPIKey('');
-        $moduleSettings->saveClientKey('');
-        $moduleSettings->saveHmacSignature('');
-        $moduleSettings->saveMerchantAccount('');
-        $moduleSettings->saveNotificationUsername('');
-        $moduleSettings->saveNotificationPassword('');
-        $this->assertEquals('', $moduleSettings->getAPIKey());
-        $this->assertEquals('', $moduleSettings->getClientKey());
-        $this->assertEquals('', $moduleSettings->getHmacSignature());
-        $this->assertEquals('', $moduleSettings->getMerchantAccount());
-        $this->assertEquals('', $moduleSettings->getNotificationUsername());
-        $this->assertEquals('', $moduleSettings->getNotificationPassword());
-        $this->assertFalse($moduleSettings->checkHealth());
+        return [
+            [
+                'settingMethod' => 'saveOperationMode',
+                'settingName' => 'osc_adyen_OperationMode',
+                'settingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
+            ],
+            [
+                'settingMethod' => 'saveAPIKey',
+                'settingName' => 'osc_adyen_SandboxAPIKey',
+                'settingValue' => 'sandboxAPIKey'
+            ],
+            [
+                'settingMethod' => 'saveClientKey',
+                'settingName' => 'osc_adyen_SandboxClientKey',
+                'settingValue' => 'sandboxClientKey'
+            ],
+            [
+                'settingMethod' => 'saveHmacSignature',
+                'settingName' => 'osc_adyen_SandboxHmacSignature',
+                'settingValue' => 'sandboxHmacSignature'
+            ],
+            [
+                'settingMethod' => 'saveMerchantAccount',
+                'settingName' => 'osc_adyen_SandboxMerchantAccount',
+                'settingValue' => 'sandboxMerchantAccount'
+            ],
+            [
+                'settingMethod' => 'saveNotificationUsername',
+                'settingName' => 'osc_adyen_SandboxNotificationUsername',
+                'settingValue' => 'sandboxNotificationUsername'
+            ],
+            [
+                'settingMethod' => 'saveNotificationPassword',
+                'settingName' => 'osc_adyen_SandboxNotificationPassword',
+                'settingValue' => 'sandboxNotificationPassword'
+            ],
+            [
+                'settingMethod' => 'saveLoggingActive',
+                'settingName' => 'osc_adyen_LoggingActive',
+                'settingValue' => true
+            ]
+        ];
     }
 }
