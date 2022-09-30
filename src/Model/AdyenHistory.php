@@ -19,14 +19,14 @@ class AdyenHistory extends BaseModel
      *
      * @var string
      */
-    protected $_sClassName = 'OxidSolutionCatalysts\Adyen\Model\AdyenHistory'; // phpcs:ignore
+    protected $_sClassName = 'OxidSolutionCatalysts\Adyen\Model\AdyenHistory'; //NOSONAR
 
     /**
      * Core table name
      *
      * @var string
      */
-    protected $_sCoreTable = Module::ADYEN_HISTORY_TABLE; // phpcs:ignore
+    protected $_sCoreTable = Module::ADYEN_HISTORY_TABLE; //NOSONAR
 
     public function __construct()
     {
