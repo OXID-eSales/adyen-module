@@ -28,7 +28,7 @@ class AdminOrderController extends AdminDetailsController
      * Current class template name.
      * @var string
      */
-    protected $_sThisTemplate = 'osc_adyen_order.tpl';
+    protected $_sThisTemplate = 'osc_adyen_order.tpl'; //NOSONAR
 
     /**
      * Executes parent method parent::render()

@@ -28,7 +28,7 @@ class AdyenHistoryList extends ListModel
      *
      * @var string
      */
-    protected $_sObjectsInListName = 'OxidSolutionCatalysts\Adyen\Model\AdyenHistory';
+    protected $_sObjectsInListName = 'OxidSolutionCatalysts\Adyen\Model\AdyenHistory'; //NOSONAR
 
     /** @var QueryBuilderFactoryInterface */
     private $queryBuilderFactory;
