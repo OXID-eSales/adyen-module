@@ -15,47 +15,85 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
+/**
+ * @coversDefaultClass ModuleSettings
+ */
 final class ModuleSettingsTest extends UnitTestCase
 {
     use ServiceContainer;
 
     /**
-     * @dataProvider getSetterGetterDataProvider
+     * @dataProvider getGetterDataProvider
      */
-    public function testGetter($values, $settingMethod, $settingValue, $gettingMethod, $gettingValue): void
-    {
+    public function testGetter(
+        array $values,
+        string $gettingMethod,
+        $gettingValue
+    ): void {
+
+        $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
+        $bridgeStub->method('get')->willReturnMap($values);
+
         $sut = new ModuleSettings(
-            $this->getBridgeStub($values)
+            $bridgeStub
         );
+
         $this->assertSame($gettingValue, $sut->$gettingMethod());
     }
+
 
     /**
-     * @dataProvider getSetterGetterDataProvider
+     * @dataProvider getSetterDataProvider
      */
-    public function testSetter($values, $settingMethod, $settingValue, $gettingMethod, $gettingValue): void
-    {
-        $sut = $this->getMockBuilder(ModuleSettings::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([$settingMethod, $gettingMethod])
-            ->getMock();
+    public function testSetter(
+        string $settingMethod,
+        string $settingName,
+        $settingValue
+    ): void {
 
-        $sut->method($gettingMethod)->willReturn($gettingValue);
-        $sut->expects($this->once())->method($settingMethod);
+        $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
+        $bridgeStub->expects($this->once())->method('save')->with($settingName, $settingValue, Module::MODULE_ID);
+
+        $sut = new ModuleSettings(
+            $bridgeStub
+        );
 
         $sut->$settingMethod($settingValue);
-        $this->assertSame($gettingValue, $sut->$gettingMethod());
     }
 
-    public function getSetterGetterDataProvider(): array
+    public function getGetterDataProvider(): array
     {
         return [
             [
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
+                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
+                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
+                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
+                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                 ],
-                'settingMethod' => 'saveOperationMode',
-                'settingValue' => ModuleSettings::OPERATION_MODE_SANDBOX,
+                'gettingMethod' => 'checkHealth',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
+                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
+                ],
+                'gettingMethod' => 'checkHealth',
+                'gettingValue' => true
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                ],
                 'gettingMethod' => 'isSandBoxMode',
                 'gettingValue' => true
             ],
@@ -63,8 +101,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
-                'settingMethod' => 'saveOperationMode',
-                'settingValue' => ModuleSettings::OPERATION_MODE_LIVE,
                 'gettingMethod' => 'isSandBoxMode',
                 'gettingValue' => false
             ],
@@ -72,8 +108,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                 ],
-                'settingMethod' => 'saveOperationMode',
-                'settingValue' => ModuleSettings::OPERATION_MODE_SANDBOX,
                 'gettingMethod' => 'getOperationMode',
                 'gettingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
             ],
@@ -81,8 +115,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
-                'settingMethod' => 'saveOperationMode',
-                'settingValue' => ModuleSettings::OPERATION_MODE_LIVE,
                 'gettingMethod' => 'getOperationMode',
                 'gettingValue' => ModuleSettings::OPERATION_MODE_LIVE
             ],
@@ -92,8 +124,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
                     ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
                 ],
-                'settingMethod' => 'saveAPIKey',
-                'settingValue' => 'sandboxAPIKey',
                 'gettingMethod' => 'getAPIKey',
                 'gettingValue' => 'sandboxAPIKey'
             ],
@@ -103,8 +133,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
                     ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
                 ],
-                'settingMethod' => 'saveAPIKey',
-                'settingValue' => 'liveAPIKey',
                 'gettingMethod' => 'getAPIKey',
                 'gettingValue' => 'liveAPIKey'
             ],
@@ -114,8 +142,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
                     ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
                 ],
-                'settingMethod' => 'saveClientKey',
-                'settingValue' => 'sandboxClientKey',
                 'gettingMethod' => 'getClientKey',
                 'gettingValue' => 'sandboxClientKey'
             ],
@@ -125,8 +151,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
                     ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
                 ],
-                'settingMethod' => 'saveClientKey',
-                'settingValue' => 'liveClientKey',
                 'gettingMethod' => 'getClientKey',
                 'gettingValue' => 'liveClientKey'
             ],
@@ -136,8 +160,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
                     ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
                 ],
-                'settingMethod' => 'saveHmacSignature',
-                'settingValue' => 'sandboxHmacSignature',
                 'gettingMethod' => 'getHmacSignature',
                 'gettingValue' => 'sandboxHmacSignature'
             ],
@@ -147,8 +169,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
                     ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
                 ],
-                'settingMethod' => 'saveHmacSignature',
-                'settingValue' => 'liveHmacSignature',
                 'gettingMethod' => 'getHmacSignature',
                 'gettingValue' => 'liveHmacSignature'
             ],
@@ -158,8 +178,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
                     ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
-                'settingMethod' => 'saveMerchantAccount',
-                'settingValue' => 'sandboxMerchantAccount',
                 'gettingMethod' => 'getMerchantAccount',
                 'gettingValue' => 'sandboxMerchantAccount'
             ],
@@ -169,8 +187,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
                     ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
-                'settingMethod' => 'saveMerchantAccount',
-                'settingValue' => 'liveMerchantAccount',
                 'gettingMethod' => 'getMerchantAccount',
                 'gettingValue' => 'liveMerchantAccount'
             ],
@@ -180,8 +196,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                 ],
-                'settingMethod' => 'saveNotificationUsername',
-                'settingValue' => 'sandboxNotificationUsername',
                 'gettingMethod' => 'getNotificationUsername',
                 'gettingValue' => 'sandboxNotificationUsername'
             ],
@@ -191,8 +205,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                 ],
-                'settingMethod' => 'saveNotificationUsername',
-                'settingValue' => 'liveNotificationUsername',
                 'gettingMethod' => 'getNotificationUsername',
                 'gettingValue' => 'liveNotificationUsername'
             ],
@@ -202,8 +214,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
-                'settingMethod' => 'saveNotificationPassword',
-                'settingValue' => 'sandboxNotificationPassword',
                 'gettingMethod' => 'getNotificationPassword',
                 'gettingValue' => 'sandboxNotificationPassword'
             ],
@@ -213,8 +223,6 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
-                'settingMethod' => 'saveNotificationPassword',
-                'settingValue' => 'liveNotificationPassword',
                 'gettingMethod' => 'getNotificationPassword',
                 'gettingValue' => 'liveNotificationPassword'
             ],
@@ -222,8 +230,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 'values' => [
                     ['osc_adyen_LoggingActive', Module::MODULE_ID, true],
                 ],
-                'settingMethod' => 'saveLoggingActive',
-                'settingValue' => true,
                 'gettingMethod' => 'isLoggingActive',
                 'gettingValue' => true
             ],
@@ -231,22 +237,55 @@ final class ModuleSettingsTest extends UnitTestCase
                 'values' => [
                     ['osc_adyen_LoggingActive', Module::MODULE_ID, false],
                 ],
-                'settingMethod' => 'saveLoggingActive',
-                'settingValue' => false,
                 'gettingMethod' => 'isLoggingActive',
                 'gettingValue' => false
             ]
-
         ];
     }
 
-    private function getBridgeStub($valueMap = []): ModuleSettingBridgeInterface
+    public function getSetterDataProvider(): array
     {
-        $bridgeStub = $this->getMockBuilder(ModuleSettingBridgeInterface::class)
-            ->onlyMethods(['save', 'get'])
-            ->getMock();
-        $bridgeStub->method('get')->willReturnMap($valueMap);
-
-        return $bridgeStub;
+        return [
+            [
+                'settingMethod' => 'saveOperationMode',
+                'settingName' => 'osc_adyen_OperationMode',
+                'settingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
+            ],
+            [
+                'settingMethod' => 'saveAPIKey',
+                'settingName' => 'osc_adyen_SandboxAPIKey',
+                'settingValue' => 'sandboxAPIKey'
+            ],
+            [
+                'settingMethod' => 'saveClientKey',
+                'settingName' => 'osc_adyen_SandboxClientKey',
+                'settingValue' => 'sandboxClientKey'
+            ],
+            [
+                'settingMethod' => 'saveHmacSignature',
+                'settingName' => 'osc_adyen_SandboxHmacSignature',
+                'settingValue' => 'sandboxHmacSignature'
+            ],
+            [
+                'settingMethod' => 'saveMerchantAccount',
+                'settingName' => 'osc_adyen_SandboxMerchantAccount',
+                'settingValue' => 'sandboxMerchantAccount'
+            ],
+            [
+                'settingMethod' => 'saveNotificationUsername',
+                'settingName' => 'osc_adyen_SandboxNotificationUsername',
+                'settingValue' => 'sandboxNotificationUsername'
+            ],
+            [
+                'settingMethod' => 'saveNotificationPassword',
+                'settingName' => 'osc_adyen_SandboxNotificationPassword',
+                'settingValue' => 'sandboxNotificationPassword'
+            ],
+            [
+                'settingMethod' => 'saveLoggingActive',
+                'settingName' => 'osc_adyen_LoggingActive',
+                'settingValue' => true
+            ]
+        ];
     }
 }
