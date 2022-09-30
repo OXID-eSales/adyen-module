@@ -8,6 +8,9 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
+/**
+ * @group osc_adyen
+ */
 final class AdyenPaymentCest extends BaseCest
 {
     protected function _getOXID(): array
