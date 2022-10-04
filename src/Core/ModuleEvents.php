@@ -47,14 +47,16 @@ final class ModuleEvents
     public static function onDeactivate(): void
     {
         $activePaymentMethods = [];
-        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
+        $paymentIds = array_keys(Module::PAYMENT_DEFINTIONS);
+        foreach ($paymentIds as $paymentId) {
             $paymentMethod = oxNew(EshopModelPayment::class);
             if (
                 $paymentMethod->load($paymentId)
                 && $paymentMethod->getFieldData('oxactive')
-            )
-            {
-                $paymentMethod->oxpayments__oxactive = new Field(false);
+            ) {
+                $paymentMethod->assign([
+                    'oxpayments__oxactive' => true
+                ]);
                 $paymentMethod->save();
                 $activePaymentMethods[] = $paymentId;
             }

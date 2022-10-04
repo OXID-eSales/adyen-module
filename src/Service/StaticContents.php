@@ -47,13 +47,14 @@ class StaticContents
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
             $paymentMethod = oxNew(EshopModelPayment::class);
             if ($paymentMethod->load($paymentId) && in_array($paymentId, $activePayments)) {
-                $paymentMethod->oxpayments__oxactive = new Field(true);
+                $paymentMethod->assign([
+                    'oxpayments__oxactive' => true
+                ]);
                 $paymentMethod->save();
+                continue;
             }
-            else {
-                $this->createPaymentMethod($paymentId, $paymentDefinitions);
-                $this->assignPaymentToActiveDeliverySets($paymentId);
-            }
+            $this->createPaymentMethod($paymentId, $paymentDefinitions);
+            $this->assignPaymentToActiveDeliverySets($paymentId);
         }
     }
 
