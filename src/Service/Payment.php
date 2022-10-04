@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\src\Service;
+namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Adyen\Client;
 use Adyen\Service\Checkout;
@@ -38,6 +38,7 @@ class Payment
      */
     private UserRepository $userRepository;
 
+    private ?string $filterAmount = null;
     /**
      * @var Client
      */
@@ -55,14 +56,13 @@ class Payment
         $this->client = $adyenSDK->getAdyenSDK();
     }
 
-    public function getSession(
-        EshopModelBasket $basket
-    ): Checkout {
+    public function getSession(): Checkout
+    {
         $service = new Checkout($this->client);
         $params = [
             'amount' => [
                 'currency' => $this->context->getActiveCurrencyName(),
-                'value' => $basket->getAdyenPaymentFilterAmount(),
+                'value' => $this->getCurrencyFilterAmount(),
             ],
             'countryCode' => $this->userRepository->getUserCountryIso(),
             'merchantAccount' => $this->moduleSettings->getMerchantAccount(),
@@ -71,6 +71,26 @@ class Payment
         ];
 
         return $service->sessions($params);
+    }
+
+    /**
+     * @link [https://docs.adyen.com/development-resources/currency-codes] [Currency codes and minor units]
+     */
+    public function setCurrencyFilterAmount(string $filterAmount): void
+    {
+        $this->filterAmount = $filterAmount;
+    }
+
+    /**
+     * @link [https://docs.adyen.com/development-resources/currency-codes] [Currency codes and minor units]
+     */
+    public function getCurrencyFilterAmount(): string
+    {
+        if (is_null($this->filterAmount)) {
+            $currencyDecimals = $this->context->getActiveCurrencyDecimals();
+            $this->filterAmount = '10' . str_repeat('0', $currencyDecimals);
+        }
+        return $this->filterAmount;
     }
 
     private function getReturnUrl(): string
