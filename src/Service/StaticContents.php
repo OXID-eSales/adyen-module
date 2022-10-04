@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
@@ -27,19 +28,28 @@ class StaticContents
     /** @var ContextInterface */
     private $context;
 
+    /** @var ModuleSettings */
+    private $moduleSettings;
+
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
-        ContextInterface $context
+        ContextInterface $context,
+        ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
+        $this->moduleSettings = $moduleSettings;
     }
 
     public function ensurePaymentMethods(): void
     {
+        $activePayments = $this->moduleSettings->getActivePayments();
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
             $paymentMethod = oxNew(EshopModelPayment::class);
-            if (!$paymentMethod->load($paymentId)) {
+            if ($paymentMethod->load($paymentId) && in_array($paymentId, $activePayments)) {
+                $paymentMethod->oxpayments__oxactive = new Field(true);
+            }
+            else {
                 $this->createPaymentMethod($paymentId, $paymentDefinitions);
                 $this->assignPaymentToActiveDeliverySets($paymentId);
             }

@@ -12,7 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 use Exception;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
+use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -44,7 +46,24 @@ final class ModuleEvents
      */
     public static function onDeactivate(): void
     {
-        //nothing to be done here for this module right now
+        $activePaymentMethods = [];
+        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
+            $paymentMethod = oxNew(EshopModelPayment::class);
+            if (
+                $paymentMethod->load($paymentId)
+                && (bool)$paymentMethod->oxpayment__oxactive->value === true)
+            {
+                $paymentMethod->oxpayments__oxactive = new Field(false);
+                $paymentMethod->save();
+                $activePaymentMethods[] = $paymentId;
+            }
+        }
+
+        /** @var ModuleSettings $service */
+        $service = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettings::class);
+        $service->saveActivePayments($activePaymentMethods);
     }
 
     /**

@@ -191,5 +191,11 @@ $aModule = [
             'type' => 'str',
             'value' => ''
         ],
+        [
+            'group' => null,
+            'name' => 'osc_adyen_activePayments',
+            'type' => 'arr',
+            'value' => []
+        ],
     ],
 ];
