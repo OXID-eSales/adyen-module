@@ -17,6 +17,8 @@ final class Module
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
+    public const ADYEN_ORDER_REFERENCE_ID = 'OXID_REFERENCE';
+
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
         'oxtoamount' => 60000,
