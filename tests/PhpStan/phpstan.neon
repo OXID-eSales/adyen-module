@@ -3,6 +3,7 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     stubFiles:
+        - stubs/BasketModel.stub
         - stubs/OrderModel.stub
         - stubs/PaymentModel.stub
         - stubs/StartController.stub

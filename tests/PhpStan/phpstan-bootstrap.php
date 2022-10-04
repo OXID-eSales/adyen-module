@@ -8,15 +8,19 @@
 declare(strict_types=1);
 
 class_alias(
-    \OxidEsales\Eshop\Application\Model\Payment::class,
-    \OxidSolutionCatalysts\Adyen\Model\Payment_parent::class
-);
-
-class_alias(
     \OxidEsales\Eshop\Application\Model\Order::class,
     \OxidSolutionCatalysts\Adyen\Model\Order_parent::class
 );
 
+class_alias(
+    \OxidEsales\Eshop\Application\Model\Basket::class,
+    \OxidSolutionCatalysts\Adyen\Model\Basket_parent::class
+);
+
+class_alias(
+    \OxidEsales\Eshop\Application\Model\Payment::class,
+    \OxidSolutionCatalysts\Adyen\Model\Payment_parent::class
+);
 
 class_alias(
     \OxidEsales\Eshop\Core\ViewConfig::class,

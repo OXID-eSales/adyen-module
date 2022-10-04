@@ -7,8 +7,9 @@
 
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 
 /**
@@ -36,8 +37,9 @@ $aModule = [
     'email' => 'support@oxid-esales.com',
     'extend' => [
         // model
-        \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
+        \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
@@ -118,37 +120,37 @@ $aModule = [
             'value' => false
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxAPIKey',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxClientKey',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxHmacSignature',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxMerchantAccount',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxNotificationUsername',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxNotificationPassword',
             'type' => 'str',
             'value' => ''
