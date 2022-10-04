@@ -44,7 +44,6 @@ final class UserRepositoryTest extends TestCase
             ]);
             $country->save();
         }
-
     }
 
     public function tearDown(): void
@@ -67,8 +66,12 @@ final class UserRepositoryTest extends TestCase
     /**
      * @dataProvider providerTestUserData
      */
-    public function testUserAccountExists(string $userId, string $userName, string $userPassword, string $userCountryId): void
-    {
+    public function testUserAccountExists(
+        string $userId,
+        string $userName,
+        string $userPassword,
+        string $userCountryId
+    ): void {
         $service = $this->getServiceFromContainer(UserRepository::class);
         $this->assertSame((bool)$userPassword, $service->userAccountExists($userName));
     }
@@ -76,8 +79,12 @@ final class UserRepositoryTest extends TestCase
     /**
      * @dataProvider providerTestUserData
      */
-    public function testGuestAccountExists(string $userId, string $userName, string $userPassword, string $userCountryId): void
-    {
+    public function testGuestAccountExists(
+        string $userId,
+        string $userName,
+        string $userPassword,
+        string $userCountryId
+    ): void {
         $service = $this->getServiceFromContainer(UserRepository::class);
         $this->assertSame(!$userPassword, $service->guestAccountExists($userName));
     }
@@ -85,8 +92,12 @@ final class UserRepositoryTest extends TestCase
     /**
      * @dataProvider providerTestUserData
      */
-    public function testGetUserCountryIso(string $userId, string $userName, string $userPassword, string $userCountryId): void
-    {
+    public function testGetUserCountryIso(
+        string $userId,
+        string $userName,
+        string $userPassword,
+        string $userCountryId
+    ): void {
         $session = Registry::getSession();
         $user = oxNew(User::class);
         $user->load($userId);
@@ -130,5 +141,4 @@ final class UserRepositoryTest extends TestCase
             ]
         ];
     }
-
 }

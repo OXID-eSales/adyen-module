@@ -7,10 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Integration\Model;
+namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Model;
 
 use OxidEsales\Eshop\Application\Model\Payment;
-use OxidEsales\TestingLibrary\Services\ShopObjectConstructor\Constructor\ConstructorFactory;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
