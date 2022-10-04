@@ -39,12 +39,10 @@ class StaticContents
     {
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
             $paymentMethod = oxNew(EshopModelPayment::class);
-            if ($paymentMethod->load($paymentId)) {
-                $this->reActivatePaymentMethod($paymentId);
-                continue;
+            if (!$paymentMethod->load($paymentId)) {
+                $this->createPaymentMethod($paymentId, $paymentDefinitions);
+                $this->assignPaymentToActiveDeliverySets($paymentId);
             }
-            $this->createPaymentMethod($paymentId, $paymentDefinitions);
-            $this->assignPaymentToActiveDeliverySets($paymentId);
         }
     }
 
@@ -80,7 +78,7 @@ class StaticContents
 
         $paymentModel->assign(
             [
-               'oxactive' => true,
+               'oxactive' => false,
                'oxfromamount' => (int) $definitions['constraints']['oxfromamount'],
                'oxtoamount' => (int) $definitions['constraints']['oxtoamount'],
                'oxaddsumtype' => (string) $definitions['constraints']['oxaddsumtype']
@@ -100,19 +98,6 @@ class StaticContents
             }
             $paymentModel->save();
         }
-    }
-
-    protected function reActivatePaymentMethod(string $paymentId): void
-    {
-        /** @var EshopModelPayment $paymentModel */
-        $paymentModel = oxNew(EshopModelPayment::class);
-        $paymentModel->load($paymentId);
-
-        $paymentModel->assign([
-            'oxpayments__oxactive' => true
-        ]);
-
-        $paymentModel->save();
     }
 
     protected function getActiveDeliverySetIds(): array
