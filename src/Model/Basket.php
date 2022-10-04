@@ -15,8 +15,4 @@ namespace OxidSolutionCatalysts\Adyen\Model;
  */
 class Basket extends Basket_parent
 {
-    public function getAdyenPaymentFilterAmount(): int
-    {
-        return 1000;
-    }
 }

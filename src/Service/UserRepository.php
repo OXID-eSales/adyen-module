@@ -17,7 +17,6 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\Eshop\Core\Session as EshopSession;
 use OxidEsales\Eshop\Application\Model\Country;
 
-
 /**
  * @extendable-class
  */
