@@ -47,6 +47,16 @@ class ContextTest extends TestCase
         $this->assertSame(10, $sut->getCurrentShopId());
     }
 
+    public function testGetCurrentShopUrl(): void
+    {
+        $configStub = $this->createConfiguredMock(Config::class, [
+            'getCurrentShopUrl' => 'https://test.dev'
+        ]);
+
+        $sut = new Context($configStub);
+        $this->assertSame('https://test.dev', $sut->getCurrentShopUrl());
+    }
+
     public function testGetActiveCurrencyName(): void
     {
         $currencyName = 'exampleCurrencyName';
