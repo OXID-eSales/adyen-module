@@ -64,6 +64,16 @@ class Context extends BasicContext
     /**
      * @return string
      */
+    public function getCurrentShopUrl(): string
+    {
+        return html_entity_decode(
+            $this->shopConfig->getCurrentShopUrl(false)
+        );
+    }
+
+    /**
+     * @return string
+     */
     public function getActiveCurrencySign(): string
     {
         return $this->shopConfig->getActShopCurrencyObject()->sign;
