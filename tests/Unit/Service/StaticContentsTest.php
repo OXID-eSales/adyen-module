@@ -10,9 +10,11 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -86,6 +88,21 @@ final class StaticContentsTest extends UnitTestCase
                 Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['en']['longdesc'],
                 $payment->getRawFieldData('oxlongdesc')
             );
+        }
+
+        /** @var ModuleSettings $moduleSettings */
+        $moduleSettings = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettings::class);
+        $moduleSettings->saveActivePayments($paymentIds);
+
+        $service->ensurePaymentMethods();
+
+        //check if reactivate
+        foreach ($paymentIds as $paymentId) {
+            $payment = oxNew(EshopModelPayment::class);
+            $payment->load($paymentId);
+            $this->assertTrue((bool)$payment->getFieldData('oxactive'));
         }
     }
 }

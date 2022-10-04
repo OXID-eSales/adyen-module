@@ -48,6 +48,7 @@ class StaticContents
             $paymentMethod = oxNew(EshopModelPayment::class);
             if ($paymentMethod->load($paymentId) && in_array($paymentId, $activePayments)) {
                 $paymentMethod->oxpayments__oxactive = new Field(true);
+                $paymentMethod->save();
             }
             else {
                 $this->createPaymentMethod($paymentId, $paymentDefinitions);
@@ -71,8 +72,8 @@ class StaticContents
         $object2Paymentent->assign(
             [
                 'oxpaymentid' => $paymentId,
-                'oxobjectid'  => $deliverySetId,
-                'oxtype'      => 'oxdelset'
+                'oxobjectid' => $deliverySetId,
+                'oxtype' => 'oxdelset'
             ]
         );
         $object2Paymentent->save();

@@ -51,7 +51,8 @@ final class ModuleEvents
             $paymentMethod = oxNew(EshopModelPayment::class);
             if (
                 $paymentMethod->load($paymentId)
-                && (bool)$paymentMethod->oxpayment__oxactive->value === true)
+                && $paymentMethod->getFieldData('oxactive')
+            )
             {
                 $paymentMethod->oxpayments__oxactive = new Field(false);
                 $paymentMethod->save();
