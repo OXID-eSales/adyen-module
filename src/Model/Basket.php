@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\src\Model;
+namespace OxidSolutionCatalysts\Adyen\Model;
 
 /**
  *

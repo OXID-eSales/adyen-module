@@ -16,7 +16,7 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
-use OxidEsales\Eshop\Application\Model\Basket as EshopModelBasket;
+use OxidSolutionCatalysts\Adyen\Model\Basket as EshopModelBasket;
 
 /**
  * @extendable-class
@@ -43,9 +43,6 @@ class Payment
      */
     private Client $client;
 
-    /**
-     * @param ModuleSettings $shopConfig
-     */
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
@@ -60,12 +57,12 @@ class Payment
 
     public function getSession(
         EshopModelBasket $basket
-    ) {
+    ): Checkout {
         $service = new Checkout($this->client);
         $params = [
             'amount' => [
                 'currency' => $this->context->getActiveCurrencyName(),
-                'value' => $this->basket->getAdyenPaymentFilterAmount(),
+                'value' => $basket->getAdyenPaymentFilterAmount(),
             ],
             'countryCode' => $this->userRepository->getUserCountryIso(),
             'merchantAccount' => $this->moduleSettings->getMerchantAccount(),
@@ -76,7 +73,7 @@ class Payment
         return $service->sessions($params);
     }
 
-    private function getReturnUrl()
+    private function getReturnUrl(): string
     {
         return $this->context->getCurrentShopUrl() . 'index.php?cl=order';
     }
