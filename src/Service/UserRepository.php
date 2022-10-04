@@ -14,9 +14,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\Eshop\Core\Registry as EshopRegistry;
+use OxidEsales\Eshop\Core\Session as EshopSession;
 use OxidEsales\Eshop\Application\Model\Country;
-use OxidEsales\Eshop\Application\Model\State;
+
 
 /**
  * @extendable-class
@@ -32,19 +32,19 @@ class UserRepository
     /** @var EshopCoreConfig */
     private $config;
 
-    /** @var EshopRegistry */
-    private $registry;
+    /** @var EshopSession */
+    private $session;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         ContextInterface $context,
         EshopCoreConfig $config,
-        EshopRegistry $registry
+        EshopSession $session
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
         $this->config = $config;
-        $this->registry = $registry;
+        $this->session = $session;
     }
 
     /**
@@ -65,6 +65,14 @@ class UserRepository
         $userId = $this->getUserId($userEmail, false);
 
         return !empty($userId);
+    }
+
+    public function getUserCountryIso(): string
+    {
+        $user = $this->session->getUser();
+        $country = oxNew(Country::class);
+        $country->load($user->getFieldData('oxcountryid'));
+        return (string) $country->getFieldData('oxisoalpha2');
     }
 
     private function getUserId(string $userEmail, bool $hasPassword): string
@@ -100,21 +108,5 @@ class UserRepository
         }
 
         return (string) $userId;
-    }
-
-    public function getUserCountryIso(): string
-    {
-        $user = $this->registry->getSession()->getUser();
-        $country = oxNew(Country::class);
-        $country->load($user->getFieldData('oxcountryid'));
-        return (string) $country->getFieldData('oxisoalpha2');
-    }
-
-    public function getUserStateIso(): string
-    {
-        $user = $this->registry->getSession()->getUser();
-        $country = oxNew(State::class);
-        $country->load($user->getFieldData('oxstateid'));
-        return (string) $country->getFieldData('oxisoalpha2');
     }
 }
