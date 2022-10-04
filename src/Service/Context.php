@@ -62,6 +62,14 @@ class Context extends BasicContext
     }
 
     /**
+     * @return int
+     */
+    public function getActiveCurrencyDecimals(): int
+    {
+        return (int) $this->shopConfig->getActShopCurrencyObject()->decimal;
+    }
+
+    /**
      * @return string
      */
     public function getCurrentShopUrl(): string
