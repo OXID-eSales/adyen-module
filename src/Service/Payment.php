@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
+use Exception;
+use Adyen\AdyenException;
 use Adyen\Client;
 use Adyen\Service\Checkout;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
-use OxidSolutionCatalysts\Adyen\Service\Context;
-use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\UserRepository;
-use OxidSolutionCatalysts\Adyen\Model\Basket as EshopModelBasket;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 
 /**
  * @extendable-class
@@ -24,77 +24,82 @@ use OxidSolutionCatalysts\Adyen\Model\Basket as EshopModelBasket;
 class Payment
 {
     /**
-     * @var Context
-     */
-    private Context $context;
-
-    /**
-     * @var ModuleSettings
-     */
-    private ModuleSettings $moduleSettings;
-
-    /**
-     * @var UserRepository
-     */
-    private UserRepository $userRepository;
-
-    private ?string $filterAmount = null;
-    /**
      * @var Client
      */
     private Client $client;
 
+    /**
+     * @var Session
+     */
+    private Session $session;
+
     public function __construct(
-        Context $context,
-        ModuleSettings $moduleSettings,
-        UserRepository $userRepository,
-        AdyenSDKLoader $adyenSDK
+        AdyenSDKLoader $adyenSDK,
+        Session $session
     ) {
-        $this->context = $context;
-        $this->moduleSettings = $moduleSettings;
-        $this->userRepository = $userRepository;
         $this->client = $adyenSDK->getAdyenSDK();
-    }
-
-    public function getSession(): Checkout
-    {
-        $service = new Checkout($this->client);
-        $params = [
-            'amount' => [
-                'currency' => $this->context->getActiveCurrencyName(),
-                'value' => $this->getCurrencyFilterAmount(),
-            ],
-            'countryCode' => $this->userRepository->getUserCountryIso(),
-            'merchantAccount' => $this->moduleSettings->getMerchantAccount(),
-            'reference' => Module::ADYEN_ORDER_REFERENCE_ID,
-            'returnUrl' => $this->getReturnUrl()
-        ];
-
-        return $service->sessions($params);
+        $this->session = $session;
     }
 
     /**
-     * @link [https://docs.adyen.com/development-resources/currency-codes] [Currency codes and minor units]
+     * @return string
+     * @throws Exception
      */
-    public function setCurrencyFilterAmount(string $filterAmount): void
+    public function getAdyenSessionId(): string
     {
-        $this->filterAmount = $filterAmount;
-    }
-
-    /**
-     * @link [https://docs.adyen.com/development-resources/currency-codes] [Currency codes and minor units]
-     */
-    public function getCurrencyFilterAmount(): string
-    {
-        if (is_null($this->filterAmount)) {
-            $currencyDecimals = $this->context->getActiveCurrencyDecimals();
-            $this->filterAmount = '10' . str_repeat('0', $currencyDecimals);
+        $adyenSessionId = $this->session->getVariable(Module::ADYEN_SESSION_ID_NAME);
+        if (!$adyenSessionId) {
+            throw new Exception('Load the session before getting the session id');
         }
-        return $this->filterAmount;
+        return $adyenSessionId;
     }
 
-    private function getReturnUrl(): string
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getAdyenSessionData(): string
     {
-        return $this->context->getCurrentShopUrl() . 'index.php?cl=order';
+        $adyenSessionData = $this->session->getVariable(Module::ADYEN_SESSION_DATA_NAME);
+        if (!$adyenSessionData) {
+            throw new Exception('Load the session before getting the session data');
+        }
+        return $adyenSessionData;
+    }
+
+    /**
+     * @param AdyenAPISession $sessionParams
+     * @throws AdyenException
+     */
+    public function loadAdyenSession(AdyenAPISession $sessionParams): bool
+    {
+        $result = false;
+        try {
+            $service = new Checkout($this->client);
+            $params = $sessionParams->getAdyenSessionParams();
+            $resultApi = $service->sessions($params);
+            $result = $this->saveAdyenSession($resultApi);
+            if (!$result) {
+                throw new Exception('sessionData & id not found in Adyen-Response');
+            }
+        } catch (AdyenException | Exception $exception) {
+            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $resultApi
+     * @return bool
+     * @throws AdyenException
+     */
+    public function saveAdyenSession(array $resultApi): bool
+    {
+        $adyenSessionData = $resultApi['sessionData'] ?? '';
+        $adyenSessionId = $resultApi['id'] ?? '';
+        $result = ($adyenSessionData && $adyenSessionId);
+        $this->session->setVariable(Module::ADYEN_SESSION_DATA_NAME, $adyenSessionData);
+        $this->session->setVariable(Module::ADYEN_SESSION_ID_NAME, $adyenSessionId);
+        return $result;
     }
 }
