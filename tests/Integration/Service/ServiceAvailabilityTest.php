@@ -13,6 +13,7 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\Repository;
+use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +38,8 @@ class ServiceAvailabilityTest extends TestCase
             [Payment::class],
             [Repository::class],
             [StaticContents::class],
-            [UserRepository::class]
+            [UserRepository::class],
+            [ResponseHandler::class]
         ];
     }
 }
