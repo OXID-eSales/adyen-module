@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -91,8 +92,9 @@ class UserRepository
         }
 
         if (!$countryId) {
+            /** @var ?User $user */
             $user = $this->session->getUser();
-            $countryId = $user->isLoaded() ? $user->getFieldData('oxcountryid') : '';
+            $countryId = $user ? $user->getFieldData('oxcountryid') : '';
         }
 
         if (!$countryId) {
