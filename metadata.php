@@ -5,12 +5,13 @@
  * See LICENSE file for license details.
  */
 
+use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
+use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
-use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 
 /**
  * Metadata version
@@ -50,7 +51,10 @@ $aModule = [
         'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
     ],
     'controllers' => [
+        // admin
         'adyen_admin_order' => AdminOrderController::class,
+        // frontend
+        'AdyenJSController' => AdyenJSController::class
     ],
     'templates' => [
         // admin
