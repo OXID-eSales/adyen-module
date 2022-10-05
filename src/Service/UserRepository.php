@@ -11,7 +11,9 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\Eshop\Core\Session as EshopSession;
@@ -68,10 +70,37 @@ class UserRepository
 
     public function getUserCountryIso(): string
     {
-        $user = $this->session->getUser();
         $country = oxNew(Country::class);
-        $country->load($user->getFieldData('oxcountryid'));
+        $country->load($this->getCountryId());
         return (string) $country->getFieldData('oxisoalpha2');
+    }
+
+    /**
+     * Tries to fetch user country ID
+     *
+     * @return string
+     */
+    private function getCountryId(): string
+    {
+        $countryId = $this->config->getGlobalParameter('delcountryid');
+
+        if (!$countryId) {
+            $addressId = $this->session->getVariable('deladrid');
+            $deliveryAddress = oxNew(Address::class);
+            $countryId = $deliveryAddress->load($addressId) ? $deliveryAddress->getFieldData('oxcountryid') : '';
+        }
+
+        if (!$countryId) {
+            $user = $this->session->getUser();
+            $countryId = $user->isLoaded() ? $user->getFieldData('oxcountryid') : '';
+        }
+
+        if (!$countryId) {
+            $homeCountry = $this->config->getConfigParam('aHomeCountry');
+            $countryId = is_array($homeCountry) ? current($homeCountry) : '';
+        }
+
+        return $countryId;
     }
 
     private function getUserId(string $userEmail, bool $hasPassword): string
