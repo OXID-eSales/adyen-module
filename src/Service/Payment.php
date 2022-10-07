@@ -102,4 +102,10 @@ class Payment
         $this->session->setVariable(Module::ADYEN_SESSION_ID_NAME, $adyenSessionId);
         return $result;
     }
+
+    public function deleteAdyenSession(): void
+    {
+        $this->session->deleteVariable(Module::ADYEN_SESSION_DATA_NAME);
+        $this->session->deleteVariable(Module::ADYEN_SESSION_ID_NAME);
+    }
 }
