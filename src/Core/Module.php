@@ -49,4 +49,9 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS
         ]
     ];
+
+    public static function isAdyenPayment(string $paymentId): bool
+    {
+        return (isset(self::PAYMENT_DEFINTIONS[$paymentId]));
+    }
 }
