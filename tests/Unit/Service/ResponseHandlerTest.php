@@ -12,12 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Response;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 class ResponseHandlerTest extends UnitTestCase
 {
-    use ServiceContainer;
-
     public function testResponse(): void
     {
         $responseStub = $this->createConfiguredMock(Response::class, []);
