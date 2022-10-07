@@ -12,7 +12,6 @@ use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
 
 class ViewConfig extends ViewConfig_parent
 {
-    use ServiceContainer;
     use AdyenAPI;
 
     /**
