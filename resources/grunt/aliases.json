@@ -1,0 +1,19 @@
+{
+    "production": [
+        "jshint:moduleproduction",
+        "sass:moduleproduction",
+        "concat:moduleproduction_css",
+        "postcss",
+        "cssmin",
+        "uglify:moduleproduction"
+    ],
+    "development": [
+        "jshint:moduleproduction",
+        "sass:moduledevelopment",
+        "concat:moduledevelopment_js",
+        "concat:moduleproduction_css"
+    ],
+    "default": [
+        "production"
+    ]
+}
