@@ -60,7 +60,8 @@ $aModule = [
         // admin
         'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
         // frontend - paymentpage
-        'modules/osc/adyen/payment/payment_adyen.tpl' => 'osc/adyen/views/frontend/tpl/payment/payment_adyen.tpl',
+        'modules/osc/adyen/payment/adyen_js.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_js.tpl',
+        'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
         // frontend - account
         'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
         // frontend - mails
@@ -72,6 +73,11 @@ $aModule = [
             'template' => 'page/checkout/payment.tpl',
             'block' => 'select_payment',
             'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
+        ],
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_main',
+            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_main.tpl'
         ],
         [
             'template' => 'page/account/order.tpl',

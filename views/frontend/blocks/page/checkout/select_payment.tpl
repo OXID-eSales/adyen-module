@@ -1,6 +1,6 @@
 [{if $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && $paymentmethod|method_exists:'isAdyenPayment' && $paymentmethod->isAdyenPayment()}]
     [{* We include it as template, so that it can be modified in custom themes *}]
-    [{include file="modules/osc/adyen/payment/payment_adyen.tpl"}]
+    [{include file="modules/osc/adyen/payment/adyen_payment.tpl"}]
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]

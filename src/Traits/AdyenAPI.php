@@ -15,7 +15,6 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
-use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 
 /**
  * Convenience trait to fetch Adyen API Services.
@@ -30,19 +29,23 @@ trait AdyenAPI
     protected ?Payment $adyenResponse = null;
 
     /**
-     * @return void
      * @throws \Adyen\AdyenException
-     * @throws \JsonException
+     * @throws \Exception
      */
-    public function getAdyenSessionData(): void
+    public function getAdyenSessionId(): string
     {
         $adyenResponse = $this->getAdyenSessionResponse();
-        $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
+        return $adyenResponse->getAdyenSessionId();
+    }
 
-        $response->setData([
-            'id' => $adyenResponse->getAdyenSessionId(),
-            'data' => $adyenResponse->getAdyenSessionData()
-        ])->sendJson();
+    /**
+     * @throws \Adyen\AdyenException
+     * @throws \Exception
+     */
+    public function getAdyenSessionData(): string
+    {
+        $adyenResponse = $this->getAdyenSessionResponse();
+        return $adyenResponse->getAdyenSessionData();
     }
 
     /**

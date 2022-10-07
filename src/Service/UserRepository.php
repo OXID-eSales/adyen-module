@@ -14,7 +14,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\Eshop\Core\Session as EshopSession;
@@ -26,16 +25,16 @@ use OxidEsales\Eshop\Application\Model\Country;
 class UserRepository
 {
     /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
 
     /** @var ContextInterface */
-    private $context;
+    private ContextInterface $context;
 
     /** @var EshopCoreConfig */
-    private $config;
+    private EshopCoreConfig $config;
 
     /** @var EshopSession */
-    private $session;
+    private EshopSession $session;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
@@ -81,7 +80,7 @@ class UserRepository
      *
      * @return string
      */
-    private function getCountryId(): string
+    public function getCountryId(): string
     {
         $countryId = $this->config->getGlobalParameter('delcountryid');
 
