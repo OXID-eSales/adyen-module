@@ -113,8 +113,8 @@ final class UserRepositoryTest extends TestCase
         $this->assertSame($country->oxcountry__oxisoalpha2->value, $service->getUserCountryIso());
     }
 
-    public function testGetCountryId(
-    ): void {
+    public function testGetCountryId(): void
+    {
         $config = Registry::getConfig();
         $session = Registry::getSession();
         $service = $this->getServiceFromContainer(UserRepository::class);

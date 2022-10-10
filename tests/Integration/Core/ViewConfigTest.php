@@ -75,5 +75,4 @@ final class ViewConfigTest extends UnitTestCase
             ->get(ModuleSettingBridgeInterface::class);
         return $moduleSettingsBridge->get($name, Module::MODULE_ID);
     }
-
 }
