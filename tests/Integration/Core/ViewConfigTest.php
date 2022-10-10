@@ -34,6 +34,21 @@ final class ViewConfigTest extends UnitTestCase
         $this->assertTrue($viewConfig->checkAdyenHealth());
     }
 
+    public function testGetAdyenOperationMode(): void
+    {
+        $viewConfig = $this->getViewConfig();
+
+        $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_SANDBOX);
+        $this->assertSame($viewConfig->getAdyenOperationMode(), ModuleSettings::OPERATION_MODE_SANDBOX);
+    }
+
+    public function testGetAdyenClientKey(): void
+    {
+        $viewConfig = $this->getViewConfig();
+
+        $this->assertSame($viewConfig->getAdyenClientKey(), $this->getModuleSetting('osc_adyen_SandboxClientKey'));
+    }
+
     private function getViewConfig(): ViewConfig
     {
         return Registry::get(eShopViewConfig::class);
@@ -49,4 +64,16 @@ final class ViewConfigTest extends UnitTestCase
             ->get(ModuleSettingBridgeInterface::class);
         $moduleSettingsBridge->save($name, $value, Module::MODULE_ID);
     }
+
+    /**
+     * @param mixed $value
+     */
+    private function getModuleSetting(string $name): string
+    {
+        $moduleSettingsBridge = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettingBridgeInterface::class);
+        return $moduleSettingsBridge->get($name, Module::MODULE_ID);
+    }
+
 }

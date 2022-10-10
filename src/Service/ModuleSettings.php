@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidEsales\Eshop\Application\Model\Payment;
 
 /**
  * @extendable-class
@@ -33,6 +34,8 @@ class ModuleSettings
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_NOTIFICATION_USERNAME = 'osc_adyen_LiveNotificationUsername';
     public const LIVE_NOTIFICATION_PASSWORD = 'osc_adyen_LiveNotificationPassword';
+
+    public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
     public const OPERATION_MODE_SANDBOX = 'sandbox';
     public const OPERATION_MODE_LIVE = 'live';
@@ -77,19 +80,9 @@ class ModuleSettings
             self::OPERATION_MODE_SANDBOX;
     }
 
-    public function saveOperationMode(string $value): void
-    {
-        $this->saveSettingValue(self::OPERATION_MODE, $value);
-    }
-
     public function isLoggingActive(): bool
     {
         return (bool) $this->getSettingValue(self::LOGGING_ACTIVE);
-    }
-
-    public function saveLoggingActive(bool $value): void
-    {
-        $this->saveSettingValue(self::LOGGING_ACTIVE, $value);
     }
 
     public function getAPIKey(): string
@@ -98,22 +91,10 @@ class ModuleSettings
         return (string)$this->getSettingValue($key);
     }
 
-    public function saveAPIKey(string $value): void
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_API_KEY : self::LIVE_API_KEY);
-        $this->saveSettingValue($key, $value);
-    }
-
     public function getClientKey(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
         return (string)$this->getSettingValue($key);
-    }
-
-    public function saveClientKey(string $value): void
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
-        $this->saveSettingValue($key, $value);
     }
 
     public function getHmacSignature(): string
@@ -122,22 +103,10 @@ class ModuleSettings
         return (string)$this->getSettingValue($key);
     }
 
-    public function saveHmacSignature(string $value): void
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_HMAC_SIGNATURE : self::LIVE_HMAC_SIGNATURE);
-        $this->saveSettingValue($key, $value);
-    }
-
     public function getMerchantAccount(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
         return (string)$this->getSettingValue($key);
-    }
-
-    public function saveMerchantAccount(string $value): void
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
-        $this->saveSettingValue($key, $value);
     }
 
     public function getNotificationUsername(): string
@@ -146,22 +115,20 @@ class ModuleSettings
         return (string)$this->getSettingValue($key);
     }
 
-    public function saveNotificationUsername(string $value): void
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_USERNAME : self::LIVE_NOTIFICATION_USERNAME);
-        $this->saveSettingValue($key, $value);
-    }
-
     public function getNotificationPassword(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
         return (string)$this->getSettingValue($key);
     }
 
-    public function saveNotificationPassword(string $value): void
+    public function saveActivePayments(array $activePayments): void
     {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
-        $this->saveSettingValue($key, $value);
+        $this->saveSettingValue(self::ACTIVE_PAYMENTS, $activePayments);
+    }
+
+    public function getActivePayments(): array
+    {
+        return (array)$this->getSettingValue(self::ACTIVE_PAYMENTS);
     }
 
     /**

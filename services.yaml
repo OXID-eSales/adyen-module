@@ -23,6 +23,9 @@ services:
   OxidEsales\Eshop\Core\Request:
     factory: [ '@OxidEsales\Eshop\Core\Registry', 'getRequest' ]
 
+  OxidSolutionCatalysts\Adyen\Core\Response:
+    public: true
+
   OxidSolutionCatalysts\Adyen\Logger:
     class: Monolog\Logger
     factory: ['@OxidSolutionCatalysts\Adyen\Logger\Factory', 'create']

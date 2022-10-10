@@ -47,6 +47,16 @@ class ContextTest extends TestCase
         $this->assertSame(10, $sut->getCurrentShopId());
     }
 
+    public function testGetCurrentShopUrl(): void
+    {
+        $configStub = $this->createConfiguredMock(Config::class, [
+            'getCurrentShopUrl' => 'https://test.dev'
+        ]);
+
+        $sut = new Context($configStub);
+        $this->assertSame('https://test.dev', $sut->getCurrentShopUrl());
+    }
+
     public function testGetActiveCurrencyName(): void
     {
         $currencyName = 'exampleCurrencyName';
@@ -60,6 +70,21 @@ class ContextTest extends TestCase
 
         $sut = new Context($configStub);
         $this->assertSame($currencyName, $sut->getActiveCurrencyName());
+    }
+
+    public function testGetActiveCurrencyDecimal(): void
+    {
+        $currencyDecimal = 2;
+
+        $currency = new \stdClass();
+        $currency->decimal = $currencyDecimal;
+
+        $configStub = $this->createConfiguredMock(Config::class, [
+            'getActShopCurrencyObject' => $currency
+        ]);
+
+        $sut = new Context($configStub);
+        $this->assertSame($currencyDecimal, $sut->getActiveCurrencyDecimals());
     }
 
     public function testGetActiveCurrencySign(): void

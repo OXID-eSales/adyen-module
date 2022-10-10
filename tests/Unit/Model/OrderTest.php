@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidSolutionCatalysts\PayPal\Tests\Unit\Model;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;

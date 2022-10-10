@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -21,15 +24,20 @@ final class StaticContentsTest extends UnitTestCase
 
     public function testExistingPaymentsAreNotChanged(): void
     {
+        $lang = Registry::getLang();
+        $langId = $lang->getBaseLanguage();
+        $langAbbr = $lang->getLanguageAbbr();
+
         $payment = oxNew(EshopModelPayment::class);
-        if (!$payment->loadInLang(0, Module::STANDARD_PAYMENT_ID)) {
+        if (!$payment->loadInLang($langId, Module::STANDARD_PAYMENT_ID)) {
             $payment->setId(Module::STANDARD_PAYMENT_ID);
-            $payment->setLanguage(0);
+            $payment->setLanguage($langId);
         }
+        $descriptions = Module::PAYMENT_DEFINTIONS[Module::STANDARD_PAYMENT_ID]['descriptions'][$langAbbr];
         $payment->assign(
             [
-                'oxdesc' => 'test_desc_de',
-                'oxlongdesc' => 'test_longdesc_de'
+                'oxdesc' => $descriptions['desc'],
+                'oxlongdesc' => $descriptions['longdesc']
             ]
         );
         $payment->save();
@@ -38,9 +46,9 @@ final class StaticContentsTest extends UnitTestCase
         $service->ensurePaymentMethods();
 
         $payment = oxNew(EshopModelPayment::class);
-        $payment->loadInLang(0, Module::STANDARD_PAYMENT_ID);
-        $this->assertEquals('test_desc_de', $payment->getFieldData('oxdesc'));
-        $this->assertEquals('test_longdesc_de', $payment->getFieldData('oxlongdesc'));
+        $payment->loadInLang($langId, Module::STANDARD_PAYMENT_ID);
+        $this->assertEquals($descriptions['desc'], $payment->getFieldData('oxdesc'));
+        $this->assertEquals($descriptions['longdesc'], $payment->getFieldData('oxlongdesc'));
     }
 
     public function testEnsurePaymentMethods(): void
@@ -80,6 +88,21 @@ final class StaticContentsTest extends UnitTestCase
                 Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['en']['longdesc'],
                 $payment->getRawFieldData('oxlongdesc')
             );
+        }
+
+        /** @var ModuleSettings $moduleSettings */
+        $moduleSettings = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettings::class);
+        $moduleSettings->saveActivePayments($paymentIds);
+
+        $service->ensurePaymentMethods();
+
+        //check if reactivate
+        foreach ($paymentIds as $paymentId) {
+            $payment = oxNew(EshopModelPayment::class);
+            $payment->load($paymentId);
+            $this->assertTrue((bool)$payment->getFieldData('oxactive'));
         }
     }
 }

@@ -52,22 +52,6 @@ final class AcceptanceTester extends \Codeception\Actor
         return $homePage;
     }
 
-    public function setOperationModeLive(): void
-    {
-        $I = $this;
-
-        $I->getServiceFromContainer(ModuleSettings::class)
-            ->saveOperationMode(ModuleSettings::OPERATION_MODE_LIVE);
-    }
-
-    public function setOperationModeSandbox(): void
-    {
-        $I = $this;
-
-        $I->getServiceFromContainer(ModuleSettings::class)
-            ->saveOperationMode(ModuleSettings::OPERATION_MODE_SANDBOX);
-    }
-
     public function getDemoUserName(): string
     {
         return 'user@oxid-esales.com';

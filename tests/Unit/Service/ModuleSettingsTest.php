@@ -15,9 +15,6 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
-/**
- * @coversDefaultClass ModuleSettings
- */
 final class ModuleSettingsTest extends UnitTestCase
 {
     use ServiceContainer;
@@ -41,24 +38,21 @@ final class ModuleSettingsTest extends UnitTestCase
         $this->assertSame($gettingValue, $sut->$gettingMethod());
     }
 
-
-    /**
-     * @dataProvider getSetterDataProvider
-     */
-    public function testSetter(
-        string $settingMethod,
-        string $settingName,
-        $settingValue
-    ): void {
+    public function testSaveActivePayments(): void
+    {
+        $value = [Module::STANDARD_PAYMENT_ID];
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
-        $bridgeStub->expects($this->once())->method('save')->with($settingName, $settingValue, Module::MODULE_ID);
+        $bridgeStub->expects($this->once())->method('save')->with(
+            ModuleSettings::ACTIVE_PAYMENTS,
+            [Module::STANDARD_PAYMENT_ID],
+            Module::MODULE_ID
+        );
 
         $sut = new ModuleSettings(
             $bridgeStub
         );
-
-        $sut->$settingMethod($settingValue);
+        $sut->saveActivePayments($value);
     }
 
     public function getGetterDataProvider(): array
@@ -239,52 +233,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 ],
                 'gettingMethod' => 'isLoggingActive',
                 'gettingValue' => false
-            ]
-        ];
-    }
-
-    public function getSetterDataProvider(): array
-    {
-        return [
-            [
-                'settingMethod' => 'saveOperationMode',
-                'settingName' => 'osc_adyen_OperationMode',
-                'settingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
-            ],
-            [
-                'settingMethod' => 'saveAPIKey',
-                'settingName' => 'osc_adyen_SandboxAPIKey',
-                'settingValue' => 'sandboxAPIKey'
-            ],
-            [
-                'settingMethod' => 'saveClientKey',
-                'settingName' => 'osc_adyen_SandboxClientKey',
-                'settingValue' => 'sandboxClientKey'
-            ],
-            [
-                'settingMethod' => 'saveHmacSignature',
-                'settingName' => 'osc_adyen_SandboxHmacSignature',
-                'settingValue' => 'sandboxHmacSignature'
-            ],
-            [
-                'settingMethod' => 'saveMerchantAccount',
-                'settingName' => 'osc_adyen_SandboxMerchantAccount',
-                'settingValue' => 'sandboxMerchantAccount'
-            ],
-            [
-                'settingMethod' => 'saveNotificationUsername',
-                'settingName' => 'osc_adyen_SandboxNotificationUsername',
-                'settingValue' => 'sandboxNotificationUsername'
-            ],
-            [
-                'settingMethod' => 'saveNotificationPassword',
-                'settingName' => 'osc_adyen_SandboxNotificationPassword',
-                'settingValue' => 'sandboxNotificationPassword'
-            ],
-            [
-                'settingMethod' => 'saveLoggingActive',
-                'settingName' => 'osc_adyen_LoggingActive',
-                'settingValue' => true
             ]
         ];
     }

@@ -8,11 +8,11 @@
 namespace OxidSolutionCatalysts\Adyen\Core;
 
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
 
 class ViewConfig extends ViewConfig_parent
 {
-    use ServiceContainer;
+    use AdyenAPI;
 
     /**
      * @var ModuleSettings
@@ -32,5 +32,15 @@ class ViewConfig extends ViewConfig_parent
     public function checkAdyenHealth(): bool
     {
         return $this->moduleSettings->checkHealth();
+    }
+
+    public function getAdyenOperationMode(): string
+    {
+        return $this->moduleSettings->getOperationMode();
+    }
+
+    public function getAdyenClientKey(): string
+    {
+        return $this->moduleSettings->getClientKey();
     }
 }

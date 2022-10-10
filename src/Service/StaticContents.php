@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
@@ -27,22 +28,33 @@ class StaticContents
     /** @var ContextInterface */
     private $context;
 
+    /** @var ModuleSettings */
+    private $moduleSettings;
+
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
-        ContextInterface $context
+        ContextInterface $context,
+        ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
+        $this->moduleSettings = $moduleSettings;
     }
 
     public function ensurePaymentMethods(): void
     {
+        $activePayments = $this->moduleSettings->getActivePayments();
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
             $paymentMethod = oxNew(EshopModelPayment::class);
-            if (!$paymentMethod->load($paymentId)) {
-                $this->createPaymentMethod($paymentId, $paymentDefinitions);
-                $this->assignPaymentToActiveDeliverySets($paymentId);
+            if ($paymentMethod->load($paymentId) && in_array($paymentId, $activePayments)) {
+                $paymentMethod->assign([
+                    'oxpayments__oxactive' => true
+                ]);
+                $paymentMethod->save();
+                continue;
             }
+            $this->createPaymentMethod($paymentId, $paymentDefinitions);
+            $this->assignPaymentToActiveDeliverySets($paymentId);
         }
     }
 
@@ -61,8 +73,8 @@ class StaticContents
         $object2Paymentent->assign(
             [
                 'oxpaymentid' => $paymentId,
-                'oxobjectid'  => $deliverySetId,
-                'oxtype'      => 'oxdelset'
+                'oxobjectid' => $deliverySetId,
+                'oxtype' => 'oxdelset'
             ]
         );
         $object2Paymentent->save();

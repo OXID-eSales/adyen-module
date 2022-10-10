@@ -5,11 +5,13 @@
  * See LICENSE file for license details.
  */
 
+use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
+use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 
 /**
  * Metadata version
@@ -36,8 +38,9 @@ $aModule = [
     'email' => 'support@oxid-esales.com',
     'extend' => [
         // model
-        \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
+        \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
@@ -48,13 +51,17 @@ $aModule = [
         'onDeactivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onDeactivate'
     ],
     'controllers' => [
+        // admin
         'adyen_admin_order' => AdminOrderController::class,
+        // frontend
+        'AdyenJSController' => AdyenJSController::class
     ],
     'templates' => [
         // admin
         'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
         // frontend - paymentpage
-        'modules/osc/adyen/payment/payment_adyen.tpl' => 'osc/adyen/views/frontend/tpl/payment/payment_adyen.tpl',
+        'modules/osc/adyen/payment/adyen_assets.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets.tpl',
+        'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
         // frontend - account
         'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
         // frontend - mails
@@ -66,6 +73,11 @@ $aModule = [
             'template' => 'page/checkout/payment.tpl',
             'block' => 'select_payment',
             'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
+        ],
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_main',
+            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_main.tpl'
         ],
         [
             'template' => 'page/account/order.tpl',
@@ -118,37 +130,37 @@ $aModule = [
             'value' => false
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxAPIKey',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxClientKey',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxHmacSignature',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxMerchantAccount',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxNotificationUsername',
             'type' => 'str',
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_API',
+            'group' => 'osc_adyen_SANDBOX',
             'name' => 'osc_adyen_SandboxNotificationPassword',
             'type' => 'str',
             'value' => ''
@@ -188,6 +200,12 @@ $aModule = [
             'name' => 'osc_adyen_LiveNotificationPassword',
             'type' => 'str',
             'value' => ''
+        ],
+        [
+            'group' => null,
+            'name' => 'osc_adyen_activePayments',
+            'type' => 'arr',
+            'value' => []
         ],
     ],
 ];

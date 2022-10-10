@@ -17,6 +17,11 @@ final class Module
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
+    public const ADYEN_ORDER_REFERENCE_ID = 'OXID_REFERENCE';
+
+    public const ADYEN_SESSION_ID_NAME = 'sess_adyen_id';
+    public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
+
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
         'oxtoamount' => 60000,
@@ -44,4 +49,9 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS
         ]
     ];
+
+    public static function isAdyenPayment(string $paymentId): bool
+    {
+        return (isset(self::PAYMENT_DEFINTIONS[$paymentId]));
+    }
 }
