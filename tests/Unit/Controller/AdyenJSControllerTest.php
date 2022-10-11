@@ -14,7 +14,12 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
-use OxidSolutionCatalysts\Adyen\Core\Response;
+use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
+use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
 class AdyenJSControllerTest extends UnitTestCase
 {
@@ -22,7 +27,7 @@ class AdyenJSControllerTest extends UnitTestCase
      * @throws \Throwable
      * @throws \JsonException
      */
-    public function testGetAdyenJsonSession()
+    public function testGetAdyenJsonSession(): void
     {
         $utilsStub = $this->createPartialMock(Utils::class, ['showMessageAndExit']);
         $utilsStub->expects($this->once())
@@ -42,5 +47,18 @@ class AdyenJSControllerTest extends UnitTestCase
         $this->assertContains("Cache-Control: no-cache\r\n", $header);
         $this->assertContains("Content-Type: application/json\r\n", $header);
         $this->assertContains("Status: 200 OK\r\n", $header);
+    }
+
+    public function testGetAdyenSessionIdAndData(): void
+    {
+        $paymentStub = $this->createPartialMock(Payment::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $paymentStub->method('getAdyenSessionId')->willReturn('test1');
+        $paymentStub->method('getAdyenSessionData')->willReturn('test2');
+
+        $controller = $this->createPartialMock(AdyenJSController::class, ['getAdyenSessionResponse']);
+        $controller->method('getAdyenSessionResponse')->willReturn($paymentStub);
+
+        $this->assertSame('test1', $controller->getAdyenSessionId());
+        $this->assertSame('test2', $controller->getAdyenSessionData());
     }
 }
