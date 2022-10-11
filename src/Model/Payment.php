@@ -20,6 +20,7 @@ class Payment extends Payment_parent
     /**
      * Checks if the payment method is an Adyen payment method
      *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      * @return bool
      */
     public function isAdyenPayment(): bool

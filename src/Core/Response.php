@@ -2,6 +2,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Core;
 
+use OxidEsales\Eshop\Core\Header;
 use OxidEsales\Eshop\Core\Registry;
 
 class Response
@@ -126,14 +127,15 @@ class Response
 
     /**
      * @throws \JsonException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function sendJson(): void
     {
-        header_remove();
         http_response_code($this->code);
-        header('Cache-Control: no-cache');
-        header('Content-Type: application/json');
-        header('Status: ' . $this->status);
+        $header = Registry::get(Header::class);
+        $header->setHeader('Cache-Control: no-cache');
+        $header->setHeader('Content-Type: application/json');
+        $header->setHeader('Status: ' . $this->status);
 
         Registry::getUtils()->showMessageAndExit(
             json_encode(
