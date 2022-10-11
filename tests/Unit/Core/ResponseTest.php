@@ -2,6 +2,9 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core;
 
+use OxidEsales\Eshop\Core\Header;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Utils;
 use OxidSolutionCatalysts\Adyen\Core\Response;
 use oxregistry;
 use PHPUnit\Framework\TestCase;
@@ -104,17 +107,21 @@ class ResponseTest extends TestCase
      */
     public function testSendJson()
     {
-        oxTestModules::addFunction(
-            'oxutils',
-            'showMessageAndExit',
-            '{$this->showMessageAndExitCall[] = $aA; }'
-        );
+        $utilsStub = $this->createPartialMock(Utils::class, ['showMessageAndExit']);
+        $utilsStub->expects($this->once())
+            ->method('showMessageAndExit')
+            ->with($this->equalTo("{\n    \"message\": \"200 OK\"\n}"));
 
+        Registry::set(Utils::class, $utilsStub);
+
+        // set simple Status: 200 OK Response
         $response = oxNew(Response::class);
         $response = $response->setGenericSuccess();
         $response->sendJson();
 
-        $this->assertEquals(1, count(oxRegistry::getUtils()->showMessageAndExitCall));
-        $this->assertEquals("{\n    \"message\": \"200 OK\"\n}", oxRegistry::getUtils()->showMessageAndExitCall[0][0]);
+        $header = Registry::get(Header::class)->getHeader();
+        $this->assertContains("Cache-Control: no-cache\r\n", $header);
+        $this->assertContains("Content-Type: application/json\r\n", $header);
+        $this->assertContains("Status: 200 OK\r\n", $header);
     }
 }
