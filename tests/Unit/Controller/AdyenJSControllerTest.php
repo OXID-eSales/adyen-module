@@ -61,4 +61,60 @@ class AdyenJSControllerTest extends UnitTestCase
         $this->assertSame('test1', $controller->getAdyenSessionId());
         $this->assertSame('test2', $controller->getAdyenSessionData());
     }
+
+    public function testGetAdyenSessionResponse(): void
+    {
+        $contextStub = $this->createPartialMock(
+            Context::class,
+            [
+                'getActiveCurrencyName',
+                'getActiveCurrencyDecimals',
+                'getCurrentShopUrl'
+            ]);
+        $contextStub->method('getActiveCurrencyName')->willReturn('testCurrencyName');
+        $contextStub->method('getActiveCurrencyDecimals')->willReturn(2);
+        $contextStub->method('getCurrentShopUrl')->willReturn('https://www.dummy.dev');
+
+        $userRepositoryStub = $this->createPartialMock(UserRepository::class, ['getUserCountryIso']);
+        $userRepositoryStub->method('getUserCountryIso')->willReturn('DE');
+
+        $moduleSettingsStub = $this->createPartialMock(ModuleSettings::class, ['getMerchantAccount', 'getAdyenSessionData']);
+        $moduleSettingsStub->method('getMerchantAccount')->willReturn('TestMerchant');
+
+        $paymentStub = $this->createPartialMock(Payment::class, ['loadAdyenSession']);
+        $paymentStub->method('loadAdyenSession')->willReturn(true);
+
+        $adyenAPISessionStub = $this->createPartialMock(
+            AdyenAPISession::class, [
+            'setCurrencyName',
+            'setCurrencyFilterAmount',
+            'setCountryCode',
+            'setReference',
+            'setReturnUrl'
+        ]);
+
+        $adyenAPISessionStub->expects($this->once())->method('setCurrencyName')->with(
+            $contextStub->getActiveCurrencyName()
+        );
+        $adyenAPISessionStub->expects($this->once())->method('setCurrencyFilterAmount')->with(
+            '10' . str_repeat('0', (int)$contextStub->getActiveCurrencyName())
+        );
+        $adyenAPISessionStub->expects($this->once())->method('setCountryCode')->with(
+            $userRepositoryStub->getUserCountryIso()
+        );
+        $adyenAPISessionStub->expects($this->once())->method('setReference')->with(
+            Module::ADYEN_ORDER_REFERENCE_ID
+        );
+        $adyenAPISessionStub->expects($this->once())->method('setReturnUrl')->with(
+            $contextStub->getCurrentShopUrl() . 'index.php?cl=order'
+        );
+        $paymentStub->expects($this->once())->method('loadAdyenSession')->with(
+            $adyenAPISessionStub
+        );
+
+        $controller = $this->createPartialMock(AdyenJSController::class, ['getAdyenSessionResponse']);
+        $controller->method('getAdyenSessionResponse')->willReturn($paymentStub);
+
+        //$this->assertInstanceOf(Payment::class, $controller->getAdyenSessionResponse());
+    }
 }
