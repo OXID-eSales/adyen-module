@@ -3,7 +3,9 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core;
 
 use OxidSolutionCatalysts\Adyen\Core\Response;
+use oxregistry;
 use PHPUnit\Framework\TestCase;
+use oxTestModules;
 
 class ResponseTest extends TestCase
 {
@@ -94,5 +96,25 @@ class ResponseTest extends TestCase
         $this->assertEquals(500, $responseArray["\0*\0code"]);
         $this->assertEquals("500 Internal Server Error", $responseArray["\0*\0status"]);
         $this->assertEquals("500 Internal Server Error", $responseArray["\0*\0data"]['message']);
+    }
+
+    /**
+     * @throws \Throwable
+     * @throws \JsonException
+     */
+    public function testSendJson()
+    {
+        oxTestModules::addFunction(
+            'oxutils',
+            'showMessageAndExit',
+            '{$this->showMessageAndExitCall[] = $aA; }'
+        );
+
+        $response = oxNew(Response::class);
+        $response = $response->setGenericSuccess();
+        $response->sendJson();
+
+        $this->assertEquals(1, count(oxRegistry::getUtils()->showMessageAndExitCall));
+        $this->assertEquals("{\n    \"message\": \"200 OK\"\n}", oxRegistry::getUtils()->showMessageAndExitCall[0][0]);
     }
 }
