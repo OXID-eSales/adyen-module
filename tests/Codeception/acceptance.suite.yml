@@ -11,10 +11,9 @@ modules:
         browser: '%BROWSER_NAME%'
         port: '%SELENIUM_SERVER_PORT%'
         window_size: 1920x1280
+        clear_cookies: true
         capabilities:
           acceptInsecureCerts: true
-          chromeOptions:
-            args: [ "--headless", "--disable-gpu" ]
     - Db:
         dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%;charset=utf8'
         user: '%DB_USERNAME%'
