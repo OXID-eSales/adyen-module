@@ -12,6 +12,7 @@ modules:
         port: '%SELENIUM_SERVER_PORT%'
         window_size: 1920x1280
         clear_cookies: true
+        restart: true
         capabilities:
           acceptInsecureCerts: true
     - Db:
