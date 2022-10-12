@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use Codeception\Util\Fixtures;
+use OxidEsales\Codeception\Module\Context;
+use OxidEsales\Codeception\Page\Checkout\PaymentCheckout;
 use OxidEsales\Codeception\Page\Checkout\ThankYou;
+use OxidEsales\Codeception\Page\Checkout\UserCheckout;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
@@ -66,7 +69,14 @@ abstract class BaseCest
 
         $homePage->openMiniBasket();
         $this->I->waitForDocumentReadyState();
-        $this->paymentSelection = $homePage->openCheckout();
+        $this->I->click(Translator::translate('CHECKOUT'));
+        $this->I->waitForDocumentReadyState();
+        $this->I->waitForPageLoad();
+        if (Context::isUserLoggedIn()) {
+            $this->paymentSelection = new PaymentCheckout($this->I);
+        } else {
+            $this->paymentSelection = new UserCheckout($this->I);
+        }
     }
 
     /**
