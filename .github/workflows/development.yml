@@ -230,6 +230,22 @@ jobs:
             -e ADDITIONAL_TEST_PATHS='/var/www/vendor/${{ env.PACKAGE_NAME }}/tests' \
             php php vendor/bin/runtests-codeception --group=${{ matrix.group }}
 
+      - name: Stop containers
+        if: always()
+        run: |
+          docker-compose down
+          sleep 2
+
+      - name: Upload log artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: CodeceptionTestsLog-${{ matrix.php }}
+          path: |
+            source/vendor/${{ env.PACKAGE_NAME }}/Tests/Codeception/_output/
+            source/source/log/oxideshop.log
+            source/data/php/logs/error_log.txt
+
   sonarcloud:
     needs: [ styles, unit_tests ]
     if: always()
