@@ -11,18 +11,8 @@ modules:
         browser: '%BROWSER_NAME%'
         port: '%SELENIUM_SERVER_PORT%'
         window_size: 1920x1280
-        clear_cookies: true
         capabilities:
           acceptInsecureCerts: true
-        cookies:
-          cookie-1:
-            Name: XDEBUG_SESSION_START
-            Value: PHPSTORM
-            HttpOnly: false
-          cookie-2:
-            Name: XDEBUG_SESSION
-            Value: PHPSTORM
-            HttpOnly: false
     - Db:
         dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%;charset=utf8'
         user: '%DB_USERNAME%'
