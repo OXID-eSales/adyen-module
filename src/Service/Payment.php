@@ -109,7 +109,11 @@ class Payment
         $this->session->deleteVariable(Module::ADYEN_SESSION_ID_NAME);
     }
 
-    protected function createCheckout() : Checkout
+    /**
+     * @return Checkout
+     * @throws AdyenException
+     */
+    protected function createCheckout(): Checkout
     {
         return new Checkout($this->client);
     }
