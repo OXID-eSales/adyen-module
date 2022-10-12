@@ -64,7 +64,9 @@ abstract class BaseCest
         $homePage = $this->I->openShop();
         $homePage->loginUser(Fixtures::get('userName'), Fixtures::get('userPassword'));
 
-        $this->paymentSelection = $homePage->openMiniBasket()->openCheckout();
+        $homePage->openMiniBasket();
+        $this->I->waitForDocumentReadyState();
+        $this->paymentSelection = $homePage->openCheckout();
     }
 
     /**
