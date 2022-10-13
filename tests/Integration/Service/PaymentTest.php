@@ -97,6 +97,7 @@ class PaymentTest extends UnitTestCase
         ]);
 
         $paymentMock = $this->getMockBuilder(Payment::class)
+            ->onlyMethods(['createCheckout'])
             ->setConstructorArgs([$adyenSDKLoader, $session])->getMock();
         $paymentMock->method('createCheckout')
             ->willReturn($checkoutMock);
