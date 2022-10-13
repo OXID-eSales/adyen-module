@@ -75,7 +75,7 @@ class Payment
     {
         $result = false;
         try {
-            $service = new Checkout($this->client);
+            $service = $this->createCheckout();
             $params = $sessionParams->getAdyenSessionParams();
             $resultApi = $service->sessions($params);
             $result = $this->saveAdyenSession($resultApi);
@@ -107,5 +107,14 @@ class Payment
     {
         $this->session->deleteVariable(Module::ADYEN_SESSION_DATA_NAME);
         $this->session->deleteVariable(Module::ADYEN_SESSION_ID_NAME);
+    }
+
+    /**
+     * @return Checkout
+     * @throws AdyenException
+     */
+    protected function createCheckout(): Checkout
+    {
+        return new Checkout($this->client);
     }
 }
