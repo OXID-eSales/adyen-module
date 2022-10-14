@@ -15,6 +15,8 @@ final class Module
 
     public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
 
+    public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
+
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
     public const ADYEN_ORDER_REFERENCE_ID = 'OXID_REFERENCE';
@@ -34,14 +36,31 @@ final class Module
         self::PAYMENT_CREDITCARD_ID => [
             'descriptions' => [
                 'de' => [
-                    'desc' => 'Adyen',
-                    'longdesc' => 'Adyen',
-                    'longdesc_beta' => 'Bezahlen Sie bequem mit Adyen.'
+                    'desc' => 'Kreditkarte',
+                    'longdesc' => 'Kreditkarte',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Kreditkarte.'
                 ],
                 'en' => [
-                    'desc' => 'Adyen',
-                    'longdesc' => 'Adyen',
-                    'longdesc_beta' => 'Pay conveniently with Adyen.'
+                    'desc' => 'Creditcard',
+                    'longdesc' => 'Creditcard',
+                    'longdesc_beta' => 'Pay conveniently with Creditcard.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS
+        ],
+        self::PAYMENT_PAYPAL_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'PayPal',
+                    'longdesc' => 'PayPal',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit PayPal.'
+                ],
+                'en' => [
+                    'desc' => 'PayPal',
+                    'longdesc' => 'PayPal',
+                    'longdesc_beta' => 'Pay conveniently with PayPal.'
                 ]
             ],
             'countries' => [],
