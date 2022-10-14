@@ -71,7 +71,7 @@ final class AdminOrderControllerTest extends UnitTestCase
 
         $this->assertSame(
             $controller->isAdyenOrder(),
-            $orderData['oxorder__oxpaymenttype'] === Module::STANDARD_PAYMENT_ID
+            $orderData['oxorder__oxpaymenttype'] === Module::PAYMENT_CREDITCARD_ID
         );
     }
 
@@ -102,7 +102,7 @@ final class AdminOrderControllerTest extends UnitTestCase
             [
                 '123',
                 [
-                    'oxorder__oxpaymenttype' => Module::STANDARD_PAYMENT_ID,
+                    'oxorder__oxpaymenttype' => Module::PAYMENT_CREDITCARD_ID,
                     'oxorder__adyenpspreference' => 'test',
                 ]
             ],

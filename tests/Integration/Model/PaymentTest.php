@@ -44,7 +44,7 @@ class PaymentTest extends UnitTestCase
     {
         $payment = oxNew(Payment::class);
         $payment->load($paymentId);
-        $isAdyenPayment = $paymentId === Module::STANDARD_PAYMENT_ID;
+        $isAdyenPayment = $paymentId === Module::PAYMENT_CREDITCARD_ID;
         $this->assertSame($isAdyenPayment, $payment->isAdyenPayment());
     }
 
@@ -52,7 +52,7 @@ class PaymentTest extends UnitTestCase
     {
         return [
             [
-                Module::STANDARD_PAYMENT_ID
+                Module::PAYMENT_CREDITCARD_ID
             ],
             [
                 'dummy'

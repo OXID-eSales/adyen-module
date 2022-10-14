@@ -21,12 +21,12 @@ final class CreditCardCest extends BaseCest
 {
     protected function _getOXID(): array
     {
-        return [Module::STANDARD_PAYMENT_ID];
+        return [Module::PAYMENT_CREDITCARD_ID];
     }
 
     protected function _getPaymentId(): string
     {
-        return Module::STANDARD_PAYMENT_ID;
+        return Module::PAYMENT_CREDITCARD_ID;
     }
 
     /**

@@ -29,11 +29,11 @@ final class StaticContentsTest extends UnitTestCase
         $langAbbr = $lang->getLanguageAbbr();
 
         $payment = oxNew(EshopModelPayment::class);
-        if (!$payment->loadInLang($langId, Module::STANDARD_PAYMENT_ID)) {
-            $payment->setId(Module::STANDARD_PAYMENT_ID);
+        if (!$payment->loadInLang($langId, Module::PAYMENT_CREDITCARD_ID)) {
+            $payment->setId(Module::PAYMENT_CREDITCARD_ID);
             $payment->setLanguage($langId);
         }
-        $descriptions = Module::PAYMENT_DEFINTIONS[Module::STANDARD_PAYMENT_ID]['descriptions'][$langAbbr];
+        $descriptions = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions'][$langAbbr];
         $payment->assign(
             [
                 'oxdesc' => $descriptions['desc'],
@@ -46,7 +46,7 @@ final class StaticContentsTest extends UnitTestCase
         $service->ensurePaymentMethods();
 
         $payment = oxNew(EshopModelPayment::class);
-        $payment->loadInLang($langId, Module::STANDARD_PAYMENT_ID);
+        $payment->loadInLang($langId, Module::PAYMENT_CREDITCARD_ID);
         $this->assertEquals($descriptions['desc'], $payment->getFieldData('oxdesc'));
         $this->assertEquals($descriptions['longdesc'], $payment->getFieldData('oxlongdesc'));
     }

@@ -13,7 +13,7 @@ final class Module
 {
     public const MODULE_ID = 'osc_adyen';
 
-    public const STANDARD_PAYMENT_ID = 'oscadyen';
+    public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
@@ -30,8 +30,8 @@ final class Module
 
     public const PAYMENT_DEFINTIONS = [
 
-        //Standard Adyen
-        self::STANDARD_PAYMENT_ID => [
+        //Creditcard
+        self::PAYMENT_CREDITCARD_ID => [
             'descriptions' => [
                 'de' => [
                     'desc' => 'Adyen',

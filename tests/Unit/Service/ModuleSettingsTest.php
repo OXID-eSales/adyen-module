@@ -40,12 +40,12 @@ final class ModuleSettingsTest extends UnitTestCase
 
     public function testSaveActivePayments(): void
     {
-        $value = [Module::STANDARD_PAYMENT_ID];
+        $value = [Module::PAYMENT_CREDITCARD_ID];
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
         $bridgeStub->expects($this->once())->method('save')->with(
             ModuleSettings::ACTIVE_PAYMENTS,
-            [Module::STANDARD_PAYMENT_ID],
+            [Module::PAYMENT_CREDITCARD_ID],
             Module::MODULE_ID
         );
 
