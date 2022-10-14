@@ -15,12 +15,12 @@ final class AdyenPaymentCest extends BaseCest
 {
     protected function _getOXID(): array
     {
-        return [Module::STANDARD_PAYMENT_ID];
+        return [Module::PAYMENT_CREDITCARD_ID];
     }
 
     protected function _getPaymentId(): string
     {
-        return "payment_" . Module::STANDARD_PAYMENT_ID;
+        return "payment_" . Module::PAYMENT_CREDITCARD_ID;
     }
 
     /**
@@ -47,7 +47,7 @@ final class AdyenPaymentCest extends BaseCest
 
         $langCode = Registry::getLang()->getLanguageAbbr();
         $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
-            . ': ' . Module::PAYMENT_DEFINTIONS[Module::STANDARD_PAYMENT_ID]['descriptions'][$langCode]['desc']);
+            . ': ' . Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions'][$langCode]['desc']);
         $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
             . ': ' . $orderNumber);
     }
