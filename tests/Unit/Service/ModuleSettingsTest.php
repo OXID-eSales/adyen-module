@@ -25,7 +25,8 @@ final class ModuleSettingsTest extends UnitTestCase
     public function testGetter(
         array $values,
         string $gettingMethod,
-        $gettingValue
+        $gettingValue,
+        string $getterOption
     ): void {
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
@@ -34,8 +35,10 @@ final class ModuleSettingsTest extends UnitTestCase
         $sut = new ModuleSettings(
             $bridgeStub
         );
-
-        $this->assertSame($gettingValue, $sut->$gettingMethod());
+        $assertResult = $getterOption ?
+            $sut->$gettingMethod($getterOption) :
+            $sut->$gettingMethod();
+        $this->assertSame($gettingValue, $assertResult);
     }
 
     public function testSaveActivePayments(): void
@@ -69,7 +72,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                 ],
                 'gettingMethod' => 'checkHealth',
-                'gettingValue' => true
+                'gettingValue' => true,
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -82,35 +86,40 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
                 'gettingMethod' => 'checkHealth',
-                'gettingValue' => true
+                'gettingValue' => true,
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                 ],
                 'gettingMethod' => 'isSandBoxMode',
-                'gettingValue' => true
+                'gettingValue' => true,
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
                 'gettingMethod' => 'isSandBoxMode',
-                'gettingValue' => false
+                'gettingValue' => false,
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                 ],
                 'gettingMethod' => 'getOperationMode',
-                'gettingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
+                'gettingValue' => ModuleSettings::OPERATION_MODE_SANDBOX,
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
                 'gettingMethod' => 'getOperationMode',
-                'gettingValue' => ModuleSettings::OPERATION_MODE_LIVE
+                'gettingValue' => ModuleSettings::OPERATION_MODE_LIVE,
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -119,7 +128,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
                 ],
                 'gettingMethod' => 'getAPIKey',
-                'gettingValue' => 'sandboxAPIKey'
+                'gettingValue' => 'sandboxAPIKey',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -128,7 +138,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
                 ],
                 'gettingMethod' => 'getAPIKey',
-                'gettingValue' => 'liveAPIKey'
+                'gettingValue' => 'liveAPIKey',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -137,7 +148,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
                 ],
                 'gettingMethod' => 'getClientKey',
-                'gettingValue' => 'sandboxClientKey'
+                'gettingValue' => 'sandboxClientKey',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -146,7 +158,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
                 ],
                 'gettingMethod' => 'getClientKey',
-                'gettingValue' => 'liveClientKey'
+                'gettingValue' => 'liveClientKey',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -155,7 +168,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
                 ],
                 'gettingMethod' => 'getHmacSignature',
-                'gettingValue' => 'sandboxHmacSignature'
+                'gettingValue' => 'sandboxHmacSignature',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -164,7 +178,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
                 ],
                 'gettingMethod' => 'getHmacSignature',
-                'gettingValue' => 'liveHmacSignature'
+                'gettingValue' => 'liveHmacSignature',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -173,7 +188,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
                 'gettingMethod' => 'getMerchantAccount',
-                'gettingValue' => 'sandboxMerchantAccount'
+                'gettingValue' => 'sandboxMerchantAccount',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -182,7 +198,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
                 'gettingMethod' => 'getMerchantAccount',
-                'gettingValue' => 'liveMerchantAccount'
+                'gettingValue' => 'liveMerchantAccount',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -191,7 +208,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                 ],
                 'gettingMethod' => 'getNotificationUsername',
-                'gettingValue' => 'sandboxNotificationUsername'
+                'gettingValue' => 'sandboxNotificationUsername',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -200,7 +218,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                 ],
                 'gettingMethod' => 'getNotificationUsername',
-                'gettingValue' => 'liveNotificationUsername'
+                'gettingValue' => 'liveNotificationUsername',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -209,7 +228,8 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
                 'gettingMethod' => 'getNotificationPassword',
-                'gettingValue' => 'sandboxNotificationPassword'
+                'gettingValue' => 'sandboxNotificationPassword',
+                'getterOption' => ''
             ],
             [
                 'values' => [
@@ -218,21 +238,56 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
                 'gettingMethod' => 'getNotificationPassword',
-                'gettingValue' => 'liveNotificationPassword'
+                'gettingValue' => 'liveNotificationPassword',
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_LoggingActive', Module::MODULE_ID, true],
                 ],
                 'gettingMethod' => 'isLoggingActive',
-                'gettingValue' => true
+                'gettingValue' => true,
+                'getterOption' => ''
             ],
             [
                 'values' => [
                     ['osc_adyen_LoggingActive', Module::MODULE_ID, false],
                 ],
                 'gettingMethod' => 'isLoggingActive',
-                'gettingValue' => false
+                'gettingValue' => false,
+                'getterOption' => ''
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID, Module::MODULE_ID, true],
+                ],
+                'gettingMethod' => 'isSeperateCapture',
+                'gettingValue' => true,
+                'getterOption' => Module::PAYMENT_CREDITCARD_ID
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID, Module::MODULE_ID, false],
+                ],
+                'gettingMethod' => 'isSeperateCapture',
+                'gettingValue' => false,
+                'getterOption' => Module::PAYMENT_CREDITCARD_ID
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID, Module::MODULE_ID, true],
+                ],
+                'gettingMethod' => 'isSeperateCapture',
+                'gettingValue' => true,
+                'getterOption' => Module::PAYMENT_PAYPAL_ID
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID, Module::MODULE_ID, false],
+                ],
+                'gettingMethod' => 'isSeperateCapture',
+                'gettingValue' => false,
+                'getterOption' => Module::PAYMENT_PAYPAL_ID
             ]
         ];
     }
