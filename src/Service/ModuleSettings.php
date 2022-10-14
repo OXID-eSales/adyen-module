@@ -121,6 +121,11 @@ class ModuleSettings
         return (string)$this->getSettingValue($key);
     }
 
+    public function isSeperateCapture(string $paymentId): bool
+    {
+        return (bool)$this->getSettingValue('osc_adyen_SeperateCapture_' . $paymentId);
+    }
+
     public function saveActivePayments(array $activePayments): void
     {
         $this->saveSettingValue(self::ACTIVE_PAYMENTS, $activePayments);
