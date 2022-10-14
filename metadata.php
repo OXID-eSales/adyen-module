@@ -8,6 +8,7 @@
 use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -200,6 +201,18 @@ $aModule = [
             'name' => 'osc_adyen_LiveNotificationPassword',
             'type' => 'str',
             'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_SeperateCapture',
+            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID,
+            'type' => 'bool',
+            'value' => false
+        ],
+        [
+            'group' => 'osc_adyen_SeperateCapture',
+            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID,
+            'type' => 'bool',
+            'value' => false
         ],
         [
             'group' => null,
