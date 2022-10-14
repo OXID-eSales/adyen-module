@@ -38,21 +38,40 @@ final class ModuleSettingsTest extends UnitTestCase
         $this->assertSame($gettingValue, $sut->$gettingMethod());
     }
 
+    /**
+     * @dataProvider getCaptureDataProvider
+     */
+    public function testIsCapture(
+        string $varName,
+        string $paymentId
+    ): void {
+        foreach ([false, true] as $gettingValue) {
+            $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
+            $bridgeStub->method('get')->willReturnMap([[$varName, Module::MODULE_ID, $gettingValue]]);
+            $sut = new ModuleSettings(
+                $bridgeStub
+            );
+            $this->assertSame($gettingValue, $sut->isSeperateCapture($paymentId));
+        }
+    }
+
     public function testSaveActivePayments(): void
     {
-        $value = [Module::PAYMENT_CREDITCARD_ID];
+        $values = array_keys[Module::PAYMENT_DEFINTIONS];
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
-        $bridgeStub->expects($this->once())->method('save')->with(
-            ModuleSettings::ACTIVE_PAYMENTS,
-            [Module::PAYMENT_CREDITCARD_ID],
-            Module::MODULE_ID
-        );
+        foreach ($values as $value) {
+            $bridgeStub->expects($this->once())->method('save')->with(
+                ModuleSettings::ACTIVE_PAYMENTS,
+                [$value],
+                Module::MODULE_ID
+            );
 
-        $sut = new ModuleSettings(
-            $bridgeStub
-        );
-        $sut->saveActivePayments($value);
+            $sut = new ModuleSettings(
+                $bridgeStub
+            );
+            $sut->saveActivePayments([$value]);
+        }
     }
 
     public function getGetterDataProvider(): array
@@ -235,5 +254,20 @@ final class ModuleSettingsTest extends UnitTestCase
                 'gettingValue' => false
             ]
         ];
+    }
+
+    public function getCaptureDataProvider(): array
+    {
+        $captureData = [];
+
+        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
+            if ($paymentDef['seperatecapture']) {
+                $captureData[] = [
+                    'varName' => 'osc_adyen_SeperateCapture_' . $paymentId,
+                    'paymentId' => $paymentId
+                ];
+            }
+        }
+        return $captureData;
     }
 }

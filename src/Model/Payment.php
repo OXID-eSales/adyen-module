@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Model;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  *
@@ -17,6 +19,8 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
  */
 class Payment extends Payment_parent
 {
+    use ServiceContainer;
+
     /**
      * Checks if the payment method is an Adyen payment method
      *
@@ -26,5 +30,19 @@ class Payment extends Payment_parent
     public function isAdyenPayment(): bool
     {
         return Module::isAdyenPayment($this->getId());
+    }
+
+    /**
+     * Checks if the payment allow seperate Capture
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return bool
+     */
+    public function isAdyenSeperateCapture(): bool
+    {
+        return (Module::isSeperateCapture($this->getId()) &&
+            $this->getServiceFromContainer(ModuleSettings::class)
+                ->isSeperateCapture($this->getId())
+        );
     }
 }

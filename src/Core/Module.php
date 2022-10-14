@@ -48,7 +48,8 @@ final class Module
             ],
             'countries' => [],
             'currencies' => [],
-            'constraints' => self::PAYMENT_CONSTRAINTS
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'seperatecapture' => true
         ],
         self::PAYMENT_PAYPAL_ID => [
             'descriptions' => [
@@ -65,12 +66,19 @@ final class Module
             ],
             'countries' => [],
             'currencies' => [],
-            'constraints' => self::PAYMENT_CONSTRAINTS
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'seperatecapture' => true
         ]
     ];
 
     public static function isAdyenPayment(string $paymentId): bool
     {
         return (isset(self::PAYMENT_DEFINTIONS[$paymentId]));
+    }
+
+    public static function isSeperateCapture(string $paymentId): bool
+    {
+        return (self::isAdyenPayment($paymentId) &&
+            self::PAYMENT_DEFINTIONS[$paymentId]['seperatecapture']); /* @phpstan-ignore-line */
     }
 }

@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Model;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 class PaymentTest extends UnitTestCase
 {
@@ -40,23 +42,42 @@ class PaymentTest extends UnitTestCase
     /**
      * @dataProvider providerTestPaymentData
      */
-    public function testIsAdyenPayment($paymentId): void
+    public function testIsAdyenPaymentAndCheckCapture($paymentId, $isSeperateCapture): void
     {
         $payment = oxNew(Payment::class);
         $payment->load($paymentId);
-        $isAdyenPayment = $paymentId === Module::PAYMENT_CREDITCARD_ID;
-        $this->assertSame($isAdyenPayment, $payment->isAdyenPayment());
+        $this->assertSame(isset(Module::PAYMENT_DEFINTIONS[$paymentId]), $payment->isAdyenPayment());
+
+        $this->assertSame(
+            (
+                isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
+                Module::PAYMENT_DEFINTIONS[$paymentId]['seperatecapture'] &&
+                $isSeperateCapture
+            ),
+            $payment->isAdyenSeperateCapture()
+        );
     }
 
     public function providerTestPaymentData(): array
     {
-        return [
+        $moduleSettings = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettings::class);
+
+        $paymentData = [
             [
-                Module::PAYMENT_CREDITCARD_ID
-            ],
-            [
-                'dummy'
+                'dummy',
+                false
             ]
         ];
+
+        foreach (array_keys(Module::PAYMENT_DEFINTIONS) as $paymentId) {
+            $paymentData[] = [
+                $paymentId,
+                $moduleSettings->isSeperateCapture($paymentId)
+            ];
+        }
+
+        return $paymentData;
     }
 }
