@@ -16,7 +16,6 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class OrderTest extends UnitTestCase
 {
-    private const PAYMENT_DESC_ADYEN = 'Adyen';
     private const PAYMENT_DESC_DUMMY = 'TestDummy';
 
     public function setup(): void
@@ -82,16 +81,7 @@ class OrderTest extends UnitTestCase
 
     public function providerTestOrderData(): array
     {
-        return [
-            [
-                '123',
-                [
-                    'oxorder__oxpaymenttype' => Module::PAYMENT_CREDITCARD_ID,
-                    'oxorder__adyenpspreference' => 'test',
-                ],
-                self::PAYMENT_DESC_ADYEN
-
-            ],
+        $providerData = [
             [
                 '456',
                 [
@@ -100,18 +90,25 @@ class OrderTest extends UnitTestCase
                 self::PAYMENT_DESC_DUMMY
             ]
         ];
+        $count = 123;
+        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
+            $count++;
+            $providerData[] = [
+                (string)$count,
+                [
+                    'oxorder__oxpaymenttype' => $paymentId,
+                    'oxorder__adyenpspreference' => 'test' . $count
+                ],
+                $paymentDef['descriptions']['de']['desc']
+            ];
+        }
+
+        return $providerData;
     }
 
     public function providerTestPaymentData(): array
     {
-        return [
-            [
-                Module::PAYMENT_CREDITCARD_ID,
-                [
-                    'oxpayments__oxdesc' => self::PAYMENT_DESC_ADYEN
-                ],
-
-            ],
+        $providerData = [
             [
                 'dummy',
                 [
@@ -119,5 +116,14 @@ class OrderTest extends UnitTestCase
                 ]
             ]
         ];
+        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
+            $providerData[] = [
+                $paymentId,
+                [
+                    'oxpayments__oxdesc' => $paymentDef['descriptions']['de']['desc']
+                ]
+            ];
+        }
+        return $providerData;
     }
 }
