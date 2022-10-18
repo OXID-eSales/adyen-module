@@ -172,7 +172,7 @@ class PaymentTest extends UnitTestCase
 
 
         $paymentMock->loadAdyenSession($adyenAPISession);
-        $this->assertLoggedException(Exception::class ,'sessionData & id not found in Adyen-Response');
+        $this->assertLoggedException(Exception::class, 'sessionData & id not found in Adyen-Response');
     }
 
     /**
