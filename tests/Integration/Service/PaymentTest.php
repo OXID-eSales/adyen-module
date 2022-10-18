@@ -3,6 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Service;
 
 use Adyen\Service\Checkout;
+use Exception;
 use Monolog\Logger;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\TestingLibrary\UnitTestCase;
@@ -14,7 +15,7 @@ use OxidSolutionCatalysts\Adyen\Service\Payment;
 
 class PaymentTest extends UnitTestCase
 {
-    private $moduleSettingValues = [
+    private $testModuleSettingValues = [
         'getAPIKey' => 'dummyKey',
         'isLoggingActive' => true,
         'isSandboxMode' => true
@@ -22,7 +23,7 @@ class PaymentTest extends UnitTestCase
 
     protected function createTestAdyenSDKLoader(): AdyenSDKLoader
     {
-        $moduleSettings = $this->createConfiguredMock(ModuleSettings::class, $this->moduleSettingValues);
+        $moduleSettings = $this->createConfiguredMock(ModuleSettings::class, $this->testModuleSettingValues);
         $loggingHandler = $this->createPartialMock(Logger::class, ['getName']);
         $loggingHandler->method('getName')->willReturn('Adyen Payment Logger');
 
@@ -59,10 +60,36 @@ class PaymentTest extends UnitTestCase
     /**
      * @throws \Exception
      */
+    public function testExceptionGetAdyenSessionId()
+    {
+        $adyenSDKLoader = $this->createTestAdyenSDKLoader();
+        $session = new Session();
+
+        $payment = new Payment($adyenSDKLoader, $session);
+        $this->expectExceptionMessage('Load the session before getting the session id');
+        $payment->getAdyenSessionId();
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testGetAdyenSessionData()
     {
         $payment = $this->createTestPayment();
         $this->assertEquals('test_session_data', $payment->getAdyenSessionData());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testExceptionGetAdyenSessionData()
+    {
+        $adyenSDKLoader = $this->createTestAdyenSDKLoader();
+        $session = new Session();
+
+        $payment = new Payment($adyenSDKLoader, $session);
+        $this->expectExceptionMessage('Load the session before getting the session data');
+        $payment->getAdyenSessionData();
     }
 
     /**
@@ -105,6 +132,47 @@ class PaymentTest extends UnitTestCase
         $result = $paymentMock->loadAdyenSession($adyenAPISession);
 
         $this->assertTrue($result);
+    }
+
+    /**
+     * @throws \Adyen\AdyenException
+     * @throws \OxidEsales\Eshop\Core\Exception\StandardException
+     */
+    public function testExceptionLoadAdyenSession()
+    {
+        $adyenAPISession = new AdyenAPISession();
+        $adyenAPISession->setCountryCode('DE');
+        $adyenAPISession->setCurrencyFilterAmount('1000');
+        $adyenAPISession->setCurrencyName('EUR');
+        $adyenAPISession->setMerchantAccount('TestMerchant');
+        $adyenAPISession->setReference('TestReference');
+        $adyenAPISession->setReturnUrl('ReturnUrl');
+
+        $adyenSDKLoaderMock = $this->createTestAdyenSDKLoader();
+        $sessionMock = $this->createSession();
+
+        $checkoutMock = $this->getMockBuilder(Checkout::class)
+            ->disableOriginalConstructor()->getMock();
+        $checkoutMock->method('sessions')->willReturn([
+            'amount' => [
+                'currency' => 'EUR',
+                'value' => '1000',
+            ],
+            'countryCode' => 'DE',
+            'merchantAccount' => 'TestMerchant',
+            'reference' => 'TestReference',
+            'returnUrl' => 'ReturnUrl'
+        ]);
+
+        $paymentMock = $this->getMockBuilder(Payment::class)
+            ->setConstructorArgs([$adyenSDKLoaderMock, $sessionMock])
+            ->onlyMethods(['createCheckout'])->getMock();
+        $paymentMock->method('createCheckout')
+            ->willReturn($checkoutMock);
+
+
+        $paymentMock->loadAdyenSession($adyenAPISession);
+        $this->assertLoggedException(Exception::class ,'sessionData & id not found in Adyen-Response');
     }
 
     /**
