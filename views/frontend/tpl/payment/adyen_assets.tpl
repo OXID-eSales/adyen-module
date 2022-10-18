@@ -10,19 +10,20 @@
       integrity="sha384-oT6lIQpTr+nOu+yFBPn8mSMkNQID9wuEoTw8lmg2bcrFoDu/Ae8DhJVj+T5cUmsM"
       crossorigin="anonymous">
 
-
+[{*
 <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/VERSION/adyen.js"
     integrity="JS_INTEGRITY_HASH_FOR_YOUR_VERSION"
     crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/VERSION/adyen.css"
     integrity="CSS_INTEGRITY_HASH_FOR_YOUR_VERSION"
     crossorigin="anonymous">
-[{*assign var="sFileMTimeJS" value=$oViewConf->getModulePath('osc_adyen','out/src/js/adyen.min.js')|filemtime}]
+    *}]
+[{assign var="sFileMTimeJS" value=$oViewConf->getModulePath('osc_adyen','out/src/js/adyen.min.js')|filemtime}]
 [{assign var="sFileMTimeCSS" value=$oViewConf->getModulePath('osc_adyen','out/src/js/adyen.min.js')|filemtime}]
 [{oxstyle include=$oViewConf->getModuleUrl('osc_adyen', 'out/src/css/adyen.min.css')|cat:"?"|cat:$sFileMTimeCSS priority=10}]
-[{oxscript include=$oViewConf->getModuleUrl('osc_adyen','out/src/js/adyen.min.js')|cat:"?"|cat:$sFileMTimeJS priority=10*}]
+[{oxscript include=$oViewConf->getModuleUrl('osc_adyen','out/src/js/adyen.min.js')|cat:"?"|cat:$sFileMTimeJS priority=10}]
 [{capture assign="adyenJS"}]
-const configuration = {
+    const configuration = {
     environment: '[{$oViewConf->getAdyenOperationMode()}]',
     clientKey: '[{$oViewConf->getAdyenClientKey()}]',
     analytics: {
@@ -50,7 +51,7 @@ const configuration = {
     }
 };
 // Create an instance of AdyenCheckout using the configuration object.
-const checkout = async AdyenCheckout(configuration);
+const checkout = await AdyenCheckout(configuration);
 // Access the available payment methods for the session.
 console.log(checkout.paymentMethodsResponse); // => { paymentMethods: [...], storedPaymentMethods: [...] }
 // Create an instance of the Component and mount it to the container you created.
