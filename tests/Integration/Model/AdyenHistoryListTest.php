@@ -56,6 +56,15 @@ class AdyenHistoryListTest extends UnitTestCase
         }
     }
 
+    public function testGetOxidOrderIdByPSPReference(): void
+    {
+        $historyList = $this->createPartialMock(AdyenHistoryList::class, []);
+        $historyList->init(AdyenHistory::class);
+        $orderId = $historyList->getOxidOrderIdByPSPReference("2");
+
+        $this->assertEquals(self::TEST_ORDER_ID, $orderId);
+    }
+
     public function providerTestHistoryData(): array
     {
         return [
