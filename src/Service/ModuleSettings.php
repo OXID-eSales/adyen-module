@@ -37,7 +37,7 @@ class ModuleSettings
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
-    public const OPERATION_MODE_SANDBOX = 'sandbox';
+    public const OPERATION_MODE_SANDBOX = 'test';
     public const OPERATION_MODE_LIVE = 'live';
 
     public const OPERATION_MODE_VALUES = [
