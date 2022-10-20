@@ -25,7 +25,7 @@ class Order extends Order_parent
     public function isAdyenOrder(): bool
     {
         return (
-            $this->getFieldData('oxpaymenttype') === Module::PAYMENT_CREDITCARD_ID &&
+            Module::isAdyenPayment($this->getFieldData('oxpaymenttype')) &&
             $this->getAdyenPSPReference()
         );
     }
