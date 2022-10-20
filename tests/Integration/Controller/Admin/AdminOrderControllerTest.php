@@ -126,5 +126,4 @@ final class AdminOrderControllerTest extends UnitTestCase
 
         return $providerData;
     }
-
 }

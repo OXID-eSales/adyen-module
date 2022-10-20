@@ -22,6 +22,9 @@ class Order extends Order_parent
 
     protected ?string $adyenPaymentName = null;
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function isAdyenOrder(): bool
     {
         return (
@@ -55,10 +58,14 @@ class Order extends Order_parent
         );
     }
 
-    public function delete($oxid = null)
+    public function delete($oxid = null): bool
     {
         if ($this->isAdyenOrder()) {
-
+            $pspReference = $this->getAdyenPSPReference();
+            $adyenHistory = oxNew(AdyenHistory::class);
+            if ($adyenHistory->loadByPSPReference($pspReference)) {
+                $adyenHistory->delete();
+            }
         }
         return parent::delete($oxid);
     }

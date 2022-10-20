@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -53,6 +55,10 @@ class AdyenHistory extends BaseModel
         $this->init($this->_sCoreTable);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function init($tableName = null, $forceAllFields = false): void
     {
         parent::init($tableName, $forceAllFields);
@@ -62,7 +68,7 @@ class AdyenHistory extends BaseModel
         $this->config = Registry::getConfig();
     }
 
-    public function loadByPSPReference($pspReference = null): bool
+    public function loadByPSPReference(string $pspReference): bool
     {
         $result = false;
 
@@ -71,6 +77,7 @@ class AdyenHistory extends BaseModel
 
         $queryBuilder->select('oxid')
             ->from($this->getCoreTableName())
+            ->setMaxResults(1)
             ->where(self::PSPREFERENCEFIELD . ' = :pspreference');
 
         $parameters = [
@@ -87,17 +94,20 @@ class AdyenHistory extends BaseModel
             ->execute();
 
         if (is_a($resultDB, Result::class)) {
-            $dbData = $resultDB->fetchAllAssociative();
+            $dbData = $resultDB->fetchOne();
             $result = $this->load($dbData['oxid']);
         }
         return $result;
     }
 
-    public function delete($oxid = null)
+    public function delete($oxid = null): bool
     {
         if ($oxid) {
             $this->load($oxid);
         }
+        $pspReference = $this->getAdyenPSPReference();
+        $this->deleteChildReferences($pspReference);
+
         return parent::delete($oxid);
     }
 
@@ -120,18 +130,31 @@ class AdyenHistory extends BaseModel
     {
         if ($pspReference) {
 
-            $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
-            //collect variants to remove recursively
-            $query = 'select oxid from ' . $this->getViewName() . ' where oxparentid = :oxparentid';
-            $rs = $database->select($query, [
-                ':oxparentid' => $sOXID
-            ]);
-            $oArticle = oxNew(\OxidEsales\Eshop\Application\Model\Article::class);
-            if ($rs != false && $rs->count() > 0) {
-                while (!$rs->EOF) {
-                    $oArticle->setId($rs->fields[0]);
-                    $oArticle->delete();
-                    $rs->fetchRow();
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = $this->queryBuilderFactory->create();
+
+            $queryBuilder->select('oxid')
+                ->from($this->getCoreTableName())
+                ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspreference');
+
+            $parameters = [
+                'pspreference' => $pspReference
+            ];
+
+            if (!$this->config->getConfigParam('blMallUsers')) {
+                $queryBuilder->andWhere('oxshopid = :oxshopid');
+                $parameters['oxshopid'] = $this->context->getCurrentShopId();
+            }
+
+            /** @var Result $resultDB */
+            $resultDB = $queryBuilder->setParameters($parameters)
+                ->execute();
+
+            if (is_a($resultDB, Result::class)) {
+                $fromDB = $resultDB->fetchAllAssociative();
+                foreach ($fromDB as $row) {
+                    $adyenHistory = oxNew(AdyenHistory::class);
+                    $adyenHistory->delete($row['oxid']);
                 }
             }
         }
