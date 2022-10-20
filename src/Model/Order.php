@@ -54,4 +54,12 @@ class Order extends Order_parent
             ]
         );
     }
+
+    public function delete($oxid = null)
+    {
+        if ($this->isAdyenOrder()) {
+
+        }
+        return parent::delete($oxid);
+    }
 }
