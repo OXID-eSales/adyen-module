@@ -62,7 +62,7 @@ class AdyenHistoryList extends ListModel
 
         $listObject = $this->getBaseObject();
 
-        $queryBuilder->select()
+        $queryBuilder->select($listObject->getSelectFields())
             ->from(Module::ADYEN_HISTORY_TABLE)
             ->where('oxorderid = :orderid');
 
@@ -89,12 +89,14 @@ class AdyenHistoryList extends ListModel
     {
         $queryBuilder = $this->queryBuilderFactory->create();
 
-        $queryBuilder->select(['oxorderid'])
+        $queryBuilder->select('oxorderid')
             ->from(Module::ADYEN_HISTORY_TABLE)
-            ->where('pspreference = :pspreference');
+            ->where('pspreference = :pspreference')
+            ->orWhere('parentpspreference = :parentpspreference');
 
         $parameters = [
-            'pspreference' => $pspReference
+            'pspreference' => $pspReference,
+            'parentpspreference' => $pspReference
         ];
 
         if (!$this->config->getConfigParam('blMallUsers')) {
@@ -108,6 +110,6 @@ class AdyenHistoryList extends ListModel
             ->setMaxResults(1)
             ->execute();
 
-        return $resultDB->fetchOne();
+        return $resultDB->fetchAssociative()['oxorderid'];
     }
 }

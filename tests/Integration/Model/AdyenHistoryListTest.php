@@ -18,7 +18,7 @@ class AdyenHistoryListTest extends UnitTestCase
 {
     private const TEST_ORDER_ID = '_testorder';
 
-    public function setup(): void
+    protected function setUp(): void
     {
         parent::setUp();
         foreach ($this->providerTestHistoryData() as $dataSet) {
@@ -32,9 +32,13 @@ class AdyenHistoryListTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        $this->cleanUpTable(Module::ADYEN_HISTORY_TABLE);
-
         parent::tearDown();
+        foreach ($this->providerTestHistoryData() as $dataSet) {
+            [$historyId, $historyData] = $dataSet;
+            $order = oxNew(AdyenHistory::class);
+            $order->load($historyId);
+            $order->delete();
+        }
     }
 
     public function testGetAdyenHistoryList(): void
@@ -60,7 +64,10 @@ class AdyenHistoryListTest extends UnitTestCase
     {
         $historyList = $this->createPartialMock(AdyenHistoryList::class, []);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("2");
+        $historyList->getAdyenHistoryList(self::TEST_ORDER_ID);
+        $this->assertSame(2, $historyList->count());
+
+        $orderId = $historyList->getOxidOrderIdByPSPReference("1");
 
         $this->assertEquals(self::TEST_ORDER_ID, $orderId);
     }

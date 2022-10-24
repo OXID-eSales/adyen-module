@@ -69,7 +69,7 @@ abstract class WebhookHandlerBase
      */
     public function getLiveStatus(Event $event): bool
     {
-        return $event->getData()[self::LIVE_JSON_FIELD] === "true";
+        return $event->getData()[self::LIVE_JSON_FIELD] == "true";
     }
 
     /**
