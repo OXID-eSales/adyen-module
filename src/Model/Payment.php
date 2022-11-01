@@ -33,6 +33,17 @@ class Payment extends Payment_parent
     }
 
     /**
+     * Checks if the payment method is an Adyen payment method and active
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return bool
+     */
+    public function isActiveAdyenPayment(): bool
+    {
+        return $this->isAdyenPayment() && $this->getFieldData('oxactive') === '1';
+    }
+
+    /**
      * Checks if the payment allow seperate Capture
      *
      * @SuppressWarnings(PHPMD.StaticAccess)

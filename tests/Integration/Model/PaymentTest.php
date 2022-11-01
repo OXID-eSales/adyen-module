@@ -24,6 +24,9 @@ class PaymentTest extends UnitTestCase
             [$paymentId] = $dataSet;
             $payment = oxNew(Payment::class);
             $payment->setId($paymentId);
+            $payment->assign([
+                'oxpayment__oxactive' => true
+            ]);
             $payment->save();
         }
     }
@@ -44,10 +47,22 @@ class PaymentTest extends UnitTestCase
      */
     public function testIsAdyenPaymentAndCheckCapture($paymentId, $isSeperateCapture): void
     {
+        // Check:  isAdyenPayment
         $payment = oxNew(Payment::class);
         $payment->load($paymentId);
         $this->assertSame(isset(Module::PAYMENT_DEFINTIONS[$paymentId]), $payment->isAdyenPayment());
 
+        // Check: isActiveAdyenPayment
+        $isActive = $payment->getFieldData('oxactive') === '1' ;
+        $this->assertSame(
+            (
+                isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
+                $isActive
+            ),
+            $payment->isActiveAdyenPayment()
+        );
+
+        // Check isAdyenSeperateCapture
         $this->assertSame(
             (
                 isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
@@ -56,6 +71,11 @@ class PaymentTest extends UnitTestCase
             ),
             $payment->isAdyenSeperateCapture()
         );
+
+        $payment->assign([
+            'oxpayment__oxactive' => true
+        ]);
+        $payment->save();
     }
 
     public function providerTestPaymentData(): array

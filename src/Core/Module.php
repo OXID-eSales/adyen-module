@@ -24,6 +24,10 @@ final class Module
     public const ADYEN_SESSION_ID_NAME = 'sess_adyen_id';
     public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
 
+    public const ADYEN_SDK_VERSION = '5.27.0';
+    public const ADYEN_INTEGRITY_JS = 'sha384-YGWSKjvKe65KQJXrOTMIv0OwvG+gpahBNej9I3iVl4eMXhdUZDUwnaQdsNV5OCWp';
+    public const ADYEN_INTEGRITY_CSS = 'sha384-2MpA/pwUY9GwUN1/eXoQL3SDsNMBV47TIywN1r5tb8JB4Shi7y5dyRZ7AwDsCnP8';
+
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
         'oxtoamount' => 60000,
