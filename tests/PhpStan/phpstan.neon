@@ -4,11 +4,11 @@ parameters:
         - phpstan-bootstrap.php
     stubFiles:
         - stubs/BasketModel.stub
-        - stubs/OrderModel.stub
-        - stubs/PaymentModel.stub
-        - stubs/StartController.stub
-        - stubs/ViewConfig.stub
         - stubs/OrderListController.stub
+        - stubs/OrderModel.stub
+        - stubs/PaymentController.stub
+        - stubs/PaymentModel.stub
+        - stubs/ViewConfig.stub
     level: max
     scanFiles:
         - ../../vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php

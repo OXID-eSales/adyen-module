@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\Eshop\Application\Controller;
 
-final class StartController
+final class PaymentController
 {
 }
