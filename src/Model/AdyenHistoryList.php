@@ -84,4 +84,32 @@ class AdyenHistoryList extends ListModel
             $this->assignArray($dbData);
         }
     }
+
+    public function getOxidOrderIdByPSPReference(string $pspReference): string
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder->select('oxorderid')
+            ->from(Module::ADYEN_HISTORY_TABLE)
+            ->where('pspreference = :pspreference')
+            ->orWhere('parentpspreference = :parentpspreference');
+
+        $parameters = [
+            'pspreference' => $pspReference,
+            'parentpspreference' => $pspReference
+        ];
+
+        if (!$this->config->getConfigParam('blMallUsers')) {
+            $queryBuilder->andWhere('oxshopid = :oxshopid');
+            $parameters['oxshopid'] = $this->context->getCurrentShopId();
+        }
+
+        /** @var Result $resultDB */
+        $resultDB = $queryBuilder
+            ->setParameters($parameters)
+            ->setMaxResults(1)
+            ->execute();
+
+        return $resultDB->fetchAssociative()['oxorderid'];
+    }
 }

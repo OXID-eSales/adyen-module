@@ -19,4 +19,10 @@ $aLang = [
 
     // extend order_list.tpl
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',
+
+    // extend module_config.tpl
+    'OSC_ADYEN_CONFIG_HEAD' => 'important Module-informations',
+    'OSC_ADYEN_CONFIG_OPTIONS' => 'Module-options',
+    'OSC_ADYEN_CONFIG_SDK' => 'used SDK-Version',
+    'OSC_ADYEN_CONFIG_WEBHOOKURL' => 'Webhook-Url (Please copy and store in the Adyen backend)',
 ];
