@@ -5,8 +5,7 @@ module.exports = {
         },
         files: {
             "../out/src/css/adyen.css": [
-                "../out/src/css/adyen.css",
-                "node_modules/@adyen/adyen-web/dist/adyen.css"
+                "../out/src/css/adyen.css"
             ]
         }
     },

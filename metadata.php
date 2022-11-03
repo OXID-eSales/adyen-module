@@ -6,8 +6,10 @@
  */
 
 use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
+use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
+use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
@@ -46,6 +48,8 @@ $aModule = [
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
+        // frontend-controller
+        \OxidEsales\Eshop\Application\Controller\PaymentController::class => PaymentController::class,
     ],
     'events' => [
         'onActivate' => '\OxidSolutionCatalysts\Adyen\Core\ModuleEvents::onActivate',
@@ -55,7 +59,9 @@ $aModule = [
         // admin
         'adyen_admin_order' => AdminOrderController::class,
         // frontend
-        'AdyenJSController' => AdyenJSController::class
+        'AdyenJSController' => AdyenJSController::class,
+        // frontend
+        'AdyenWebhookController' => AdyenWebhookController::class
     ],
     'templates' => [
         // admin
@@ -114,6 +120,12 @@ $aModule = [
             'template' => 'email/plain/ordershipped.tpl',
             'block' => 'email_plain_ordershipped_oxordernr',
             'file' => 'views/frontend/blocks/email/plain/email_plain_ordershipped_oxordernr.tpl'
+        ],
+        //admin
+        [
+            'template' => 'module_config.tpl',
+            'block' => 'admin_module_config_form',
+            'file' => 'views/admin/blocks/admin_module_config_form.tpl'
         ],
     ],
     'settings' => [

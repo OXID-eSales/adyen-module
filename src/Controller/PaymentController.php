@@ -7,8 +7,8 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\Eshop\Application\Controller;
+namespace OxidSolutionCatalysts\Adyen\Controller;
 
-final class StartController
+class PaymentController extends PaymentController_parent
 {
 }

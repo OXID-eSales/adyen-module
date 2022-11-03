@@ -9,6 +9,7 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
+use OxidEsales\Facts\Facts;
 
 class ViewConfig extends ViewConfig_parent
 {
@@ -42,5 +43,35 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenClientKey(): string
     {
         return $this->moduleSettings->getClientKey();
+    }
+
+    public function getAdyenSDKVersion(): string
+    {
+        return Module::ADYEN_SDK_VERSION;
+    }
+
+    public function getAdyenIntegrityJS(): string
+    {
+        return Module::ADYEN_INTEGRITY_JS;
+    }
+
+    public function getAdyenIntegrityCSS(): string
+    {
+        return Module::ADYEN_INTEGRITY_CSS;
+    }
+
+    /**
+     * Get webhook controller url
+     *
+     * @return string
+     */
+    public function getWebhookControllerUrl(): string
+    {
+        $webhookUrl = 'index.php?cl=AdyenWebhookController';
+        $facts = new Facts();
+
+        return html_entity_decode(
+            $facts->getShopUrl() . $webhookUrl
+        );
     }
 }
