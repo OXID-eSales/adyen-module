@@ -36,16 +36,24 @@ class UserRepository
     /** @var EshopSession */
     private EshopSession $session;
 
+    /** @var ModuleSettings */
+    private ModuleSettings $moduleSettings;
+
+    protected string $userCountryIso = '';
+    protected string $userLocale = '';
+
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         ContextInterface $context,
         EshopCoreConfig $config,
-        EshopSession $session
+        EshopSession $session,
+        ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
         $this->config = $config;
         $this->session = $session;
+        $this->moduleSettings = $moduleSettings;
     }
 
     /**
@@ -70,9 +78,21 @@ class UserRepository
 
     public function getUserCountryIso(): string
     {
-        $country = oxNew(Country::class);
-        $country->load($this->getCountryId());
-        return (string) $country->getFieldData('oxisoalpha2');
+        if (!$this->userCountryIso) {
+            $country = oxNew(Country::class);
+            $country->load($this->getCountryId());
+            $this->userCountryIso = (string) $country->getFieldData('oxisoalpha2');
+        }
+        return $this->userCountryIso;
+    }
+
+    public function getUserLocale(): string
+    {
+        if (!$this->userLocale) {
+            $userCountryIso = strtolower($this->getUserCountryIso());
+            $this->userLocale = $this->moduleSettings->getLocaleForCountryIso($userCountryIso);
+        }
+        return $this->userLocale;
     }
 
     /**

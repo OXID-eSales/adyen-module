@@ -69,6 +69,8 @@ trait AdyenAPI
 
             $adyenAPISession->setCountryCode($userRepository->getUserCountryIso());
 
+            $adyenAPISession->setShopperLocale($userRepository->getUserLocale());
+
             $adyenAPISession->setMerchantAccount($moduleSettings->getMerchantAccount());
 
             $adyenAPISession->setReference(Module::ADYEN_ORDER_REFERENCE_ID);

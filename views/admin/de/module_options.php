@@ -15,6 +15,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_SANDBOX' => 'Adyen Zugangsdaten Sandbox',
     'SHOP_MODULE_GROUP_osc_adyen_LIVE' => 'Adyen Zugangsdaten Live',
     'SHOP_MODULE_GROUP_osc_adyen_SeperateCapture' => 'Separater Zahlungseinzug für ausgewählte Zahlungsarten',
+    'SHOP_MODULE_GROUP_osc_adyen_Languages' => 'Sprach-Konfiguration',
 
     'SHOP_MODULE_osc_adyen_OperationMode' => 'Betriebsmodus',
     'SHOP_MODULE_osc_adyen_OperationMode_sandbox' => 'Sandbox',
@@ -37,4 +38,7 @@ $aLang = [
 
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['de']['desc'],
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['de']['desc'],
+
+    'SHOP_MODULE_osc_adyen_Languages' => 'Sprachlokalisierungen passend zur OXID-Sprache',
+    'HELP_SHOP_MODULE_osc_adyen_Languages' => 'Geben Sie für jede OXID-Sprache (Stammdaten > Sprachen > Sprache > Sprachkürzel) eine passende Sprach- und Regionlokalisierung (ISO 639-1 alpha-2 / ISO 3166-1 alpha-2) an. Für jede Einstellung eine Zeile (z.B. en => en_US)',
 ];

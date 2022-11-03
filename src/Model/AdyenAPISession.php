@@ -17,6 +17,8 @@ class AdyenAPISession
 
     protected string $countryCode;
 
+    protected string $shopperLocale;
+
     protected string $merchantAccount;
 
     protected string $reference;
@@ -36,6 +38,11 @@ class AdyenAPISession
     public function setCountryCode(string $countryCode): void
     {
         $this->countryCode = $countryCode;
+    }
+
+    public function setShopperLocale(string $shopperLocale): void
+    {
+        $this->shopperLocale = $shopperLocale;
     }
 
     public function setMerchantAccount(string $merchantAccount): void
@@ -63,7 +70,8 @@ class AdyenAPISession
             'countryCode' => $this->countryCode,
             'merchantAccount' => $this->merchantAccount,
             'reference' => $this->reference,
-            'returnUrl' => $this->returnUrl
+            'returnUrl' => $this->returnUrl,
+            'shopperLocale' => $this->shopperLocale
         ];
     }
 }

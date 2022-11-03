@@ -227,6 +227,15 @@ $aModule = [
             'value' => false
         ],
         [
+            'group' => 'osc_adyen_Languages',
+            'name' => 'osc_adyen_Languages',
+            'type' => 'aarr',
+            'value' => [
+                'de' => 'de_DE',
+                'en' => 'en_US',
+            ]
+        ],
+        [
             'group' => null,
             'name' => 'osc_adyen_activePayments',
             'type' => 'arr',

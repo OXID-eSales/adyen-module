@@ -126,6 +126,12 @@ class ModuleSettings
         return (bool)$this->getSettingValue('osc_adyen_SeperateCapture_' . $paymentId);
     }
 
+    public function getLocaleForCountryIso(string $countryIso): string
+    {
+        $languages = $this->getSettingValue('osc_adyen_Languages');
+        return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';
+    }
+
     public function saveActivePayments(array $activePayments): void
     {
         $this->saveSettingValue(self::ACTIVE_PAYMENTS, $activePayments);
