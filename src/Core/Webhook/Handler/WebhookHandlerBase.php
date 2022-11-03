@@ -40,20 +40,20 @@ abstract class WebhookHandlerBase
             return;
         }
 
-        foreach ($this->getNotificationItems($event) as $notificationRequestItem) {
-            $pspReference = $notificationRequestItem
+        foreach ($this->getNotificationItems($event) as $notificationItem) {
+            $pspReference = $notificationItem
                 [self::NOTIFICATION_REQUEST_ITEM_JSON_FIELD]
                 [self::PSP_REFERENCE_JSON_FIELD];
 
             if ($pspReference) {
                 $order = $this->getOrderByAdyenPSPReference($pspReference);
 
-                $success = $notificationRequestItem
+                $success = $notificationItem
                     [self::NOTIFICATION_REQUEST_ITEM_JSON_FIELD]
                     [self::SUCCESS_JSON_FIELD];
 
                 if ($success) {
-                    $eventCode = $notificationRequestItem
+                    $eventCode = $notificationItem
                         [self::NOTIFICATION_REQUEST_ITEM_JSON_FIELD]
                         [self::EVENT_CODE_JSON_FIELD];
 
@@ -65,16 +65,14 @@ abstract class WebhookHandlerBase
 
     /**
      * @param Event $event
-     * @return bool
      */
-    public function getLiveStatus(Event $event): bool
+    public function isLiveStatus(Event $event): bool
     {
         return $event->getData()[self::LIVE_JSON_FIELD] == "true";
     }
 
     /**
      * @param Event $event
-     * @return string
      */
     public function getNotificationItems(Event $event): array
     {
@@ -83,12 +81,11 @@ abstract class WebhookHandlerBase
 
     /**
      * @param Event $event
-     * @return bool
      */
     public function verifyHMACSignature(Event $event): bool
     {
-        /** @var ModuleSettings $moduleSettings */
         try {
+            /** @var ModuleSettings $moduleSettings */
             $moduleSettings = ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(ModuleSettings::class);
@@ -101,8 +98,8 @@ abstract class WebhookHandlerBase
         $hmac = new HmacSignature();
 
         try {
-            foreach ($this->getNotificationItems($event) as $notificationRequestItem) {
-                $params = $notificationRequestItem[self::NOTIFICATION_REQUEST_ITEM_JSON_FIELD];
+            foreach ($this->getNotificationItems($event) as $notificationItem) {
+                $params = $notificationItem[self::NOTIFICATION_REQUEST_ITEM_JSON_FIELD];
                 if (!$hmac->isValidNotificationHMAC($hmacKey, $params)) {
                     return false;
                 }
@@ -117,7 +114,6 @@ abstract class WebhookHandlerBase
 
     /**
      * @param string $pspReference
-     * @return Order
      */
     public function getOrderByAdyenPSPReference(string $pspReference): Order
     {
@@ -130,8 +126,12 @@ abstract class WebhookHandlerBase
         return $order;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function updateStatus(Order $order, string $eventCode): void
     {
         //TODO: Update status in oxorder table and any tables...
+        //TODO: remove SuppressWarnings when you´ve done develop the interaction with $order and $eventCode
     }
 }
