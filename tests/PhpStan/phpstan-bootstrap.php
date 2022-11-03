@@ -33,6 +33,6 @@ class_alias(
 );
 
 class_alias(
-    \OxidEsales\Eshop\Application\Controller\StartController::class,
-    \OxidSolutionCatalysts\Adyen\Controller\StartController_parent::class
+    \OxidEsales\Eshop\Application\Controller\PaymentController::class,
+    \OxidSolutionCatalysts\Adyen\Controller\PaymentController_parent::class
 );

@@ -43,4 +43,19 @@ class ViewConfig extends ViewConfig_parent
     {
         return $this->moduleSettings->getClientKey();
     }
+
+    public function getAdyenSDKVersion(): string
+    {
+        return Module::ADYEN_SDK_VERSION;
+    }
+
+    public function getAdyenIntegrityJS(): string
+    {
+        return Module::ADYEN_INTEGRITY_JS;
+    }
+
+    public function getAdyenIntegrityCSS(): string
+    {
+        return Module::ADYEN_INTEGRITY_CSS;
+    }
 }
