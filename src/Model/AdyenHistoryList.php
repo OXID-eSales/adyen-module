@@ -87,6 +87,8 @@ class AdyenHistoryList extends ListModel
 
     public function getOxidOrderIdByPSPReference(string $pspReference): string
     {
+        $oxId = '';
+
         $queryBuilder = $this->queryBuilderFactory->create();
 
         $queryBuilder->select('oxorderid')
@@ -110,6 +112,10 @@ class AdyenHistoryList extends ListModel
             ->setMaxResults(1)
             ->execute();
 
-        return $resultDB->fetchAssociative()['oxorderid'];
+        if (is_a($resultDB, Result::class)) {
+            $dbData = $resultDB->fetchOne()['oxorderid'];
+            $oxId =  $dbData['oxorderid'] ?: '';
+        }
+        return $oxId;
     }
 }
