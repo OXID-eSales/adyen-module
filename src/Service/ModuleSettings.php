@@ -126,6 +126,15 @@ class ModuleSettings
         return (bool)$this->getSettingValue('osc_adyen_SeperateCapture_' . $paymentId);
     }
 
+    public function getLocaleForCountryIso(string $countryIso): string
+    {
+        // make sure provided keys and searched keys are in lower case
+        $countryIso = strtolower($countryIso);
+        $languages = array_change_key_case($this->getSettingValue('osc_adyen_Languages'), CASE_LOWER);
+
+        return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';
+    }
+
     public function saveActivePayments(array $activePayments): void
     {
         $this->saveSettingValue(self::ACTIVE_PAYMENTS, $activePayments);

@@ -18,6 +18,7 @@ class AdyenAPISessionTest extends UnitTestCase
     {
         $model = new AdyenAPISession();
         $model->setCountryCode('DE');
+        $model->setShopperLocale('de_DE');
         $model->setCurrencyFilterAmount('1000');
         $model->setCurrencyName('EUR');
         $model->setMerchantAccount('TestMerchant');
@@ -32,7 +33,8 @@ class AdyenAPISessionTest extends UnitTestCase
             'countryCode' => 'DE',
             'merchantAccount' => 'TestMerchant',
             'reference' => 'TestReference',
-            'returnUrl' => 'ReturnUrl'
+            'returnUrl' => 'ReturnUrl',
+            'shopperLocale' => 'de_DE'
         ], $model->getAdyenSessionParams());
     }
 }

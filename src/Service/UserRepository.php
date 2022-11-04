@@ -36,16 +36,24 @@ class UserRepository
     /** @var EshopSession */
     private EshopSession $session;
 
+    /** @var ModuleSettings */
+    private ModuleSettings $moduleSettings;
+
+    protected array $userCountryIso = [];
+    protected array $userLocale = [];
+
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         ContextInterface $context,
         EshopCoreConfig $config,
-        EshopSession $session
+        EshopSession $session,
+        ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
         $this->config = $config;
         $this->session = $session;
+        $this->moduleSettings = $moduleSettings;
     }
 
     /**
@@ -70,9 +78,22 @@ class UserRepository
 
     public function getUserCountryIso(): string
     {
-        $country = oxNew(Country::class);
-        $country->load($this->getCountryId());
-        return (string) $country->getFieldData('oxisoalpha2');
+        $countryId = $this->getCountryId();
+        if (!isset($this->userCountryIso[$countryId])) {
+            $country = oxNew(Country::class);
+            $country->load($countryId);
+            $this->userCountryIso[$countryId] = (string) $country->getFieldData('oxisoalpha2');
+        }
+        return $this->userCountryIso[$countryId];
+    }
+
+    public function getUserLocale(): string
+    {
+        $countryIso = $this->getUserCountryIso();
+        if (!isset($this->userLocale[$countryIso])) {
+            $this->userLocale[$countryIso] = $this->moduleSettings->getLocaleForCountryIso($countryIso);
+        }
+        return $this->userLocale[$countryIso];
     }
 
     /**
