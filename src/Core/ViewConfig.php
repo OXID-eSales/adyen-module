@@ -40,6 +40,11 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->getOperationMode();
     }
 
+    public function isAdyenLoggingActive(): bool
+    {
+        return $this->moduleSettings->isLoggingActive();
+    }
+
     public function getAdyenClientKey(): string
     {
         return $this->moduleSettings->getClientKey();

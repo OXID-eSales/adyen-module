@@ -27,16 +27,39 @@
                 sessionData: '[{$oViewConf->getAdyenSessionData()}]'
             },
             onPaymentCompleted: (result, component) => {
-                console.info(result, component);
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                     console.info(result, component);
+                [{/if}]
             },
             onError: (error, component) => {
-                console.error(error.name, error.message, error.stack, component);
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                    console.error(error.name, error.message, error.stack, component);
+                [{/if}]
+            },
+            onChange: (state, dropin) => {
+                var paymentIdEl = document.getElementById(dropin._node.attributes.getNamedItem('data-paymentid').value);
+                paymentIdEl.checked = true;
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                    console.log('onChange:', state);
+                [{/if}]
+            },
+            onSubmit: (state, dropin) => {
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                    console.log('onSubmit', state);
+                [{/if}]
+                dropin.setStatus('loading');
+                makePayment(state.data, { amount, countryCode })
+                    .then(this.handleResponse)
+                    .catch(this.handleError);
+                return true;
             }
         };
         // Create an instance of AdyenCheckout using the configuration object.
         const checkout = await AdyenCheckout(configuration);
         // Access the available payment methods for the session.
-        // console.log(checkout.paymentMethodsResponse); // => { paymentMethods: [...], storedPaymentMethods: [...] }
+        [{if $oViewConf->isAdyenLoggingActive()}]
+            console.log(checkout.paymentMethodsResponse); // => { paymentMethods: [...], storedPaymentMethods: [...] }
+        [{/if}]
         [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
             [{if $paymentObj->isActiveAdyenPayment()}]
                 [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
