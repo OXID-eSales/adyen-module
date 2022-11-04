@@ -89,7 +89,7 @@ class UserRepository
     public function getUserLocale(): string
     {
         if (!$this->userLocale) {
-            $userCountryIso = strtolower($this->getUserCountryIso());
+            $userCountryIso = $this->getUserCountryIso();
             $this->userLocale = $this->moduleSettings->getLocaleForCountryIso($userCountryIso);
         }
         return $this->userLocale;

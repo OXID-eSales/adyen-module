@@ -128,7 +128,10 @@ class ModuleSettings
 
     public function getLocaleForCountryIso(string $countryIso): string
     {
-        $languages = $this->getSettingValue('osc_adyen_Languages');
+        // make sure provided keys and searched keys are in lower case
+        $countryIso = strtolower($countryIso);
+        $languages = array_change_key_case($this->getSettingValue('osc_adyen_Languages'), CASE_LOWER);
+
         return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';
     }
 
