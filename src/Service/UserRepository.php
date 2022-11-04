@@ -39,8 +39,8 @@ class UserRepository
     /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
-    protected string $userCountryIso = '';
-    protected string $userLocale = '';
+    protected array $userCountryIso = [];
+    protected array $userLocale = [];
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
@@ -78,21 +78,22 @@ class UserRepository
 
     public function getUserCountryIso(): string
     {
-        if (!$this->userCountryIso) {
+        $countryId = $this->getCountryId();
+        if (!isset($this->userCountryIso[$countryId])) {
             $country = oxNew(Country::class);
-            $country->load($this->getCountryId());
-            $this->userCountryIso = (string) $country->getFieldData('oxisoalpha2');
+            $country->load($countryId);
+            $this->userCountryIso[$countryId] = (string) $country->getFieldData('oxisoalpha2');
         }
-        return $this->userCountryIso;
+        return $this->userCountryIso[$countryId];
     }
 
     public function getUserLocale(): string
     {
-        if (!$this->userLocale) {
-            $userCountryIso = $this->getUserCountryIso();
-            $this->userLocale = $this->moduleSettings->getLocaleForCountryIso($userCountryIso);
+        $countryIso = $this->getUserCountryIso();
+        if (!isset($this->userLocale[$countryIso])) {
+            $this->userLocale[$countryIso] = $this->moduleSettings->getLocaleForCountryIso($countryIso);
         }
-        return $this->userLocale;
+        return $this->userLocale[$countryIso];
     }
 
     /**

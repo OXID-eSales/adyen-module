@@ -113,8 +113,7 @@ class AdyenHistoryList extends ListModel
             ->execute();
 
         if (is_a($resultDB, Result::class)) {
-            $dbData = $resultDB->fetchOne()['oxorderid'];
-            $oxId =  $dbData['oxorderid'] ?: '';
+            $oxId = $resultDB->fetchOne();
         }
         return $oxId;
     }

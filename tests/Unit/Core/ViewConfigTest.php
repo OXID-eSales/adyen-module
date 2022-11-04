@@ -22,6 +22,9 @@ class ViewConfigTest extends UnitTestCase
         $this->assertSame($viewConfig->getAdyenSDKVersion(), Module::ADYEN_SDK_VERSION);
         $this->assertSame($viewConfig->getAdyenIntegrityJS(), Module::ADYEN_INTEGRITY_JS);
         $this->assertSame($viewConfig->getAdyenIntegrityCSS(), Module::ADYEN_INTEGRITY_CSS);
-        $this->assertStringContainsString('index.php?cl=AdyenWebhookController', $viewConfig->getWebhookControllerUrl());
+        $this->assertStringContainsString(
+            'index.php?cl=AdyenWebhookController',
+            $viewConfig->getWebhookControllerUrl()
+        );
     }
 }

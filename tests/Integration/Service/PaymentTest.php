@@ -99,6 +99,7 @@ class PaymentTest extends UnitTestCase
     {
         $adyenAPISession = new AdyenAPISession();
         $adyenAPISession->setCountryCode('DE');
+        $adyenAPISession->setShopperLocale('de_DE');
         $adyenAPISession->setCurrencyFilterAmount('1000');
         $adyenAPISession->setCurrencyName('EUR');
         $adyenAPISession->setMerchantAccount('TestMerchant');
@@ -142,6 +143,7 @@ class PaymentTest extends UnitTestCase
     {
         $adyenAPISession = new AdyenAPISession();
         $adyenAPISession->setCountryCode('DE');
+        $adyenAPISession->setShopperLocale('de_DE');
         $adyenAPISession->setCurrencyFilterAmount('1000');
         $adyenAPISession->setCurrencyName('EUR');
         $adyenAPISession->setMerchantAccount('TestMerchant');
