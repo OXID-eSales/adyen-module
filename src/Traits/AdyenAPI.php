@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Traits;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIPaymentMethodsResponse;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPISessionResponse;
@@ -34,7 +35,7 @@ trait AdyenAPI
      * @throws \Adyen\AdyenException
      * @throws \Exception
      */
-    public function getAdyenSessionId(): string
+    protected function getAdyenSessionId(): string
     {
         $adyenApiSessionResponse = $this->getAdyenSessionResponse();
         return $adyenApiSessionResponse->getAdyenSessionId();
@@ -44,7 +45,7 @@ trait AdyenAPI
      * @throws \Adyen\AdyenException
      * @throws \Exception
      */
-    public function getAdyenSessionData(): string
+    protected function getAdyenSessionData(): string
     {
         $adyenApiSessionResponse = $this->getAdyenSessionResponse();
         return $adyenApiSessionResponse->getAdyenSessionData();
@@ -53,7 +54,7 @@ trait AdyenAPI
     /**
      * @throws \Adyen\AdyenException
      */
-    protected function getAdyenSessionResponse(): AdyenAPISessionResponse
+    private function getAdyenSessionResponse(): AdyenAPISessionResponse
     {
         if (is_null($this->adyenApiSessionResponse)) {
             $adyenAPISession = oxNew(AdyenAPISession::class);
@@ -88,7 +89,7 @@ trait AdyenAPI
     /**
      * @throws \Adyen\AdyenException
      */
-    protected function getAdyenPaymentMethodsResponse(): AdyenAPIPaymentMethodsResponse
+    protected function getAdyenPaymentMethodsData(): AdyenAPIPaymentMethodsResponse
     {
         if (is_null($this->adyenAPIPaymentMethods)) {
             $adyenAPIPaymentMethods = oxNew(AdyenAPIPaymentMethods::class);
@@ -110,7 +111,7 @@ trait AdyenAPI
 
             $adyenAPIPaymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
 
-            $adyenAPIPaymentMethodsResponse->loadAdyenSession($adyenAPIPaymentMethods);
+            $adyenAPIPaymentMethodsResponse->loadAdyenPaymentMethods($adyenAPIPaymentMethods);
             $this->adyenAPIPaymentMethodsResponse = $adyenAPIPaymentMethodsResponse;
         }
         return $this->adyenAPIPaymentMethodsResponse;

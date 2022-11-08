@@ -23,6 +23,7 @@ final class Module
 
     public const ADYEN_SESSION_ID_NAME = 'sess_adyen_id';
     public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
+    public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
 
     public const ADYEN_SDK_VERSION = '5.27.0';
     public const ADYEN_INTEGRITY_JS = 'sha384-YGWSKjvKe65KQJXrOTMIv0OwvG+gpahBNej9I3iVl4eMXhdUZDUwnaQdsNV5OCWp';

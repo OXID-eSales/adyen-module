@@ -46,7 +46,7 @@ class AdyenAPIPaymentMethods
         $this->merchantAccount = $merchantAccount;
     }
 
-    public function getAdyenSessionParams(): array
+    public function getAdyenPaymentMethodsParams(): array
     {
         return [
             'amount' => [
