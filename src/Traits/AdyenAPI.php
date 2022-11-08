@@ -13,7 +13,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPISessionResponse;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
 /**
@@ -26,7 +26,7 @@ trait AdyenAPI
 {
     use ServiceContainer;
 
-    protected ?Payment $adyenResponse = null;
+    protected ?AdyenAPISessionResponse $adyenApiSessionResponse = null;
 
     /**
      * @throws \Adyen\AdyenException
@@ -34,8 +34,8 @@ trait AdyenAPI
      */
     public function getAdyenSessionId(): string
     {
-        $adyenResponse = $this->getAdyenSessionResponse();
-        return $adyenResponse->getAdyenSessionId();
+        $adyenApiSessionResponse = $this->getAdyenSessionResponse();
+        return $adyenApiSessionResponse->getAdyenSessionId();
     }
 
     /**
@@ -44,22 +44,22 @@ trait AdyenAPI
      */
     public function getAdyenSessionData(): string
     {
-        $adyenResponse = $this->getAdyenSessionResponse();
-        return $adyenResponse->getAdyenSessionData();
+        $adyenApiSessionResponse = $this->getAdyenSessionResponse();
+        return $adyenApiSessionResponse->getAdyenSessionData();
     }
 
     /**
      * @throws \Adyen\AdyenException
      */
-    protected function getAdyenSessionResponse(): Payment
+    protected function getAdyenSessionResponse(): AdyenAPISessionResponse
     {
-        if (is_null($this->adyenResponse)) {
+        if (is_null($this->adyenApiSessionResponse)) {
             $adyenAPISession = oxNew(AdyenAPISession::class);
 
             $context = $this->getServiceFromContainer(Context::class);
             $userRepository = $this->getServiceFromContainer(UserRepository::class);
             $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-            $adyenPayment = $this->getServiceFromContainer(Payment::class);
+            $adyenApiSessionResponse = $this->getServiceFromContainer(AdyenAPISessionResponse::class);
 
             $adyenAPISession->setCurrencyName($context->getActiveCurrencyName());
 
@@ -77,9 +77,9 @@ trait AdyenAPI
 
             $adyenAPISession->setReturnUrl($context->getCurrentShopUrl() . 'index.php?cl=order');
 
-            $adyenPayment->loadAdyenSession($adyenAPISession);
-            $this->adyenResponse = $adyenPayment;
+            $adyenApiSessionResponse->loadAdyenSession($adyenAPISession);
+            $this->adyenApiSessionResponse = $adyenApiSessionResponse;
         }
-        return $this->adyenResponse;
+        return $this->adyenApiSessionResponse;
     }
 }

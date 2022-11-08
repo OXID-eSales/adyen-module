@@ -18,7 +18,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPISessionResponse;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
 class AdyenJSControllerTest extends UnitTestCase
@@ -51,7 +51,7 @@ class AdyenJSControllerTest extends UnitTestCase
 
     public function testGetAdyenSessionIdAndData(): void
     {
-        $paymentStub = $this->createPartialMock(Payment::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $paymentStub = $this->createPartialMock(AdyenAPISessionResponse::class, ['getAdyenSessionId', 'getAdyenSessionData']);
         $paymentStub->method('getAdyenSessionId')->willReturn('test1');
         $paymentStub->method('getAdyenSessionData')->willReturn('test2');
 
@@ -65,6 +65,6 @@ class AdyenJSControllerTest extends UnitTestCase
     public function testGetAdyenSessionResponse(): void
     {
         $controller = new AdyenJSController();
-        $this->assertInstanceOf(Payment::class, $controller->getAdyenSessionResponse());
+        $this->assertInstanceOf(AdyenAPISessionResponse::class, $controller->getAdyenSessionResponse());
     }
 }

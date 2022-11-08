@@ -21,7 +21,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 /**
  * @extendable-class
  */
-class Payment
+class AdyenAPISessionResponse
 {
     /**
      * @var Client
