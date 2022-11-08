@@ -148,8 +148,7 @@ abstract class WebhookHandlerBase
         $adyenHistoryList->init(AdyenHistory::class);
         $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
 
-        if (is_null($oxidOrderId))
-        {
+        if (is_null($oxidOrderId)) {
             return null;
         }
 

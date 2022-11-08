@@ -38,7 +38,7 @@ class AdyenHistory extends BaseModel
      * @param string $oxorderid
      * @return bool
      */
-    public function loadByOxOrderId(string $oxorderid) : bool
+    public function loadByOxOrderId(string $oxorderid): bool
     {
         $this->_addField('oxorderid', 0);
         $query = $this->buildSelectString([$this->getViewName() . '.oxorderid' => $oxorderid]);
@@ -81,7 +81,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOrderId(string $orderId) : void
+    public function setOrderId(string $orderId): void
     {
         $this->assign(
             [
