@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Traits;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
@@ -27,6 +28,7 @@ trait AdyenAPI
     use ServiceContainer;
 
     protected ?AdyenAPISessionResponse $adyenApiSessionResponse = null;
+    protected ?AdyenAPIPaymentMethodsResponse $adyenAPIPaymentMethodsResponse = null;
 
     /**
      * @throws \Adyen\AdyenException
@@ -81,5 +83,36 @@ trait AdyenAPI
             $this->adyenApiSessionResponse = $adyenApiSessionResponse;
         }
         return $this->adyenApiSessionResponse;
+    }
+
+    /**
+     * @throws \Adyen\AdyenException
+     */
+    protected function getAdyenPaymentMethodsResponse(): AdyenAPIPaymentMethodsResponse
+    {
+        if (is_null($this->adyenAPIPaymentMethods)) {
+            $adyenAPIPaymentMethods = oxNew(AdyenAPIPaymentMethods::class);
+
+            $context = $this->getServiceFromContainer(Context::class);
+            $userRepository = $this->getServiceFromContainer(UserRepository::class);
+            $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+            $adyenAPIPaymentMethodsResponse = $this->getServiceFromContainer(AdyenAPIPaymentMethodsResponse::class);
+
+            $adyenAPIPaymentMethods->setCurrencyName($context->getActiveCurrencyName());
+
+            $currencyDecimals = $context->getActiveCurrencyDecimals();
+            $currencyFilterAmount = '10' . str_repeat('0', $currencyDecimals);
+            $adyenAPIPaymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
+
+            $adyenAPIPaymentMethods->setCountryCode($userRepository->getUserCountryIso());
+
+            $adyenAPIPaymentMethods->setShopperLocale($userRepository->getUserLocale());
+
+            $adyenAPIPaymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
+
+            $adyenAPIPaymentMethodsResponse->loadAdyenSession($adyenAPIPaymentMethods);
+            $this->adyenAPIPaymentMethodsResponse = $adyenAPIPaymentMethodsResponse;
+        }
+        return $this->adyenAPIPaymentMethodsResponse;
     }
 }

@@ -47,7 +47,7 @@ services:
 
   OxidSolutionCatalysts\Adyen\Service\:
     resource: 'src/Service/*'
-    exclude: 'src/Service/{AdyenSDKLoader}'
+    exclude: [ 'src/Service/{AdyenSDKLoader}', 'src/Service/{AdyenAPIResponse}' ]
     public: true
 
   OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader:
