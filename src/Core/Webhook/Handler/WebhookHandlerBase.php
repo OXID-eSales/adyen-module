@@ -48,13 +48,13 @@ abstract class WebhookHandlerBase
             return;
         }
 
-        foreach ($this->getNotificationItems($event) as $notificationRequestItem) {
-            $success = $notificationRequestItem
+        foreach ($this->getNotificationItems($event) as $notificationItem) {
+            $success = $notificationItem
                 [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
                 [self::JSON_FIELD_SUCCESS];
 
             if ($success) {
-                $this->updateStatus($notificationRequestItem);
+                $this->updateStatus($notificationItem);
             }
         }
     }
@@ -63,14 +63,14 @@ abstract class WebhookHandlerBase
      * @param Event $event
      * @return bool
      */
-    public function getLiveStatus(Event $event): bool
+    public function isLiveStatus(Event $event): bool
     {
         return $event->getData()[self::JSON_FIELD_LIVE] == "true";
     }
 
     /**
      * @param Event $event
-     * @return string
+     * @return array
      */
     public function getNotificationItems(Event $event): array
     {
@@ -83,8 +83,8 @@ abstract class WebhookHandlerBase
      */
     public function verifyHMACSignature(Event $event): bool
     {
-        /** @var ModuleSettings $moduleSettings */
         try {
+            /** @var ModuleSettings $moduleSettings */
             $moduleSettings = ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(ModuleSettings::class);
@@ -97,8 +97,8 @@ abstract class WebhookHandlerBase
         $hmac = new HmacSignature();
 
         try {
-            foreach ($this->getNotificationItems($event) as $notificationRequestItem) {
-                $params = $notificationRequestItem[self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM];
+            foreach ($this->getNotificationItems($event) as $notificationItem) {
+                $params = $notificationItem[self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM];
                 if (!$hmac->isValidNotificationHMAC($hmacKey, $params)) {
                     return false;
                 }
@@ -113,8 +113,8 @@ abstract class WebhookHandlerBase
 
     public function verifyMerchantAccountCode(Event $event): bool
     {
-        /** @var ModuleSettings $moduleSettings */
         try {
+            /** @var ModuleSettings $moduleSettings */
             $moduleSettings = ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(ModuleSettings::class);
@@ -125,8 +125,8 @@ abstract class WebhookHandlerBase
 
         $merchantAccount = $moduleSettings->getMerchantAccount();
 
-        foreach ($this->getNotificationItems($event) as $notificationRequestItem) {
-            $testMerchantAccount = $notificationRequestItem
+        foreach ($this->getNotificationItems($event) as $notificationItem) {
+            $testMerchantAccount = $notificationItem
                 [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
                 [self::JSON_FIELD_MERCHANT_ACCOUNT_CODE];
 
@@ -140,13 +140,18 @@ abstract class WebhookHandlerBase
 
     /**
      * @param string $pspReference
-     * @return Order
+     * @return Order|null
      */
-    public function getOrderByAdyenPSPReference(string $pspReference): Order
+    public function getOrderByAdyenPSPReference(string $pspReference): ?Order
     {
         $adyenHistoryList = oxNew(AdyenHistoryList::class);
         $adyenHistoryList->init(AdyenHistory::class);
         $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
+
+        if (is_null($oxidOrderId))
+        {
+            return null;
+        }
 
         $order = oxNew(Order::class);
         $order->load($oxidOrderId);
@@ -154,5 +159,5 @@ abstract class WebhookHandlerBase
         return $order;
     }
 
-    abstract public function updateStatus(array $notificationRequestItem): void;
+    abstract public function updateStatus(array $notificationItem): void;
 }

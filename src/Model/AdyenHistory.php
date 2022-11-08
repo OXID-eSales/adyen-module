@@ -34,7 +34,11 @@ class AdyenHistory extends BaseModel
         $this->init($this->_sCoreTable);
     }
 
-    public function loadByOxOrderId(string $oxorderid)
+    /**
+     * @param string $oxorderid
+     * @return bool
+     */
+    public function loadByOxOrderId(string $oxorderid) : bool
     {
         $this->_addField('oxorderid', 0);
         $query = $this->buildSelectString([$this->getViewName() . '.oxorderid' => $oxorderid]);
@@ -58,9 +62,9 @@ class AdyenHistory extends BaseModel
         return (string) $this->getFieldData('parentpspreference');
     }
 
-    public function getOxPrice(): double
+    public function getOxPrice(): float
     {
-        return (double) $this->getFieldData('oxprice');
+        return (float) $this->getFieldData('oxprice');
     }
 
     public function getAdyenStatus(): string
@@ -77,7 +81,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOrderId(string $orderId)
+    public function setOrderId(string $orderId) : void
     {
         $this->assign(
             [
@@ -95,7 +99,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOxPrice($oxprice): void
+    public function setOxPrice(float $oxprice): void
     {
         $this->assign(
             [
@@ -104,7 +108,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOxTimeStamp($oxtimestamp): void
+    public function setOxTimeStamp(string $oxtimestamp): void
     {
         $this->assign(
             [

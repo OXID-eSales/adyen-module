@@ -98,7 +98,8 @@ final class AuthorisationHandlerTest extends UnitTestCase
             "NotificationRequestItem" => [
                 "additionalData" => [
                     "recurring.recurringDetailReference" => "9915692881181044",
-                    "recurring.shopperReference" => "YOUR_SHOPPER_REFERENCE"
+                    "recurring.shopperReference" => "YOUR_SHOPPER_REFERENCE",
+                    "hmacSignature" => $moduleSettings->getHmacSignature()
                 ],
                 "amount" => [
                     "currency" => "EUR",

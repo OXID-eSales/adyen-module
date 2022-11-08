@@ -18,29 +18,29 @@ final class AuthorisationHandler extends WebhookHandlerBase
     private const AUTHORISATION_EVENT_CODE = "AUTHORISATION";
 
     /**
-     * @param array $notificationRequestItem
+     * @param array $notificationItem
      * @return void
      */
-    public function updateStatus(array $notificationRequestItem): void
+    public function updateStatus(array $notificationItem): void
     {
-        $eventCode = $notificationRequestItem
+        $eventCode = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_CODE];
 
         if ($eventCode != self::AUTHORISATION_EVENT_CODE) {
-            Registry::getLogger()->debug("eventCode is not AUTHORISATION: ", $notificationRequestItem);
+            Registry::getLogger()->debug("eventCode is not AUTHORISATION: ", $notificationItem);
         }
 
-        $pspReference = $notificationRequestItem
+        $pspReference = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_PSP_REFERENCE];
 
-        $price = $notificationRequestItem
+        $price = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_AMOUNT]
             [self::JSON_FIELD_PRICE];
 
-        $timestamp = $notificationRequestItem
+        $timestamp = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_DATE];
 
