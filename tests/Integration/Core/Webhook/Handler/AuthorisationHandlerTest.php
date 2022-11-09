@@ -45,11 +45,6 @@ final class AuthorisationHandlerTest extends UnitTestCase
         $order->load($orderId);
 
         $this->assertNotNull($order);
-
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->loadByOxOrderId($orderId);
-
-        $this->assertEquals("YOUR_PSP_REFERENCE", $adyenHistory->getPSPReference());
     }
 
     public function testHandle()
@@ -75,11 +70,6 @@ final class AuthorisationHandlerTest extends UnitTestCase
         $order->load($orderId);
 
         $this->assertNotNull($order);
-
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->loadByOxOrderId($orderId);
-
-        $this->assertEquals("YOUR_PSP_REFERENCE", $adyenHistory->getPSPReference());
     }
 
     private function proceedNotificationRequestsItem()
