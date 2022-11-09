@@ -48,7 +48,7 @@ class CaptureHandlerTest extends UnitTestCase
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE_CAPTURE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
 
         $this->assertNotNull($orderId);
 
@@ -78,7 +78,7 @@ class CaptureHandlerTest extends UnitTestCase
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE_CAPTURE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
 
         $this->assertNotNull($orderId);
 
