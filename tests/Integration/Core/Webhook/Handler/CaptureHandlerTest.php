@@ -48,19 +48,9 @@ class CaptureHandlerTest extends UnitTestCase
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE_CAPTURE");
 
         $this->assertNotNull($orderId);
-
-        $order = oxNew(Order::class);
-        $order->load($orderId);
-
-        $this->assertNotNull($order);
-
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->loadByOxOrderId($orderId);
-
-        $this->assertEquals("YOUR_PSP_REFERENCE_CAPTURE", $adyenHistory->getPSPReference());
     }
 
     public function testHandle()
@@ -78,19 +68,9 @@ class CaptureHandlerTest extends UnitTestCase
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE_CAPTURE");
 
         $this->assertNotNull($orderId);
-
-        $order = oxNew(Order::class);
-        $order->load($orderId);
-
-        $this->assertNotNull($order);
-
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->loadByOxOrderId($orderId);
-
-        $this->assertEquals("YOUR_PSP_REFERENCE_CAPTURE", $adyenHistory->getPSPReference());
     }
 
     private function proceedNotificationRequestsItem()
