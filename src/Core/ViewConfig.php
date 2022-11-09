@@ -7,6 +7,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Core;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
 use OxidEsales\Facts\Facts;
@@ -67,7 +68,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function getWebhookControllerUrl(): string
     {
-        $webhookUrl = 'index.php?cl=AdyenWebhookController';
+        $webhookUrl = 'index.php?cl=AdyenWebhookController&shp=' . Registry::getConfig()->getShopId();
         $facts = new Facts();
 
         return html_entity_decode(
