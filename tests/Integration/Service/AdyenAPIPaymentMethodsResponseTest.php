@@ -34,7 +34,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
     {
         $session = new Session();
         $session->setId('test');
-        $session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, 'test_session_paymentmethods');
+        $session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, [['name' => 'Test CreditCard']]);
 
         return $session;
     }
@@ -53,7 +53,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
     public function testGetAdyenPaymentMethods()
     {
         $payment = $this->createTestPayment();
-        $this->assertEquals('test_session_paymentmethods', $payment->getAdyenPaymentMethods());
+        $this->assertEquals([['name' => 'Test CreditCard']], $payment->getAdyenPaymentMethods());
     }
 
     /**
@@ -135,10 +135,10 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
             ],
             'countryCode' => 'DE',
             'merchantAccount' => 'TestMerchant',
-            'paymentMethods' => [
-                ['name' => 'Test CreditCard'],
-                ['name' => 'Test PayPal'],
-            ]
+            //'paymentMethods' => [
+            //    ['name' => 'Test CreditCard'],
+            //    ['name' => 'Test PayPal'],
+            //]
         ]);
 
         $paymentMock = $this->getMockBuilder(AdyenAPIPaymentMethodsResponse::class)
@@ -146,7 +146,6 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
             ->onlyMethods(['createCheckout'])->getMock();
         $paymentMock->method('createCheckout')
             ->willReturn($checkoutMock);
-
 
         $paymentMock->loadAdyenPaymentMethods($adyenAPIPaymentMethods);
         $this->assertLoggedException(Exception::class, 'paymentMethodsData not found in Adyen-Response');

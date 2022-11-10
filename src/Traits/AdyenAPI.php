@@ -54,7 +54,7 @@ trait AdyenAPI
     /**
      * @throws \Adyen\AdyenException
      */
-    private function getAdyenSessionResponse(): AdyenAPISessionResponse
+    protected function getAdyenSessionResponse(): AdyenAPISessionResponse
     {
         if (is_null($this->adyenApiSessionResponse)) {
             $adyenAPISession = oxNew(AdyenAPISession::class);
