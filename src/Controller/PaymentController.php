@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Request;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
@@ -64,5 +65,22 @@ class PaymentController extends PaymentController_parent
         }
 
         return $paymentList;
+    }
+
+    /**
+     * @inheritDoc
+     * @return  mixed
+     */
+    public function validatePayment()
+    {
+        $result = parent::validatePayment();
+        $session = Registry::getSession();
+        $paymentId = $session->getVariable('paymentid');
+        if (Module::isAdyenPayment($paymentId)) {
+            $request = oxNew(Request::class);
+            $adyenStateDataPaymentMethod = $request->getRequestEscapedParameter('adyenStateDataPaymentMethod');
+            $session->setVariable('adyenStateDataPaymentMethod', $adyenStateDataPaymentMethod);
+        }
+        return $result;
     }
 }
