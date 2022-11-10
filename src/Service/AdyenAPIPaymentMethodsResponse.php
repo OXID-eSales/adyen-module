@@ -42,7 +42,7 @@ class AdyenAPIPaymentMethodsResponse
     }
 
     /**
-     * @return string
+     * @return array
      * @throws Exception
      */
     public function getAdyenPaymentMethods(): array
@@ -82,9 +82,9 @@ class AdyenAPIPaymentMethodsResponse
      */
     public function saveAdyenPaymentMethods(array $resultApi): bool
     {
-        $adyenPaymentMethodsData = $resultApi['paymentMethods'] ?? '';
-        $result = (bool)$adyenPaymentMethodsData;
-        $this->session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, $adyenPaymentMethodsData);
+        $paymentMethods = $resultApi['paymentMethods'] ?? '';
+        $result = (bool)$paymentMethods;
+        $this->session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, $paymentMethods);
         return $result;
     }
 

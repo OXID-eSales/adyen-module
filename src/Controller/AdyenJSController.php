@@ -36,5 +36,4 @@ class AdyenJSController extends FrontendController
             'paymentMethods' => $this->getAdyenPaymentMethodsData()->getAdyenPaymentMethods()
         ])->sendJson();
     }
-
 }

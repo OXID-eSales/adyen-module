@@ -37,7 +37,10 @@ class AdyenJSControllerTest extends UnitTestCase
         Registry::set(Utils::class, $utilsStub);
 
         // set DummyData as Response ...
-        $controller = $this->createPartialMock(AdyenJSController::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $controller = $this->createPartialMock(
+            AdyenJSController::class,
+            ['getAdyenSessionId', 'getAdyenSessionData']
+        );
         $controller->expects($this->any())->method('getAdyenSessionId')->willReturn('test');
         $controller->expects($this->any())->method('getAdyenSessionData')->willReturn('test');
 
@@ -51,7 +54,10 @@ class AdyenJSControllerTest extends UnitTestCase
 
     public function testGetAdyenSessionIdAndData(): void
     {
-        $paymentStub = $this->createPartialMock(AdyenAPISessionResponse::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $paymentStub = $this->createPartialMock(
+            AdyenAPISessionResponse::class,
+            ['getAdyenSessionId', 'getAdyenSessionData']
+        );
         $paymentStub->method('getAdyenSessionId')->willReturn('test1');
         $paymentStub->method('getAdyenSessionData')->willReturn('test2');
 
