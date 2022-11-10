@@ -16,6 +16,7 @@
       crossorigin="anonymous">
 [{capture assign="adyenJS"}]
     var nextStepEl = document.getElementById('paymentNextStepBottom');
+    var adyenStateEl = document.getElementById('adyenStateDataPaymentMethod');
     [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
     document.getElementsByName('paymentid').forEach(function (e) {
         e.addEventListener('change', function (event) {
@@ -66,6 +67,9 @@
                 paymentIdEl.checked = true;
                 // negate isValid to Button
                 nextStepEl.disabled = !state.isValid;
+                if (state.isValid) {
+                    adyenStateEl.value = JSON.stringify(state.data.paymentMethod);
+                }
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.log('onChange:', state);
                 [{/if}]

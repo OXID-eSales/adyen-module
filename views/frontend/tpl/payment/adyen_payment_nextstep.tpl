@@ -1,0 +1,1 @@
+<input id="adyenStateDataPaymentMethod" type="hidden" name="adyenStateDataPaymentMethod" value="" />
