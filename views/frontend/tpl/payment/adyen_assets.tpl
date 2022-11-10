@@ -15,13 +15,25 @@
       integrity="[{$oViewConf->getAdyenIntegrityCSS()}]"
       crossorigin="anonymous">
 [{capture assign="adyenJS"}]
+    var nextStepEl = document.getElementById('paymentNextStepBottom');
+    [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
+    document.getElementsByName('paymentid').forEach(function (e) {
+        e.addEventListener('change', function (event) {
+            nextStepEl.disabled = false;
+        });
+    });
     const adyenAsync = async function () {
         const configuration = {
             environment: '[{$oViewConf->getAdyenOperationMode()}]',
             clientKey: '[{$oViewConf->getAdyenClientKey()}]',
             analytics: {
-                enabled: true // Set to false to not send analytics data to Adyen.
+                [{* Set to false to not send analytics data to Adyen. *}]
+                enabled: [{if $oViewConf->isAdyenLoggingActive()}]true[{else}]false[{/if}]
             },
+            [{*
+            // Session is needed if we follow the Web Components integration guide !after! v5.0.0.
+            // https://docs.adyen.com/online-payments/web-components
+            // This is interesting for the case when we have an onPageCheckout
             session: {
                 id: '[{$oViewConf->getAdyenSessionId()}]',
                 sessionData: '[{$oViewConf->getAdyenSessionData()}]'
@@ -31,27 +43,38 @@
                      console.info(result, component);
                 [{/if}]
             },
+            onSubmit: (state, component) => {
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                    console.log('onSubmit', state);
+                [{/if}]
+                component.setStatus('loading');
+                makePayment(state.data, { amount, countryCode })
+                    .then(this.handleResponse)
+                    .catch(this.handleError);
+                return true;
+            }
+            *}]
+            locale: '[{$oViewConf->getAdyenShopperLocale()}]',
+            paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
             onError: (error, component) => {
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.error(error.name, error.message, error.stack, component);
                 [{/if}]
             },
-            onChange: (state, dropin) => {
-                var paymentIdEl = document.getElementById(dropin._node.attributes.getNamedItem('data-paymentid').value);
+            onChange: (state, component) => {
+                var paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
                 paymentIdEl.checked = true;
+                // negate isValid to Button
+                nextStepEl.disabled = !state.isValid;
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.log('onChange:', state);
                 [{/if}]
             },
-            onSubmit: (state, dropin) => {
+            onAdditionalDetails: (state, component) => {
                 [{if $oViewConf->isAdyenLoggingActive()}]
-                    console.log('onSubmit', state);
+                    console.log('onChange:', state);
+                    console.log('onChange:', component);
                 [{/if}]
-                dropin.setStatus('loading');
-                makePayment(state.data, { amount, countryCode })
-                    .then(this.handleResponse)
-                    .catch(this.handleError);
-                return true;
             }
         };
         // Create an instance of AdyenCheckout using the configuration object.

@@ -16,6 +16,7 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIPaymentMethodsResponse;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPISessionResponse;
+use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
 /**
@@ -35,7 +36,7 @@ trait AdyenAPI
      * @throws \Adyen\AdyenException
      * @throws \Exception
      */
-    protected function getAdyenSessionId(): string
+    public function getAdyenSessionId(): string
     {
         $response = $this->getAdyenSessionResponse();
         return $response->getAdyenSessionId();
@@ -45,10 +46,29 @@ trait AdyenAPI
      * @throws \Adyen\AdyenException
      * @throws \Exception
      */
-    protected function getAdyenSessionData(): string
+    public function getAdyenSessionData(): string
     {
         $response = $this->getAdyenSessionResponse();
         return $response->getAdyenSessionData();
+    }
+
+    /**
+     * return a JSON-String with PaymentMethods (array)
+     * @throws \Adyen\AdyenException
+     * @throws \Exception
+     */
+    public function getAdyenPaymentMethods(): string
+    {
+        $paymentMethodsData = $this->getAdyenPaymentMethodsData();
+        //$response = $this->getServiceFromContainer(ResponseHandler::class)->response();
+        //$response->setData($paymentMethodsData->getAdyenPaymentMethods())->sendJson();
+        return json_encode($paymentMethodsData->getAdyenPaymentMethods());
+    }
+
+    public function getAdyenShopperLocale(): string
+    {
+        $userRepository = $this->getServiceFromContainer(UserRepository::class);
+        return $userRepository->getUserLocale();
     }
 
     /**
@@ -89,7 +109,7 @@ trait AdyenAPI
     /**
      * @throws \Adyen\AdyenException
      */
-    protected function getAdyenPaymentMethodsData(): AdyenAPIPaymentMethodsResponse
+    public function getAdyenPaymentMethodsData(): AdyenAPIPaymentMethodsResponse
     {
         if (is_null($this->adyenAPIPaymentMethodsResponse)) {
             $PaymentMethods = oxNew(AdyenAPIPaymentMethods::class);

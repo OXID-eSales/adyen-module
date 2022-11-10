@@ -34,7 +34,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
     {
         $session = new Session();
         $session->setId('test');
-        $session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, [['name' => 'Test CreditCard']]);
+        $session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, 'test_paymentmethods_data');
 
         return $session;
     }
@@ -53,7 +53,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
     public function testGetAdyenPaymentMethods()
     {
         $payment = $this->createTestPayment();
-        $this->assertEquals([['name' => 'Test CreditCard']], $payment->getAdyenPaymentMethods());
+        $this->assertEquals('test_paymentmethods_data', $payment->getAdyenPaymentMethods());
     }
 
     /**

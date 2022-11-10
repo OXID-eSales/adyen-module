@@ -82,7 +82,7 @@ class AdyenAPIPaymentMethodsResponse
      */
     public function saveAdyenPaymentMethods(array $resultApi): bool
     {
-        $paymentMethods = $resultApi['paymentMethods'] ?? '';
+        $paymentMethods = $resultApi['paymentMethods'] ? $resultApi : '';
         $result = (bool)$paymentMethods;
         $this->session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, $paymentMethods);
         return $result;
