@@ -9,12 +9,14 @@ use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
+use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
 
 /**
  * Metadata version
@@ -44,11 +46,13 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
         // frontend-controller
+        \OxidEsales\Eshop\Application\Controller\OrderController::class => OrderController::class,
         \OxidEsales\Eshop\Application\Controller\PaymentController::class => PaymentController::class,
     ],
     'events' => [
