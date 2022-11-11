@@ -4,9 +4,11 @@ parameters:
         - phpstan-bootstrap.php
     stubFiles:
         - stubs/BasketModel.stub
+        - stubs/OrderController.stub
         - stubs/OrderListController.stub
         - stubs/OrderModel.stub
         - stubs/PaymentController.stub
+        - stubs/PaymentGatewayModel.stub
         - stubs/PaymentModel.stub
         - stubs/ViewConfig.stub
     level: max
