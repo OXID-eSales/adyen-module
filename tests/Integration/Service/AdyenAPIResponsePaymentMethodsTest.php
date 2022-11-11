@@ -9,11 +9,11 @@ use OxidEsales\Eshop\Core\Session;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
-use OxidSolutionCatalysts\Adyen\Service\AdyenAPIPaymentMethodsResponse;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
-class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
+class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
 {
     private $testModuleSettingValues = [
         'getAPIKey' => 'dummyKey',
@@ -25,7 +25,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
     {
         $moduleSettings = $this->createConfiguredMock(ModuleSettings::class, $this->testModuleSettingValues);
         $loggingHandler = $this->createPartialMock(Logger::class, ['getName']);
-        $loggingHandler->method('getName')->willReturn('Adyen AdyenAPISessionResponse Logger');
+        $loggingHandler->method('getName')->willReturn('Adyen AdyenAPIResponsePaymentMethods Logger');
 
         return new AdyenSDKLoader($moduleSettings, $loggingHandler);
     }
@@ -39,12 +39,12 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
         return $session;
     }
 
-    protected function createTestPayment(): AdyenAPIPaymentMethodsResponse
+    protected function createTestPayment(): AdyenAPIResponsePaymentMethods
     {
         $adyenSDKLoader = $this->createTestAdyenSDKLoader();
         $session = $this->createSession();
 
-        return new AdyenAPIPaymentMethodsResponse($adyenSDKLoader, $session);
+        return new AdyenAPIResponsePaymentMethods($adyenSDKLoader, $session);
     }
 
     /**
@@ -64,7 +64,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
         $adyenSDKLoader = $this->createTestAdyenSDKLoader();
         $session = new Session();
 
-        $payment = new AdyenAPIPaymentMethodsResponse($adyenSDKLoader, $session);
+        $payment = new AdyenAPIResponsePaymentMethods($adyenSDKLoader, $session);
         $this->expectExceptionMessage('Load the paymentMethods before getting the paymentMethods');
         $payment->getAdyenPaymentMethods();
     }
@@ -99,7 +99,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
             ]
         ]);
 
-        $paymentMock = $this->getMockBuilder(AdyenAPIPaymentMethodsResponse::class)
+        $paymentMock = $this->getMockBuilder(AdyenAPIResponsePaymentMethods::class)
             ->onlyMethods(['createCheckout'])
             ->setConstructorArgs([$adyenSDKLoader, $session])->getMock();
         $paymentMock->method('createCheckout')
@@ -141,7 +141,7 @@ class AdyenAPIPaymentMethodsResponseTest extends UnitTestCase
             //]
         ]);
 
-        $paymentMock = $this->getMockBuilder(AdyenAPIPaymentMethodsResponse::class)
+        $paymentMock = $this->getMockBuilder(AdyenAPIResponsePaymentMethods::class)
             ->setConstructorArgs([$adyenSDKLoaderMock, $sessionMock])
             ->onlyMethods(['createCheckout'])->getMock();
         $paymentMock->method('createCheckout')

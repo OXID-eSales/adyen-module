@@ -21,26 +21,8 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
 /**
  * @extendable-class
  */
-class AdyenAPISessionResponse
+class AdyenAPIResponseSession extends AdyenAPIResponse
 {
-    /**
-     * @var Client
-     */
-    private Client $client;
-
-    /**
-     * @var Session
-     */
-    private Session $session;
-
-    public function __construct(
-        AdyenSDKLoader $adyenSDK,
-        Session $session
-    ) {
-        $this->client = $adyenSDK->getAdyenSDK();
-        $this->session = $session;
-    }
-
     /**
      * @return string
      * @throws Exception
@@ -107,14 +89,5 @@ class AdyenAPISessionResponse
     {
         $this->session->deleteVariable(Module::ADYEN_SESSION_DATA_NAME);
         $this->session->deleteVariable(Module::ADYEN_SESSION_ID_NAME);
-    }
-
-    /**
-     * @return Checkout
-     * @throws AdyenException
-     */
-    protected function createCheckout(): Checkout
-    {
-        return new Checkout($this->client);
     }
 }

@@ -21,7 +21,6 @@ class Payment
      */
     private Session $session;
 
-
     public function __construct(
         Session $session
     ) {
@@ -34,5 +33,12 @@ class Payment
     public function getSessionPaymentId(): string
     {
         return $this->session->getBasket()->getPaymentId();
+    }
+
+    public function doAdyenPayment(): bool
+    {
+        $result = false;
+
+        return $result;
     }
 }
