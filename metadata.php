@@ -27,17 +27,17 @@ $sMetadataVersion = '2.1';
  * Module information
  */
 $aModule = [
-    'id' => 'osc_adyen',
+    'id' => Module::MODULE_ID,
     'title' => [
-        'de' => 'Adyen Payment für OXID',
-        'en' => 'Adyen Payment for OXID'
+        'de' => Module::MODULE_NAME_DE,
+        'en' => Module::MODULE_NAME_EN
     ],
     'description' => [
         'de' => 'Nutzung der Online-Bezahldienste von Adyen.',
         'en' => 'Use of the online payment services from Adyen.'
     ],
     'thumbnail' => 'out/pictures/logo.png',
-    'version' => '1.0.0-rc.1',
+    'version' => Module::MODULE_VERSION_FULL,
     'author' => 'OXID eSales AG',
     'url' => 'https://www.oxid-esales.com',
     'email' => 'support@oxid-esales.com',

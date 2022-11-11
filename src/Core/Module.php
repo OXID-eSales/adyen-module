@@ -11,6 +11,15 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 final class Module
 {
+    public const MODULE_NAME_DE = 'Adyen Payment für OXID';
+    public const MODULE_NAME_EN = 'Adyen Payment for OXID';
+    public const MODULE_VERSION = '1.0.0-rc.1';
+    public const MODULE_VERSION_FULL = self::MODULE_VERSION . ' SDK-Version ' . self::ADYEN_SDK_VERSION;
+
+    public const ADYEN_SDK_VERSION = '5.27.0';
+    public const ADYEN_INTEGRITY_JS = 'sha384-YGWSKjvKe65KQJXrOTMIv0OwvG+gpahBNej9I3iVl4eMXhdUZDUwnaQdsNV5OCWp';
+    public const ADYEN_INTEGRITY_CSS = 'sha384-2MpA/pwUY9GwUN1/eXoQL3SDsNMBV47TIywN1r5tb8JB4Shi7y5dyRZ7AwDsCnP8';
+
     public const MODULE_ID = 'osc_adyen';
 
     public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
@@ -24,10 +33,9 @@ final class Module
     public const ADYEN_SESSION_ID_NAME = 'sess_adyen_id';
     public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
+    public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
 
-    public const ADYEN_SDK_VERSION = '5.27.0';
-    public const ADYEN_INTEGRITY_JS = 'sha384-YGWSKjvKe65KQJXrOTMIv0OwvG+gpahBNej9I3iVl4eMXhdUZDUwnaQdsNV5OCWp';
-    public const ADYEN_INTEGRITY_CSS = 'sha384-2MpA/pwUY9GwUN1/eXoQL3SDsNMBV47TIywN1r5tb8JB4Shi7y5dyRZ7AwDsCnP8';
+    public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
 
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
