@@ -1,1 +1,2 @@
-<input id="adyenStateDataPaymentMethod" type="hidden" name="adyenStateDataPaymentMethod" value="" />
+[{assign var="stateName" value= constant('\OxidSolutionCatalysts\Adyen\Core\Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME')}]
+<input id="[{$stateName}]" type="hidden" name="[{$stateName}]" value="" />
