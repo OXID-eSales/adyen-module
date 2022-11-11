@@ -9,6 +9,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
+use OxidEsales\Facts\Facts;
 use Webmozart\PathUtil\Path;
 
 class Context extends BasicContext
@@ -25,7 +26,6 @@ class Context extends BasicContext
     }
 
     /**
-     * @return string
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function getAdyenLogFilePath(): string
@@ -37,41 +37,26 @@ class Context extends BasicContext
         ]);
     }
 
-    /**
-     * @return string
-     */
     private function getAdyenLogFileName(): string
     {
         return "adyen_" . date("Y-m-d") . ".log";
     }
 
-    /**
-     * @return int
-     */
     public function getCurrentShopId(): int
     {
         return $this->shopConfig->getShopId();
     }
 
-    /**
-     * @return string
-     */
     public function getActiveCurrencyName(): string
     {
         return $this->shopConfig->getActShopCurrencyObject()->name;
     }
 
-    /**
-     * @return int
-     */
     public function getActiveCurrencyDecimals(): int
     {
         return (int) $this->shopConfig->getActShopCurrencyObject()->decimal;
     }
 
-    /**
-     * @return string
-     */
     public function getCurrentShopUrl(): string
     {
         return html_entity_decode(
@@ -79,11 +64,33 @@ class Context extends BasicContext
         );
     }
 
-    /**
-     * @return string
-     */
     public function getActiveCurrencySign(): string
     {
         return $this->shopConfig->getActShopCurrencyObject()->sign;
+    }
+
+    public function getWebhookControllerUrl(): string
+    {
+        return $this->getControllerUrl('AdyenWebhookController');
+    }
+
+    public function getPaymentReturnUrl(): string
+    {
+        return $this->getControllerUrl('thankyou');
+    }
+
+    /**
+     * Get Url for Controller
+     *
+     * @param string $controller Name of the controller
+     */
+    public function getControllerUrl(string $controller): string
+    {
+        $url = 'index.php?cl=' . $controller;
+        $facts = new Facts();
+
+        return html_entity_decode(
+            $facts->getShopUrl() . $url
+        );
     }
 }

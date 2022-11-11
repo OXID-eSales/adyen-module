@@ -7,6 +7,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Core;
 
+use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
 use OxidEsales\Facts\Facts;
@@ -15,10 +16,8 @@ class ViewConfig extends ViewConfig_parent
 {
     use AdyenAPI;
 
-    /**
-     * @var ModuleSettings
-     */
-    protected $moduleSettings;
+    protected ModuleSettings $moduleSettings;
+    protected Context $context;
 
     /**
      * @inheritDoc
@@ -28,6 +27,7 @@ class ViewConfig extends ViewConfig_parent
         parent::__construct();
 
         $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+        $this->context = $this->getServiceFromContainer(Context::class);
     }
 
     public function checkAdyenHealth(): bool
@@ -65,18 +65,8 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_INTEGRITY_CSS;
     }
 
-    /**
-     * Get webhook controller url
-     *
-     * @return string
-     */
     public function getWebhookControllerUrl(): string
     {
-        $webhookUrl = 'index.php?cl=AdyenWebhookController';
-        $facts = new Facts();
-
-        return html_entity_decode(
-            $facts->getShopUrl() . $webhookUrl
-        );
+        return $this->context->getWebhookControllerUrl();
     }
 }
