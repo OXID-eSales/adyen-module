@@ -8,6 +8,13 @@ use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 
 class PaymentControllerTest extends UnitTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $query = "update oxpayments set oxactive = 1 where oxid like '%oscadyen%'";
+        $this->fillDbQueryBuffer($query);
+    }
+
     public function testGetPaymentList()
     {
         $paymentController = oxNew(PaymentController::class);
