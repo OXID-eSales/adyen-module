@@ -13,7 +13,7 @@ class AdyenAPIPayments
 {
     protected string $reference;
 
-    protected string $paymentMethod;
+    protected array $paymentMethod;
 
     protected string $merchantAccount;
 
@@ -32,7 +32,7 @@ class AdyenAPIPayments
         $this->reference = $reference;
     }
 
-    public function setPaymentMethod(string $paymentMethod): void
+    public function setPaymentMethod(array $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
     }

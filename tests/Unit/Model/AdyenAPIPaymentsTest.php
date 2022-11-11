@@ -22,12 +22,12 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setMerchantAccount('TestMerchant');
         $model->setReference('TestReference');
         $model->setReturnUrl('ReturnUrl');
-        $model->setPaymentMethod('TestPaymentMethods');
+        $model->setPaymentMethod(['TestPaymentMethods']);
         $model->setMerchantApplicationName('TestMerchantApplicationName');
         $model->setMerchantApplicationVersion('Testv1.0.0');
 
         $this->assertSame([
-            'paymentMethod' => 'TestPaymentMethods',
+            'paymentMethod' => ['TestPaymentMethods'],
             'amount' => [
                 'currency' => 'EUR',
                 'value' => '1000',
