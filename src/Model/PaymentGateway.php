@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
+use Exception;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
@@ -46,8 +48,15 @@ class PaymentGateway extends PaymentGateway_parent
     protected function doExecuteAdyenPayment(Order $order): bool
     {
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentId = $paymentService->getSessionPaymentId();
-        $success = false;
+        try {
+            $paymentService->doAdyenPayment($order);
+            $success = true;
+        } catch (Exception $exception) {
+            Registry::getLogger()->error("Error on order patch call.", [$exception]);
+            $success = false;
+        }
+
+        $this->_sLastError = $paymentService->getPaymentExecutionError();
 
         return $success;
     }
