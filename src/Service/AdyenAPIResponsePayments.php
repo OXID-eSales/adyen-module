@@ -12,7 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Exception;
 use Adyen\AdyenException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 
 /**
  * @extendable-class
@@ -20,15 +20,16 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 class AdyenAPIResponsePayments extends AdyenAPIResponse
 {
     /**
-     * @param AdyenAPIPaymentMethods $paymentMethodParams
+     * @param AdyenAPIPayments $paymentMethodParams
+     * @return mixed
      * @throws AdyenException
      */
-    public function getPayments(AdyenAPIPaymentMethods $paymentMethodParams): bool
+    public function getPayments(AdyenAPIPayments $paymentMethodParams)
     {
         $result = false;
         try {
             $service = $this->createCheckout();
-            $params = $paymentMethodParams->getAdyenPaymentMethodsParams();
+            $params = $paymentMethodParams->getAdyenPaymentsParams();
             $result = $service->payments($params);
             if (!$result) {
                 throw new Exception('payments not found in Adyen-Response');

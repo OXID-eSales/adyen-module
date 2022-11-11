@@ -34,6 +34,7 @@ final class Module
     public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
+    public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
 

@@ -18,6 +18,13 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
  */
 class Order extends Order_parent
 {
+    /**
+     * Payment needs redirect
+     *
+     * @var int
+     */
+    public const ORDER_STATE_ADYENPAYMENTNEEDSREDICRET = 5000;
+
     protected const PSPREFERENCEFIELD = 'adyenpspreference';
 
     protected ?string $adyenPaymentName = null;
