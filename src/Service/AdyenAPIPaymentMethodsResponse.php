@@ -42,10 +42,9 @@ class AdyenAPIPaymentMethodsResponse
     }
 
     /**
-     * @return array
      * @throws Exception
      */
-    public function getAdyenPaymentMethods(): array
+    public function getAdyenPaymentMethods(): string
     {
         $adyenPaymentMethods = $this->session->getVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
         if (!$adyenPaymentMethods) {

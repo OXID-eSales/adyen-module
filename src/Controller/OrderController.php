@@ -14,14 +14,13 @@ class OrderController extends OrderController_parent
     /**
      * @inheritDoc
      *
-     * @param integer $iSuccess status code
+     * @param integer $success status code
      *
      * @return  string  $sNextStep  partial parameter url for next step
      */
-    protected function _getNextStep(int $success) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+    protected function _getNextStep($success) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
         $result = parent::_getNextStep($success);
         return $result;
-
     }
 }

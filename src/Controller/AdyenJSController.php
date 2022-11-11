@@ -32,8 +32,8 @@ class AdyenJSController extends FrontendController
     {
         $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
 
-        $response->setData(
+        $response->setData(json_decode(
             $this->getAdyenPaymentMethodsData()->getAdyenPaymentMethods()
-        )->sendJson();
+        ))->sendJson();
     }
 }

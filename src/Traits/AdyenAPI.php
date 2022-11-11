@@ -29,7 +29,7 @@ trait AdyenAPI
 {
     use ServiceContainer;
 
-    protected ?AdyenAPISessionResponse $response = null;
+    protected ?AdyenAPISessionResponse $adyenApiSessionResponse = null;
     protected ?AdyenAPIPaymentMethodsResponse $adyenAPIPaymentMethodsResponse = null;
 
     /**
@@ -60,9 +60,8 @@ trait AdyenAPI
     public function getAdyenPaymentMethods(): string
     {
         $paymentMethodsData = $this->getAdyenPaymentMethodsData();
-        //$response = $this->getServiceFromContainer(ResponseHandler::class)->response();
-        //$response->setData($paymentMethodsData->getAdyenPaymentMethods())->sendJson();
-        return json_encode($paymentMethodsData->getAdyenPaymentMethods());
+        $result = json_encode($paymentMethodsData->getAdyenPaymentMethods());
+        return $result ?: '';
     }
 
     public function getAdyenShopperLocale(): string

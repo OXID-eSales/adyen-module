@@ -69,6 +69,7 @@ class PaymentController extends PaymentController_parent
 
     /**
      * @inheritDoc
+     * @SuppressWarnings(PHPMD.StaticAccess)
      * @return  mixed
      */
     public function validatePayment()
@@ -78,8 +79,8 @@ class PaymentController extends PaymentController_parent
         $paymentId = $session->getVariable('paymentid');
         if (Module::isAdyenPayment($paymentId)) {
             $request = oxNew(Request::class);
-            $adyenStateDataPaymentMethod = $request->getRequestEscapedParameter('adyenStateDataPaymentMethod');
-            $session->setVariable('adyenStateDataPaymentMethod', $adyenStateDataPaymentMethod);
+            $paymentMethodState = $request->getRequestEscapedParameter('adyenStateDataPaymentMethod');
+            $session->setVariable('adyenStateDataPaymentMethod', $paymentMethodState);
         }
         return $result;
     }
