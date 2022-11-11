@@ -11,7 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidEsales\Eshop\Application\Model\Payment;
 
 /**
  * @extendable-class
@@ -57,12 +56,12 @@ class ModuleSettings
     public function checkHealth(): bool
     {
         return (
-            self::getAPIKey() &&
-            self::getClientKey() &&
-            self::getHmacSignature() &&
-            self::getMerchantAccount() &&
-            self::getNotificationUsername() &&
-            self::getNotificationPassword()
+            $this->getAPIKey() &&
+            $this->getClientKey() &&
+            $this->getHmacSignature() &&
+            $this->getMerchantAccount() &&
+            $this->getNotificationUsername() &&
+            $this->getNotificationPassword()
         );
     }
 

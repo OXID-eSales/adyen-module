@@ -23,14 +23,10 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
  */
 class AdyenAPIResponse
 {
-    /**
-     * @var Client
-     */
+    /** @var Client */
     protected Client $client;
 
-    /**
-     * @var Session
-     */
+    /** @var Session */
     protected Session $session;
 
     public function __construct(

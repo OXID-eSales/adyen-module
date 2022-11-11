@@ -71,13 +71,4 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
     {
         $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
     }
-
-    /**
-     * @return Checkout
-     * @throws AdyenException
-     */
-    protected function createCheckout(): Checkout
-    {
-        return new Checkout($this->client);
-    }
 }

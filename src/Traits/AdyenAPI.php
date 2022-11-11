@@ -110,26 +110,26 @@ trait AdyenAPI
     public function getAdyenPaymentMethodsData(): AdyenAPIResponsePaymentMethods
     {
         if (is_null($this->responsePaymentMethods)) {
-            $PaymentMethods = oxNew(AdyenAPIPaymentMethods::class);
+            $paymentMethods = oxNew(AdyenAPIPaymentMethods::class);
 
             $context = $this->getServiceFromContainer(Context::class);
             $userRepository = $this->getServiceFromContainer(UserRepository::class);
             $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
             $response = $this->getServiceFromContainer(AdyenAPIResponsePaymentMethods::class);
 
-            $PaymentMethods->setCurrencyName($context->getActiveCurrencyName());
+            $paymentMethods->setCurrencyName($context->getActiveCurrencyName());
 
             $currencyDecimals = $context->getActiveCurrencyDecimals();
             $currencyFilterAmount = '10' . str_repeat('0', $currencyDecimals);
-            $PaymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
+            $paymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
 
-            $PaymentMethods->setCountryCode($userRepository->getUserCountryIso());
+            $paymentMethods->setCountryCode($userRepository->getUserCountryIso());
 
-            $PaymentMethods->setShopperLocale($userRepository->getUserLocale());
+            $paymentMethods->setShopperLocale($userRepository->getUserLocale());
 
-            $PaymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
+            $paymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
 
-            $response->loadAdyenPaymentMethods($PaymentMethods);
+            $response->loadAdyenPaymentMethods($paymentMethods);
             $this->responsePaymentMethods = $response;
         }
         return $this->responsePaymentMethods;
