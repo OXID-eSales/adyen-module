@@ -71,7 +71,8 @@ class Context extends BasicContext
 
     public function getWebhookControllerUrl(): string
     {
-        return $this->getControllerUrl('AdyenWebhookController');
+        $controller = 'AdyenWebhookController&shp=' . $this->getCurrentShopId();
+        return $this->getControllerUrl($controller);
     }
 
     public function getPaymentReturnUrl(): string
