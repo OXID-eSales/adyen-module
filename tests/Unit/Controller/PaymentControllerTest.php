@@ -8,15 +8,31 @@ use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 
 class PaymentControllerTest extends UnitTestCase
 {
-    protected function setUp(): void
+    protected function tearDown(): void
     {
-        parent::setUp();
-        $query = "update oxpayments set oxactive = 1 where oxid like '%oscadyen%'";
-        $this->fillDbQueryBuffer($query);
+        parent::tearDown();
+        $this->cleanUpDatabase();
+    }
+
+    public function testGetPaymentListWithoutPayments()
+    {
+        $query = "update oxpayments set oxactive = 0 where oxid like '%oscadyen%'";
+        $this->getDb()->execute($query);
+
+        $paymentController = oxNew(PaymentController::class);
+        $paymentList = $paymentController->getPaymentList();
+
+        $this->assertIsArray($paymentList);
+
+        $this->assertArrayNotHasKey(Module::PAYMENT_CREDITCARD_ID, $paymentList);
+        $this->assertArrayNotHasKey(Module::PAYMENT_PAYPAL_ID, $paymentList);
     }
 
     public function testGetPaymentList()
     {
+        $query = "update oxpayments set oxactive = 1 where oxid like '%oscadyen%'";
+        $this->getDb()->execute($query);
+
         $paymentController = oxNew(PaymentController::class);
         $paymentList = $paymentController->getPaymentList();
 
