@@ -24,7 +24,7 @@ class AdyenHistory extends BaseModel
     use ServiceContainer;
 
     protected const PSPREFERENCEFIELD = 'pspreference';
-    protected const PSPPARENTREFERENCEFIELD = 'pspparentreference';
+    protected const PSPPARENTREFERENCEFIELD = 'parentpspreference';
 
     /** @var QueryBuilderFactoryInterface */
     private $queryBuilderFactory;
@@ -70,6 +70,16 @@ class AdyenHistory extends BaseModel
 
     public function loadByPSPReference(string $pspReference): bool
     {
+        return $this->loadByIdent('pspreference', $pspReference);
+    }
+
+    public function loadByOxOrderId(string $oxorderid): bool
+    {
+        return $this->loadByIdent('oxorderid', $oxorderid);
+    }
+
+    protected function loadByIdent(string $var, string $value): bool
+    {
         $result = false;
 
         /** @var QueryBuilder $queryBuilder */
@@ -78,10 +88,10 @@ class AdyenHistory extends BaseModel
         $queryBuilder->select('oxid')
             ->from($this->getCoreTableName())
             ->setMaxResults(1)
-            ->where(self::PSPREFERENCEFIELD . ' = :pspreference');
+            ->where(self::PSPREFERENCEFIELD . ' = :' . $var);
 
         $parameters = [
-            'pspreference' => $pspReference
+            $var => $value
         ];
 
         if (!$this->config->getConfigParam('blMallUsers')) {
@@ -100,6 +110,109 @@ class AdyenHistory extends BaseModel
         return $result;
     }
 
+    public function getOrderId(): string
+    {
+        return (string) $this->getFieldData('orderid');
+    }
+
+    public function getPSPReference(): string
+    {
+        return (string) $this->getFieldData(self::PSPREFERENCEFIELD);
+    }
+
+    public function getParentPSPReference(): string
+    {
+        return (string) $this->getFieldData(self::PSPPARENTREFERENCEFIELD);
+    }
+
+    public function getPrice(): float
+    {
+        return (float) $this->getFieldData('oxprice');
+    }
+
+    public function getFormatedPrice(): string
+    {
+        return Registry::getLang()->formatCurrency($this->getPrice());
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->getFieldData('currency');
+    }
+
+    public function getAdyenStatus(): string
+    {
+        return (string) $this->getFieldData('adyenstatus');
+    }
+
+    public function getTimeStamp(): string
+    {
+        return (string) $this->getFieldData('oxtimestamp');
+    }
+
+    public function setOrderId(string $orderId): void
+    {
+        $this->assign(
+            [
+                'oxorderid' => $orderId
+            ]
+        );
+    }
+
+    public function setPSPReference(string $pspreference): void
+    {
+        $this->assign(
+            [
+                self::PSPREFERENCEFIELD => $pspreference
+            ]
+        );
+    }
+
+    public function setParentPSPReference(string $parentpspreference): void
+    {
+        $this->assign(
+            [
+                self::PSPPARENTREFERENCEFIELD => $parentpspreference
+            ]
+        );
+    }
+
+    public function setPrice(float $oxprice): void
+    {
+        $this->assign(
+            [
+                'oxprice' => $oxprice
+            ]
+        );
+    }
+
+    public function setCurrency(string $currency): void
+    {
+        $this->assign(
+            [
+                'currency' => $currency
+            ]
+        );
+    }
+
+    public function setTimeStamp(string $oxtimestamp): void
+    {
+        $this->assign(
+            [
+                'oxtimestamp' => $oxtimestamp
+            ]
+        );
+    }
+
+    public function setAdyenStatus(string $adyenstatus): void
+    {
+        $this->assign(
+            [
+                'adyenstatus' => $adyenstatus
+            ]
+        );
+    }
+
     public function delete($oxid = null): bool
     {
         if ($oxid) {
@@ -109,16 +222,6 @@ class AdyenHistory extends BaseModel
         $this->deleteChildReferences($pspReference);
 
         return parent::delete($oxid);
-    }
-
-    public function getAdyenPSPReference(): string
-    {
-        return (string) $this->getFieldData(self::PSPREFERENCEFIELD);
-    }
-
-    public function getAdyenPSPParentReference(): string
-    {
-        return (string) $this->getFieldData(self::PSPPARENTREFERENCEFIELD);
     }
 
     /**
@@ -158,97 +261,5 @@ class AdyenHistory extends BaseModel
                 }
             }
         }
-    }
-
-    /**
-     * @param string $oxorderid
-     * @return bool
-     */
-    public function loadByOxOrderId(string $oxorderid): bool
-    {
-        $this->_addField('oxorderid', 0);
-        $query = $this->buildSelectString([$this->getViewName() . '.oxorderid' => $oxorderid]);
-        $this->_isLoaded = $this->assignRecord($query);
-
-        return $this->_isLoaded;
-    }
-
-    public function getOrderId(): string
-    {
-        return (string) $this->getFieldData('orderid');
-    }
-
-    public function getPSPReference(): string
-    {
-        return (string) $this->getFieldData('pspreference');
-    }
-
-    public function getParentPSPReference(): string
-    {
-        return (string) $this->getFieldData('parentpspreference');
-    }
-
-    public function getPrice(): float
-    {
-        return (float) $this->getFieldData('oxprice');
-    }
-
-    public function getAdyenStatus(): string
-    {
-        return (string) $this->getFieldData('adyenstatus');
-    }
-
-    public function setPSPReference(string $pspreference): void
-    {
-        $this->assign(
-            [
-                'pspreference' => $pspreference
-            ]
-        );
-    }
-
-    public function setOrderId(string $orderId): void
-    {
-        $this->assign(
-            [
-                'oxorderid' => $orderId
-            ]
-        );
-    }
-
-    public function setParentPSPReference(string $parentpspreference): void
-    {
-        $this->assign(
-            [
-                'parentpspreference' => $parentpspreference
-            ]
-        );
-    }
-
-    public function setPrice(float $oxprice): void
-    {
-        $this->assign(
-            [
-                'oxprice' => $oxprice
-            ]
-        );
-    }
-
-    public function setTimeStamp(string $oxtimestamp): void
-    {
-        $this->assign(
-            [
-                'oxtimestamp' => $oxtimestamp
-            ]
-        );
-    }
-
-    public function setAdyenStatus(string $adyenstatus): void
-    {
-        $this->assign(
-            [
-                'adyenstatus' => $adyenstatus
-            ]
-        );
     }
 }

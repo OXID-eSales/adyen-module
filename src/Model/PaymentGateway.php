@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 use OxidSolutionCatalysts\Adyen\Core\AdyenSession;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
@@ -51,6 +52,7 @@ class PaymentGateway extends PaymentGateway_parent
     protected function doExecuteAdyenPayment($amount, $order): bool
     {
         $paymentService = $this->getServiceFromContainer(Payment::class);
+        $context = $this->getServiceFromContainer(Context::class);
         $success = $paymentService->doAdyenPayment($amount, $order);
 
         if ($success) {
@@ -69,6 +71,7 @@ class PaymentGateway extends PaymentGateway_parent
                 $adyenHistory->setParentPSPReference($pspReference);
                 $adyenHistory->setOrderId($order->getId());
                 $adyenHistory->setPrice((float)$order->getTotalOrderSum());
+                $adyenHistory->setCurrency($context->getActiveCurrencyName());
                 if (isset($paymentResult['resultCode'])) {
                     $adyenHistory->setAdyenStatus($paymentResult['resultCode']);
                 }

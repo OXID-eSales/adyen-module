@@ -130,7 +130,7 @@ final class Version20220908162100 extends AbstractMigration
                 "ADYENSTATUS",
                 Types::STRING,
                 [
-                    'columnDefinition' => 'varchar(32) collate latin1_general_ci',
+                    'columnDefinition' => 'char(32) collate latin1_general_ci',
                     'comment' => 'Adyen Payment Status'
                 ]
             );
@@ -140,7 +140,7 @@ final class Version20220908162100 extends AbstractMigration
                 "CURRENCY",
                 Types::STRING,
                 [
-                    'columnDefinition' => 'varchar(3) collate latin1_general_ci',
+                    'columnDefinition' => 'char(3) collate latin1_general_ci',
                     'comment' => 'Adyen Payment Currency'
                 ]
             );

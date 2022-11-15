@@ -40,11 +40,14 @@ class AdyenHistoryList extends ListModel
     private $config;
 
     /**
-    * @SuppressWarnings(PHPMD.StaticAccess)
-    */
-    public function init($objectName, $coreTable = null): void
+     * Class Constructor
+     *
+     * @param string $sObjectName Associated list item object type
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function __construct($sObjectName = null)
     {
-        parent::init($objectName, $coreTable);
+        parent::__construct($sObjectName);
 
         $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
         $this->context = $this->getServiceFromContainer(ContextInterface::class);
