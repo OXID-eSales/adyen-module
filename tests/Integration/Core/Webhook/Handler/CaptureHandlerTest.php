@@ -28,8 +28,8 @@ class CaptureHandlerTest extends UnitTestCase
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
-        $adyenHistory->setOxPrice(1000);
-        $adyenHistory->setOxTimeStamp("2021-01-01T01:00:00+01:00");
+        $adyenHistory->setPrice(1000);
+        $adyenHistory->setTimeStamp("2021-01-01T01:00:00+01:00");
         $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
         $adyenHistory->setAdyenStatus("AUTHORISATION");
         $adyenHistory->save();

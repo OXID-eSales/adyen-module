@@ -99,7 +99,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOxPrice(float $oxprice): void
+    public function setPrice(float $oxprice): void
     {
         $this->assign(
             [
@@ -108,7 +108,7 @@ class AdyenHistory extends BaseModel
         );
     }
 
-    public function setOxTimeStamp(string $oxtimestamp): void
+    public function setTimeStamp(string $oxtimestamp): void
     {
         $this->assign(
             [

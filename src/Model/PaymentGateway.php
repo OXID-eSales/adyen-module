@@ -68,6 +68,7 @@ class PaymentGateway extends PaymentGateway_parent
                 $adyenHistory->setPSPReference($pspReference);
                 $adyenHistory->setParentPSPReference($pspReference);
                 $adyenHistory->setOrderId($order->getId());
+                $adyenHistory->setPrice((float)$order->getTotalOrderSum());
                 if (isset($paymentResult['resultCode'])) {
                     $adyenHistory->setAdyenStatus($paymentResult['resultCode']);
                 }

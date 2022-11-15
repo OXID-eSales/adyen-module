@@ -51,8 +51,8 @@ final class AuthorisationHandler extends WebhookHandlerBase
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
-        $adyenHistory->setOxPrice($price);
-        $adyenHistory->setOxTimeStamp($timestamp);
+        $adyenHistory->setPrice($price);
+        $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setAdyenStatus($eventCode);
 
