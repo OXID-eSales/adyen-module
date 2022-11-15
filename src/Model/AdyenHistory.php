@@ -218,7 +218,7 @@ class AdyenHistory extends BaseModel
         if ($oxid) {
             $this->load($oxid);
         }
-        $pspReference = $this->getAdyenPSPReference();
+        $pspReference = $this->getPSPReference();
         $this->deleteChildReferences($pspReference);
 
         return parent::delete($oxid);
