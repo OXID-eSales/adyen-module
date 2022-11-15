@@ -28,8 +28,8 @@ trait AdyenAPI
 {
     use ServiceContainer;
 
-    protected ?AdyenAPIResponseSession $responseSession = null;
-    protected ?AdyenAPIResponsePaymentMethods $responsePaymentMethods = null;
+    protected ?AdyenAPIResponseSession $session = null;
+    protected ?AdyenAPIResponsePaymentMethods $paymentMethods = null;
 
     /**
      * @throws \Adyen\AdyenException
@@ -74,7 +74,7 @@ trait AdyenAPI
      */
     protected function getAdyenSessionResponse(): AdyenAPIResponseSession
     {
-        if (is_null($this->responseSession)) {
+        if (is_null($this->session)) {
             $adyenAPISession = oxNew(AdyenAPISession::class);
 
             $context = $this->getServiceFromContainer(Context::class);
@@ -99,9 +99,9 @@ trait AdyenAPI
             $adyenAPISession->setReturnUrl($context->getCurrentShopUrl() . 'index.php?cl=order');
 
             $response->loadAdyenSession($adyenAPISession);
-            $this->responseSession = $response;
+            $this->session = $response;
         }
-        return $this->responseSession;
+        return $this->session;
     }
 
     /**
@@ -109,7 +109,7 @@ trait AdyenAPI
      */
     public function getAdyenPaymentMethodsData(): AdyenAPIResponsePaymentMethods
     {
-        if (is_null($this->responsePaymentMethods)) {
+        if (is_null($this->paymentMethods)) {
             $paymentMethods = oxNew(AdyenAPIPaymentMethods::class);
 
             $context = $this->getServiceFromContainer(Context::class);
@@ -130,8 +130,8 @@ trait AdyenAPI
             $paymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
 
             $response->loadAdyenPaymentMethods($paymentMethods);
-            $this->responsePaymentMethods = $response;
+            $this->paymentMethods = $response;
         }
-        return $this->responsePaymentMethods;
+        return $this->paymentMethods;
     }
 }
