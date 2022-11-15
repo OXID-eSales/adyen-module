@@ -188,7 +188,7 @@ class AdyenHistory extends BaseModel
         return (string) $this->getFieldData('parentpspreference');
     }
 
-    public function getOxPrice(): float
+    public function getPrice(): float
     {
         return (float) $this->getFieldData('oxprice');
     }
