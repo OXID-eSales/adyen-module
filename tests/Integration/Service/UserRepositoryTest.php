@@ -110,6 +110,7 @@ final class UserRepositoryTest extends TestCase
         $country->load($userCountryId);
 
         $service = $this->getServiceFromContainer(UserRepository::class);
+
         $this->assertSame($country->oxcountry__oxisoalpha2->value, $service->getUserCountryIso());
     }
 

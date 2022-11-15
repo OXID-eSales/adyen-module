@@ -14,14 +14,10 @@ use Monolog\Logger;
 
 class AdyenSDKLoader
 {
-    /**
-     * @var ModuleSettings
-     */
+    /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
-    /**
-     * @var Logger
-     */
+    /** @var Logger */
     private Logger $moduleLogger;
 
     /**

@@ -10,10 +10,12 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Traits;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseSession;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
 /**
@@ -26,7 +28,8 @@ trait AdyenAPI
 {
     use ServiceContainer;
 
-    protected ?Payment $adyenResponse = null;
+    protected ?AdyenAPIResponseSession $session = null;
+    protected ?AdyenAPIResponsePaymentMethods $paymentMethods = null;
 
     /**
      * @throws \Adyen\AdyenException
@@ -34,8 +37,8 @@ trait AdyenAPI
      */
     public function getAdyenSessionId(): string
     {
-        $adyenResponse = $this->getAdyenSessionResponse();
-        return $adyenResponse->getAdyenSessionId();
+        $response = $this->getAdyenSessionResponse();
+        return $response->getAdyenSessionId();
     }
 
     /**
@@ -44,22 +47,40 @@ trait AdyenAPI
      */
     public function getAdyenSessionData(): string
     {
-        $adyenResponse = $this->getAdyenSessionResponse();
-        return $adyenResponse->getAdyenSessionData();
+        $response = $this->getAdyenSessionResponse();
+        return $response->getAdyenSessionData();
+    }
+
+    /**
+     * return a JSON-String with PaymentMethods (array)
+     * @throws \Adyen\AdyenException
+     * @throws \Exception
+     */
+    public function getAdyenPaymentMethods(): string
+    {
+        $paymentMethodsData = $this->getAdyenPaymentMethodsData();
+        $result = json_encode($paymentMethodsData->getAdyenPaymentMethods());
+        return $result ?: '';
+    }
+
+    public function getAdyenShopperLocale(): string
+    {
+        $userRepository = $this->getServiceFromContainer(UserRepository::class);
+        return $userRepository->getUserLocale();
     }
 
     /**
      * @throws \Adyen\AdyenException
      */
-    protected function getAdyenSessionResponse(): Payment
+    protected function getAdyenSessionResponse(): AdyenAPIResponseSession
     {
-        if (is_null($this->adyenResponse)) {
+        if (is_null($this->session)) {
             $adyenAPISession = oxNew(AdyenAPISession::class);
 
             $context = $this->getServiceFromContainer(Context::class);
             $userRepository = $this->getServiceFromContainer(UserRepository::class);
             $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-            $adyenPayment = $this->getServiceFromContainer(Payment::class);
+            $response = $this->getServiceFromContainer(AdyenAPIResponseSession::class);
 
             $adyenAPISession->setCurrencyName($context->getActiveCurrencyName());
 
@@ -69,15 +90,48 @@ trait AdyenAPI
 
             $adyenAPISession->setCountryCode($userRepository->getUserCountryIso());
 
+            $adyenAPISession->setShopperLocale($userRepository->getUserLocale());
+
             $adyenAPISession->setMerchantAccount($moduleSettings->getMerchantAccount());
 
             $adyenAPISession->setReference(Module::ADYEN_ORDER_REFERENCE_ID);
 
             $adyenAPISession->setReturnUrl($context->getCurrentShopUrl() . 'index.php?cl=order');
 
-            $adyenPayment->loadAdyenSession($adyenAPISession);
-            $this->adyenResponse = $adyenPayment;
+            $response->loadAdyenSession($adyenAPISession);
+            $this->session = $response;
         }
-        return $this->adyenResponse;
+        return $this->session;
+    }
+
+    /**
+     * @throws \Adyen\AdyenException
+     */
+    public function getAdyenPaymentMethodsData(): AdyenAPIResponsePaymentMethods
+    {
+        if (is_null($this->paymentMethods)) {
+            $paymentMethods = oxNew(AdyenAPIPaymentMethods::class);
+
+            $context = $this->getServiceFromContainer(Context::class);
+            $userRepository = $this->getServiceFromContainer(UserRepository::class);
+            $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+            $response = $this->getServiceFromContainer(AdyenAPIResponsePaymentMethods::class);
+
+            $paymentMethods->setCurrencyName($context->getActiveCurrencyName());
+
+            $currencyDecimals = $context->getActiveCurrencyDecimals();
+            $currencyFilterAmount = '10' . str_repeat('0', $currencyDecimals);
+            $paymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
+
+            $paymentMethods->setCountryCode($userRepository->getUserCountryIso());
+
+            $paymentMethods->setShopperLocale($userRepository->getUserLocale());
+
+            $paymentMethods->setMerchantAccount($moduleSettings->getMerchantAccount());
+
+            $response->loadAdyenPaymentMethods($paymentMethods);
+            $this->paymentMethods = $response;
+        }
+        return $this->paymentMethods;
     }
 }

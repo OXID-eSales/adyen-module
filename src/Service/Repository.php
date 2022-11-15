@@ -9,11 +9,8 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
-use PDO;
 
 /**
  * @extendable-class

@@ -10,111 +10,121 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
-use Adyen\AdyenException;
-use Adyen\Client;
-use Adyen\Service\Checkout;
+use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
+use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\PayPalApi\Exception\ApiException;
 
 /**
  * @extendable-class
  */
 class Payment
 {
-    /**
-     * @var Client
-     */
-    private Client $client;
+    public const PAYMENT_ERROR_NONE = 'ADYEN_PAYMENT_ERROR_NONE';
+    public const PAYMENT_ERROR_GENERIC = 'ADYEN_PAYMENT_ERROR_GENERIC';
 
-    /**
-     * @var Session
-     */
+    private string $executionError = self::PAYMENT_ERROR_NONE;
+
+    private ?array $paymentResult = null;
+
+    /** @var Session */
     private Session $session;
 
+    /** @var Context */
+    private Context $context;
+
+    /** @var UserRepository */
+    private UserRepository $userRepository;
+
+    /** @var ModuleSettings */
+    private ModuleSettings $moduleSettings;
+
+    /** @var AdyenAPIResponsePayments */
+    private AdyenAPIResponsePayments $APIResponse;
+
     public function __construct(
-        AdyenSDKLoader $adyenSDK,
-        Session $session
+        Session $session,
+        Context $context,
+        UserRepository $userRepository,
+        ModuleSettings $moduleSettings,
+        AdyenAPIResponsePayments $APIResponse
     ) {
-        $this->client = $adyenSDK->getAdyenSDK();
         $this->session = $session;
+        $this->context = $context;
+        $this->userRepository = $userRepository;
+        $this->moduleSettings = $moduleSettings;
+        $this->APIResponse = $APIResponse;
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getAdyenSessionId(): string
+    public function getSessionPaymentId(): string
     {
-        $adyenSessionId = $this->session->getVariable(Module::ADYEN_SESSION_ID_NAME);
-        if (!$adyenSessionId) {
-            throw new Exception('Load the session before getting the session id');
-        }
-        return $adyenSessionId;
+        return $this->session->getBasket()->getPaymentId();
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getAdyenSessionData(): string
+    public function setPaymentExecutionError(string $text): void
     {
-        $adyenSessionData = $this->session->getVariable(Module::ADYEN_SESSION_DATA_NAME);
-        if (!$adyenSessionData) {
-            throw new Exception('Load the session before getting the session data');
-        }
-        return $adyenSessionData;
+        $this->executionError = $text;
+    }
+
+    public function getPaymentExecutionError(): string
+    {
+        return $this->executionError;
+    }
+
+    public function setPaymentResult(array $paymentResult): void
+    {
+        $this->paymentResult = $paymentResult;
     }
 
     /**
-     * @param AdyenAPISession $sessionParams
-     * @throws AdyenException
+     * @return mixed
      */
-    public function loadAdyenSession(AdyenAPISession $sessionParams): bool
+    public function getPaymentResult()
+    {
+        return $this->paymentResult;
+    }
+
+    /**
+     * @param double $amount Goods amount
+     * @param eShopOrder $order User ordering object
+     */
+    public function doAdyenPayment($amount, $order): bool
     {
         $result = false;
+
+        /** @var Order $order */
+        $reference = $order->createNumberForAdyenPayment();
+
+        $paymentState = json_decode($this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME), true);
+        // not necessary anymore, so cleanup
+        $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
+
+        $currencyDecimals = $this->context->getActiveCurrencyDecimals();
+        $decimalFactor = (int)('1' . str_repeat('0', $currencyDecimals));
+        $currencyAmountInt = $amount * $decimalFactor;
+        $currencyAmount = (string)$currencyAmountInt;
+
+        $payments = oxNew(AdyenAPIPayments::class);
+        $payments->setCurrencyName($this->context->getActiveCurrencyName());
+        $payments->setReference($reference);
+        $payments->setPaymentMethod($paymentState ?: []);
+        $payments->setCurrencyAmount($currencyAmount);
+        $payments->setMerchantAccount($this->moduleSettings->getMerchantAccount());
+        $payments->setReturnUrl($this->context->getPaymentReturnUrl());
+        $payments->setMerchantApplicationName(Module::MODULE_NAME_EN);
+        $payments->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
+
         try {
-            $service = $this->createCheckout();
-            $params = $sessionParams->getAdyenSessionParams();
-            $resultApi = $service->sessions($params);
-            $result = $this->saveAdyenSession($resultApi);
-            if (!$result) {
-                throw new Exception('sessionData & id not found in Adyen-Response');
-            }
-        } catch (AdyenException | Exception $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            $result = $this->APIResponse->getPayments($payments);
+            $this->setPaymentResult($result);
+            $result = true;
+        } catch (Exception $exception) {
+            Registry::getLogger()->error("Error on getPayments call.", [$exception]);
+            $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }
         return $result;
-    }
-
-    /**
-     * @param array $resultApi
-     * @return bool
-     * @throws AdyenException
-     */
-    public function saveAdyenSession(array $resultApi): bool
-    {
-        $adyenSessionData = $resultApi['sessionData'] ?? '';
-        $adyenSessionId = $resultApi['id'] ?? '';
-        $result = ($adyenSessionData && $adyenSessionId);
-        $this->session->setVariable(Module::ADYEN_SESSION_DATA_NAME, $adyenSessionData);
-        $this->session->setVariable(Module::ADYEN_SESSION_ID_NAME, $adyenSessionId);
-        return $result;
-    }
-
-    public function deleteAdyenSession(): void
-    {
-        $this->session->deleteVariable(Module::ADYEN_SESSION_DATA_NAME);
-        $this->session->deleteVariable(Module::ADYEN_SESSION_ID_NAME);
-    }
-
-    /**
-     * @return Checkout
-     * @throws AdyenException
-     */
-    protected function createCheckout(): Checkout
-    {
-        return new Checkout($this->client);
     }
 }

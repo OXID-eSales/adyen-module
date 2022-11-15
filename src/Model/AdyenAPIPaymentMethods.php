@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
-class AdyenAPISession
+class AdyenAPIPaymentMethods
 {
     protected string $currencyName;
 
@@ -20,10 +20,6 @@ class AdyenAPISession
     protected string $shopperLocale;
 
     protected string $merchantAccount;
-
-    protected string $reference;
-
-    protected string $returnUrl;
 
     public function setCurrencyName(string $currencyName): void
     {
@@ -50,17 +46,7 @@ class AdyenAPISession
         $this->merchantAccount = $merchantAccount;
     }
 
-    public function setReference(string $reference): void
-    {
-        $this->reference = $reference;
-    }
-
-    public function setReturnUrl(string $returnUrl): void
-    {
-        $this->returnUrl = $returnUrl;
-    }
-
-    public function getAdyenSessionParams(): array
+    public function getAdyenPaymentMethodsParams(): array
     {
         return [
             'amount' => [
@@ -69,8 +55,6 @@ class AdyenAPISession
             ],
             'countryCode' => $this->countryCode,
             'merchantAccount' => $this->merchantAccount,
-            'reference' => $this->reference,
-            'returnUrl' => $this->returnUrl,
             'shopperLocale' => $this->shopperLocale
         ];
     }

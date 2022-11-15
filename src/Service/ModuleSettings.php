@@ -11,7 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidEsales\Eshop\Application\Model\Payment;
 
 /**
  * @extendable-class
@@ -57,12 +56,12 @@ class ModuleSettings
     public function checkHealth(): bool
     {
         return (
-            self::getAPIKey() &&
-            self::getClientKey() &&
-            self::getHmacSignature() &&
-            self::getMerchantAccount() &&
-            self::getNotificationUsername() &&
-            self::getNotificationPassword()
+            $this->getAPIKey() &&
+            $this->getClientKey() &&
+            $this->getHmacSignature() &&
+            $this->getMerchantAccount() &&
+            $this->getNotificationUsername() &&
+            $this->getNotificationPassword()
         );
     }
 
@@ -124,6 +123,15 @@ class ModuleSettings
     public function isSeperateCapture(string $paymentId): bool
     {
         return (bool)$this->getSettingValue('osc_adyen_SeperateCapture_' . $paymentId);
+    }
+
+    public function getLocaleForCountryIso(string $countryIso): string
+    {
+        // make sure provided keys and searched keys are in lower case
+        $countryIso = strtolower($countryIso);
+        $languages = array_change_key_case($this->getSettingValue('osc_adyen_Languages'), CASE_LOWER);
+
+        return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';
     }
 
     public function saveActivePayments(array $activePayments): void

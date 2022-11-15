@@ -23,4 +23,17 @@ class AdyenJSController extends FrontendController
             'data' => $this->getAdyenSessionData()
         ])->sendJson();
     }
+
+    /**
+     * @throws \Adyen\AdyenException
+     * @throws \JsonException
+     */
+    public function getAdyenJsonPaymentMethods(): void
+    {
+        $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
+
+        $response->setData(
+            $this->getAdyenPaymentMethodsData()->getAdyenPaymentMethods()
+        )->sendJson();
+    }
 }

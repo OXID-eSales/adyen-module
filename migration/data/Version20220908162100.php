@@ -132,6 +132,18 @@ final class Version20220908162100 extends AbstractMigration
                 ['columnDefinition' => 'timestamp default current_timestamp on update current_timestamp']
             );
         }
+
+        if (!$historyTable->hasColumn("ADYENSTATUS")) {
+            $historyTable->addColumn(
+                "ADYENSTATUS",
+                Types::STRING,
+                [
+                    'columnDefinition' => 'char(32) collate latin1_general_ci',
+                    'comment' => 'Adyen Payment Status'
+                ]
+            );
+        }
+
         if (!$historyTable->hasPrimaryKey('OXID')) {
             $historyTable->setPrimaryKey(['OXID']);
         }
