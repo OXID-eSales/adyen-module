@@ -17,7 +17,9 @@ class PaymentControllerTest extends UnitTestCase
     public function testGetPaymentListWithoutPayments()
     {
         $query = "update oxpayments set oxactive = 0 where oxid like '%oscadyen%'";
-        $this->getDb()->execute($query);
+        $numberRows = $this->getDb()->execute($query);
+
+        $this->assertTrue($numberRows > 0);
 
         $paymentController = oxNew(PaymentController::class);
         $paymentList = $paymentController->getPaymentList();
@@ -31,7 +33,9 @@ class PaymentControllerTest extends UnitTestCase
     public function testGetPaymentList()
     {
         $query = "update oxpayments set oxactive = 1 where oxid like '%oscadyen%'";
-        $this->getDb()->execute($query);
+        $numberRows = $this->getDb()->execute($query);
+
+        $this->assertTrue($numberRows > 0);
 
         $paymentController = oxNew(PaymentController::class);
         $paymentList = $paymentController->getPaymentList();
