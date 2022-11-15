@@ -9,12 +9,14 @@ use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
+use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
 
 /**
  * Metadata version
@@ -25,17 +27,17 @@ $sMetadataVersion = '2.1';
  * Module information
  */
 $aModule = [
-    'id' => 'osc_adyen',
+    'id' => Module::MODULE_ID,
     'title' => [
-        'de' => 'Adyen Payment für OXID',
-        'en' => 'Adyen Payment for OXID'
+        'de' => Module::MODULE_NAME_DE,
+        'en' => Module::MODULE_NAME_EN
     ],
     'description' => [
         'de' => 'Nutzung der Online-Bezahldienste von Adyen.',
         'en' => 'Use of the online payment services from Adyen.'
     ],
     'thumbnail' => 'out/pictures/logo.png',
-    'version' => '1.0.0-rc.1',
+    'version' => Module::MODULE_VERSION_FULL,
     'author' => 'OXID eSales AG',
     'url' => 'https://www.oxid-esales.com',
     'email' => 'support@oxid-esales.com',
@@ -44,11 +46,13 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
+        \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
         // frontend-controller
+        \OxidEsales\Eshop\Application\Controller\OrderController::class => OrderController::class,
         \OxidEsales\Eshop\Application\Controller\PaymentController::class => PaymentController::class,
     ],
     'events' => [
@@ -69,6 +73,7 @@ $aModule = [
         // frontend - paymentpage
         'modules/osc/adyen/payment/adyen_assets.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets.tpl',
         'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
+        'modules/osc/adyen/payment/adyen_payment_nextstep.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_nextstep.tpl',
         // frontend - account
         'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
         // frontend - mails
@@ -85,6 +90,11 @@ $aModule = [
             'template' => 'page/checkout/payment.tpl',
             'block' => 'checkout_payment_main',
             'file' => 'views/frontend/blocks/page/checkout/checkout_payment_main.tpl'
+        ],
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_nextstep',
+            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_nextstep.tpl'
         ],
         [
             'template' => 'page/account/order.tpl',

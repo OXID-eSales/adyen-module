@@ -11,7 +11,8 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseSession;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Repository;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
@@ -35,7 +36,8 @@ class ServiceAvailabilityTest extends TestCase
             [AdyenSDKLoader::class],
             [Context::class],
             [ModuleSettings::class],
-            [Payment::class],
+            [AdyenAPIResponseSession::class],
+            [AdyenAPIResponsePaymentMethods::class],
             [Repository::class],
             [StaticContents::class],
             [UserRepository::class],

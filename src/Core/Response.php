@@ -37,19 +37,10 @@ class Response
         'status' => 'Internal Server Error'
     ];
 
-    /**
-     * @var array
-     */
     protected array $data;
 
-    /**
-     * @var string
-     */
     protected string $status;
 
-    /**
-     * @var int
-     */
     protected int $code;
 
     /**
@@ -61,49 +52,31 @@ class Response
         return $this->setResponse(self::HEADER_OK, $data);
     }
 
-    /**
-     * @return Response
-     */
     public function setGenericSuccess(): Response
     {
         return $this->setResponse(self::HEADER_OK);
     }
 
-    /**
-     * @return Response
-     */
     public function setUnauthorized(): Response
     {
         return $this->setResponse(self::HEADER_UNAUTHORIZED);
     }
 
-    /**
-     * @return Response
-     */
     public function setForbidden(): Response
     {
         return $this->setResponse(self::HEADER_FORBIDDEN);
     }
 
-    /**
-     * @return Response
-     */
     public function setNotFound(): Response
     {
         return $this->setResponse(self::HEADER_NOT_FOUND);
     }
 
-    /**
-     * @return Response
-     */
     public function setNotAllowed(): Response
     {
         return $this->setResponse(self::HEADER_NOT_ALLOWED);
     }
 
-    /**
-     * @return Response
-     */
     public function setServerError(): Response
     {
         return $this->setResponse(self::HEADER_INTERNAL_SERVER_ERROR);

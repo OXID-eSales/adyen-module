@@ -14,12 +14,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
-use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPISession;
-use OxidSolutionCatalysts\Adyen\Service\Context;
-use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
-use OxidSolutionCatalysts\Adyen\Service\UserRepository;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseSession;
 
 class AdyenJSControllerTest extends UnitTestCase
 {
@@ -37,7 +32,10 @@ class AdyenJSControllerTest extends UnitTestCase
         Registry::set(Utils::class, $utilsStub);
 
         // set DummyData as Response ...
-        $controller = $this->createPartialMock(AdyenJSController::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $controller = $this->createPartialMock(
+            AdyenJSController::class,
+            ['getAdyenSessionId', 'getAdyenSessionData']
+        );
         $controller->expects($this->any())->method('getAdyenSessionId')->willReturn('test');
         $controller->expects($this->any())->method('getAdyenSessionData')->willReturn('test');
 
@@ -51,7 +49,10 @@ class AdyenJSControllerTest extends UnitTestCase
 
     public function testGetAdyenSessionIdAndData(): void
     {
-        $paymentStub = $this->createPartialMock(Payment::class, ['getAdyenSessionId', 'getAdyenSessionData']);
+        $paymentStub = $this->createPartialMock(
+            AdyenAPIResponseSession::class,
+            ['getAdyenSessionId', 'getAdyenSessionData']
+        );
         $paymentStub->method('getAdyenSessionId')->willReturn('test1');
         $paymentStub->method('getAdyenSessionData')->willReturn('test2');
 
@@ -65,6 +66,6 @@ class AdyenJSControllerTest extends UnitTestCase
     public function testGetAdyenSessionResponse(): void
     {
         $controller = new AdyenJSController();
-        $this->assertInstanceOf(Payment::class, $controller->getAdyenSessionResponse());
+        $this->assertInstanceOf(AdyenAPIResponseSession::class, $controller->getAdyenSessionResponse());
     }
 }
