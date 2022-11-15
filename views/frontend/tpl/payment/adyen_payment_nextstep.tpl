@@ -1,2 +1,2 @@
-[{assign var="stateName" value= constant('\OxidSolutionCatalysts\Adyen\Core\Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME')}]
+[{assign var="stateName" value=$oViewConf->getAdyenHtmlParamStateName()}]
 <input id="[{$stateName}]" type="hidden" name="[{$stateName}]" value="" />

@@ -27,7 +27,7 @@ class OrderController extends OrderController_parent
         $redirectLink = AdyenSession::getRedirctLink();
         if (
             (Order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET == $success) &&
-            ($redirectLink)
+            $redirectLink
         ) {
             AdyenSession::deleteRedirctLink();
             throw new Redirect($redirectLink);

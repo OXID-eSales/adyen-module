@@ -24,7 +24,7 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
     /**
      * @throws Exception
      */
-    public function getAdyenPaymentMethods(): string
+    public function getAdyenPaymentMethods(): array
     {
         $adyenPaymentMethods = $this->session->getVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
         if (!$adyenPaymentMethods) {

@@ -57,8 +57,8 @@ class PaymentGateway extends PaymentGateway_parent
             $paymentResult = $paymentService->getPaymentResult();
 
             // everything is fine, we can save the references
-            if (isset($paymentResult->pspReference)) {
-                $pspReference = $paymentResult->pspReference;
+            if (isset($paymentResult['pspReference'])) {
+                $pspReference = $paymentResult['pspReference'];
 
                 /** @var Order $order */
                 $order->setAdyenPSPReference($pspReference);
@@ -68,19 +68,19 @@ class PaymentGateway extends PaymentGateway_parent
                 $adyenHistory->setPSPReference($pspReference);
                 $adyenHistory->setParentPSPReference($pspReference);
                 $adyenHistory->setOrderId($order->getId());
-                if (isset($paymentResult->resultCode)) {
-                    $adyenHistory->setAdyenStatus($paymentResult->resultCode);
+                if (isset($paymentResult['resultCode'])) {
+                    $adyenHistory->setAdyenStatus($paymentResult['resultCode']);
                 }
                 $adyenHistory->save();
             }
-            if (isset($paymentResult->action)) {
-                $action = $paymentResult->action;
+            if (isset($paymentResult['action'])) {
+                $action = $paymentResult['action'];
                 if (
-                    isset($action->type) &&
-                    $action->type === 'redirect' &&
-                    isset($action->url)
+                    isset($action['type']) &&
+                    $action['type'] === 'redirect' &&
+                    isset($action['url'])
                 ) {
-                    AdyenSession::setRedirctLink($action->url);
+                    AdyenSession::setRedirctLink($action['url']);
                     /** @var Order $order */
                     $this->_iLastErrorNo = (string)$order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET;
                 }

@@ -79,7 +79,7 @@ class PaymentController extends PaymentController_parent
         $paymentId = $session->getVariable('paymentid');
         if (Module::isAdyenPayment($paymentId)) {
             $request = oxNew(Request::class);
-            $state = $request->getRequestEscapedParameter(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
+            $state = $request->getRequestParameter(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
             $session->setVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME, $state);
         }
         return $result;

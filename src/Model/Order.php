@@ -65,6 +65,6 @@ class Order extends Order_parent
     public function createNumberForAdyenPayment(): string
     {
         $this->_setNumber();
-        return $this->getFieldData('oxordernr');
+        return (string)$this->getFieldData('oxordernr');
     }
 }

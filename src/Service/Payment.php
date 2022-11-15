@@ -28,7 +28,7 @@ class Payment
 
     private string $executionError = self::PAYMENT_ERROR_NONE;
 
-    private ?object $paymentResult = null;
+    private ?array $paymentResult = null;
 
     /** @var Session */
     private Session $session;
@@ -74,7 +74,7 @@ class Payment
         return $this->executionError;
     }
 
-    public function setPaymentResult(object $paymentResult): void
+    public function setPaymentResult(array $paymentResult): void
     {
         $this->paymentResult = $paymentResult;
     }
@@ -98,7 +98,9 @@ class Payment
         /** @var Order $order */
         $reference = $order->createNumberForAdyenPayment();
 
-        $paymentState = json_decode($this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME));
+        $paymentState = json_decode($this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME), true);
+        // not necessary anymore, so cleanup
+        $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
 
         $currencyDecimals = $this->context->getActiveCurrencyDecimals();
         $decimalFactor = (int)('1' . str_repeat('0', $currencyDecimals));

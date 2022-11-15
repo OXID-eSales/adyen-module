@@ -16,7 +16,7 @@
       crossorigin="anonymous">
 [{capture assign="adyenJS"}]
     var nextStepEl = document.getElementById('paymentNextStepBottom');
-    var adyenStateEl = document.getElementById('adyenStateDataPaymentMethod');
+    var adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
     [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
     document.getElementsByName('paymentid').forEach(function (e) {
         e.addEventListener('change', function (event) {

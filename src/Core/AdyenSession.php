@@ -9,35 +9,22 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core;
 
-use OxidEsales\Eshop\Core\Session;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidEsales\Eshop\Core\Registry;
 
 class AdyenSession
 {
-    use ServiceContainer;
-
-    private static Session $session;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct()
-    {
-        self::$session = $this->getServiceFromContainer(Session::class);
-    }
-
     public static function setRedirctLink(string $redirectLink): void
     {
-        self::$session->setVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME, $redirectLink);
+        Registry::getSession()->setVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME, $redirectLink);
     }
 
     public static function getRedirctLink(): string
     {
-        return self::$session->getVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
+        return (string)Registry::getSession()->getVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
     }
 
     public static function deleteRedirctLink(): void
     {
-        self::$session->deleteVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
+        Registry::getSession()->deleteVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
     }
 }
