@@ -11,7 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 
 use OxidSolutionCatalysts\Adyen\Core\AdyenSession;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Payment;

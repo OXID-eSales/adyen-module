@@ -236,8 +236,7 @@ class AdyenHistory extends BaseModel
             /** @var QueryBuilder $queryBuilder */
             $queryBuilder = $this->queryBuilderFactory->create();
 
-            $queryBuilder->select('oxid')
-                ->from($this->getCoreTableName())
+            $queryBuilder->delete($this->getCoreTableName())
                 ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspreference');
 
             $parameters = [
@@ -249,17 +248,8 @@ class AdyenHistory extends BaseModel
                 $parameters['oxshopid'] = $this->context->getCurrentShopId();
             }
 
-            /** @var Result $resultDB */
-            $resultDB = $queryBuilder->setParameters($parameters)
+            $queryBuilder->setParameters($parameters)
                 ->execute();
-
-            if (is_a($resultDB, Result::class)) {
-                $fromDB = $resultDB->fetchAllAssociative();
-                foreach ($fromDB as $row) {
-                    $adyenHistory = oxNew(AdyenHistory::class);
-                    $adyenHistory->delete($row['oxid']);
-                }
-            }
         }
     }
 }

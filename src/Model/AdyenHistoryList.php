@@ -51,7 +51,6 @@ class AdyenHistoryList extends ListModel
 
         $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
         $this->context = $this->getServiceFromContainer(ContextInterface::class);
-
         $this->config = Registry::getConfig();
     }
 
@@ -61,6 +60,7 @@ class AdyenHistoryList extends ListModel
     public function getAdyenHistoryList(string $orderId): void
     {
         /** @var QueryBuilder $queryBuilder */
+
         $queryBuilder = $this->queryBuilderFactory->create();
 
         $listObject = $this->getBaseObject();
