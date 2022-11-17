@@ -8,9 +8,13 @@
 namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Application\Model\Payment as eShopPayment;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Service\Payment as paymentService;
 
 /**
  * Order class wrapper for Adyen module
@@ -22,6 +26,8 @@ class AdminOrderController extends AdminDetailsController
     protected ?Order $editObject = null;
 
     protected ?AdyenHistoryList $adyenHistoryList = null;
+
+    protected ?bool $isCapturePossible = null;
 
     /**
      * Current class template name.
@@ -62,6 +68,67 @@ class AdminOrderController extends AdminDetailsController
         );
     }
 
+    public function captureAdyenAmount(): void
+    {
+        $order = $this->getEditObject();
+        $pspReference = $order->getFieldData('adyenpspreference');
+        $reference = $order->getFieldData('oxordernr');
+
+        $request = Registry::getRequest();
+        $amount = (float) $request->getRequestParameter('capture_amount');
+        $currency = $request->getRequestParameter('capture_currency');
+
+        $paymentService = $this->getServiceFromContainer(paymentService::class);
+        $success = $paymentService->doAdyenCapture(
+            $amount,
+            $pspReference,
+            $reference
+        );
+
+        if ($success) {
+            $captureResult = $paymentService->getCaptureResult();
+
+            // everything is fine, we can save the references
+            if (isset($paymentResult['paymentPspReference'])) {
+                $pspReference = $paymentResult['paymentPspReference'];
+                $parentPspReference = $paymentResult['pspReference'];
+
+                /** @var Order $order */
+                $order->setAdyenPSPReference($pspReference);
+                $order->save();
+
+                $adyenHistory = oxNew(AdyenHistory::class);
+                $adyenHistory->setPSPReference($pspReference);
+                $adyenHistory->setParentPSPReference($parentPspReference);
+                $adyenHistory->setOrderId($order->getId());
+                $adyenHistory->setPrice($amount);
+                $adyenHistory->setCurrency($currency);
+                if (isset($paymentResult['status'])) {
+                    $adyenHistory->setAdyenStatus($paymentResult['status']);
+                }
+                $adyenHistory->save();
+            }
+        }
+    }
+
+    public function isAdyenCapturePossible(): bool
+    {
+        if (is_null($this->isCapturePossible)) {
+            $this->isCapturePossible = false;
+            if ($this->isAdyenOrder()) {
+                $order = $this->getEditObject();
+                /** @var Payment $payment */
+                $payment = oxNew(eShopPayment::class);
+                $payment->load($order->getFieldData('oxpaymenttype'));
+                $this->isCapturePossible = (
+                    $payment->isAdyenSeperateCapture() &&
+                    !$order->isAdyenOrderPaid()
+                );
+            }
+        }
+        return $this->isCapturePossible;
+    }
+
     /**
      * Returns editable order object
      *
@@ -74,7 +141,6 @@ class AdminOrderController extends AdminDetailsController
             $this->editObject = oxNew(Order::class);
             $this->editObject->load($oxid);
         }
-
         return $this->editObject;
     }
 

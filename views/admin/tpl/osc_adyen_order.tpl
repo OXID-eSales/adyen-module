@@ -17,6 +17,10 @@
         [{oxmultilang ident="OSC_ADYEN_NO_ADYEN_ORDER"}]
     </div>
 [{else}]
+    [{assign var="adyenCurrency" value=$edit->oxorder__oxcurrency->value}]
+    [{* toDo: The Capture Amount can be smaller if captures have already taken place. Then it has to be recalculated accordingly. *}]
+    [{assign var="adyenCaptureAmount" value=$edit->getTotalOrderSum()}]
+    <!-- Show AdyenHistory -->
     <table style="width: 98%; border-spacing: 0;">
         <tr>
             <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
@@ -42,6 +46,27 @@
             [{/if}]
         [{/foreach}]
     </table>
+    <!-- Show AdyenHistory END -->
+
+    [{if $oView->isAdyenCapturePossible()}]
+        <div style="margin-top: 10px">
+            <p><b>[{oxmultilang ident="OSC_ADYEN_COLLECTMONEY" suffix="COLON"}]</b></p>
+            <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                [{$oViewConf->getHiddenSid()}]
+                <input type="hidden" name="fnc" value="captureAdyenAmount" />
+                <input type="hidden" name="oxid" value="[{$oxid}]" />
+                <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                <input type="text"
+                       name="capture_amount"
+                       value="[{$adyenCaptureAmount|escape|string_format:"%.2f"}]" />
+                <input type="hidden"
+                       name="capture_currency"
+                       value="[{$adyenCurrency}]" />
+
+                <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CAPTURE"}]" />
+            </form>
+        </div>
+    [{/if}]
 [{/if}]
 
 [{include file="bottomnaviitem.tpl"}]
