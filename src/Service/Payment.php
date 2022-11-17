@@ -48,7 +48,7 @@ class Payment
     /** @var AdyenAPIResponsePayments */
     private AdyenAPIResponsePayments $APIPayments;
 
-    /** @var AdyenAPIResponsePayments */
+    /** @var AdyenAPIResponseCaptures */
     private AdyenAPIResponseCaptures $APICaptures;
 
     public function __construct(
@@ -172,7 +172,8 @@ class Payment
         return $result;
     }
 
-    protected function getAdyenAmount(float $amount): string {
+    protected function getAdyenAmount(float $amount): string
+    {
         $currencyDecimals = $this->context->getActiveCurrencyDecimals();
         $decimalFactor = (int)('1' . str_repeat('0', $currencyDecimals));
         $currencyAmountInt = $amount * $decimalFactor;

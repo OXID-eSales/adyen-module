@@ -10,6 +10,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Application\Model\Payment as eShopPayment;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
@@ -67,9 +68,12 @@ class AdminOrderController extends AdminDetailsController
             $order->isAdyenOrder()
         );
     }
-
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function captureAdyenAmount(): void
     {
+        /** @var Order $order */
         $order = $this->getEditObject();
         $pspReference = $order->getFieldData('adyenpspreference');
         $reference = $order->getFieldData('oxordernr');
@@ -89,9 +93,9 @@ class AdminOrderController extends AdminDetailsController
             $captureResult = $paymentService->getCaptureResult();
 
             // everything is fine, we can save the references
-            if (isset($paymentResult['paymentPspReference'])) {
-                $pspReference = $paymentResult['paymentPspReference'];
-                $parentPspReference = $paymentResult['pspReference'];
+            if (isset($captureResult['paymentPspReference'])) {
+                $pspReference = $captureResult['paymentPspReference'];
+                $parentPspReference = $captureResult['pspReference'];
 
                 /** @var Order $order */
                 $order->setAdyenPSPReference($pspReference);
@@ -103,8 +107,8 @@ class AdminOrderController extends AdminDetailsController
                 $adyenHistory->setOrderId($order->getId());
                 $adyenHistory->setPrice($amount);
                 $adyenHistory->setCurrency($currency);
-                if (isset($paymentResult['status'])) {
-                    $adyenHistory->setAdyenStatus($paymentResult['status']);
+                if (isset($captureResult['status'])) {
+                    $adyenHistory->setAdyenStatus($captureResult['status']);
                 }
                 $adyenHistory->save();
             }
@@ -116,6 +120,7 @@ class AdminOrderController extends AdminDetailsController
         if (is_null($this->isCapturePossible)) {
             $this->isCapturePossible = false;
             if ($this->isAdyenOrder()) {
+                /** @var Order $order */
                 $order = $this->getEditObject();
                 /** @var Payment $payment */
                 $payment = oxNew(eShopPayment::class);
