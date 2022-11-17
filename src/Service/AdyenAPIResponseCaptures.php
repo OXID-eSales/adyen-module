@@ -30,7 +30,7 @@ class AdyenAPIResponseCaptures extends AdyenAPIResponse
         try {
             $service = $this->createCheckout();
             $params = $captureParams->getAdyenCapturesParams();
-            $result = $service->payments($params);
+            $result = $service->captures($params);
             if (!$result) {
                 throw new Exception('payments not found in Adyen-Response');
             }

@@ -94,12 +94,8 @@ class AdminOrderController extends AdminDetailsController
 
             // everything is fine, we can save the references
             if (isset($captureResult['paymentPspReference'])) {
-                $pspReference = $captureResult['paymentPspReference'];
-                $parentPspReference = $captureResult['pspReference'];
-
-                /** @var Order $order */
-                $order->setAdyenPSPReference($pspReference);
-                $order->save();
+                $pspReference = $captureResult['pspReference'];
+                $parentPspReference = $captureResult['paymentPspReference'];
 
                 $adyenHistory = oxNew(AdyenHistory::class);
                 $adyenHistory->setPSPReference($pspReference);
