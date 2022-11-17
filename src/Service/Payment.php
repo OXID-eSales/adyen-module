@@ -156,7 +156,7 @@ class Payment
         $captures = oxNew(AdyenAPICaptures::class);
         $captures->setCurrencyName($this->context->getActiveCurrencyName());
         $captures->setReference($orderNr);
-        $captures->paymentPspReference($pspReference);
+        $captures->setPspReference($pspReference);
         $captures->setCurrencyAmount($this->getAdyenAmount($amount));
         $captures->setMerchantAccount($this->moduleSettings->getMerchantAccount());
         $captures->setMerchantApplicationName(Module::MODULE_NAME_EN);
