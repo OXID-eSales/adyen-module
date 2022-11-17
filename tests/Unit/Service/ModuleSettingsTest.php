@@ -57,7 +57,7 @@ final class ModuleSettingsTest extends UnitTestCase
 
     public function testSaveActivePayments(): void
     {
-        $values = array_keys[Module::PAYMENT_DEFINTIONS];
+        $values = array_keys(Module::PAYMENT_DEFINTIONS);
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
         foreach ($values as $value) {
