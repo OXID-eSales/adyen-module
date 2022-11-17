@@ -45,17 +45,20 @@ final class AdminOrderControllerTest extends UnitTestCase
         }
     }
 
-    public function testRender(): void
+    /**
+     * @dataProvider providerTestOrderData
+     */
+    public function testRender($orderId, $orderData): void
     {
         $controller = $this->createPartialMock(AdminOrderController::class, ['getEditObjectId']);
-        $controller->expects($this->any())->method('getEditObjectId')->willReturn('123');
+        $controller->expects($this->any())->method('getEditObjectId')->willReturn($orderId);
 
         $this->assertSame('osc_adyen_order.tpl', $controller->render());
 
         $viewData = $controller->getViewData();
-        $this->assertSame('123', $viewData['oxid']);
+        $this->assertSame($orderId, $viewData['oxid']);
         $this->assertInstanceOf(Order::class, $viewData['edit']);
-        $this->assertSame('123', $viewData['edit']->getId());
+        $this->assertSame($orderId, $viewData['edit']->getId());
     }
 
     /**
@@ -71,20 +74,23 @@ final class AdminOrderControllerTest extends UnitTestCase
 
         $this->assertSame(
             $controller->isAdyenOrder(),
-            $orderData['oxorder__oxpaymenttype'] === Module::PAYMENT_CREDITCARD_ID
+            Module::isAdyenPayment($orderData['oxorder__oxpaymenttype'])
         );
     }
 
-    public function testGetEditObject(): void
+    /**
+     * @dataProvider providerTestOrderData
+     */
+    public function testGetEditObject($orderId, $orderData): void
     {
         $controller = $this->createPartialMock(AdminOrderController::class, ['getEditObjectId']);
-        $controller->expects($this->any())->method('getEditObjectId')->willReturn('123');
+        $controller->expects($this->any())->method('getEditObjectId')->willReturn($orderId);
 
         $order = oxNew(Order::class);
-        $order->load('123');
+        $order->load($orderId);
 
         $this->assertInstanceOf(Order::class, $controller->getEditObject());
-        $this->assertSame('123', $controller->getEditObject()->getId());
+        $this->assertSame($orderId, $controller->getEditObject()->getId());
     }
 
     public function testGetEmptyEditObject(): void
@@ -98,14 +104,7 @@ final class AdminOrderControllerTest extends UnitTestCase
 
     public function providerTestOrderData(): array
     {
-        return [
-            [
-                '123',
-                [
-                    'oxorder__oxpaymenttype' => Module::PAYMENT_CREDITCARD_ID,
-                    'oxorder__adyenpspreference' => 'test',
-                ]
-            ],
+        $providerData = [
             [
                 '456',
                 [
@@ -113,5 +112,18 @@ final class AdminOrderControllerTest extends UnitTestCase
                 ]
             ]
         ];
+        $count = 123;
+        foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
+            $count++;
+            $providerData[] = [
+                (string)$count,
+                [
+                    'oxorder__oxpaymenttype' => $paymentId,
+                    'oxorder__adyenpspreference' => 'test' . $count
+                ]
+            ];
+        }
+
+        return $providerData;
     }
 }

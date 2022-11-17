@@ -16,6 +16,10 @@ $aLang = [
 
     // osc_adyen_order.tpl
     'OSC_ADYEN_NO_ADYEN_ORDER' => 'This is no Adyen-Order',
+    'OSC_ADYEN_PSPREFERENCE' => 'PSP Reference',
+    'OSC_ADYEN_PARENTPSPREFERENCE' => 'Parent PSP Reference',
+    'OSC_ADYEN_TIMESTAMP' => 'Timestamp',
+    'OSC_ADYEN_STATUS' => 'Adyen Status',
 
     // extend order_list.tpl
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',

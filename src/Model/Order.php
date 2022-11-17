@@ -29,10 +29,13 @@ class Order extends Order_parent
 
     protected ?string $adyenPaymentName = null;
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function isAdyenOrder(): bool
     {
         return (
-            $this->getFieldData('oxpaymenttype') === Module::PAYMENT_CREDITCARD_ID &&
+            Module::isAdyenPayment($this->getFieldData('oxpaymenttype')) &&
             $this->getAdyenPSPReference()
         );
     }
@@ -66,5 +69,17 @@ class Order extends Order_parent
     {
         $this->_setNumber();
         return (string)$this->getFieldData('oxordernr');
+    }
+
+    public function delete($oxid = null): bool
+    {
+        if ($this->isAdyenOrder()) {
+            $pspReference = $this->getAdyenPSPReference();
+            $adyenHistory = oxNew(AdyenHistory::class);
+            if ($adyenHistory->loadByPSPReference($pspReference)) {
+                $adyenHistory->delete();
+            }
+        }
+        return parent::delete($oxid);
     }
 }

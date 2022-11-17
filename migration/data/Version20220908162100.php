@@ -125,14 +125,6 @@ final class Version20220908162100 extends AbstractMigration
                 ]
             );
         }
-        if (!$historyTable->hasColumn('OXTIMESTAMP')) {
-            $historyTable->addColumn(
-                'OXTIMESTAMP',
-                Types::DATETIME_MUTABLE,
-                ['columnDefinition' => 'timestamp default current_timestamp on update current_timestamp']
-            );
-        }
-
         if (!$historyTable->hasColumn("ADYENSTATUS")) {
             $historyTable->addColumn(
                 "ADYENSTATUS",
@@ -141,6 +133,23 @@ final class Version20220908162100 extends AbstractMigration
                     'columnDefinition' => 'char(32) collate latin1_general_ci',
                     'comment' => 'Adyen Payment Status'
                 ]
+            );
+        }
+        if (!$historyTable->hasColumn("CURRENCY")) {
+            $historyTable->addColumn(
+                "CURRENCY",
+                Types::STRING,
+                [
+                    'columnDefinition' => 'char(3) collate latin1_general_ci',
+                    'comment' => 'Adyen Payment Currency'
+                ]
+            );
+        }
+        if (!$historyTable->hasColumn('OXTIMESTAMP')) {
+            $historyTable->addColumn(
+                'OXTIMESTAMP',
+                Types::DATETIME_MUTABLE,
+                ['columnDefinition' => 'timestamp default current_timestamp on update current_timestamp']
             );
         }
 

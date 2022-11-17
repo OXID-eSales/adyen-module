@@ -9,11 +9,32 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Model\BaseModel;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 class AdyenHistory extends BaseModel
 {
+    use ServiceContainer;
+
+    protected const PSPREFERENCEFIELD = 'pspreference';
+    protected const PSPPARENTREFERENCEFIELD = 'parentpspreference';
+
+    /** @var QueryBuilderFactoryInterface */
+    private $queryBuilderFactory;
+
+    /** @var ContextInterface */
+    private $context;
+
+    /** @var Config */
+    private $config;
+
     /**
      * Current class name
      *
@@ -35,16 +56,58 @@ class AdyenHistory extends BaseModel
     }
 
     /**
-     * @param string $oxorderid
-     * @return bool
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
+    public function init($tableName = null, $forceAllFields = false): void
+    {
+        parent::init($tableName, $forceAllFields);
+        $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
+        $this->context = $this->getServiceFromContainer(ContextInterface::class);
+
+        $this->config = Registry::getConfig();
+    }
+
+    public function loadByPSPReference(string $pspReference): bool
+    {
+        return $this->loadByIdent('pspreference', $pspReference);
+    }
+
     public function loadByOxOrderId(string $oxorderid): bool
     {
-        $this->_addField('oxorderid', 0);
-        $query = $this->buildSelectString([$this->getViewName() . '.oxorderid' => $oxorderid]);
-        $this->_isLoaded = $this->assignRecord($query);
+        return $this->loadByIdent('oxorderid', $oxorderid);
+    }
 
-        return $this->_isLoaded;
+    protected function loadByIdent(string $var, string $value): bool
+    {
+        $result = false;
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder->select('oxid')
+            ->from($this->getCoreTableName())
+            ->setMaxResults(1)
+            ->where(self::PSPREFERENCEFIELD . ' = :' . $var);
+
+        $parameters = [
+            $var => $value
+        ];
+
+        if (!$this->config->getConfigParam('blMallUsers')) {
+            $queryBuilder->andWhere('oxshopid = :oxshopid');
+            $parameters['oxshopid'] = $this->context->getCurrentShopId();
+        }
+
+        /** @var Result $resultDB */
+        $resultDB = $queryBuilder->setParameters($parameters)
+            ->execute();
+
+        if (is_a($resultDB, Result::class)) {
+            $dbData = $resultDB->fetchOne();
+            $result = $this->load($dbData['oxid']);
+        }
+        return $result;
     }
 
     public function getOrderId(): string
@@ -54,17 +117,27 @@ class AdyenHistory extends BaseModel
 
     public function getPSPReference(): string
     {
-        return (string) $this->getFieldData('pspreference');
+        return (string) $this->getFieldData(self::PSPREFERENCEFIELD);
     }
 
     public function getParentPSPReference(): string
     {
-        return (string) $this->getFieldData('parentpspreference');
+        return (string) $this->getFieldData(self::PSPPARENTREFERENCEFIELD);
     }
 
-    public function getOxPrice(): float
+    public function getPrice(): float
     {
         return (float) $this->getFieldData('oxprice');
+    }
+
+    public function getFormatedPrice(): string
+    {
+        return Registry::getLang()->formatCurrency($this->getPrice());
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->getFieldData('currency');
     }
 
     public function getAdyenStatus(): string
@@ -72,13 +145,9 @@ class AdyenHistory extends BaseModel
         return (string) $this->getFieldData('adyenstatus');
     }
 
-    public function setPSPReference(string $pspreference): void
+    public function getTimeStamp(): string
     {
-        $this->assign(
-            [
-                'pspreference' => $pspreference
-            ]
-        );
+        return (string) $this->getFieldData('oxtimestamp');
     }
 
     public function setOrderId(string $orderId): void
@@ -90,11 +159,20 @@ class AdyenHistory extends BaseModel
         );
     }
 
+    public function setPSPReference(string $pspreference): void
+    {
+        $this->assign(
+            [
+                self::PSPREFERENCEFIELD => $pspreference
+            ]
+        );
+    }
+
     public function setParentPSPReference(string $parentpspreference): void
     {
         $this->assign(
             [
-                'parentpspreference' => $parentpspreference
+                self::PSPPARENTREFERENCEFIELD => $parentpspreference
             ]
         );
     }
@@ -104,6 +182,15 @@ class AdyenHistory extends BaseModel
         $this->assign(
             [
                 'oxprice' => $oxprice
+            ]
+        );
+    }
+
+    public function setCurrency(string $currency): void
+    {
+        $this->assign(
+            [
+                'currency' => $currency
             ]
         );
     }
@@ -124,5 +211,45 @@ class AdyenHistory extends BaseModel
                 'adyenstatus' => $adyenstatus
             ]
         );
+    }
+
+    public function delete($oxid = null): bool
+    {
+        if ($oxid) {
+            $this->load($oxid);
+        }
+        $pspReference = $this->getPSPReference();
+        $this->deleteChildReferences($pspReference);
+
+        return parent::delete($oxid);
+    }
+
+    /**
+     * Deletes child records
+     *
+     * @param string $pspReference AdyenHistory PSP Reference
+     */
+    protected function deleteChildReferences($pspReference): void
+    {
+        if ($pspReference) {
+
+            /** @var QueryBuilder $queryBuilder */
+            $queryBuilder = $this->queryBuilderFactory->create();
+
+            $queryBuilder->delete($this->getCoreTableName())
+                ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspreference');
+
+            $parameters = [
+                'pspreference' => $pspReference
+            ];
+
+            if (!$this->config->getConfigParam('blMallUsers')) {
+                $queryBuilder->andWhere('oxshopid = :oxshopid');
+                $parameters['oxshopid'] = $this->context->getCurrentShopId();
+            }
+
+            $queryBuilder->setParameters($parameters)
+                ->execute();
+        }
     }
 }

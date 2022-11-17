@@ -62,7 +62,7 @@ class OrderTest extends UnitTestCase
         $order = oxNew(Order::class);
         $order->load($orderId);
         $isAdyenOrder = (
-            $orderData['oxorder__oxpaymenttype'] === Module::PAYMENT_CREDITCARD_ID &&
+            Module::isAdyenPayment($orderData['oxorder__oxpaymenttype']) &&
             $orderData['oxorder__adyenpspreference'] !== ''
         );
         $this->assertSame($isAdyenOrder, $order->isAdyenOrder());

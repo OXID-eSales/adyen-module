@@ -23,7 +23,6 @@ final class Module
     public const MODULE_ID = 'osc_adyen';
 
     public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
-
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';

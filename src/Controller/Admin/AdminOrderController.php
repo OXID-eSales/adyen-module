@@ -8,6 +8,7 @@
 namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -18,11 +19,9 @@ class AdminOrderController extends AdminDetailsController
 {
     use ServiceContainer;
 
-    /**
-     * Active order object
-     * @var Order
-     */
-    protected $editObject = null;
+    protected ?Order $editObject = null;
+
+    protected ?AdyenHistoryList $adyenHistoryList = null;
 
     /**
      * Current class template name.
@@ -43,10 +42,8 @@ class AdminOrderController extends AdminDetailsController
         $oxid = $this->getEditObjectId();
         $this->_aViewData["oxid"] = $oxid;
         if ($oxid) {
-            $order = oxNew(Order::class);
-            $order->load($oxid);
-
-            $this->_aViewData["edit"] = $order;
+            $this->_aViewData["edit"] = $this->getEditObject();
+            $this->_aViewData["history"] = $this->getHistoryList();
         }
         return $this->_sThisTemplate;
     }
@@ -79,5 +76,23 @@ class AdminOrderController extends AdminDetailsController
         }
 
         return $this->editObject;
+    }
+
+    /**
+     * Returns Adyen-History
+     *
+     * @return AdyenHistoryList
+     */
+    public function getHistoryList(): ?AdyenHistoryList
+    {
+        $oxId = $this->getEditObjectId();
+        if (is_null($this->adyenHistoryList)) {
+            $adyenHistoryList = oxNew(AdyenHistoryList::class);
+            $adyenHistoryList->getAdyenHistoryList($oxId);
+            if ($adyenHistoryList->count()) {
+                $this->adyenHistoryList = $adyenHistoryList;
+            }
+        }
+        return $this->adyenHistoryList;
     }
 }
