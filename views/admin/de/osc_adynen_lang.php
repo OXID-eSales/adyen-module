@@ -20,6 +20,8 @@ $aLang = [
     'OSC_ADYEN_PARENTPSPREFERENCE' => 'Haupt PSP Referenz',
     'OSC_ADYEN_TIMESTAMP' => 'Zeitstempel',
     'OSC_ADYEN_STATUS' => 'Adyen Status',
+    'OSC_ADYEN_COLLECTMONEY' => 'Geldeinzug',
+    'OSC_ADYEN_CAPTURE' => 'einziehen',
 
     // extend order_list.tpl
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',

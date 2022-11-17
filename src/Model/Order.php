@@ -40,6 +40,14 @@ class Order extends Order_parent
         );
     }
 
+    public function isAdyenOrderPaid(): bool
+    {
+        return (
+            'OK' === $this->getFieldData('oxtransstatus') &&
+            !str_contains((string)$this->getFieldData('oxpaid'), '0000')
+        );
+    }
+
     public function getAdyenPaymentName(): string
     {
         if (is_null($this->adyenPaymentName)) {

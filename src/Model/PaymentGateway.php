@@ -52,7 +52,7 @@ class PaymentGateway extends PaymentGateway_parent
     {
         $paymentService = $this->getServiceFromContainer(Payment::class);
         $context = $this->getServiceFromContainer(Context::class);
-        $success = $paymentService->doAdyenPayment($amount, $order);
+        $success = $paymentService->doAdyenAuthorization($amount, $order);
 
         if ($success) {
             $paymentResult = $paymentService->getPaymentResult();
