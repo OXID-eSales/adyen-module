@@ -14,9 +14,9 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
-final class AuthorisationHandler extends WebhookHandlerBase
+final class AuthorizationHandler extends WebhookHandlerBase
 {
-    private const AUTHORISATION_EVENT_CODE = "AUTHORISATION";
+    private const AUTHORIZATION_EVENT_CODE = "AUTHORIZATION";
 
     /**
      * @param array $notificationItem
@@ -28,8 +28,8 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_CODE];
 
-        if ($eventCode != self::AUTHORISATION_EVENT_CODE) {
-            Registry::getLogger()->debug("eventCode is not AUTHORISATION: ", $notificationItem);
+        if ($eventCode != self::AUTHORIZATION_EVENT_CODE) {
+            Registry::getLogger()->debug("eventCode is not AUTHORIZATION: ", $notificationItem);
         }
 
         $pspReference = $notificationItem

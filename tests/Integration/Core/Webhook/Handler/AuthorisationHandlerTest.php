@@ -15,7 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\Mod
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -23,7 +23,7 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-final class AuthorisationHandlerTest extends UnitTestCase
+final class AuthorizationHandlerTest extends UnitTestCase
 {
     protected function setUp(): void
     {
@@ -39,7 +39,8 @@ final class AuthorisationHandlerTest extends UnitTestCase
         $adyenHistory->setPrice(1000);
         $adyenHistory->setTimeStamp("2021-01-01T01:00:00+01:00");
         $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
-        $adyenHistory->setAdyenStatus("AUTHORISATION");
+        $adyenHistory->setAdyenStatus("AUTHORIZATION");
+        $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
         $adyenHistory->save();
 
         // it is important to have a real (but dummy) HMAC-Signature here for test
@@ -61,8 +62,8 @@ final class AuthorisationHandlerTest extends UnitTestCase
 
     public function testUpdateStatus()
     {
-        $authorisationHandler = oxNew(AuthorisationHandler::class);
-        $authorisationHandler->updateStatus($this->proceedNotificationRequestsItem());
+        $authorizationHandler = oxNew(AuthorizationHandler::class);
+        $authorizationHandler->updateStatus($this->proceedNotificationRequestsItem());
 
         $historyList = oxNew(AdyenHistoryList::class);
         $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
@@ -85,8 +86,8 @@ final class AuthorisationHandlerTest extends UnitTestCase
         ];
         $event = oxNew(Event::class, $data);
 
-        $authorisationHandler = oxNew(AuthorisationHandler::class);
-        $authorisationHandler->handle($event);
+        $authorizationHandler = oxNew(AuthorizationHandler::class);
+        $authorizationHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
@@ -123,7 +124,7 @@ final class AuthorisationHandlerTest extends UnitTestCase
                     "currency" => "EUR",
                     "value" => 1000
                 ],
-                "eventCode" => "AUTHORISATION",
+                "eventCode" => "AUTHORIZATION",
                 "eventDate" => "2021-01-01T01:00:00+01:00",
                 "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
                 "merchantReference" => "YOUR_MERCHANT_REFERENCE",
