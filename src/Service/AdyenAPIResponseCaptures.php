@@ -22,8 +22,9 @@ class AdyenAPIResponseCaptures extends AdyenAPIResponse
     /**
      * @param AdyenAPICaptures $captureParams
      * @throws AdyenException
+     * @retrun mixed
      */
-    public function setCapture(AdyenAPICaptures $captureParams): mixed
+    public function setCapture(AdyenAPICaptures $captureParams)
     {
         $result = false;
         try {
