@@ -224,8 +224,7 @@ class AdminOrderController extends AdminDetailsController
         float $amount,
         string $currency,
         string $status
-    ): bool
-    {
+    ): bool {
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($parentPspReference);

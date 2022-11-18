@@ -27,4 +27,9 @@ class AdyenSession
     {
         Registry::getSession()->deleteVariable(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
     }
+
+    public static function getSessionPaymentId(): string
+    {
+        return Registry::getSession()->getBasket()->getPaymentId();
+    }
 }

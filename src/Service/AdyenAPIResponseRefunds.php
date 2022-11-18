@@ -21,10 +21,9 @@ class AdyenAPIResponseRefunds extends AdyenAPIResponse
 {
     /**
      * @param AdyenAPIRefunds $refundParams
-     * @return mixed
      * @throws AdyenException
      */
-    public function setRefund(AdyenAPIRefunds $refundParams): bool
+    public function setRefund(AdyenAPIRefunds $refundParams): mixed
     {
         $result = false;
         try {

@@ -18,10 +18,10 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\PayPalApi\Exception\ApiException;
 
 /**
  * @extendable-class
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Payment
 {
@@ -42,9 +42,6 @@ class Payment
     /** @var Context */
     private Context $context;
 
-    /** @var UserRepository */
-    private UserRepository $userRepository;
-
     /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
@@ -54,13 +51,12 @@ class Payment
     /** @var AdyenAPIResponseCaptures */
     private AdyenAPIResponseCaptures $APICaptures;
 
-    /** @var AdyenAPIResponseCaptures */
+    /** @var AdyenAPIResponseRefunds */
     private AdyenAPIResponseRefunds $APIRefunds;
 
     public function __construct(
         Session $session,
         Context $context,
-        UserRepository $userRepository,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments,
         AdyenAPIResponseCaptures $APICaptures,
@@ -68,17 +64,10 @@ class Payment
     ) {
         $this->session = $session;
         $this->context = $context;
-        $this->userRepository = $userRepository;
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
         $this->APICaptures = $APICaptures;
         $this->APIRefunds = $APIRefunds;
-    }
-
-    public function getSessionPaymentId(): string
-    {
-        $session = $this->session->getBasket();
-        return $session ? $session->getBasket()->getPaymentId() : '';
     }
 
     public function setPaymentExecutionError(string $text): void

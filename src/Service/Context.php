@@ -17,9 +17,7 @@ class Context extends BasicContext
     /** @var Config */
     protected $shopConfig;
 
-    /**
-     * @param Config $shopConfig
-     */
+    /** @param Config $shopConfig */
     public function __construct(Config $shopConfig)
     {
         $this->shopConfig = $shopConfig;
