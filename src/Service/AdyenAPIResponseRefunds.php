@@ -30,7 +30,7 @@ class AdyenAPIResponseRefunds extends AdyenAPIResponse
         try {
             $service = $this->createCheckout();
             $params = $refundParams->getAdyenRefundsParams();
-            $result = $service->captures($params);
+            $result = $service->refunds($params);
             if (!$result) {
                 throw new Exception('payments not found in Adyen-Response');
             }
