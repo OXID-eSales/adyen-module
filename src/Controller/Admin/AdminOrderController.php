@@ -30,6 +30,8 @@ class AdminOrderController extends AdminDetailsController
 
     protected ?bool $isCapturePossible = null;
 
+    protected ?bool $isRefundPossible = null;
+
     /**
      * Current class template name.
      * @var string
@@ -128,6 +130,24 @@ class AdminOrderController extends AdminDetailsController
             }
         }
         return $this->isCapturePossible;
+    }
+
+    public function isAdyenRefundPossible(): bool
+    {
+        if (is_null($this->isRefundPossible)) {
+            $this->isRefundPossible = false;
+            if ($this->isAdyenOrder()) {
+                /** @var Order $order */
+                $order = $this->getEditObject();
+                /** @var Payment $payment */
+                $payment = oxNew(eShopPayment::class);
+                $payment->load($order->getFieldData('oxpaymenttype'));
+                $this->isRefundPossible = (
+                    $order->isAdyenOrderPaid()
+                );
+            }
+        }
+        return $this->isRefundPossible;
     }
 
     /**

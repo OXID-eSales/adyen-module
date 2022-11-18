@@ -244,6 +244,12 @@ $aModule = [
             'value' => false
         ],
         [
+            'group' => 'osc_adyen_Backend',
+            'name' => 'osc_adyen_ShowAdyenOrderDetails',
+            'type' => 'bool',
+            'value' => false
+        ],
+        [
             'group' => 'osc_adyen_Languages',
             'name' => 'osc_adyen_Languages',
             'type' => 'aarr',

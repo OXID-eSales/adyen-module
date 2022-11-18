@@ -74,4 +74,9 @@ class ViewConfig extends ViewConfig_parent
     {
         return $this->context->getWebhookControllerUrl();
     }
+
+    public function showAdyenOrderDetails(): bool
+    {
+        return $this->moduleSettings->showAdyenOrderDetails();
+    }
 }
