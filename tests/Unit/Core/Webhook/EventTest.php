@@ -19,7 +19,7 @@ class EventTest extends TestCase
             "notificationItems" => [
                 "NotificationRequestItem" => [
                     "pspReference" => "9313547924770610",
-                    "eventCode" => "AUTHORISATION",
+                    "eventCode" => "AUTHORIZATION",
                     "merchantAccountCode" => "testMerchantAccount",
                     "merchantReference" => "TestMerchantReference",
                     "success" => "true",
@@ -37,7 +37,7 @@ class EventTest extends TestCase
             $data["notificationItems"]["NotificationRequestItem"]["pspReference"]
         );
         $this->assertEquals(
-            "AUTHORISATION",
+            "AUTHORIZATION",
             $data["notificationItems"]["NotificationRequestItem"]["eventCode"]
         );
         $this->assertEquals(

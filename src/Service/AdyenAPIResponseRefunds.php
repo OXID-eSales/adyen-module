@@ -22,7 +22,7 @@ class AdyenAPIResponseRefunds extends AdyenAPIResponse
     /**
      * @param AdyenAPIRefunds $refundParams
      * @throws AdyenException
-     * @retrun mixed
+     * @return mixed
      */
     public function setRefund(AdyenAPIRefunds $refundParams)
     {

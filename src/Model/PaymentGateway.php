@@ -73,6 +73,7 @@ class PaymentGateway extends PaymentGateway_parent
                 if (isset($paymentResult['resultCode'])) {
                     $adyenHistory->setAdyenStatus($paymentResult['resultCode']);
                 }
+                $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
                 $adyenHistory->save();
             }
             if (isset($paymentResult['action'])) {

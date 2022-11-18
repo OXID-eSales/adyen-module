@@ -10,6 +10,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Application\Model\Payment as eShopPayment;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -103,7 +104,8 @@ class AdminOrderController extends AdminDetailsController
                     $order->getId(),
                     $amount,
                     $currency,
-                    $captureResult['status'] ?? ""
+                    $captureResult['status'] ?? "",
+                    Module::ADYEN_ACTION_CAPTURE
                 );
             }
         }
@@ -141,7 +143,8 @@ class AdminOrderController extends AdminDetailsController
                     $order->getId(),
                     $amount,
                     $currency,
-                    $refundResult['status'] ?? ""
+                    $refundResult['status'] ?? "",
+                    Module::ADYEN_ACTION_REFUND
                 );
             }
         }
@@ -223,7 +226,8 @@ class AdminOrderController extends AdminDetailsController
         string $orderId,
         float $amount,
         string $currency,
-        string $status
+        string $status,
+        string $action
     ): bool {
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setPSPReference($pspReference);
@@ -232,6 +236,7 @@ class AdminOrderController extends AdminDetailsController
         $adyenHistory->setPrice($amount);
         $adyenHistory->setCurrency($currency);
         $adyenHistory->setAdyenStatus($status);
+        $adyenHistory->setAdyenAction($action);
         return (bool) $adyenHistory->save();
     }
 }

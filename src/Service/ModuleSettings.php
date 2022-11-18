@@ -36,8 +36,6 @@ class ModuleSettings
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
-    public const SHOW_ADYEN_ORDER_DETAILS = 'osc_adyen_ShowAdyenOrderDetails';
-
     public const OPERATION_MODE_SANDBOX = 'test';
     public const OPERATION_MODE_LIVE = 'live';
 
@@ -144,11 +142,6 @@ class ModuleSettings
     public function getActivePayments(): array
     {
         return (array)$this->getSettingValue(self::ACTIVE_PAYMENTS);
-    }
-
-    public function showAdyenOrderDetails(): bool
-    {
-        return (bool) $this->getSettingValue(self::SHOW_ADYEN_ORDER_DETAILS);
     }
 
     /**

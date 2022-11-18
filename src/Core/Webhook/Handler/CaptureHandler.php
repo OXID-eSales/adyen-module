@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidEsales\EshopCommunity\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
@@ -62,6 +63,7 @@ class CaptureHandler extends WebhookHandlerBase
         $adyenHistory->setPSPReference($pspReference . "_CAPTURE");
         $adyenHistory->setParentPSPReference($pspReference);
         $adyenHistory->setAdyenStatus($eventCode);
+        $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CAPTURE);
 
         $adyenHistory->save();
     }
