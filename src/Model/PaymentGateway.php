@@ -33,8 +33,7 @@ class PaymentGateway extends PaymentGateway_parent
      */
     public function executePayment($amount, &$order): bool
     {
-        $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentId = $paymentService->getSessionPaymentId();
+        $paymentId = AdyenSession::getSessionPaymentId();
 
         if (!Module::isAdyenPayment($paymentId)) {
             return parent::executePayment($amount, $order);

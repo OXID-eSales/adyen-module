@@ -157,7 +157,10 @@ final class Version20220908162100 extends AbstractMigration
             $historyTable->setPrimaryKey(['OXID']);
         }
         if (!$historyTable->hasIndex('OXSHOPID_OXORDERID_PSPREFERENCE_PARENTPSPREFERENCE')) {
-            $historyTable->addUniqueIndex(['OXSHOPID', 'OXORDERID', 'PSPREFERENCE', 'PARENTPSPREFERENCE'], 'OXSHOPID_OXORDERID_PSPREFERENCE_PARENTPSPREFERENCE');
+            $historyTable->addUniqueIndex(
+                ['OXSHOPID', 'OXORDERID', 'PSPREFERENCE', 'PARENTPSPREFERENCE'],
+                'OXSHOPID_OXORDERID_PSPREFERENCE_PARENTPSPREFERENCE'
+            );
         }
     }
 }

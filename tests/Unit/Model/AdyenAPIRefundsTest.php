@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 
-class AdyenAPICapturesTest extends UnitTestCase
+class AdyenAPIRefundsTest extends UnitTestCase
 {
     public function testSetGetAdyenSessionParams(): void
     {
-        $model = new AdyenAPICaptures();
+        $model = new AdyenAPIRefunds();
         $model->setCurrencyAmount('1000');
         $model->setCurrencyName('EUR');
         $model->setMerchantAccount('TestMerchant');
@@ -40,6 +40,6 @@ class AdyenAPICapturesTest extends UnitTestCase
                     'version' => 'Testv1.0.0'
                 ]
             ]
-        ], $model->getAdyenCapturesParams());
+        ], $model->getAdyenRefundsParams());
     }
 }

@@ -93,11 +93,25 @@
                     const cardConfiguration = {
                         hasHolderName: true,
                         holderNameRequired: true,
-                        billingAddressRequired: true, // Set to true to show the billing address input fields.
+                        hideCVC: false
                     };
                     // Create an instance of the Component and mount it to the container you created.
                     const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
                 [{elseif $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+                    const paypalConfiguration = {
+                        cspNonce: "MY_CSP_NONCE",
+                        onShippingChange: function(data, actions) {
+                            // Listen to shipping changes.
+                            [{if $oViewConf->isAdyenLoggingActive()}]
+                                console.log('onPayPalShippingChange:', data);
+                            [{/if}]
+                        },
+                        onClick: () => {
+                            // onClick is called when the button is clicked.
+                        },
+                        blockPayPalCreditButton: true,
+                        blockPayPalPayLaterButton: true
+                    };
                     const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
                 [{/if}]
             [{/if}]

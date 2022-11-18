@@ -20,8 +20,12 @@ $aLang = [
     'OSC_ADYEN_PARENTPSPREFERENCE' => 'Parent PSP Reference',
     'OSC_ADYEN_TIMESTAMP' => 'Timestamp',
     'OSC_ADYEN_STATUS' => 'Adyen Status',
-    'OSC_ADYEN_COLLECTMONEY' => 'Collect Money',
+    'OSC_ADYEN_CAPTUREMONEY' => 'Capture Money',
     'OSC_ADYEN_CAPTURE' => 'capture',
+    'OSC_ADYEN_REFUNDMONEY' => 'Refund Money',
+    'OSC_ADYEN_REFUND' => 'refund',
+    'OSC_ADYEN_HISTORY' => 'Adyen Order-History',
+    'OSC_ADYEN_ORDER_DETAILS' => 'Adyen Order-Details via API',
 
     // extend order_list.tpl
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',

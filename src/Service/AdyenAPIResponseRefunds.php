@@ -12,24 +12,24 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Exception;
 use Adyen\AdyenException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 
 /**
  * @extendable-class
  */
-class AdyenAPIResponseCaptures extends AdyenAPIResponse
+class AdyenAPIResponseRefunds extends AdyenAPIResponse
 {
     /**
-     * @param AdyenAPICaptures $captureParams
+     * @param AdyenAPIRefunds $refundParams
      * @throws AdyenException
      */
-    public function setCapture(AdyenAPICaptures $captureParams): mixed
+    public function setRefund(AdyenAPIRefunds $refundParams): mixed
     {
         $result = false;
         try {
             $service = $this->createCheckout();
-            $params = $captureParams->getAdyenCapturesParams();
-            $result = $service->captures($params);
+            $params = $refundParams->getAdyenRefundsParams();
+            $result = $service->refunds($params);
             if (!$result) {
                 throw new Exception('payments not found in Adyen-Response');
             }

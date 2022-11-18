@@ -16,6 +16,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_LIVE' => 'Adyen Access Live',
     'SHOP_MODULE_GROUP_osc_adyen_SeperateCapture' => 'Seperate Capture for selected Payments',
     'SHOP_MODULE_GROUP_osc_adyen_Languages' => 'Language-Configuration',
+    'SHOP_MODULE_GROUP_osc_adyen_Backend' => 'Backend-Options',
 
     'SHOP_MODULE_osc_adyen_OperationMode' => 'Operation Mode',
     'SHOP_MODULE_osc_adyen_OperationMode_sandbox' => 'Sandbox',
@@ -35,6 +36,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_LiveNotificationUsername' => 'Benachrichtigungen Name',
     'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Benachrichtigungen Passwort',
+
+    'SHOP_MODULE_osc_adyen_ShowAdyenOrderDetails' => 'View details via Adyen\'s API in the order admin',
 
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['de']['desc'],
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['de']['desc'],

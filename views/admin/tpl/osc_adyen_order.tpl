@@ -20,53 +20,94 @@
     [{assign var="adyenCurrency" value=$edit->oxorder__oxcurrency->value}]
     [{* toDo: The Capture Amount can be smaller if captures have already taken place. Then it has to be recalculated accordingly. *}]
     [{assign var="adyenCaptureAmount" value=$edit->getTotalOrderSum()}]
-    <!-- Show AdyenHistory -->
+    [{* toDo: The Refund Amount can be smaller if refunds have already taken place. Then it has to be recalculated accordingly. *}]
+    [{assign var="adyenRefundAmount" value=$edit->getTotalOrderSum()}]
     <table style="width: 98%; border-spacing: 0;">
         <tr>
-            <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
-            <td class="listheader">&nbsp;&nbsp;&nbsp;[{oxmultilang ident="OSC_ADYEN_PARENTPSPREFERENCE"}]</td>
-            <td class="listheader">&nbsp;&nbsp;&nbsp;[{oxmultilang ident="GENERAL_PRICE"}]</td>
-            <td class="listheader">&nbsp;&nbsp;&nbsp;[{oxmultilang ident="OSC_ADYEN_TIMESTAMP"}]</td>
-            <td class="listheader">&nbsp;&nbsp;&nbsp;[{oxmultilang ident="OSC_ADYEN_STATUS"}]</td>
+            <!-- left side -->
+            <td style="width:48%; padding:1%; vertical-align: text-top;">
+                <!-- Show AdyenHistory -->
+                <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_HISTORY"}]</h3>
+                <table style="width: 98%; border-spacing: 0;">
+                    <tr>
+                        <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
+                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_PARENTPSPREFERENCE"}]</td>
+                        <td class="listheader">[{oxmultilang ident="GENERAL_PRICE"}]</td>
+                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_TIMESTAMP"}]</td>
+                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_STATUS"}]</td>
+                    </tr>
+                    [{assign var="blWhite" value=""}]
+                    [{foreach from=$history item=listitem name=historyList}]
+                    <tr id="art.[{$smarty.foreach.historyList.iteration}]">
+                        [{assign var="listclass" value=listitem$blWhite}]
+                        <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
+                        <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
+                        <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
+                        <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
+                        <td class="[{$listclass}]">[{$listitem->getAdyenStatus()}]</td>
+                    </tr>
+                    [{if $blWhite == "2"}]
+                    [{assign var="blWhite" value=""}]
+                    [{else}]
+                    [{assign var="blWhite" value="2"}]
+                    [{/if}]
+                    [{/foreach}]
+                </table>
+                <!-- Show AdyenHistory END -->
+                [{if $oView->isAdyenCapturePossible()}]
+                    <!-- Adyen Capture -->
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>
+                        <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                            [{$oViewConf->getHiddenSid()}]
+                            <input type="hidden" name="fnc" value="captureAdyenAmount" />
+                            <input type="hidden" name="oxid" value="[{$oxid}]" />
+                            <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                            <input type="text"
+                                   name="capture_amount"
+                                   value="[{$adyenCaptureAmount|escape|string_format:"%.2f"}]" />
+                            <input type="hidden"
+                                   name="capture_currency"
+                                   value="[{$adyenCurrency}]" />
+
+                            <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CAPTURE"}]" />
+                        </form>
+                    </div>
+                    <!-- Adyen Capture END -->
+                [{/if}]
+                [{if $oView->isAdyenRefundPossible()}]
+                <!-- Adyen Refund -->
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_REFUNDMONEY"}]</h3>
+                    <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                        [{$oViewConf->getHiddenSid()}]
+                        <input type="hidden" name="fnc" value="refundAdyenAmount" />
+                        <input type="hidden" name="oxid" value="[{$oxid}]" />
+                        <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                        <input type="text"
+                               name="refund_amount"
+                               value="[{$adyenRefundAmount|escape|string_format:"%.2f"}]" />
+                        <input type="hidden"
+                               name="refund_currency"
+                               value="[{$adyenCurrency}]" />
+
+                        <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_REFUND"}]" />
+                    </form>
+                </div>
+                <!-- Adyen Refund END -->
+                [{/if}]
+            </td>
+            <!-- left side END, right side -->
+            <td style="width:48%; padding:1%; vertical-align: text-top;">
+                [{if $oViewConf->showAdyenOrderDetails()}]
+                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_ORDER_DETAILS"}]</h3>
+                    tada
+                [{/if}]
+            </td>
+            <!-- right side END -->
         </tr>
-        [{assign var="blWhite" value=""}]
-        [{foreach from=$history item=listitem name=historyList}]
-            <tr id="art.[{$smarty.foreach.historyList.iteration}]">
-                [{assign var="listclass" value=listitem$blWhite}]
-                <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
-                <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
-                <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
-                <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
-                <td class="[{$listclass}]">[{$listitem->getAdyenStatus()}]</td>
-            </tr>
-            [{if $blWhite == "2"}]
-                [{assign var="blWhite" value=""}]
-            [{else}]
-                [{assign var="blWhite" value="2"}]
-            [{/if}]
-        [{/foreach}]
     </table>
-    <!-- Show AdyenHistory END -->
 
-    [{if $oView->isAdyenCapturePossible()}]
-        <div style="margin-top: 10px">
-            <p><b>[{oxmultilang ident="OSC_ADYEN_COLLECTMONEY" suffix="COLON"}]</b></p>
-            <form action="[{$oViewConf->getSelfLink()}]" method="post">
-                [{$oViewConf->getHiddenSid()}]
-                <input type="hidden" name="fnc" value="captureAdyenAmount" />
-                <input type="hidden" name="oxid" value="[{$oxid}]" />
-                <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
-                <input type="text"
-                       name="capture_amount"
-                       value="[{$adyenCaptureAmount|escape|string_format:"%.2f"}]" />
-                <input type="hidden"
-                       name="capture_currency"
-                       value="[{$adyenCurrency}]" />
-
-                <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CAPTURE"}]" />
-            </form>
-        </div>
-    [{/if}]
 [{/if}]
 
 [{include file="bottomnaviitem.tpl"}]
