@@ -24,7 +24,7 @@ class AdyenAPIResponsePayments extends AdyenAPIResponse
      * @return mixed
      * @throws AdyenException
      */
-    public function getPayments(AdyenAPIPayments $paymentMethodParams)
+    public function getPayments(AdyenAPIPayments $paymentMethodParams): bool
     {
         $result = false;
         try {

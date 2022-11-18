@@ -16,6 +16,7 @@ use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\PayPalApi\Exception\ApiException;
 
@@ -32,6 +33,8 @@ class Payment
     private ?array $paymentResult = null;
 
     private ?array $captureResult = null;
+
+    private ?array $refundResult = null;
 
     /** @var Session */
     private Session $session;
@@ -51,13 +54,17 @@ class Payment
     /** @var AdyenAPIResponseCaptures */
     private AdyenAPIResponseCaptures $APICaptures;
 
+    /** @var AdyenAPIResponseCaptures */
+    private AdyenAPIResponseRefunds $APIRefunds;
+
     public function __construct(
         Session $session,
         Context $context,
         UserRepository $userRepository,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments,
-        AdyenAPIResponseCaptures $APICaptures
+        AdyenAPIResponseCaptures $APICaptures,
+        AdyenAPIResponseRefunds $APIRefunds
     ) {
         $this->session = $session;
         $this->context = $context;
@@ -65,11 +72,13 @@ class Payment
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
         $this->APICaptures = $APICaptures;
+        $this->APIRefunds = $APIRefunds;
     }
 
     public function getSessionPaymentId(): string
     {
-        return $this->session->getBasket()->getPaymentId();
+        $session = $this->session->getBasket();
+        return $session ? $session->getBasket()->getPaymentId() : '';
     }
 
     public function setPaymentExecutionError(string $text): void
@@ -87,9 +96,7 @@ class Payment
         $this->paymentResult = $paymentResult;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getPaymentResult()
     {
         return $this->paymentResult;
@@ -100,12 +107,21 @@ class Payment
         $this->captureResult = $captureResult;
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getCaptureResult()
     {
         return $this->captureResult;
+    }
+
+    public function setRefundResult(array $refundResult): void
+    {
+        $this->refundResult = $refundResult;
+    }
+
+    /** @return mixed */
+    public function getRefundResult()
+    {
+        return $this->refundResult;
     }
 
     /**
@@ -168,6 +184,34 @@ class Payment
             $result = true;
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setCapture call.", [$exception]);
+        }
+        return $result;
+    }
+
+    /**
+     * @param double $amount Goods amount
+     * @param string $pspReference User ordering object
+     * @param string $orderNr as unique reference
+     */
+    public function doAdyenRefund(float $amount, string $pspReference, string $orderNr): bool
+    {
+        $result = false;
+
+        $refunds = oxNew(AdyenAPIRefunds::class);
+        $refunds->setCurrencyName($this->context->getActiveCurrencyName());
+        $refunds->setReference($orderNr);
+        $refunds->setPspReference($pspReference);
+        $refunds->setCurrencyAmount($this->getAdyenAmount($amount));
+        $refunds->setMerchantAccount($this->moduleSettings->getMerchantAccount());
+        $refunds->setMerchantApplicationName(Module::MODULE_NAME_EN);
+        $refunds->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
+
+        try {
+            $result = $this->APIRefunds->setRefund($refunds);
+            $this->setRefundResult($result);
+            $result = true;
+        } catch (Exception $exception) {
+            Registry::getLogger()->error("Error on setRefund call.", [$exception]);
         }
         return $result;
     }

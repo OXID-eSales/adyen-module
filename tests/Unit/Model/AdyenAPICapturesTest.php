@@ -10,13 +10,14 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 
-class AdyenAPICapturesTestTest extends UnitTestCase
+class AdyenAPICapturesTest extends UnitTestCase
 {
     public function testSetGetAdyenSessionParams(): void
     {
-        $model = new AdyenAPIPayments();
+        $model = new AdyenAPICaptures();
         $model->setCurrencyAmount('1000');
         $model->setCurrencyName('EUR');
         $model->setMerchantAccount('TestMerchant');

@@ -70,6 +70,7 @@ class AdminOrderController extends AdminDetailsController
             $order->isAdyenOrder()
         );
     }
+
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
@@ -81,7 +82,7 @@ class AdminOrderController extends AdminDetailsController
         $reference = $order->getFieldData('oxordernr');
 
         $request = Registry::getRequest();
-        $amount = (float) $request->getRequestParameter('capture_amount');
+        $amount = (float)$request->getRequestParameter('capture_amount');
         $currency = $request->getRequestParameter('capture_currency');
 
         $paymentService = $this->getServiceFromContainer(paymentService::class);
@@ -96,19 +97,52 @@ class AdminOrderController extends AdminDetailsController
 
             // everything is fine, we can save the references
             if (isset($captureResult['paymentPspReference'])) {
-                $pspReference = $captureResult['pspReference'];
-                $parentPspReference = $captureResult['paymentPspReference'];
+                $this->setAdyenHistoryEntry(
+                    $captureResult['pspReference'],
+                    $captureResult['paymentPspReference'],
+                    $order->getId(),
+                    $amount,
+                    $currency,
+                    $captureResult['status'] ?? ""
+                );
+            }
+        }
+    }
 
-                $adyenHistory = oxNew(AdyenHistory::class);
-                $adyenHistory->setPSPReference($pspReference);
-                $adyenHistory->setParentPSPReference($parentPspReference);
-                $adyenHistory->setOrderId($order->getId());
-                $adyenHistory->setPrice($amount);
-                $adyenHistory->setCurrency($currency);
-                if (isset($captureResult['status'])) {
-                    $adyenHistory->setAdyenStatus($captureResult['status']);
-                }
-                $adyenHistory->save();
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function refundAdyenAmount(): void
+    {
+        /** @var Order $order */
+        $order = $this->getEditObject();
+        $pspReference = $order->getFieldData('adyenpspreference');
+        $reference = $order->getFieldData('oxordernr');
+
+        $request = Registry::getRequest();
+        $amount = (float)$request->getRequestParameter('refund_amount');
+        $currency = $request->getRequestParameter('refund_currency');
+
+        $paymentService = $this->getServiceFromContainer(paymentService::class);
+        $success = $paymentService->doAdyenRefund(
+            $amount,
+            $pspReference,
+            $reference
+        );
+
+        if ($success) {
+            $refundResult = $paymentService->getRefundResult();
+
+            // everything is fine, we can save the references
+            if (isset($refundResult['paymentPspReference'])) {
+                $this->setAdyenHistoryEntry(
+                    $refundResult['pspReference'],
+                    $refundResult['paymentPspReference'],
+                    $order->getId(),
+                    $amount,
+                    $currency,
+                    $refundResult['status'] ?? ""
+                );
             }
         }
     }
@@ -181,5 +215,24 @@ class AdminOrderController extends AdminDetailsController
             }
         }
         return $this->adyenHistoryList;
+    }
+
+    protected function setAdyenHistoryEntry(
+        string $pspReference,
+        string $parentPspReference,
+        string $orderId,
+        float $amount,
+        string $currency,
+        string $status
+    ): bool
+    {
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $adyenHistory->setPSPReference($pspReference);
+        $adyenHistory->setParentPSPReference($parentPspReference);
+        $adyenHistory->setOrderId($orderId);
+        $adyenHistory->setPrice($amount);
+        $adyenHistory->setCurrency($currency);
+        $adyenHistory->setAdyenStatus($status);
+        return (bool) $adyenHistory->save();
     }
 }
