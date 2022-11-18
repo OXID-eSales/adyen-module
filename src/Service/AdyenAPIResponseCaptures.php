@@ -22,7 +22,7 @@ class AdyenAPIResponseCaptures extends AdyenAPIResponse
     /**
      * @param AdyenAPICaptures $captureParams
      * @throws AdyenException
-     * @retrun mixed
+     * @return mixed
      */
     public function setCapture(AdyenAPICaptures $captureParams)
     {
