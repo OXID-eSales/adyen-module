@@ -5,7 +5,9 @@
  * See LICENSE file for license details.
  */
 
-$sLangName = 'Deutsch';
+use OxidSolutionCatalysts\Adyen\Core\Module;
+
+$sLangName = 'English';
 
 // -------------------------------
 // RESOURCE IDENTIFIER = STRING
@@ -25,7 +27,11 @@ $aLang = [
     'OSC_ADYEN_REFUNDMONEY' => 'Refund Money',
     'OSC_ADYEN_REFUND' => 'refund',
     'OSC_ADYEN_HISTORY' => 'Adyen Order-History',
-    'OSC_ADYEN_ORDER_DETAILS' => 'Adyen Order-Details via API',
+    'OSC_ADYEN_ACTION'  => 'Adyen Action',
+    'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_AUTHORIZE => 'Authorization',
+    'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CAPTURE => 'Capture',
+    'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_REFUND => 'Refund',
+    'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CANCEL => 'Cancel',
 
     // extend order_list.tpl
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Reference',

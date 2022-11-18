@@ -35,6 +35,11 @@ final class Module
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
+    public const ADYEN_ACTION_AUTHORIZE = 'authorize';
+    public const ADYEN_ACTION_CAPTURE = 'capture';
+    public const ADYEN_ACTION_REFUND = 'refund';
+    public const ADYEN_ACTION_CANCEL = 'cancel';
+
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
 
     private const PAYMENT_CONSTRAINTS = [

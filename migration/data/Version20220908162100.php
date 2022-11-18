@@ -135,6 +135,16 @@ final class Version20220908162100 extends AbstractMigration
                 ]
             );
         }
+        if (!$historyTable->hasColumn("ADYENACTION")) {
+            $historyTable->addColumn(
+                "ADYENACTION",
+                Types::STRING,
+                [
+                    'columnDefinition' => 'char(32) collate latin1_general_ci',
+                    'comment' => 'Adyen Action'
+                ]
+            );
+        }
         if (!$historyTable->hasColumn("CURRENCY")) {
             $historyTable->addColumn(
                 "CURRENCY",

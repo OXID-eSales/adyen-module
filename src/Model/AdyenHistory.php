@@ -145,6 +145,11 @@ class AdyenHistory extends BaseModel
         return (string) $this->getFieldData('adyenstatus');
     }
 
+    public function getAdyenAction(): string
+    {
+        return (string) $this->getFieldData('adyenaction');
+    }
+
     public function getTimeStamp(): string
     {
         return (string) $this->getFieldData('oxtimestamp');
@@ -152,65 +157,66 @@ class AdyenHistory extends BaseModel
 
     public function setOrderId(string $orderId): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 'oxorderid' => $orderId
-            ]
-        );
+        ]);
     }
 
     public function setPSPReference(string $pspreference): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 self::PSPREFERENCEFIELD => $pspreference
-            ]
-        );
+        ]);
     }
 
     public function setParentPSPReference(string $parentpspreference): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 self::PSPPARENTREFERENCEFIELD => $parentpspreference
-            ]
-        );
+        ]);
     }
 
     public function setPrice(float $oxprice): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 'oxprice' => $oxprice
-            ]
-        );
+        ]);
     }
 
     public function setCurrency(string $currency): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 'currency' => $currency
-            ]
-        );
+        ]);
     }
 
     public function setTimeStamp(string $oxtimestamp): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 'oxtimestamp' => $oxtimestamp
-            ]
-        );
+        ]);
     }
 
     public function setAdyenStatus(string $adyenstatus): void
     {
-        $this->assign(
-            [
+        $this->assign([
                 'adyenstatus' => $adyenstatus
-            ]
-        );
+        ]);
+    }
+
+    public function setAdyenAction(string $adyenaction): void
+    {
+        $possibleActions = [
+            Module::ADYEN_ACTION_AUTHORIZE,
+            Module::ADYEN_ACTION_REFUND,
+            Module::ADYEN_ACTION_CAPTURE,
+            Module::ADYEN_ACTION_CANCEL
+        ];
+        if (isset($possibleActions[$adyenaction])) {
+            $this->assign([
+                'adyenaction' => $adyenaction
+            ]);
+        }
     }
 
     public function delete($oxid = null): bool
