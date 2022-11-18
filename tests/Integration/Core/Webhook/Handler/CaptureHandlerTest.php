@@ -39,7 +39,8 @@ class CaptureHandlerTest extends UnitTestCase
         $adyenHistory->setPrice(1000);
         $adyenHistory->setTimeStamp("2021-01-01T01:00:00+01:00");
         $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
-        $adyenHistory->setAdyenStatus("AUTHORISATION");
+        $adyenHistory->setAdyenStatus("AUTHORIZATION");
+        $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
         $adyenHistory->save();
 
         // it is important to have a real (but dummy) HMAC-Signature here for test
@@ -80,8 +81,8 @@ class CaptureHandlerTest extends UnitTestCase
         ];
         $event = oxNew(Event::class, $data);
 
-        $authorisationHandler = oxNew(CaptureHandler::class);
-        $authorisationHandler->handle($event);
+        $captureHandler = oxNew(CaptureHandler::class);
+        $captureHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
         $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
@@ -101,12 +102,10 @@ class CaptureHandlerTest extends UnitTestCase
             return [];
         }
 
-//$moduleSettings->getHmacSignature()
-
         return [
             "NotificationRequestItem" => [
                 "additionalData" => [
-                    "hmacSignature" => '695BB571079C6553880542A611FD36EF2F962EBE56FED0B9E887093296E83DF4'
+                    "hmacSignature" => $moduleSettings->getHmacSignature(),
                 ],
                 "amount" => [
                     "currency" => "EUR",
