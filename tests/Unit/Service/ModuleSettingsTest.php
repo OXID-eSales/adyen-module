@@ -60,18 +60,16 @@ final class ModuleSettingsTest extends UnitTestCase
         $values = array_keys(Module::PAYMENT_DEFINTIONS);
 
         $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
-        foreach ($values as $value) {
-            $bridgeStub->expects($this->once())->method('save')->with(
-                ModuleSettings::ACTIVE_PAYMENTS,
-                [$value],
-                Module::MODULE_ID
-            );
+        $bridgeStub->expects($this->once())->method('save')->with(
+            ModuleSettings::ACTIVE_PAYMENTS,
+            $values,
+            Module::MODULE_ID
+        );
 
-            $sut = new ModuleSettings(
-                $bridgeStub
-            );
-            $sut->saveActivePayments([$value]);
-        }
+        $sut = new ModuleSettings(
+            $bridgeStub
+        );
+        $sut->saveActivePayments($values);
     }
 
     public function getGetterDataProvider(): array
