@@ -49,11 +49,13 @@ class AdminOrderController extends AdminDetailsController
     {
         parent::render();
 
-        $oxid = $this->getEditObjectId();
-        $this->_aViewData["oxid"] = $oxid;
-        if ($oxid) {
+        $oxId = $this->getEditObjectId();
+        $this->_aViewData["oxid"] = $oxId;
+        if ($oxId) {
             $this->_aViewData["edit"] = $this->getEditObject();
             $this->_aViewData["history"] = $this->getHistoryList();
+            $this->_aViewData["adyenCaptureAmount"] = $this->getPossibleCaptureAmount();
+            $this->_aViewData["adyenRefundAmount"] = $this->getPossibleRefundAmount();
         }
         return $this->_sThisTemplate;
     }
@@ -84,6 +86,8 @@ class AdminOrderController extends AdminDetailsController
 
         $request = Registry::getRequest();
         $amount = (float)$request->getRequestParameter('capture_amount');
+        $possibleAmount = $this->getPossibleCaptureAmount($pspReference);
+        $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('capture_currency');
 
         $paymentService = $this->getServiceFromContainer(paymentService::class);
@@ -123,6 +127,8 @@ class AdminOrderController extends AdminDetailsController
 
         $request = Registry::getRequest();
         $amount = (float)$request->getRequestParameter('refund_amount');
+        $possibleAmount = $this->getPossibleRefundAmount($pspReference);
+        $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('refund_currency');
 
         $paymentService = $this->getServiceFromContainer(paymentService::class);
@@ -162,7 +168,7 @@ class AdminOrderController extends AdminDetailsController
                 $payment->load($order->getFieldData('oxpaymenttype'));
                 $this->isCapturePossible = (
                     $payment->isAdyenSeperateCapture() &&
-                    !$order->isAdyenOrderPaid()
+                    $this->getPossibleCaptureAmount() > 0
                 );
             }
         }
@@ -180,11 +186,32 @@ class AdminOrderController extends AdminDetailsController
                 $payment = oxNew(eShopPayment::class);
                 $payment->load($order->getFieldData('oxpaymenttype'));
                 $this->isRefundPossible = (
-                    $order->isAdyenOrderPaid()
+                    $this->getPossibleRefundAmount() > 0
                 );
             }
         }
         return $this->isRefundPossible;
+    }
+
+    public function getPossibleCaptureAmount(): float
+    {
+        /** @var Order $order */
+        $order = $this->getEditObject();
+        $pspReference = $order->getFieldData('adyenpspreference');
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+        return (float)$order->getTotalOrderSum() - $capturedAmount;
+    }
+
+    public function getPossibleRefundAmount(): float
+    {
+        /** @var Order $order */
+        $order = $this->getEditObject();
+        $pspReference = $order->getFieldData('adyenpspreference');
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
+        $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+        return $capturedAmount - $refundedAmount;
     }
 
     /**
