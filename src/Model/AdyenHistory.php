@@ -70,12 +70,22 @@ class AdyenHistory extends BaseModel
 
     public function loadByPSPReference(string $pspReference): bool
     {
-        return $this->loadByIdent('pspreference', $pspReference);
+        return $this->loadByIdent(self::PSPREFERENCEFIELD, $pspReference);
     }
 
     public function loadByOxOrderId(string $oxorderid): bool
     {
         return $this->loadByIdent('oxorderid', $oxorderid);
+    }
+
+    public function getCapturedSum(string $pspReference): float
+    {
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CAPTURE);
+    }
+
+    public function getRefundedSum(string $pspReference): float
+    {
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_REFUND);
     }
 
     protected function loadByIdent(string $var, string $value): bool
@@ -88,10 +98,10 @@ class AdyenHistory extends BaseModel
         $queryBuilder->select('oxid')
             ->from($this->getCoreTableName())
             ->setMaxResults(1)
-            ->where(self::PSPREFERENCEFIELD . ' = :' . $var);
+            ->where($var . ' = :var');
 
         $parameters = [
-            $var => $value
+            'var' => $value
         ];
 
         if (!$this->config->getConfigParam('blMallUsers')) {
@@ -106,6 +116,44 @@ class AdyenHistory extends BaseModel
         if (is_a($resultDB, Result::class)) {
             $dbData = $resultDB->fetchOne();
             $result = $this->load($dbData['oxid']);
+        }
+        return $result;
+    }
+
+    protected function getSumByAction(string $pspReference, string $action, string $status = ''): float
+    {
+        $result = 0;
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder->select('sum(oxprice) as sum')
+            ->from($this->getCoreTableName())
+            ->setMaxResults(1)
+            ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspReference')
+            ->andWhere('adyenaction = :adyenAction');
+
+        $parameters = [
+            'pspReference' => $pspReference,
+            'adyenAction' => $action,
+            'adyenStatus' => $status
+        ];
+
+        if ($status) {
+            $queryBuilder->andWhere('adyenstatus = :adyenStatus');
+            $parameters['adyenStatus'] = $status;
+        }
+
+        if (!$this->config->getConfigParam('blMallUsers')) {
+            $queryBuilder->andWhere('oxshopid = :oxshopid');
+            $parameters['oxshopid'] = $this->context->getCurrentShopId();
+        }
+
+        /** @var Result $resultDB */
+        $resultDB = $queryBuilder->setParameters($parameters)
+            ->execute();
+        if (is_a($resultDB, Result::class)) {
+            $result = (float)$resultDB->fetchOne();
         }
         return $result;
     }
@@ -204,7 +252,7 @@ class AdyenHistory extends BaseModel
         ]);
     }
 
-    public function setAdyenAction(string $adyenaction): void
+    public function setAdyenAction(string $adyenAction): void
     {
         $possibleActions = [
             Module::ADYEN_ACTION_AUTHORIZE,
@@ -212,9 +260,9 @@ class AdyenHistory extends BaseModel
             Module::ADYEN_ACTION_CAPTURE,
             Module::ADYEN_ACTION_CANCEL
         ];
-        if (isset($possibleActions[$adyenaction])) {
+        if (in_array($adyenAction, $possibleActions, true)) {
             $this->assign([
-                'adyenaction' => $adyenaction
+                'adyenaction' => $adyenAction
             ]);
         }
     }

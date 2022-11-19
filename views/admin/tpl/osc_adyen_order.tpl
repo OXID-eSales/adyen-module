@@ -18,10 +18,6 @@
     </div>
 [{else}]
     [{assign var="adyenCurrency" value=$edit->oxorder__oxcurrency->value}]
-    [{* toDo: The Capture Amount can be smaller if captures have already taken place. Then it has to be recalculated accordingly. *}]
-    [{assign var="adyenCaptureAmount" value=$edit->getTotalOrderSum()}]
-    [{* toDo: The Refund Amount can be smaller if refunds have already taken place. Then it has to be recalculated accordingly. *}]
-    [{assign var="adyenRefundAmount" value=$edit->getTotalOrderSum()}]
     <table style="width: 98%; border-spacing: 0;">
         <tr>
             <!-- left side -->
