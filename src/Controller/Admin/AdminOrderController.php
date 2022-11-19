@@ -86,7 +86,7 @@ class AdminOrderController extends AdminDetailsController
 
         $request = Registry::getRequest();
         $amount = (float)$request->getRequestParameter('capture_amount');
-        $possibleAmount = $this->getPossibleCaptureAmount($pspReference);
+        $possibleAmount = $this->getPossibleCaptureAmount();
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('capture_currency');
 
@@ -127,7 +127,7 @@ class AdminOrderController extends AdminDetailsController
 
         $request = Registry::getRequest();
         $amount = (float)$request->getRequestParameter('refund_amount');
-        $possibleAmount = $this->getPossibleRefundAmount($pspReference);
+        $possibleAmount = $this->getPossibleRefundAmount();
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('refund_currency');
 
