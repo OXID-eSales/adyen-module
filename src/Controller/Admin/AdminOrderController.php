@@ -54,8 +54,10 @@ class AdminOrderController extends AdminDetailsController
         if ($oxId) {
             $this->_aViewData["edit"] = $this->getEditObject();
             $this->_aViewData["history"] = $this->getHistoryList();
-            $this->_aViewData["adyenCaptureAmount"] = $this->getPossibleCaptureAmount();
-            $this->_aViewData["adyenRefundAmount"] = $this->getPossibleRefundAmount();
+            if ($this->isAdyenOrder) {
+                $this->_aViewData["adyenCaptureAmount"] = $this->getPossibleCaptureAmount();
+                $this->_aViewData["adyenRefundAmount"] = $this->getPossibleRefundAmount();
+            }
         }
         return $this->_sThisTemplate;
     }
@@ -195,23 +197,31 @@ class AdminOrderController extends AdminDetailsController
 
     public function getPossibleCaptureAmount(): float
     {
-        /** @var Order $order */
-        $order = $this->getEditObject();
-        $pspReference = $order->getFieldData('adyenpspreference');
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
-        return (float)$order->getTotalOrderSum() - $capturedAmount;
+        $result = 0;
+        if ($this->isAdyenOrder()) {
+            /** @var Order $order */
+            $order = $this->getEditObject();
+            $pspReference = $order->getFieldData('adyenpspreference');
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+            $result = (float)$order->getTotalOrderSum() - $capturedAmount;
+        }
+        return $result;
     }
 
     public function getPossibleRefundAmount(): float
     {
-        /** @var Order $order */
-        $order = $this->getEditObject();
-        $pspReference = $order->getFieldData('adyenpspreference');
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
-        $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
-        return $capturedAmount - $refundedAmount;
+        $result = 0;
+        if ($this->isAdyenOrder()) {
+            /** @var Order $order */
+            $order = $this->getEditObject();
+            $pspReference = $order->getFieldData('adyenpspreference');
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
+            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+            $result = $capturedAmount - $refundedAmount;
+        }
+        return $result;
     }
 
     /**
