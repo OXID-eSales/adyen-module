@@ -75,6 +75,7 @@
         [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
             [{assign var="paymentID" value=$payment->getId()}]
             [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+
                 const paypalConfiguration = {
                     cspNonce: "MY_CSP_NONCE",
                     onShippingChange: function(data, actions) {
@@ -90,6 +91,27 @@
                     blockPayPalPayLaterButton: true
                 };
                 const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
+[{*
+
+                const dropinComponent = checkout.create(type, {
+                    onSelect: (component) => {
+                        console.log('onSelect',component);
+                        const paypalComponent = checkout.create('paypal', {showPayButton: true}).mount('#[{$paymentID}]-container');
+                        if (component.props.type == 'paypal') {
+                            alert('paypal');
+                            document.getElementById('customPayButton').style.display = "none";
+                            paypalComponent.mount();
+                        }
+                        else {
+                            paypalComponent.unmount();
+                            document.getElementById('customPayButton').style.display = "block";
+                        }
+                    }
+                }).mount("#component");
+                document.getElementById('customPayButton').addEventListener('click', function() {
+                    dropinComponent.submit()
+                });
+*}]
             [{/if}]
         [{/if}]
     }
