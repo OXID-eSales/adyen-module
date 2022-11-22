@@ -36,6 +36,7 @@
                     [{assign var="blWhite" value=""}]
                     [{foreach from=$history item=listitem name=historyList}]
                         [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
+                        [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
                         <tr id="art.[{$smarty.foreach.historyList.iteration}]">
                             [{assign var="listclass" value=listitem$blWhite}]
                             <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
@@ -43,7 +44,8 @@
                             <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
                             <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
                             <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
-                            <td class="[{$listclass}]">[{$listitem->getAdyenStatus()}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
+
                         </tr>
                         [{if $blWhite == "2"}]
                             [{assign var="blWhite" value=""}]

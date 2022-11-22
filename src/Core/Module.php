@@ -40,6 +40,23 @@ final class Module
     public const ADYEN_ACTION_REFUND = 'refund';
     public const ADYEN_ACTION_CANCEL = 'cancel';
 
+    public const ADYEN_STATUS_AUTHORISED = 'Authorised';
+    public const ADYEN_STATUS_CANCELLED = 'Cancelled';
+    public const ADYEN_STATUS_CAPTUREFAILED = 'CaptureFailed';
+    public const ADYEN_STATUS_ERROR = 'Error';
+    public const ADYEN_STATUS_EXPIRED = 'Expired';
+    public const ADYEN_STATUS_RECEIVED = 'Received';
+    public const ADYEN_STATUS_REFUSED = 'Refused';
+    public const ADYEN_STATUS_SENTFORSETTLE = 'SentForSettle';
+    public const ADYEN_STATUS_SETTLESCHEDULED = 'SettleScheduled';
+    public const ADYEN_STATUS_SETTLED = 'Settled';
+    public const ADYEN_STATUS_CHARGEBACK = 'Chargeback';
+    public const ADYEN_STATUS_REFUNDED = 'Refunded';
+    public const ADYEN_STATUS_REFUNDFAILED = 'RefundFailed';
+    public const ADYEN_STATUS_REFUNDEDREVERSED = 'RefundedReversed';
+    public const ADYEN_STATUS_REFUNDSCHEDULED = 'RefundScheduled';
+    public const ADYEN_STATUS_SENTFORREFUND = 'SentForRefund';
+
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
 
     private const PAYMENT_CONSTRAINTS = [

@@ -26,14 +26,12 @@ class AdyenHistory extends BaseModel
     protected const PSPREFERENCEFIELD = 'pspreference';
     protected const PSPPARENTREFERENCEFIELD = 'parentpspreference';
 
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
 
-    /** @var ContextInterface */
-    private $context;
 
-    /** @var Config */
-    private $config;
+    private ContextInterface $context;
+
+    private Config $config;
 
     /**
      * Current class name
