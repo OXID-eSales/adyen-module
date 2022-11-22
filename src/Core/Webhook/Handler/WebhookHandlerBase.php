@@ -135,7 +135,7 @@ abstract class WebhookHandlerBase
             }
         }
 
-        return false;
+        return true;
     }
 
     /**

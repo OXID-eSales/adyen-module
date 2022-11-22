@@ -14,9 +14,9 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
-final class AuthorizationHandler extends WebhookHandlerBase
+final class AuthorisationHandler extends WebhookHandlerBase
 {
-    private const AUTHORIZATION_EVENT_CODE = "AUTHORIZATION";
+    private const AUTHORIZATION_EVENT_CODE = "AUTHORISATION";
 
     /**
      * @param array $notificationItem
@@ -41,6 +41,11 @@ final class AuthorizationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_AMOUNT]
             [self::JSON_FIELD_PRICE];
 
+        $currency = $notificationItem
+            [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
+            [self::JSON_FIELD_AMOUNT]
+            [self::JSON_FIELD_CURRENCY];
+
         $timestamp = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_DATE];
@@ -52,9 +57,12 @@ final class AuthorizationHandler extends WebhookHandlerBase
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
-        $adyenHistory->setPrice($price);
+        $adyenHistory->setPrice((float)$price);
+        $adyenHistory->setCurrency($currency);
         $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
+        $adyenHistory->setParentPSPReference($pspReference);
+        // TO DO: Update Adyen status
         $adyenHistory->setAdyenStatus($eventCode);
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
 

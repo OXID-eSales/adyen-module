@@ -14,7 +14,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
-class CaptureHandler extends WebhookHandlerBase
+final class CaptureHandler extends WebhookHandlerBase
 {
     private const CAPTURE_EVENT_CODE = "CAPTURE";
 
