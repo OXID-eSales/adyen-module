@@ -5,7 +5,6 @@
  * See LICENSE file for license details.
  */
 
-use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
@@ -62,8 +61,6 @@ $aModule = [
     'controllers' => [
         // admin
         'adyen_admin_order' => AdminOrderController::class,
-        // frontend
-        'AdyenJSController' => AdyenJSController::class,
         // frontend
         'AdyenWebhookController' => AdyenWebhookController::class
     ],

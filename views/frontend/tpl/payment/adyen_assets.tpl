@@ -1,12 +1,3 @@
-[{*
-/* toDo: Currently we use the resources directly from Adyen.
-* Please leave the old resources commented out until we are sure that we will no longer need the resources.
-*/
-[{assign var="sFileMTimeJS" value=$oViewConf->getModulePath('osc_adyen','out/src/js/adyen.min.js')|filemtime}]
-[{assign var="sFileMTimeCSS" value=$oViewConf->getModulePath('osc_adyen','out/src/js/adyen.min.js')|filemtime}]
-[{oxstyle include=$oViewConf->getModuleUrl('osc_adyen', 'out/src/css/adyen.min.css')|cat:"?"|cat:$sFileMTimeCSS priority=10}]
-[{oxscript include=$oViewConf->getModuleUrl('osc_adyen','out/src/js/adyen.min.js')|cat:"?"|cat:$sFileMTimeJS priority=10}]
-*}]
 <script src="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.js"
         integrity="[{$oViewConf->getAdyenIntegrityJS()}]"
         crossorigin="anonymous"></script>
@@ -31,30 +22,6 @@
                 [{* Set to false to not send analytics data to Adyen. *}]
                 enabled: [{if $oViewConf->isAdyenLoggingActive()}]true[{else}]false[{/if}]
             },
-            [{*
-            // Session is needed if we follow the Web Components integration guide !after! v5.0.0.
-            // https://docs.adyen.com/online-payments/web-components
-            // This is interesting for the case when we have an onPageCheckout
-            session: {
-                id: '[{$oViewConf->getAdyenSessionId()}]',
-                sessionData: '[{$oViewConf->getAdyenSessionData()}]'
-            },
-            onPaymentCompleted: (result, component) => {
-                [{if $oViewConf->isAdyenLoggingActive()}]
-                     console.info(result, component);
-                [{/if}]
-            },
-            onSubmit: (state, component) => {
-                [{if $oViewConf->isAdyenLoggingActive()}]
-                    console.log('onSubmit', state);
-                [{/if}]
-                component.setStatus('loading');
-                makePayment(state.data, { amount, countryCode })
-                    .then(this.handleResponse)
-                    .catch(this.handleError);
-                return true;
-            }
-            *}]
             locale: '[{$oViewConf->getAdyenShopperLocale()}]',
             paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
             onError: (error, component) => {
