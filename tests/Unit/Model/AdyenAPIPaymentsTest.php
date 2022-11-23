@@ -14,7 +14,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 
 class AdyenAPIPaymentsTest extends UnitTestCase
 {
-    public function testSetGetAdyenSessionParams(): void
+    public function testSetGetAdyenPaymentsParams(): void
     {
         $model = new AdyenAPIPayments();
         $model->setCurrencyAmount('1000');

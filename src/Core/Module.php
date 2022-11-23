@@ -40,22 +40,22 @@ final class Module
     public const ADYEN_ACTION_REFUND = 'refund';
     public const ADYEN_ACTION_CANCEL = 'cancel';
 
-    public const ADYEN_STATUS_AUTHORISED = 'Authorised';
-    public const ADYEN_STATUS_CANCELLED = 'Cancelled';
-    public const ADYEN_STATUS_CAPTUREFAILED = 'CaptureFailed';
-    public const ADYEN_STATUS_ERROR = 'Error';
-    public const ADYEN_STATUS_EXPIRED = 'Expired';
-    public const ADYEN_STATUS_RECEIVED = 'Received';
-    public const ADYEN_STATUS_REFUSED = 'Refused';
-    public const ADYEN_STATUS_SENTFORSETTLE = 'SentForSettle';
-    public const ADYEN_STATUS_SETTLESCHEDULED = 'SettleScheduled';
-    public const ADYEN_STATUS_SETTLED = 'Settled';
-    public const ADYEN_STATUS_CHARGEBACK = 'Chargeback';
-    public const ADYEN_STATUS_REFUNDED = 'Refunded';
-    public const ADYEN_STATUS_REFUNDFAILED = 'RefundFailed';
-    public const ADYEN_STATUS_REFUNDEDREVERSED = 'RefundedReversed';
-    public const ADYEN_STATUS_REFUNDSCHEDULED = 'RefundScheduled';
-    public const ADYEN_STATUS_SENTFORREFUND = 'SentForRefund';
+    public const ADYEN_STATUS_AUTHORISED = 'authorised';
+    public const ADYEN_STATUS_CANCELLED = 'cancelled';
+    public const ADYEN_STATUS_CAPTUREFAILED = 'capturefailed';
+    public const ADYEN_STATUS_ERROR = 'error';
+    public const ADYEN_STATUS_EXPIRED = 'expired';
+    public const ADYEN_STATUS_RECEIVED = 'received';
+    public const ADYEN_STATUS_REFUSED = 'refused';
+    public const ADYEN_STATUS_SENTFORSETTLE = 'sentforsettle';
+    public const ADYEN_STATUS_SETTLESCHEDULED = 'settlescheduled';
+    public const ADYEN_STATUS_SETTLED = 'settled';
+    public const ADYEN_STATUS_CHARGEBACK = 'chargeback';
+    public const ADYEN_STATUS_REFUNDED = 'refunded';
+    public const ADYEN_STATUS_REFUNDFAILED = 'refundfailed';
+    public const ADYEN_STATUS_REFUNDEDREVERSED = 'refundedreversed';
+    public const ADYEN_STATUS_REFUNDSCHEDULED = 'refundscheduled';
+    public const ADYEN_STATUS_SENTFORREFUND = 'sentforrefund';
 
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
 
