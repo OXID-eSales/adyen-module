@@ -12,8 +12,10 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -49,6 +51,7 @@ class Order extends Order_parent
 
     /**
      * @inheritDoc
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function finalizeOrder(Basket $basket, $user, $recalcOrder = false): int
     {
@@ -56,6 +59,57 @@ class Order extends Order_parent
         // the final OrderStatus is set via Notification
         if ($this->isAdyenOrder()) {
             $this->setAdyenOrderStatus('NOT_FINISHED');
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function cancelOrder(): void
+    {
+        parent::cancelOrder();
+        if ($this->isAdyenCancelPossible()) {
+            $reference = $this->getFieldData('oxordernr');
+            $pspReference = $this->getFieldData('adyenpspreference');
+
+            $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+            $success = $paymentService->doAdyenCancel(
+                $pspReference,
+                $reference
+            );
+
+            if ($success) {
+                $cancelResult = $paymentService->getCancelResult();
+
+                // everything is fine, we can save the references
+                if (isset($cancelResult['paymentPspReference'])) {
+                    $adyenHistory = oxNew(AdyenHistory::class);
+                    $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
+                    $adyenHistory->setPSPReference($cancelResult['pspReference']);
+                    $adyenHistory->setOrderId($this->getId());
+                    $adyenHistory->setPrice((float)$this->getTotalOrderSum());
+                    $adyenHistory->setCurrency($this->getFieldData('oxcurrency'));
+                    if (isset($cancelResult['status'])) {
+                        $adyenHistory->setAdyenStatus($cancelResult['status']);
+                    }
+                    $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CANCEL);
+                    $adyenHistory->save();
+                }
+            }
+        }
+    }
+
+    public function isAdyenCancelPossible(): bool
+    {
+        $result = false;
+        if ($this->isAdyenOrder()) {
+            $pspReference = $this->getFieldData(self::PSPREFERENCEFIELD);
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $lastAction = $adyenHistory->getLastAction($pspReference);
+            $result = (
+                $lastAction === Module::ADYEN_ACTION_AUTHORIZE
+            );
         }
         return $result;
     }
@@ -110,6 +164,9 @@ class Order extends Order_parent
         return (string)$this->getFieldData('oxordernr');
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function markAdyenOrderAsPaid(): void
     {
         $this->setAdyenOrderStatus('OK');
@@ -138,7 +195,7 @@ class Order extends Order_parent
         ]);
     }
 
-    public function setAdyenOrderStatus($status): void
+    public function setAdyenOrderStatus(string $status): void
     {
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->queryBuilderFactory->create();

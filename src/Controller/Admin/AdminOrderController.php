@@ -16,7 +16,8 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use OxidSolutionCatalysts\Adyen\Service\Payment as paymentService;
+use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 
 /**
  * Order class wrapper for Adyen module
@@ -33,6 +34,7 @@ class AdminOrderController extends AdminDetailsController
 
     protected ?bool $isRefundPossible = null;
 
+    protected ?bool $isCancelPossible = null;
     /**
      * Current class template name.
      * @var string
@@ -54,7 +56,7 @@ class AdminOrderController extends AdminDetailsController
         if ($oxId) {
             $this->_aViewData["edit"] = $this->getEditObject();
             $this->_aViewData["history"] = $this->getHistoryList();
-            if ($this->isAdyenOrder) {
+            if ($this->isAdyenOrder()) {
                 $this->_aViewData["adyenCaptureAmount"] = $this->getPossibleCaptureAmount();
                 $this->_aViewData["adyenRefundAmount"] = $this->getPossibleRefundAmount();
             }
@@ -92,7 +94,7 @@ class AdminOrderController extends AdminDetailsController
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('capture_currency');
 
-        $paymentService = $this->getServiceFromContainer(paymentService::class);
+        $paymentService = $this->getServiceFromContainer(PaymentService::class);
         $success = $paymentService->doAdyenCapture(
             $amount,
             $pspReference,
@@ -133,7 +135,7 @@ class AdminOrderController extends AdminDetailsController
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('refund_currency');
 
-        $paymentService = $this->getServiceFromContainer(paymentService::class);
+        $paymentService = $this->getServiceFromContainer(PaymentService::class);
         $success = $paymentService->doAdyenRefund(
             $amount,
             $pspReference,
@@ -158,6 +160,16 @@ class AdminOrderController extends AdminDetailsController
         }
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function cancelAdyenOrder(): void
+    {
+        /** @var Order $order */
+        $order = $this->getEditObject();
+        $order->cancelOrder();
+    }
+
     public function isAdyenCapturePossible(): bool
     {
         if (is_null($this->isCapturePossible)) {
@@ -180,19 +192,31 @@ class AdminOrderController extends AdminDetailsController
     public function isAdyenRefundPossible(): bool
     {
         if (is_null($this->isRefundPossible)) {
-            $this->isRefundPossible = false;
+            $this->isRefundPossible = (
+                $this->isAdyenOrder() &&
+                $this->getPossibleRefundAmount() > 0
+            );
+        }
+        return $this->isRefundPossible;
+    }
+
+    public function isAdyenCancelPossible(): bool
+    {
+        if (is_null($this->isCancelPossible)) {
+            $this->isCancelPossible = false;
             if ($this->isAdyenOrder()) {
                 /** @var Order $order */
                 $order = $this->getEditObject();
-                /** @var Payment $payment */
-                $payment = oxNew(eShopPayment::class);
-                $payment->load($order->getFieldData('oxpaymenttype'));
-                $this->isRefundPossible = (
-                    $this->getPossibleRefundAmount() > 0
+                $pspReference = $order->getFieldData('adyenpspreference');
+                $adyenHistory = oxNew(AdyenHistory::class);
+                $canceledAmount = $adyenHistory->getCanceledSum($pspReference);
+                $this->isCancelPossible = (
+                    $order->isAdyenCancelPossible() &&
+                    !$canceledAmount
                 );
             }
         }
-        return $this->isRefundPossible;
+        return $this->isCancelPossible;
     }
 
     public function getPossibleCaptureAmount(): float
