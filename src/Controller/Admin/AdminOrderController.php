@@ -15,9 +15,9 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
+use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
-use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 
 /**
  * Order class wrapper for Adyen module
@@ -94,7 +94,7 @@ class AdminOrderController extends AdminDetailsController
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('capture_currency');
 
-        $paymentService = $this->getServiceFromContainer(PaymentService::class);
+        $paymentService = $this->getServiceFromContainer(PaymentCapture::class);
         $success = $paymentService->doAdyenCapture(
             $amount,
             $pspReference,
@@ -135,7 +135,7 @@ class AdminOrderController extends AdminDetailsController
         $amount = min($amount, $possibleAmount);
         $currency = $request->getRequestParameter('refund_currency');
 
-        $paymentService = $this->getServiceFromContainer(PaymentService::class);
+        $paymentService = $this->getServiceFromContainer(PaymentRefund::class);
         $success = $paymentService->doAdyenRefund(
             $amount,
             $pspReference,
