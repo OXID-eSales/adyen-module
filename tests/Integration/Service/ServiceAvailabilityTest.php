@@ -17,6 +17,10 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
+use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
+use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Service\Repository;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
@@ -37,20 +41,23 @@ class ServiceAvailabilityTest extends TestCase
     public static function serviceAvailabilityDataProvider(): array
     {
         return [
-            [AdyenSDKLoader::class],
-            [Context::class],
-            [ModuleSettings::class],
             [AdyenAPIResponse::class],
             [AdyenAPIResponseCancels::class],
-            [AdyenAPIResponseCaptures::class],
             [AdyenAPIResponseCaptures::class],
             [AdyenAPIResponsePaymentMethods::class],
             [AdyenAPIResponsePayments::class],
             [AdyenAPIResponseRefunds::class],
+            [AdyenSDKLoader::class],
+            [Context::class],
+            [ModuleSettings::class],
+            [Payment::class],
+            [PaymentCancel::class],
+            [PaymentCapture::class],
+            [PaymentRefund::class],
             [Repository::class],
+            [ResponseHandler::class],
             [StaticContents::class],
-            [UserRepository::class],
-            [ResponseHandler::class]
+            [UserRepository::class]
         ];
     }
 }
