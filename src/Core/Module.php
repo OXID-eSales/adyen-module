@@ -29,8 +29,6 @@ final class Module
 
     public const ADYEN_ORDER_REFERENCE_ID = 'OXID_REFERENCE';
 
-    public const ADYEN_SESSION_ID_NAME = 'sess_adyen_id';
-    public const ADYEN_SESSION_DATA_NAME = 'sess_adyen_session_data';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
@@ -84,7 +82,8 @@ final class Module
             'countries' => [],
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
-            'seperatecapture' => true
+            'seperatecapture' => true,
+            'paymentCtrl' => true
         ],
         self::PAYMENT_PAYPAL_ID => [
             'descriptions' => [
@@ -102,13 +101,20 @@ final class Module
             'countries' => [],
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
-            'seperatecapture' => true
+            'seperatecapture' => true,
+            'paymentCtrl' => false
         ]
     ];
 
     public static function isAdyenPayment(string $paymentId): bool
     {
         return (isset(self::PAYMENT_DEFINTIONS[$paymentId]));
+    }
+
+    public static function showInPaymentCtrl(string $paymentId): bool
+    {
+        return (self::isAdyenPayment($paymentId) &&
+            self::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
     }
 
     public static function isSeperateCapture(string $paymentId): bool
