@@ -26,14 +26,12 @@ class AdyenHistory extends BaseModel
     protected const PSPREFERENCEFIELD = 'pspreference';
     protected const PSPPARENTREFERENCEFIELD = 'parentpspreference';
 
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
 
-    /** @var ContextInterface */
-    private $context;
 
-    /** @var Config */
-    private $config;
+    private ContextInterface $context;
+
+    private Config $config;
 
     /**
      * Current class name
@@ -86,6 +84,11 @@ class AdyenHistory extends BaseModel
     public function getRefundedSum(string $pspReference): float
     {
         return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_REFUND);
+    }
+
+    public function getCanceledSum(string $pspReference): float
+    {
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CANCEL);
     }
 
     protected function loadByIdent(string $var, string $value): bool
@@ -154,6 +157,38 @@ class AdyenHistory extends BaseModel
             ->execute();
         if (is_a($resultDB, Result::class)) {
             $result = (float)$resultDB->fetchOne();
+        }
+        return $result;
+    }
+
+    public function getLastAction(string $pspReference): string
+    {
+        $result = '';
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder->select('adyenaction')
+            ->from($this->getCoreTableName())
+            ->setMaxResults(1)
+            ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspReference')
+            ->orderBy('oxtimestamp', 'asc');
+
+        $parameters = [
+            'pspReference' => $pspReference
+        ];
+
+        if (!$this->config->getConfigParam('blMallUsers')) {
+            $queryBuilder->andWhere('oxshopid = :oxshopid');
+            $parameters['oxshopid'] = $this->context->getCurrentShopId();
+        }
+
+        /** @var Result $resultDB */
+        $resultDB = $queryBuilder->setParameters($parameters)
+            ->execute();
+
+        if (is_a($resultDB, Result::class)) {
+            $result = (string)$resultDB->fetchOne();
         }
         return $result;
     }
@@ -245,15 +280,38 @@ class AdyenHistory extends BaseModel
         ]);
     }
 
-    public function setAdyenStatus(string $adyenstatus): void
+    public function setAdyenStatus(string $adyenStatus): void
     {
-        $this->assign([
-                'adyenstatus' => $adyenstatus
-        ]);
+        $adyenStatus = strtoupper($adyenStatus);
+        $possibleStatus = [
+            Module::ADYEN_STATUS_AUTHORISED,
+            Module::ADYEN_STATUS_CANCELLED,
+            Module::ADYEN_STATUS_CAPTUREFAILED,
+            Module::ADYEN_STATUS_ERROR,
+            Module::ADYEN_STATUS_EXPIRED,
+            Module::ADYEN_STATUS_RECEIVED,
+            Module::ADYEN_STATUS_REFUSED,
+            Module::ADYEN_STATUS_SENTFORSETTLE,
+            Module::ADYEN_STATUS_SETTLESCHEDULED,
+            Module::ADYEN_STATUS_SETTLED,
+            Module::ADYEN_STATUS_CHARGEBACK,
+            Module::ADYEN_STATUS_REFUNDED,
+            Module::ADYEN_STATUS_REFUNDFAILED,
+            Module::ADYEN_STATUS_REFUNDEDREVERSED,
+            Module::ADYEN_STATUS_REFUNDSCHEDULED,
+            Module::ADYEN_STATUS_SENTFORREFUND
+        ];
+
+        if (in_array($adyenStatus, $possibleStatus, true)) {
+            $this->assign([
+                'adyenstatus' => $adyenStatus
+            ]);
+        }
     }
 
     public function setAdyenAction(string $adyenAction): void
     {
+        $adyenAction = strtolower($adyenAction);
         $possibleActions = [
             Module::ADYEN_ACTION_AUTHORIZE,
             Module::ADYEN_ACTION_REFUND,

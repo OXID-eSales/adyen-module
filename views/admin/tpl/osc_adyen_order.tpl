@@ -36,6 +36,7 @@
                     [{assign var="blWhite" value=""}]
                     [{foreach from=$history item=listitem name=historyList}]
                         [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
+                        [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
                         <tr id="art.[{$smarty.foreach.historyList.iteration}]">
                             [{assign var="listclass" value=listitem$blWhite}]
                             <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
@@ -43,7 +44,8 @@
                             <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
                             <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
                             <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
-                            <td class="[{$listclass}]">[{$listitem->getAdyenStatus()}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
+
                         </tr>
                         [{if $blWhite == "2"}]
                             [{assign var="blWhite" value=""}]
@@ -94,6 +96,20 @@
                     </form>
                 </div>
                 <!-- Adyen Refund END -->
+                [{/if}]
+                [{if $oView->isAdyenCancelPossible()}]
+                <!-- Adyen Cancel -->
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CANCELORDER"}]</h3>
+                    <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                        [{$oViewConf->getHiddenSid()}]
+                        <input type="hidden" name="fnc" value="cancelAdyenOrder" />
+                        <input type="hidden" name="oxid" value="[{$oxid}]" />
+                        <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                        <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CANCEL"}]" />
+                    </form>
+                </div>
+                <!-- Adyen Cancel END -->
                 [{/if}]
             </td>
             <!-- left side END, right side -->
