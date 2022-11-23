@@ -114,7 +114,7 @@ final class Module
     public static function showInPaymentCtrl(string $paymentId): bool
     {
         return (self::isAdyenPayment($paymentId) &&
-            self::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']); /* @phpstan-ignore-line */
+            self::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
     }
 
     public static function isSeperateCapture(string $paymentId): bool
