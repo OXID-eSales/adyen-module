@@ -14,15 +14,17 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
 
 class AdyenAPICancelsTest extends UnitTestCase
 {
-    public function testSetGetAdyenSessionParams(): void
+    public function testSetGetAdyenCancelParams(): void
     {
         $model = new AdyenAPICancels();
         $model->setMerchantAccount('TestMerchant');
+        $model->setPspReference('TestPSPReference');
         $model->setReference('TestReference');
 
         $this->assertSame([
             'reference' => 'TestReference',
-            'merchantAccount' => 'TestMerchant'
+            'merchantAccount' => 'TestMerchant',
+            'paymentPspReference' => 'TestPSPReference'
         ], $model->getAdyenCancelParams());
     }
 }

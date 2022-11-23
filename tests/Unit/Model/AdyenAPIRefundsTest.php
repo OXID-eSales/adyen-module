@@ -10,12 +10,11 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 
 class AdyenAPIRefundsTest extends UnitTestCase
 {
-    public function testSetGetAdyenSessionParams(): void
+    public function testSetGetAdyenRefundsParams(): void
     {
         $model = new AdyenAPIRefunds();
         $model->setCurrencyAmount('1000');
