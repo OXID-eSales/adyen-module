@@ -29,6 +29,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_SandboxNotificationUsername' => 'Benachrichtigungen Name',
     'SHOP_MODULE_osc_adyen_SandboxNotificationPassword' => 'Benachrichtigungen Passwort',
+    'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'Die Live-"PayPal Merchant Id" wird nur benötigt, wenn Sie PayPal über Adyen nutzen wollen',
 
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'API Schlüssel',
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Client Schlüssel',
@@ -36,6 +38,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_LiveNotificationUsername' => 'Benachrichtigungen Name',
     'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Benachrichtigungen Passwort',
+    'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'Die Sandbox-"PayPal Merchant Id" wird nur benötigt, wenn Sie PayPal über Adyen nutzen wollen',
 
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['de']['desc'],
     'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['de']['desc'],
