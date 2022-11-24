@@ -33,7 +33,7 @@ class AdyenWebhookController extends WidgetController
                 throw WebhookEventException::dataNotFound();
             }
 
-            $data = json_decode($request, true);
+            $data = json_decode($request, true, 512, JSON_THROW_ON_ERROR);
             if (!is_array($data)) {
                 throw WebhookEventException::dataNotFound();
             }

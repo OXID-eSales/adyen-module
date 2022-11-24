@@ -66,6 +66,11 @@ final class CaptureHandler extends WebhookHandlerBase
         $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($parentPspReference);
+        // TODO: Translate Adyen status
+        $eventCode = strtolower($eventCode);
+        if ($eventCode === 'capture') {
+            $eventCode = Module::ADYEN_STATUS_CAPTURED;
+        }
         $adyenHistory->setAdyenStatus($eventCode);
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CAPTURE);
 

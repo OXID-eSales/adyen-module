@@ -286,6 +286,7 @@ class AdyenHistory extends BaseModel
         $possibleStatus = [
             Module::ADYEN_STATUS_AUTHORISED,
             Module::ADYEN_STATUS_CANCELLED,
+            Module::ADYEN_STATUS_CAPTURED,
             Module::ADYEN_STATUS_CAPTUREFAILED,
             Module::ADYEN_STATUS_ERROR,
             Module::ADYEN_STATUS_EXPIRED,

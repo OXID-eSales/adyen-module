@@ -64,7 +64,11 @@ final class AuthorisationHandler extends WebhookHandlerBase
         $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($pspReference);
-        // TO DO: Update Adyen status
+        // TODO: Translate Adyen status
+        $eventCode = strtolower($eventCode);
+        if ($eventCode === 'authorisation') {
+            $eventCode = Module::ADYEN_STATUS_AUTHORISED;
+        }
         $adyenHistory->setAdyenStatus($eventCode);
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
 
