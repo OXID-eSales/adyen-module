@@ -88,14 +88,18 @@ class Payment
         /** @var Order $order */
         $reference = $order->createNumberForAdyenPayment();
 
-        $paymentState = json_decode($this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME), true);
+        /** @var null|string $paymentStateJson */
+        $paymentStateJson = $this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
+        $paymentStateJson = is_null($paymentStateJson) ? $paymentStateJson : '';
+
+        $paymentState = json_decode($paymentStateJson, true);
         // not necessary anymore, so cleanup
         $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
 
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
-        $payments->setPaymentMethod($paymentState ?: []);
+        $payments->setPaymentMethod(is_array($paymentState) ? $paymentState : []);
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()
@@ -106,9 +110,11 @@ class Payment
         $payments->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
 
         try {
-            $result = $this->APIPayments->getPayments($payments);
-            $this->setPaymentResult($result);
-            $result = true;
+            $resultPayments = $this->APIPayments->getPayments($payments);
+            if (is_array($resultPayments)) {
+                $this->setPaymentResult($resultPayments);
+                $result = true;
+            }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on getPayments call.", [$exception]);
             $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
