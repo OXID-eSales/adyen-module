@@ -17,13 +17,20 @@ final class Event
     private $data;
 
     /**
+     * @var string
+     */
+    private $eventType;
+
+    /**
      * Event constructor.
      *
      * @param array $data
+     * @param string $eventType
      */
-    public function __construct(array $data)
+    public function __construct(array $data, string $eventType)
     {
         $this->data = $data;
+        $this->eventType = $eventType;
     }
 
     /**
@@ -34,5 +41,13 @@ final class Event
     public function getData(): array
     {
         return $this->data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventType(): string
+    {
+        return $this->eventType;
     }
 }

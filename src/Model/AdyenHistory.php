@@ -117,8 +117,8 @@ class AdyenHistory extends BaseModel
             ->execute();
 
         if (is_a($resultDB, Result::class)) {
-            $dbData = $resultDB->fetchOne();
-            $result = $this->load($dbData['oxid']);
+            $oxid = $resultDB->fetchOne();
+            $result = $this->load($oxid);
         }
         return $result;
     }
@@ -286,6 +286,7 @@ class AdyenHistory extends BaseModel
         $possibleStatus = [
             Module::ADYEN_STATUS_AUTHORISED,
             Module::ADYEN_STATUS_CANCELLED,
+            Module::ADYEN_STATUS_CAPTURED,
             Module::ADYEN_STATUS_CAPTUREFAILED,
             Module::ADYEN_STATUS_ERROR,
             Module::ADYEN_STATUS_EXPIRED,

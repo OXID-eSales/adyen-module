@@ -40,6 +40,7 @@ final class Module
 
     public const ADYEN_STATUS_AUTHORISED = 'authorised';
     public const ADYEN_STATUS_CANCELLED = 'cancelled';
+    public const ADYEN_STATUS_CAPTURED = 'captured';
     public const ADYEN_STATUS_CAPTUREFAILED = 'capturefailed';
     public const ADYEN_STATUS_ERROR = 'error';
     public const ADYEN_STATUS_EXPIRED = 'expired';

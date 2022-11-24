@@ -15,7 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\Mod
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -62,7 +62,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
 
     public function testUpdateStatus()
     {
-        $authorizationHandler = oxNew(AuthorizationHandler::class);
+        $authorizationHandler = oxNew(AuthorisationHandler::class);
         $authorizationHandler->updateStatus($this->proceedNotificationRequestsItem());
 
         $historyList = oxNew(AdyenHistoryList::class);
@@ -86,7 +86,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
         ];
         $event = oxNew(Event::class, $data);
 
-        $authorizationHandler = oxNew(AuthorizationHandler::class);
+        $authorizationHandler = oxNew(AuthorisationHandler::class);
         $authorizationHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
