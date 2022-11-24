@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
@@ -21,6 +22,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
     /**
      * @param array $notificationItem
      * @return void
+     * @throws WebhookEventTypeException
      */
     public function updateStatus(array $notificationItem): void
     {
@@ -29,7 +31,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_EVENT_CODE];
 
         if ($eventCode != self::AUTHORIZATION_EVENT_CODE) {
-            Registry::getLogger()->debug("eventCode is not AUTHORIZATION: ", $notificationItem);
+            throw WebhookEventTypeException::handlerNotFound(self::AUTHORIZATION_EVENT_CODE);
         }
 
         $pspReference = $notificationItem

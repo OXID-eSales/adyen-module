@@ -112,8 +112,8 @@ class AdyenHistory extends BaseModel
             ->execute();
 
         if (is_a($resultDB, Result::class)) {
-            $dbData = $resultDB->fetchOne();
-            $result = $this->load($dbData['oxid']);
+            $oxid = $resultDB->fetchOne();
+            $result = $this->load($oxid);
         }
         return $result;
     }
