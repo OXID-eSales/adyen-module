@@ -282,7 +282,7 @@ class AdyenHistory extends BaseModel
 
     public function setAdyenStatus(string $adyenStatus): void
     {
-        $adyenStatus = strtoupper($adyenStatus);
+        $adyenStatus = strtolower($adyenStatus);
         $possibleStatus = [
             Module::ADYEN_STATUS_AUTHORISED,
             Module::ADYEN_STATUS_CANCELLED,
