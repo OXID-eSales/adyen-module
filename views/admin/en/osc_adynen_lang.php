@@ -22,12 +22,18 @@ $aLang = [
     'OSC_ADYEN_PARENTPSPREFERENCE' => 'Parent PSP Reference',
     'OSC_ADYEN_TIMESTAMP' => 'Timestamp',
     'OSC_ADYEN_STATUS' => 'Adyen Status',
-    'OSC_ADYEN_CAPTUREMONEY' => 'Capture Money',
-    'OSC_ADYEN_CAPTURE' => 'capture',
-    'OSC_ADYEN_REFUNDMONEY' => 'Refund Money',
-    'OSC_ADYEN_REFUND' => 'refund',
     'OSC_ADYEN_HISTORY' => 'Adyen Order-History',
     'OSC_ADYEN_ACTION'  => 'Adyen Action',
+
+    'OSC_ADYEN_CAPTUREMONEY' => 'Capture Money',
+    'OSC_ADYEN_CAPTURE' => 'capture',
+
+    'OSC_ADYEN_REFUNDMONEY' => 'Refund Money',
+    'OSC_ADYEN_REFUND' => 'refund',
+
+    'OSC_ADYEN_CANCELORDER' => 'Cancel Order',
+    'OSC_ADYEN_CANCEL' => 'cancel',
+
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_AUTHORIZE => 'Authorization',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CAPTURE => 'Capture',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_REFUND => 'Refund',

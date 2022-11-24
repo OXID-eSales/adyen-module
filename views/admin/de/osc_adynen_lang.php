@@ -22,12 +22,18 @@ $aLang = [
     'OSC_ADYEN_PARENTPSPREFERENCE' => 'Haupt PSP Referenz',
     'OSC_ADYEN_TIMESTAMP' => 'Zeitstempel',
     'OSC_ADYEN_STATUS' => 'Adyen Status',
-    'OSC_ADYEN_CAPTUREMONEY' => 'Geldeinzug',
-    'OSC_ADYEN_CAPTURE' => 'einziehen',
-    'OSC_ADYEN_REFUNDMONEY' => 'Gelderstattung',
-    'OSC_ADYEN_REFUND' => 'erstatten',
     'OSC_ADYEN_HISTORY' => 'Adyen Bestell-Historie',
     'OSC_ADYEN_ACTION'  => 'Adyen Aktion',
+
+    'OSC_ADYEN_CAPTUREMONEY' => 'Geldeinzug',
+    'OSC_ADYEN_CAPTURE' => 'einziehen',
+
+    'OSC_ADYEN_REFUNDMONEY' => 'Gelderstattung',
+    'OSC_ADYEN_REFUND' => 'erstatten',
+
+    'OSC_ADYEN_CANCELORDER' => 'Bestellung stornieren',
+    'OSC_ADYEN_CANCEL' => 'stornieren',
+
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_AUTHORIZE => 'Authorisierung',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CAPTURE => 'Geldeinzug',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_REFUND => 'Erstattung',

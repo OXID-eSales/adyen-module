@@ -97,6 +97,20 @@
                 </div>
                 <!-- Adyen Refund END -->
                 [{/if}]
+                [{if $oView->isAdyenCancelPossible()}]
+                <!-- Adyen Cancel -->
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CANCELORDER"}]</h3>
+                    <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                        [{$oViewConf->getHiddenSid()}]
+                        <input type="hidden" name="fnc" value="cancelAdyenOrder" />
+                        <input type="hidden" name="oxid" value="[{$oxid}]" />
+                        <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                        <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CANCEL"}]" />
+                    </form>
+                </div>
+                <!-- Adyen Cancel END -->
+                [{/if}]
             </td>
             <!-- left side END, right side -->
             <td style="width:28%; padding:1%; vertical-align: text-top;">
