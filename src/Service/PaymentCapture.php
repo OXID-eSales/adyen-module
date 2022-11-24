@@ -76,9 +76,11 @@ class PaymentCapture
         $captures->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
 
         try {
-            $result = $this->APICaptures->setCapture($captures);
-            $this->setCaptureResult($result);
-            $result = true;
+            $resultCapture = $this->APICaptures->setCapture($captures);
+            if (is_array($resultCapture)) {
+                $this->setCaptureResult($resultCapture);
+                $result = true;
+            }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setCapture call.", [$exception]);
         }

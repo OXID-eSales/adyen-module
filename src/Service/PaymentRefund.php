@@ -76,9 +76,11 @@ class PaymentRefund
         $refunds->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
 
         try {
-            $result = $this->APIRefunds->setRefund($refunds);
-            $this->setRefundResult($result);
-            $result = true;
+            $resultRefund = $this->APIRefunds->setRefund($refunds);
+            if (is_array($resultRefund)) {
+                $this->setRefundResult($resultRefund);
+                $result = true;
+            }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setRefund call.", [$exception]);
         }

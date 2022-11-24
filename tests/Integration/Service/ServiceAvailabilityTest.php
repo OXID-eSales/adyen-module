@@ -54,7 +54,6 @@ class ServiceAvailabilityTest extends TestCase
             [PaymentCancel::class],
             [PaymentCapture::class],
             [PaymentRefund::class],
-            [Repository::class],
             [ResponseHandler::class],
             [StaticContents::class],
             [UserRepository::class]

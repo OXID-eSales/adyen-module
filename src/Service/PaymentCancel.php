@@ -58,9 +58,11 @@ class PaymentCancel
 
 
         try {
-            $result = $this->APICancels->setCancel($cancels);
-            $this->setCancelResult($result);
-            $result = true;
+            $resultCancel = $this->APICancels->setCancel($cancels);
+            if (is_array($resultCancel)) {
+                $this->setCancelResult($resultCancel);
+                $result = true;
+            }
         } catch (\Adyen\AdyenException $exception) {
             Registry::getLogger()->error("Error on setCancel call.", [$exception]);
         }

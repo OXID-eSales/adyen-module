@@ -82,7 +82,11 @@ class UserRepository
         if (!isset($this->userCountryIso[$countryId])) {
             $country = oxNew(Country::class);
             $country->load($countryId);
-            $this->userCountryIso[$countryId] = (string) $country->getFieldData('oxisoalpha2');
+            /** @var null|string $countryIso */
+            $countryIso = $country->getFieldData('oxisoalpha2');
+            if (!is_null($countryIso)) {
+                $this->userCountryIso[$countryId] = $country->getFieldData('oxisoalpha2');
+            }
         }
         return $this->userCountryIso[$countryId];
     }
@@ -106,9 +110,10 @@ class UserRepository
         $countryId = $this->config->getGlobalParameter('delcountryid');
 
         if (!$countryId) {
+            /** @var null|string $addressId */
             $addressId = $this->session->getVariable('deladrid');
             $deliveryAddress = oxNew(Address::class);
-            $countryId = $deliveryAddress->load($addressId) ? $deliveryAddress->getFieldData('oxcountryid') : '';
+            $countryId = (!is_null($addressId) && $deliveryAddress->load($addressId)) ? $deliveryAddress->getFieldData('oxcountryid') : '';
         }
 
         if (!$countryId) {
@@ -156,7 +161,7 @@ class UserRepository
         if (is_a($resultDB, Result::class)) {
             $userId = $resultDB->fetchOne();
         }
-
+        /** @var string $userId */
         return (string) $userId;
     }
 }
