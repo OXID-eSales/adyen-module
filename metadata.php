@@ -229,16 +229,18 @@ $aModule = [
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_SeperateCapture',
-            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID,
-            'type' => 'bool',
-            'value' => false
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
+            'type' => 'select',
+            'value' => 'manual',
+            'constraints' => 'manual|days|immediate'
         ],
         [
-            'group' => 'osc_adyen_SeperateCapture',
-            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID,
-            'type' => 'bool',
-            'value' => false
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID,
+            'type' => 'select',
+            'value' => 'manual',
+            'constraints' => 'manual|days|immediate'
         ],
         [
             'group' => 'osc_adyen_Languages',

@@ -9,12 +9,17 @@ declare(strict_types=1);
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 
+$keyDelayCreditCard = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID;
+$descCreditCard = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['en']['desc'];
+$keyDelayPayPal = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID;
+$descPayPal = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['en']['desc'];
+
 $aLang = [
     'charset' => 'UTF-8',
     'SHOP_MODULE_GROUP_osc_adyen_API' => 'Adyen API',
     'SHOP_MODULE_GROUP_osc_adyen_SANDBOX' => 'Adyen Access Sandbox',
     'SHOP_MODULE_GROUP_osc_adyen_LIVE' => 'Adyen Access Live',
-    'SHOP_MODULE_GROUP_osc_adyen_SeperateCapture' => 'Seperate Capture for selected Payments',
+    'SHOP_MODULE_GROUP_osc_adyen_CaptureDelay' => 'Capture delay for selected Payments',
     'SHOP_MODULE_GROUP_osc_adyen_Languages' => 'Language-Configuration',
     'SHOP_MODULE_GROUP_osc_adyen_Backend' => 'Backend-Options',
 
@@ -37,9 +42,23 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveNotificationUsername' => 'Benachrichtigungen Name',
     'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Benachrichtigungen Passwort',
 
-    'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['de']['desc'],
-    'SHOP_MODULE_osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID => Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['de']['desc'],
+    $keyDelayCreditCard => $descCreditCard,
+    $keyDelayCreditCard . '_manual' => 'Manual',
+    $keyDelayCreditCard . '_days' => 'n Days',
+    $keyDelayCreditCard . '_immediate' => 'Immediate',
+    'HELP_' . $keyDelayCreditCard =>
+        'In Adyen you can define the delay of the capture for ' . $descCreditCard . ': "Immediate", "after n days" or "Manual".
+         The Adyen setting must correspond to that of the shop. In the "Manual" case, the capture can be triggered in the Adyen tab in the shopbackend-order.',
+    $keyDelayPayPal => $descPayPal,
+    $keyDelayPayPal . '_manual' => 'Manual',
+    $keyDelayPayPal . '_days' => 'n Days',
+    $keyDelayPayPal . '_immediate' => 'Immediate',
+    'HELP_' . $keyDelayPayPal =>
+        'In Adyen you can define the delay of the capture for ' . $descPayPal . ': "Immediate", "after n days" or "Manual".
+         The Adyen setting must correspond to that of the shop. In the "Manual" case, the capture can be triggered in the Adyen tab in the shopbackend-order.',
 
     'SHOP_MODULE_osc_adyen_Languages' => 'Language localizations matching the OXID language',
-    'HELP_SHOP_MODULE_osc_adyen_Languages' => 'Enter a suitable language and region localization (ISO 639-1 alpha-2 / ISO 3166-1 alpha-2) for each OXID language (Master Settings > Languages > Language > Language abbreviation). One line for each setting (e.g. en => en_US)',
+    'HELP_SHOP_MODULE_osc_adyen_Languages' =>
+        'Enter a suitable language and region localization (ISO 639-1 alpha-2 / ISO 3166-1 alpha-2) for each OXID language
+        (Master Settings > Languages > Language > Language abbreviation). One line for each setting (e.g. en => en_US)',
 ];
