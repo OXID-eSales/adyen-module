@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
-use OxidSolutionCatalysts\Adyen\Core\AdyenSession;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
@@ -33,7 +33,8 @@ class PaymentGateway extends PaymentGateway_parent
      */
     public function executePayment($amount, &$order): bool
     {
-        $paymentId = AdyenSession::getSessionPaymentId();
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        $paymentId = $session->getPaymentId();
 
         if (!Module::isAdyenPayment($paymentId)) {
             return parent::executePayment($amount, $order);
@@ -49,6 +50,7 @@ class PaymentGateway extends PaymentGateway_parent
      */
     protected function doExecuteAdyenPayment($amount, $order): bool
     {
+        $session = $this->getServiceFromContainer(SessionSettings::class);
         $paymentService = $this->getServiceFromContainer(Payment::class);
         $context = $this->getServiceFromContainer(Context::class);
         $success = $paymentService->doAdyenAuthorization($amount, $order);
@@ -83,7 +85,7 @@ class PaymentGateway extends PaymentGateway_parent
                     $action['type'] === 'redirect' &&
                     isset($action['url'])
                 ) {
-                    AdyenSession::setRedirctLink($action['url']);
+                    $session->setRedirctLink($action['url']);
                     /** @var Order $order */
                     $this->_iLastErrorNo = (string)$order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET;
                 }

@@ -12,7 +12,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Exception;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -32,8 +31,8 @@ class Payment
 
     private ?array $paymentResult = null;
 
-    /** @var Session */
-    private Session $session;
+    /** @var SessionSettings */
+    private SessionSettings $session;
 
     /** @var Context */
     private Context $context;
@@ -45,7 +44,7 @@ class Payment
     private AdyenAPIResponsePayments $APIPayments;
 
     public function __construct(
-        Session $session,
+        SessionSettings $session,
         Context $context,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments
@@ -88,13 +87,9 @@ class Payment
         /** @var Order $order */
         $reference = $order->createNumberForAdyenPayment();
 
-        /** @var null|string $paymentStateJson */
-        $paymentStateJson = $this->session->getVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
-        $paymentStateJson = is_null($paymentStateJson) ? $paymentStateJson : '';
-
-        $paymentState = json_decode($paymentStateJson, true);
+        $paymentState = $this->session->getPaymentState();
         // not necessary anymore, so cleanup
-        $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
+        $this->session->deletePaymentState();
 
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());

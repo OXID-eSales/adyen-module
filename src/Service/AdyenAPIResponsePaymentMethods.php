@@ -11,9 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
 use Adyen\AdyenException;
-use Adyen\Service\Checkout;
 use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 
 /**
@@ -26,8 +24,8 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
      */
     public function getAdyenPaymentMethods(): array
     {
-        $adyenPaymentMethods = $this->session->getVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
-        if (!$adyenPaymentMethods) {
+        $adyenPaymentMethods = $this->session->getPaymentMethods();
+        if (!count($adyenPaymentMethods)) {
             throw new Exception('Load the paymentMethods before getting the paymentMethods');
         }
         return $adyenPaymentMethods;
@@ -63,12 +61,12 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
     {
         $paymentMethods = $resultApi['paymentMethods'] ? $resultApi : '';
         $result = (bool)$paymentMethods;
-        $this->session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, $paymentMethods);
+        $this->session->setPaymentMethods($paymentMethods);
         return $result;
     }
 
     public function deleteAdyenPaymentMethods(): void
     {
-        $this->session->deleteVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
+        $this->session->deletePaymentMethods();
     }
 }

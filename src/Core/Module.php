@@ -27,12 +27,6 @@ final class Module
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
-    public const ADYEN_ORDER_REFERENCE_ID = 'OXID_REFERENCE';
-
-    public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
-    public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
-    public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
-
     public const ADYEN_ACTION_AUTHORIZE = 'authorize';
     public const ADYEN_ACTION_CAPTURE = 'capture';
     public const ADYEN_ACTION_REFUND = 'refund';

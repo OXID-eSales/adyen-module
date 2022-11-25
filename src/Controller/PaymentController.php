@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
@@ -74,13 +75,13 @@ class PaymentController extends PaymentController_parent
      */
     public function validatePayment()
     {
+        $session = $this->getServiceFromContainer(SessionSettings::class);
         $result = parent::validatePayment();
-        $session = Registry::getSession();
-        $paymentId = $session->getVariable('paymentid');
+        $paymentId = $session->getPaymentId();
         if (Module::isAdyenPayment($paymentId)) {
             $request = oxNew(Request::class);
             $state = $request->getRequestParameter(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
-            $session->setVariable(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME, $state);
+            $session->setPaymentState($state);
         }
         return $result;
     }
