@@ -85,7 +85,7 @@ class PaymentGateway extends PaymentGateway_parent
                     $action['type'] === 'redirect' &&
                     isset($action['url'])
                 ) {
-                    $session->setRedirctLink($action['url']);
+                    $session->setRedirctLink((string)$action['url']);
                     /** @var Order $order */
                     $this->_iLastErrorNo = (string)$order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET;
                 }

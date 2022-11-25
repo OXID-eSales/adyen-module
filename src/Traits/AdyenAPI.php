@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Traits;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
@@ -55,6 +56,7 @@ trait AdyenAPI
 
             $context = $this->getServiceFromContainer(Context::class);
             $userRepository = $this->getServiceFromContainer(UserRepository::class);
+            $countryRepository = $this->getServiceFromContainer(CountryRepository::class);
             $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
             $response = $this->getServiceFromContainer(AdyenAPIResponsePaymentMethods::class);
 
@@ -64,7 +66,7 @@ trait AdyenAPI
             $currencyFilterAmount = '10' . str_repeat('0', $currencyDecimals);
             $paymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
 
-            $paymentMethods->setCountryCode($userRepository->getUserCountryIso());
+            $paymentMethods->setCountryCode($countryRepository->getCountryIso());
 
             $paymentMethods->setShopperLocale($userRepository->getUserLocale());
 

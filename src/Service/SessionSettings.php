@@ -46,10 +46,10 @@ class SessionSettings
 
     public function deleteRedirctLink(): void
     {
-        $this->removeSettingValue(Module::ADYEN_SESSION_REDIRECTLINK_NAME);
+        $this->removeSettingValue(self::ADYEN_SESSION_REDIRECTLINK_NAME);
     }
 
-    public function setPaymentMethods($paymentMethods): void
+    public function setPaymentMethods(array $paymentMethods): void
     {
         $this->saveSettingValue(self::ADYEN_SESSION_PAYMENTMETHODS_NAME, $paymentMethods);
     }
@@ -63,26 +63,29 @@ class SessionSettings
 
     public function deletePaymentMethods(): void
     {
-        $this->removeSettingValue(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME);
+        $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTMETHODS_NAME);
     }
 
-    public function setPaymentState($paymentState): void
+    public function setPaymentState(string $paymentState): void
     {
         $this->saveSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME, $paymentState);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getPaymentState(): array
     {
         /** @var null|string $paymentStateJson */
         $paymentStateJson = $this->getSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
         $paymentStateJson = $paymentStateJson ?? '';
         $paymentState = json_decode($paymentStateJson, true, 512, JSON_THROW_ON_ERROR);
-        return $paymentState ?? [];
+        return is_array($paymentState) ? $paymentState : [];
     }
 
     public function deletePaymentState(): void
     {
-        $this->removeSettingValue(Module::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
+        $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
     }
 
     public function getDeliveryId(): string
@@ -94,8 +97,7 @@ class SessionSettings
 
     public function getUser(): User
     {
-        $user = $this->session->getUser();
-        return $user ?? oxNew(User::class);
+        return $this->session->getUser();
     }
 
     public function getPaymentId(): string
@@ -128,9 +130,6 @@ class SessionSettings
         return $this->session->getVariable($key);
     }
 
-    /**
-     * @return mixed
-     */
     private function removeSettingValue(string $key): void
     {
         $this->session->deleteVariable($key);

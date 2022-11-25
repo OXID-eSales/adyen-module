@@ -29,7 +29,7 @@ class Payment
 
     private string $executionError = self::PAYMENT_ERROR_NONE;
 
-    private ?array $paymentResult = null;
+    private array $paymentResult = [];
 
     /** @var SessionSettings */
     private SessionSettings $session;
@@ -70,8 +70,7 @@ class Payment
         $this->paymentResult = $paymentResult;
     }
 
-    /** @return mixed */
-    public function getPaymentResult()
+    public function getPaymentResult(): array
     {
         return $this->paymentResult;
     }
@@ -94,7 +93,7 @@ class Payment
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
-        $payments->setPaymentMethod(is_array($paymentState) ? $paymentState : []);
+        $payments->setPaymentMethod($paymentState);
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

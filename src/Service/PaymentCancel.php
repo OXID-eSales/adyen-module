@@ -17,7 +17,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
  */
 class PaymentCancel
 {
-    private ?array $cancelResult = null;
+    private array $cancelResult = [];
 
     /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
@@ -38,8 +38,7 @@ class PaymentCancel
         $this->cancelResult = $cancelResult;
     }
 
-    /** @return mixed */
-    public function getCancelResult()
+    public function getCancelResult(): array
     {
         return $this->cancelResult;
     }

@@ -62,7 +62,9 @@ class CountryRepository
         if (!$countryId) {
             $addressId = $this->session->getDeliveryId();
             $deliveryAddress = oxNew(Address::class);
-            $countryId = (!is_null($addressId) && $deliveryAddress->load($addressId)) ? $deliveryAddress->getFieldData('oxcountryid') : '';
+            $countryId = $deliveryAddress->load($addressId) ?
+                $deliveryAddress->getFieldData('oxcountryid') :
+                '';
         }
 
         // try from Session Invoice Address
