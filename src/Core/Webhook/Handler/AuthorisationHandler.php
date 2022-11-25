@@ -62,8 +62,11 @@ final class AuthorisationHandler extends WebhookHandlerBase
             return;
         }
 
+        /** @var null|string $paymentId */
         $paymentId = $order->getFieldData('oxpaymenttype');
-
+        if (is_null($paymentId)) {
+            return;
+        }
         /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
         $payment = oxNew(Payment::class);
         $payment->load($paymentId);

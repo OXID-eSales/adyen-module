@@ -12,9 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Controller;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 class PaymentController extends PaymentController_parent
@@ -32,8 +32,8 @@ class PaymentController extends PaymentController_parent
         $paymentListRaw = parent::getPaymentList();
         $adyenDef = Module::PAYMENT_DEFINTIONS;
         $actShopCurrency = Registry::getConfig()->getActShopCurrencyObject();
-        $userRepository = $this->getServiceFromContainer(UserRepository::class);
-        $userCountryIso = $userRepository->getUserCountryIso();
+        $countryRepository = $this->getServiceFromContainer(CountryRepository::class);
+        $userCountryIso = $countryRepository->getCountryIso();
 
         $paymentList = [];
 
@@ -52,11 +52,11 @@ class PaymentController extends PaymentController_parent
                 (
                     $adyenHealth &&
                     (
-                        empty($adyenDef[$key]['currencies']) ||
+                        empty($adyenDef[$key]['currencies']) || // @phpstan-ignore-line
                         in_array($actShopCurrency->name, $adyenDef[$key]['currencies'], true)
                     ) &&
                     (
-                        empty($adyenDef[$key]['countries']) ||
+                        empty($adyenDef[$key]['countries']) || // @phpstan-ignore-line
                         in_array($userCountryIso, $adyenDef[$key]['countries'], true)
                     )
                 )
@@ -64,7 +64,6 @@ class PaymentController extends PaymentController_parent
                 $paymentList[$key] = $payment;
             }
         }
-
         return $paymentList;
     }
 
@@ -80,7 +79,9 @@ class PaymentController extends PaymentController_parent
         $paymentId = $session->getPaymentId();
         if (Module::isAdyenPayment($paymentId)) {
             $request = oxNew(Request::class);
+            /** @var null|string $state */
             $state = $request->getRequestParameter(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
+            $state = $state ?? '';
             $session->setPaymentState($state);
         }
         return $result;
