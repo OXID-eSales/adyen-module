@@ -38,10 +38,13 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_PSP_REFERENCE];
 
-        $price = $notificationItem
+        $price = (float)$notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_AMOUNT]
             [self::JSON_FIELD_PRICE];
+
+        // TODO: Convert Price correct
+        $price /= 100;
 
         $currency = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
@@ -59,7 +62,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
-        $adyenHistory->setPrice((float)$price);
+        $adyenHistory->setPrice($price);
         $adyenHistory->setCurrency($currency);
         $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
