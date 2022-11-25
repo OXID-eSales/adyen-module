@@ -159,7 +159,6 @@ class AdyenHistory extends BaseModel
         if (is_a($resultDB, Result::class)) {
             $result = $resultDB->fetchOne();
             $result = is_float($result) ? $result : 0;
-
         }
         return $result;
     }
@@ -383,6 +382,4 @@ class AdyenHistory extends BaseModel
         $value = $this->getFieldData($key);
         return is_float($value) ? $value : 0;
     }
-
-
 }

@@ -18,6 +18,12 @@ final class CaptureHandler extends WebhookHandlerBase
 {
     private const CAPTURE_EVENT_CODE = "CAPTURE";
 
+    /**
+     * @param array $notificationItem
+     * @return void
+     * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function updateStatus(array $notificationItem): void
     {
         $eventCode = $notificationItem

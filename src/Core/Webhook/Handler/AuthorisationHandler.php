@@ -24,6 +24,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
      * @param array $notificationItem
      * @return void
      * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function updateStatus(array $notificationItem): void
     {
