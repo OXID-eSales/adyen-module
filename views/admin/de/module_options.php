@@ -43,20 +43,20 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Benachrichtigungen Passwort',
 
     $keyDelayCreditCard => $descCreditCard,
-    $keyDelayCreditCard . '_manual' => 'Manuell',
-    $keyDelayCreditCard . '_days' => 'n Tagen',
-    $keyDelayCreditCard . '_immediate' => 'Sofort',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manuell',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Tagen',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Sofort',
     'HELP_' . $keyDelayCreditCard =>
         'In Adyen kann man die Verzögerung des Geldeinzugs für ' . $descCreditCard . ' definieren: "Immediate", "after n days" oder "Manual".
-         Die Adyen-Einstellung muss mit der vom Shop korrespondieren. Im Fall "Manual" kann im Reiter Adyen in der Shopbackend-Bestellung,
+         Die Adyen-Einstellung muss mit der vom Shop korrespondieren. Im Fall "Manual" kann unter Bestellungen verwalten > Bestellungen > Reiter Adyen,
          der Geldeinzug angestoßen werden.',
     $keyDelayPayPal => $descPayPal,
-    $keyDelayPayPal . '_manual' => 'Manuell',
-    $keyDelayPayPal . '_days' => 'n Tagen',
-    $keyDelayPayPal . '_immediate' => 'Sofort',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manuell',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Tagen',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Sofort',
     'HELP_' . $keyDelayPayPal =>
         'In Adyen kann man die Verzögerung des Geldeinzugs für ' . $descPayPal . ' definieren: "Immediate", "after n days" oder "Manual".
-         Die Adyen-Einstellung muss mit der vom Shop korrespondieren. Im Fall "Manual" kann im Reiter Adyen in der Shopbackend-Bestellung,
+         Die Adyen-Einstellung muss mit der vom Shop korrespondieren. Im Fall "Manual" kann unter Bestellungen verwalten > Bestellungen > Reiter Adyen,
          der Geldeinzug angestoßen werden.',
 
     'SHOP_MODULE_osc_adyen_Languages' => 'Sprachlokalisierungen passend zur OXID-Sprache',

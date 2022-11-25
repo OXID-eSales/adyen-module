@@ -43,19 +43,21 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Benachrichtigungen Passwort',
 
     $keyDelayCreditCard => $descCreditCard,
-    $keyDelayCreditCard . '_manual' => 'Manual',
-    $keyDelayCreditCard . '_days' => 'n Days',
-    $keyDelayCreditCard . '_immediate' => 'Immediate',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Days',
+    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Immediate',
     'HELP_' . $keyDelayCreditCard =>
         'In Adyen you can define the delay of the capture for ' . $descCreditCard . ': "Immediate", "after n days" or "Manual".
-         The Adyen setting must correspond to that of the shop. In the "Manual" case, the capture can be triggered in the Adyen tab in the shopbackend-order.',
+         The Adyen setting must correspond to that of the shop. In the "Manual" case, under Manage Orders > Orders > Tab Adyen,
+         the capture can be initiated.',
     $keyDelayPayPal => $descPayPal,
-    $keyDelayPayPal . '_manual' => 'Manual',
-    $keyDelayPayPal . '_days' => 'n Days',
-    $keyDelayPayPal . '_immediate' => 'Immediate',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Days',
+    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Immediate',
     'HELP_' . $keyDelayPayPal =>
         'In Adyen you can define the delay of the capture for ' . $descPayPal . ': "Immediate", "after n days" or "Manual".
-         The Adyen setting must correspond to that of the shop. In the "Manual" case, the capture can be triggered in the Adyen tab in the shopbackend-order.',
+         The Adyen setting must correspond to that of the shop. In the "Manual" case, under Manage Orders > Orders > Tab Adyen,
+         the capture can be initiated.',
 
     'SHOP_MODULE_osc_adyen_Languages' => 'Language localizations matching the OXID language',
     'HELP_SHOP_MODULE_osc_adyen_Languages' =>
