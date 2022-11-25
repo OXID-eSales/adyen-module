@@ -27,6 +27,10 @@ final class Module
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
+    public const ADYEN_CAPTURE_DELAY_MANUAL = 'manual';
+    public const ADYEN_CAPTURE_DELAY_IMMEDIATE = 'immediate';
+    public const ADYEN_CAPTURE_DELAY_DAYS = 'days';
+
     public const ADYEN_ACTION_AUTHORIZE = 'authorize';
     public const ADYEN_ACTION_CAPTURE = 'capture';
     public const ADYEN_ACTION_REFUND = 'refund';
@@ -77,7 +81,7 @@ final class Module
             'countries' => [],
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
-            'seperatecapture' => true,
+            'capturedelay' => true,
             'paymentCtrl' => true
         ],
         self::PAYMENT_PAYPAL_ID => [
@@ -96,7 +100,7 @@ final class Module
             'countries' => [],
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
-            'seperatecapture' => true,
+            'capturedelay' => true,
             'paymentCtrl' => false
         ]
     ];
@@ -112,9 +116,9 @@ final class Module
             self::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
     }
 
-    public static function isSeperateCapture(string $paymentId): bool
+    public static function isCaptureDelay(string $paymentId): bool
     {
         return (self::isAdyenPayment($paymentId) &&
-            self::PAYMENT_DEFINTIONS[$paymentId]['seperatecapture']); /* @phpstan-ignore-line */
+            self::PAYMENT_DEFINTIONS[$paymentId]['capturedelay']); /* @phpstan-ignore-line */
     }
 }

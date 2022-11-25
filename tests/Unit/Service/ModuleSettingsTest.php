@@ -41,7 +41,7 @@ final class ModuleSettingsTest extends UnitTestCase
     /**
      * @dataProvider getCaptureDataProvider
      */
-    public function testIsCapture(
+    public function testIsManualCapture(
         string $varName,
         string $paymentId
     ): void {
@@ -51,7 +51,7 @@ final class ModuleSettingsTest extends UnitTestCase
             $sut = new ModuleSettings(
                 $bridgeStub
             );
-            $this->assertSame($gettingValue, $sut->isSeperateCapture($paymentId));
+            $this->assertSame($gettingValue, $sut->isManualCapture($paymentId));
         }
     }
 
@@ -259,7 +259,7 @@ final class ModuleSettingsTest extends UnitTestCase
         $captureData = [];
 
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
-            if ($paymentDef['seperatecapture']) {
+            if ($paymentDef['capturedelay']) {
                 $captureData[] = [
                     'varName' => 'osc_adyen_SeperateCapture_' . $paymentId,
                     'paymentId' => $paymentId

@@ -36,20 +36,25 @@ final class CaptureHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_PARENT_PSP_REFERENCE];
 
-        $price = $notificationItem
+        $price = (float)$notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_AMOUNT]
             [self::JSON_FIELD_PRICE];
+
+        // TODO: Convert Price correct
+        $price /= 100;
 
         $timestamp = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_DATE];
 
-        $order = $this->getOrderByAdyenPSPReference($parentPspReference);
+        $order = $this->getOrderByAdyenPSPReference($pspReference);
         if (is_null($order)) {
             Registry::getLogger()->debug("order not found by psp reference " . $pspReference);
             return;
         }
+
+        $order->markAdyenOrderAsPaid();
 
         $adyenHistoryParent = oxNew(AdyenHistory::class);
         $isLoaded = $adyenHistoryParent->loadByOxOrderId($order->getId());

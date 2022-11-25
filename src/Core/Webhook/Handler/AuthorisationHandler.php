@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
@@ -38,10 +39,13 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_PSP_REFERENCE];
 
-        $price = $notificationItem
+        $price = (float)$notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_AMOUNT]
             [self::JSON_FIELD_PRICE];
+
+        // TODO: Convert Price correct
+        $price /= 100;
 
         $currency = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
@@ -52,14 +56,25 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_DATE];
 
-        $order = oxNew(Order::class);
-        $order->setAdyenPSPReference($pspReference);
-        $order->save();
+        $order = $this->getOrderByAdyenPSPReference($pspReference);
+        if (is_null($order)) {
+            Registry::getLogger()->debug("order not found by psp reference " . $pspReference);
+            return;
+        }
+
+        $paymentId = $order->getFieldData('oxpaymenttype');
+
+        /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
+        $payment = oxNew(Payment::class);
+        $payment->load($paymentId);
+        if ($payment->isAdyenImmediateCapture()) {
+            $order->markAdyenOrderAsPaid();
+        }
 
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
-        $adyenHistory->setPrice((float)$price);
+        $adyenHistory->setPrice($price);
         $adyenHistory->setCurrency($currency);
         $adyenHistory->setTimeStamp($timestamp);
         $adyenHistory->setPSPReference($pspReference);
