@@ -48,7 +48,7 @@ final class CaptureHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_DATE];
 
-        $order = $this->getOrderByAdyenPSPReference($parentPspReference);
+        $order = $this->getOrderByAdyenPSPReference($pspReference);
         if (is_null($order)) {
             Registry::getLogger()->debug("order not found by psp reference " . $pspReference);
             return;

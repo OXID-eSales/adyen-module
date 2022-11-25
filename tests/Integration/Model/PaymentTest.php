@@ -45,7 +45,7 @@ class PaymentTest extends UnitTestCase
     /**
      * @dataProvider providerTestPaymentData
      */
-    public function testIsAdyenPaymentAndCheckCapture($paymentId, $isSeperateCapture): void
+    public function testIsAdyenPaymentAndCheckCapture($paymentId, $isManualCapture, $isImmediateCapture): void
     {
         // Check:  isAdyenPayment
         $payment = oxNew(Payment::class);
@@ -63,14 +63,23 @@ class PaymentTest extends UnitTestCase
             $payment->showInPaymentCtrl()
         );
 
-        // Check isAdyenSeperateCapture
+        // Check isAdyenManualCapture
         $this->assertSame(
             (
                 isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
-                Module::PAYMENT_DEFINTIONS[$paymentId]['seperatecapture'] &&
-                $isSeperateCapture
+                Module::PAYMENT_DEFINTIONS[$paymentId]['capturedelay'] &&
+                $isManualCapture
             ),
-            $payment->isAdyenSeperateCapture()
+            $payment->isAdyenManualCapture()
+        );
+        // Check isAdyenImmediateCapture
+        $this->assertSame(
+            (
+                isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
+                Module::PAYMENT_DEFINTIONS[$paymentId]['capturedelay'] &&
+                $isImmediateCapture
+            ),
+            $payment->isAdyenImmediateCapture()
         );
 
         $payment->assign([
@@ -81,6 +90,7 @@ class PaymentTest extends UnitTestCase
 
     public function providerTestPaymentData(): array
     {
+        /** @var ModuleSettings $moduleSettings */
         $moduleSettings = ContainerFactory::getInstance()
             ->getContainer()
             ->get(ModuleSettings::class);
@@ -88,6 +98,7 @@ class PaymentTest extends UnitTestCase
         $paymentData = [
             [
                 'dummy',
+                false,
                 false
             ]
         ];
@@ -95,7 +106,8 @@ class PaymentTest extends UnitTestCase
         foreach (array_keys(Module::PAYMENT_DEFINTIONS) as $paymentId) {
             $paymentData[] = [
                 $paymentId,
-                $moduleSettings->isSeperateCapture($paymentId)
+                $moduleSettings->isManualCapture($paymentId),
+                $moduleSettings->isImmediateCapture($paymentId)
             ];
         }
 

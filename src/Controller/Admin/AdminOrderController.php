@@ -181,7 +181,7 @@ class AdminOrderController extends AdminDetailsController
                 $payment = oxNew(eShopPayment::class);
                 $payment->load($order->getFieldData('oxpaymenttype'));
                 $this->isCapturePossible = (
-                    $payment->isAdyenSeperateCapture() &&
+                    $payment->isAdyenManualCapture() &&
                     $this->getPossibleCaptureAmount() > 0
                 );
             }

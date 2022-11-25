@@ -47,16 +47,30 @@ class Payment extends Payment_parent
     }
 
     /**
-     * Checks if the payment allow seperate Capture
+     * Checks if the payment allow manual Capture
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @return bool
      */
-    public function isAdyenSeperateCapture(): bool
+    public function isAdyenManualCapture(): bool
     {
-        return (Module::isSeperateCapture($this->getId()) &&
+        return (Module::isCaptureDelay($this->getId()) &&
             $this->getServiceFromContainer(ModuleSettings::class)
-                ->isSeperateCapture($this->getId())
+                ->isManualCapture($this->getId())
+        );
+    }
+
+    /**
+     * Checks if the payment allow immediate Capture
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return bool
+     */
+    public function isAdyenImmediateCapture(): bool
+    {
+        return (Module::isCaptureDelay($this->getId()) &&
+            $this->getServiceFromContainer(ModuleSettings::class)
+                ->isImmediateCapture($this->getId())
         );
     }
 }
