@@ -85,11 +85,13 @@ class Context extends BasicContext
      */
     public function getControllerUrl(string $controller): string
     {
-        $url = 'index.php?cl=' . $controller;
         $facts = new Facts();
+        $url = rtrim($facts->getShopUrl(), DIRECTORY_SEPARATOR) .
+            DIRECTORY_SEPARATOR .
+            'index.php?cl=' . $controller;
 
         return html_entity_decode(
-            $facts->getShopUrl() . $url
+            $url
         );
     }
 }
