@@ -85,7 +85,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
                     ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                 ],
-                'gettingMethod' => 'checkHealth',
+                'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [
@@ -98,7 +98,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
-                'gettingMethod' => 'checkHealth',
+                'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [

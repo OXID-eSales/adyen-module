@@ -57,7 +57,7 @@ class ModuleSettings
         $this->moduleSettingBridge = $moduleSettingBridge;
     }
 
-    public function checkHealth(): bool
+    public function checkConfigHealth(): bool
     {
         return (
             $this->getAPIKey() &&

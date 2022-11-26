@@ -20,7 +20,7 @@ use OxidEsales\Eshop\Core\ViewConfig as eShopViewConfig;
 
 final class ViewConfigTest extends UnitTestCase
 {
-    public function testCheckAdyenHealth(): void
+    public function testcheckAdyenConfigHealth(): void
     {
         $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_SANDBOX);
         $this->updateModuleSetting('osc_adyen_SandboxAPIKey', 'SandboxAPIKey');
@@ -31,7 +31,7 @@ final class ViewConfigTest extends UnitTestCase
         $this->updateModuleSetting('osc_adyen_SandboxNotificationPassword', 'SandboxNotificationPassword');
 
         $viewConfig = $this->getViewConfig();
-        $this->assertTrue($viewConfig->checkAdyenHealth());
+        $this->assertTrue($viewConfig->checkAdyenConfigHealth());
     }
 
     public function testGetAdyenOperationMode(): void

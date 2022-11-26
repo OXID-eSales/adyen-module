@@ -37,7 +37,7 @@ class PaymentController extends PaymentController_parent
 
         $paymentList = [];
 
-        $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkHealth();
+        $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkConfigHealth();
 
         /*
          * check & allow:
