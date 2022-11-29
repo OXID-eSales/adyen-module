@@ -5,6 +5,8 @@
       href="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.css"
       integrity="[{$oViewConf->getAdyenIntegrityCSS()}]"
       crossorigin="anonymous">
+[{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
+[{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]
 [{capture assign="adyenJS"}]
     [{if $oViewConf->getTopActiveClassName() == 'payment'}]
         var adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
@@ -45,6 +47,25 @@
                     console.log('onChange:', state);
                 [{/if}]
             },
+            onSubmit: (state, component) => {
+                [{if $oViewConf->isAdyenLoggingActive()}]
+                    console.log('onSubmit:', state);
+                [{/if}]
+                makePayment(state.data)
+                .then(response => {
+                    if (response.action) {
+                        // Drop-in handles the action object from the /payments response
+                        dropin.handleAction(response.action);
+                    } else {
+                        // Your function to show the final result to the shopper
+                        //showFinalResult(response);
+                        console.log('toDo: Your function to show the final result to the shopper');
+                    }
+                })
+                .catch(error => {
+                    throw Error(error);
+                });
+            },
             onAdditionalDetails: (state, component) => {
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.log('onChange:', state);
@@ -66,7 +87,7 @@
                     [{assign var="paymentID" value=$payment->getId()}]
                     [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
                         paypal: {
-                            merchantId: [{$oViewConf->getAdyenPayPalMerchantId()}],
+                            merchantId: "[{$oViewConf->getAdyenPayPalMerchantId()}]",
                             intent: "authorize",
                             cspNonce: "MY_CSP_NONCE",
                             onShippingChange: function(data, actions) {
@@ -102,6 +123,24 @@
                 const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
             [{/if}]
         [{/if}]
+        const makePayment = (paymentMethod = {}) => {
+            const paymentRequest = {paymentMethod};
+            return httpPost('payments', paymentRequest)
+            .then(response => {
+                if (response.error) throw new Error('Payment initiation failed');
+                return response;
+            })
+            .catch(console.error);
+        };
+        const httpPost = (endpoint, data) =>
+            fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&context=continue&stoken=[{$sToken}]', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json());
     }
     // Call adyenAsync
     adyenAsync();
