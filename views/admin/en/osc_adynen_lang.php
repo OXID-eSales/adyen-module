@@ -40,6 +40,7 @@ $aLang = [
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CANCEL => 'Cancel',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_AUTHORISED => 'Authorised',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_CANCELLED => 'Cancelled',
+    'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_CAPTURED => 'Captured',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_CAPTUREFAILED => 'CaptureFailed',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_ERROR => 'Error',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_EXPIRED => 'Expired',

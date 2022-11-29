@@ -14,6 +14,7 @@ use Adyen\Util\HmacSignature;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
+use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -34,6 +35,7 @@ abstract class WebhookHandlerBase
     protected const JSON_FIELD_MERCHANT_ACCOUNT_CODE = "merchantAccountCode";
     protected const JSON_FIELD_MERCHANT_REFERENCE = "merchantReference";
     protected const JSON_FIELD_PSP_REFERENCE = "pspReference";
+    protected const JSON_FIELD_PARENT_PSP_REFERENCE = "originalReference";
     protected const JSON_FIELD_AMOUNT = "amount";
     protected const JSON_FIELD_PRICE = "value";
     protected const JSON_FIELD_CURRENCY = "currency";
@@ -54,7 +56,11 @@ abstract class WebhookHandlerBase
                 [self::JSON_FIELD_SUCCESS];
 
             if ($success) {
-                $this->updateStatus($notificationItem);
+                try {
+                    $this->updateStatus($notificationItem);
+                } catch (WebhookEventTypeException $e) {
+                    Registry::getLogger()->debug($e->getMessage());
+                }
             }
         }
     }
@@ -135,7 +141,7 @@ abstract class WebhookHandlerBase
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -158,5 +164,10 @@ abstract class WebhookHandlerBase
         return $order;
     }
 
+    /**
+     * @param array $notificationItem
+     * @return void
+     * @throws WebhookEventTypeException
+     */
     abstract public function updateStatus(array $notificationItem): void;
 }

@@ -241,16 +241,22 @@ $aModule = [
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_SeperateCapture',
-            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_CREDITCARD_ID,
-            'type' => 'bool',
-            'value' => false
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
         ],
         [
-            'group' => 'osc_adyen_SeperateCapture',
-            'name' => 'osc_adyen_SeperateCapture_' . Module::PAYMENT_PAYPAL_ID,
-            'type' => 'bool',
-            'value' => false
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
         ],
         [
             'group' => 'osc_adyen_Languages',

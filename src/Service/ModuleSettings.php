@@ -36,6 +36,8 @@ class ModuleSettings
     public const LIVE_NOTIFICATION_PASSWORD = 'osc_adyen_LiveNotificationPassword';
     public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
 
+    public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
+
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
     public const OPERATION_MODE_SANDBOX = 'test';
@@ -128,9 +130,14 @@ class ModuleSettings
         return (string)$this->getSettingValue($key);
     }
 
-    public function isSeperateCapture(string $paymentId): bool
+    public function isManualCapture(string $paymentId): bool
     {
-        return (bool)$this->getSettingValue('osc_adyen_SeperateCapture_' . $paymentId);
+        return $this->getCaptureDelay($paymentId) === Module::ADYEN_CAPTURE_DELAY_MANUAL;
+    }
+
+    public function isImmediateCapture(string $paymentId): bool
+    {
+        return $this->getCaptureDelay($paymentId) === Module::ADYEN_CAPTURE_DELAY_IMMEDIATE;
     }
 
     public function getLocaleForCountryIso(string $countryIso): string
@@ -150,6 +157,12 @@ class ModuleSettings
     public function getActivePayments(): array
     {
         return (array)$this->getSettingValue(self::ACTIVE_PAYMENTS);
+    }
+
+    private function getCaptureDelay(string $paymentId): string
+    {
+        $captureDelay = $this->getSettingValue(self::CAPTURE_DELAY . $paymentId);
+        return $captureDelay ?? '';
     }
 
     /**
