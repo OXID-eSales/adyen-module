@@ -61,7 +61,7 @@ class AdyenHistoryListTest extends UnitTestCase
         $orderId = $historyList->getOxidOrderIdByPSPReference("1");
         $this->assertEquals(self::TEST_ORDER_ID, $orderId);
         $orderId = $historyList->getOxidOrderIdByPSPReference("101");
-        $this->assertNull($orderId);
+        $this->assertSame($orderId, '');
     }
 
     public function providerTestHistoryData(): array

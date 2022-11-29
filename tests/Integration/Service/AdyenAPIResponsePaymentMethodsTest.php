@@ -12,6 +12,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 
 class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
 {
@@ -30,13 +31,13 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
         return new AdyenSDKLoader($moduleSettings, $loggingHandler);
     }
 
-    protected function createSession(): Session
+    protected function createSession(): SessionSettings
     {
         $session = new Session();
         $session->setId('test');
-        $session->setVariable(Module::ADYEN_SESSION_PAYMENTMETHODS_NAME, ['test_paymentmethods_data']);
+        $session->setVariable(SessionSettings::ADYEN_SESSION_PAYMENTMETHODS_NAME, ['test_paymentmethods_data']);
 
-        return $session;
+        return new SessionSettings($session);
     }
 
     protected function createTestPayment(): AdyenAPIResponsePaymentMethods
@@ -50,7 +51,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     /**
      * @throws \Exception
      */
-    public function testGetAdyenPaymentMethods()
+    public function testGetAdyenPaymentMethods(): void
     {
         $payment = $this->createTestPayment();
         $this->assertEquals(['test_paymentmethods_data'], $payment->getAdyenPaymentMethods());
@@ -59,10 +60,10 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     /**
      * @throws \Exception
      */
-    public function testExceptionGetAdyenPaymentMethods()
+    public function testExceptionGetAdyenPaymentMethods(): void
     {
         $adyenSDKLoader = $this->createTestAdyenSDKLoader();
-        $session = new Session();
+        $session = $this->createSession();
 
         $payment = new AdyenAPIResponsePaymentMethods($adyenSDKLoader, $session);
         $this->expectExceptionMessage('Load the paymentMethods before getting the paymentMethods');
@@ -72,7 +73,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     /**
      * @throws \Adyen\AdyenException
      */
-    public function testLoadAdyenPaymentMethods()
+    public function testLoadAdyenPaymentMethods(): void
     {
         $adyenAPIPaymentMethods = new AdyenAPIPaymentMethods();
         $adyenAPIPaymentMethods->setCountryCode('DE');
@@ -114,7 +115,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
      * @throws \Adyen\AdyenException
      * @throws \OxidEsales\Eshop\Core\Exception\StandardException
      */
-    public function testExceptionLoadAdyenPaymentMethods()
+    public function testExceptionLoadAdyenPaymentMethods(): void
     {
         $adyenAPIPaymentMethods = new AdyenAPIPaymentMethods();
         $adyenAPIPaymentMethods->setCountryCode('DE');
@@ -154,7 +155,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     /**
      * @throws \Adyen\AdyenException
      */
-    public function testSaveAdyenPaymentMethods()
+    public function testSaveAdyenPaymentMethods(): void
     {
         $arrayResultsAPI = [
             'amount' => [
@@ -178,7 +179,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     /**
      * @throws \Exception
      */
-    public function testDeleteAdyenPaymentMethods()
+    public function testDeleteAdyenPaymentMethods(): void
     {
         $payment = $this->createTestPayment();
         $payment->deleteAdyenPaymentMethods();

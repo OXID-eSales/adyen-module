@@ -261,7 +261,7 @@ final class ModuleSettingsTest extends UnitTestCase
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
             if ($paymentDef['capturedelay']) {
                 $captureData[] = [
-                    'varName' => 'osc_adyen_SeperateCapture_' . $paymentId,
+                    'varName' => ModuleSettings::CAPTURE_DELAY . $paymentId,
                     'paymentId' => $paymentId
                 ];
             }

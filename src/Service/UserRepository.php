@@ -73,8 +73,6 @@ class UserRepository
         return !empty($userId);
     }
 
-
-
     public function getUserLocale(): string
     {
         $countryIso = $this->country->getCountryIso();
@@ -114,8 +112,9 @@ class UserRepository
 
         if (is_a($resultDB, Result::class)) {
             $userId = $resultDB->fetchOne();
+            $userId = is_string($userId) ? $userId : '';
         }
-        /** @var string $userId */
-        return (string) $userId;
+
+        return $userId;
     }
 }
