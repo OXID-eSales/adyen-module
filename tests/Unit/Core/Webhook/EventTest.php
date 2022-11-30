@@ -8,6 +8,7 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook;
 
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
 use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
@@ -27,7 +28,7 @@ class EventTest extends TestCase
             ]
         ];
 
-        $event = oxNew(Event::class, $arrayData);
+        $event = oxNew(Event::class, $arrayData, AuthorizationHandler::AUTHORIZATION_EVENT_CODE);
 
         $data = $event->getData();
 

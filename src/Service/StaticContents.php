@@ -25,19 +25,14 @@ class StaticContents
     /** @var QueryBuilderFactoryInterface */
     private $queryBuilderFactory;
 
-    /** @var ContextInterface */
-    private $context;
-
     /** @var ModuleSettings */
     private $moduleSettings;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
-        ContextInterface $context,
         ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->context = $context;
         $this->moduleSettings = $moduleSettings;
     }
 

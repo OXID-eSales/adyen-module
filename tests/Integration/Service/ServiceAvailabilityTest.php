@@ -15,6 +15,7 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePayments;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseRefunds;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
@@ -23,6 +24,7 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Service\Repository;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use PHPUnit\Framework\TestCase;
@@ -49,13 +51,14 @@ class ServiceAvailabilityTest extends TestCase
             [AdyenAPIResponseRefunds::class],
             [AdyenSDKLoader::class],
             [Context::class],
+            [CountryRepository::class],
             [ModuleSettings::class],
             [Payment::class],
             [PaymentCancel::class],
             [PaymentCapture::class],
             [PaymentRefund::class],
-            [Repository::class],
             [ResponseHandler::class],
+            [SessionSettings::class],
             [StaticContents::class],
             [UserRepository::class]
         ];

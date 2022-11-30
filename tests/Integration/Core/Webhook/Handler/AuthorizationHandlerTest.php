@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Core\Webhook\Handler;
 
+use Doctrine\DBAL\Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
+use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
@@ -31,6 +33,9 @@ final class AuthorizationHandlerTest extends UnitTestCase
 
         $order = oxNew(Order::class);
         $order->setAdyenPSPReference("YOUR_PSP_REFERENCE");
+        $order->assign([
+            'oxorder__oxpaymenttype' => Module::PAYMENT_CREDITCARD_ID
+        ]);
         $order->save();
 
         $adyenHistory = oxNew(AdyenHistory::class);
@@ -60,9 +65,14 @@ final class AuthorizationHandlerTest extends UnitTestCase
         $this->cleanUpTable(Module::ADYEN_HISTORY_TABLE);
     }
 
+    /**
+     * @throws WebhookEventTypeException
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     public function testUpdateStatus()
     {
-        $authorizationHandler = oxNew(AuthorisationHandler::class);
+        $authorizationHandler = oxNew(AuthorizationHandler::class);
         $authorizationHandler->updateStatus($this->proceedNotificationRequestsItem());
 
         $historyList = oxNew(AdyenHistoryList::class);
@@ -84,9 +94,9 @@ final class AuthorizationHandlerTest extends UnitTestCase
                 $this->proceedNotificationRequestsItem()
             ]
         ];
-        $event = oxNew(Event::class, $data);
+        $event = oxNew(Event::class, $data, AuthorizationHandler::AUTHORIZATION_EVENT_CODE);
 
-        $authorizationHandler = oxNew(AuthorisationHandler::class);
+        $authorizationHandler = oxNew(AuthorizationHandler::class);
         $authorizationHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);

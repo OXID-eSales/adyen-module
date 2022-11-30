@@ -79,7 +79,7 @@ class CaptureHandlerTest extends UnitTestCase
                 $this->proceedNotificationRequestsItem()
             ]
         ];
-        $event = oxNew(Event::class, $data);
+        $event = oxNew(Event::class, $data, CaptureHandler::CAPTURE_EVENT_CODE);
 
         $captureHandler = oxNew(CaptureHandler::class);
         $captureHandler->handle($event);

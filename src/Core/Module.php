@@ -31,10 +31,6 @@ final class Module
     public const ADYEN_CAPTURE_DELAY_IMMEDIATE = 'immediate';
     public const ADYEN_CAPTURE_DELAY_DAYS = 'days';
 
-    public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
-    public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
-    public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
-
     public const ADYEN_ACTION_AUTHORIZE = 'authorize';
     public const ADYEN_ACTION_CAPTURE = 'capture';
     public const ADYEN_ACTION_REFUND = 'refund';

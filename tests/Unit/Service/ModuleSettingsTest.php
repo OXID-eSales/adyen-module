@@ -45,9 +45,15 @@ final class ModuleSettingsTest extends UnitTestCase
         string $varName,
         string $paymentId
     ): void {
-        foreach ([false, true] as $gettingValue) {
+        $gettingValues = [
+            Module::ADYEN_CAPTURE_DELAY_MANUAL => true,
+            Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => false,
+            Module::ADYEN_CAPTURE_DELAY_DAYS => false
+        ];
+
+        foreach ($gettingValues as $gettingKey => $gettingValue) {
             $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
-            $bridgeStub->method('get')->willReturnMap([[$varName, Module::MODULE_ID, $gettingValue]]);
+            $bridgeStub->method('get')->willReturnMap([[$varName, Module::MODULE_ID, $gettingKey]]);
             $sut = new ModuleSettings(
                 $bridgeStub
             );
@@ -85,7 +91,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
                     ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                 ],
-                'gettingMethod' => 'checkHealth',
+                'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [
@@ -98,7 +104,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
                     ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
-                'gettingMethod' => 'checkHealth',
+                'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [
@@ -261,7 +267,7 @@ final class ModuleSettingsTest extends UnitTestCase
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDef) {
             if ($paymentDef['capturedelay']) {
                 $captureData[] = [
-                    'varName' => 'osc_adyen_SeperateCapture_' . $paymentId,
+                    'varName' => ModuleSettings::CAPTURE_DELAY . $paymentId,
                     'paymentId' => $paymentId
                 ];
             }

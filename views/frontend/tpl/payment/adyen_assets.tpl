@@ -50,68 +50,56 @@
                     console.log('onChange:', state);
                     console.log('onChange:', component);
                 [{/if}]
+            },
+            paymentMethodsConfiguration: {
+                [{if $oViewConf->getTopActiveClassName() == 'payment'}]
+                    [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj name=paymentListJS}]
+                        [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
+                            card: {
+                                hasHolderName: true,
+                                holderNameRequired: true,
+                                hideCVC: false
+                            },
+                        [{/if}]
+                    [{/foreach}]
+                [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
+                    [{assign var="paymentID" value=$payment->getId()}]
+                    [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+                        paypal: {
+                            merchantId: [{$oViewConf->getAdyenPayPalMerchantId()}],
+                            intent: "authorize",
+                            cspNonce: "MY_CSP_NONCE",
+                            onShippingChange: function(data, actions) {
+                                // Listen to shipping changes.
+                                [{if $oViewConf->isAdyenLoggingActive()}]
+                                    console.log('onPayPalShippingChange:', data);
+                                [{/if}]
+                            },
+                            onClick: () => {
+                                // onClick is called when the button is clicked.
+                            },
+                            blockPayPalCreditButton: true,
+                            blockPayPalPayLaterButton: true
+                        }
+                    [{/if}]
+                [{/if}]
             }
         };
-        // Create an instance of AdyenCheckout using the configuration object.
         const checkout = await AdyenCheckout(configuration);
         // Access the available payment methods for the session.
         [{if $oViewConf->isAdyenLoggingActive()}]
-            console.log(checkout.paymentMethodsResponse); // => { paymentMethods: [...], storedPaymentMethods: [...] }
+            console.log(checkout.paymentMethodsResponse);
         [{/if}]
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
-                [{if $paymentObj->showInPaymentCtrl()}]
-                    [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
-                        const cardConfiguration = {
-                            hasHolderName: true,
-                            holderNameRequired: true,
-                            hideCVC: false
-                        };
-                        // Create an instance of the Component and mount it to the container you created.
-                        const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
-                    [{/if}]
+                [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
+                    const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
                 [{/if}]
             [{/foreach}]
         [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
             [{assign var="paymentID" value=$payment->getId()}]
             [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
-
-                const paypalConfiguration = {
-                    cspNonce: "MY_CSP_NONCE",
-                    onShippingChange: function(data, actions) {
-                        // Listen to shipping changes.
-                        [{if $oViewConf->isAdyenLoggingActive()}]
-                            console.log('onPayPalShippingChange:', data);
-                        [{/if}]
-                    },
-                    onClick: () => {
-                        // onClick is called when the button is clicked.
-                    },
-                    blockPayPalCreditButton: true,
-                    blockPayPalPayLaterButton: true
-                };
                 const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
-[{*
-
-                const dropinComponent = checkout.create(type, {
-                    onSelect: (component) => {
-                        console.log('onSelect',component);
-                        const paypalComponent = checkout.create('paypal', {showPayButton: true}).mount('#[{$paymentID}]-container');
-                        if (component.props.type == 'paypal') {
-                            alert('paypal');
-                            document.getElementById('customPayButton').style.display = "none";
-                            paypalComponent.mount();
-                        }
-                        else {
-                            paypalComponent.unmount();
-                            document.getElementById('customPayButton').style.display = "block";
-                        }
-                    }
-                }).mount("#component");
-                document.getElementById('customPayButton').addEventListener('click', function() {
-                    dropinComponent.submit()
-                });
-*}]
             [{/if}]
         [{/if}]
     }

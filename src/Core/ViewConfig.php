@@ -32,7 +32,15 @@ class ViewConfig extends ViewConfig_parent
 
     public function checkAdyenHealth(): bool
     {
-        return $this->moduleSettings->checkHealth();
+        return (
+            $this->moduleSettings->checkConfigHealth() &&
+            $this->existsAdyenPaymentMethods()
+        );
+    }
+
+    public function checkAdyenConfigHealth(): bool
+    {
+        return $this->moduleSettings->checkConfigHealth();
     }
 
     public function getAdyenOperationMode(): string
@@ -48,6 +56,11 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenClientKey(): string
     {
         return $this->moduleSettings->getClientKey();
+    }
+
+    public function getAdyenPayPalMerchantId(): string
+    {
+        return $this->moduleSettings->getPayPalMerchantId();
     }
 
     public function getAdyenSDKVersion(): string

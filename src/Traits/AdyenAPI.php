@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Traits;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 
@@ -34,15 +35,18 @@ trait AdyenAPI
      */
     public function getAdyenPaymentMethods(): string
     {
-        $paymentMethodsData = $this->getAdyenPaymentMethodsData();
-        $result = json_encode($paymentMethodsData->getAdyenPaymentMethods());
+        $result = json_encode($this->getAdyenPaymentMethodsRaw(), JSON_THROW_ON_ERROR);
         return $result ?: '';
+    }
+
+    public function existsAdyenPaymentMethods(): bool
+    {
+        return (bool)count($this->getAdyenPaymentMethodsRaw());
     }
 
     public function getAdyenShopperLocale(): string
     {
-        $userRepository = $this->getServiceFromContainer(UserRepository::class);
-        return $userRepository->getUserLocale();
+        return $this->getServiceFromContainer(UserRepository::class)->getUserLocale();
     }
 
     /**
@@ -55,6 +59,7 @@ trait AdyenAPI
 
             $context = $this->getServiceFromContainer(Context::class);
             $userRepository = $this->getServiceFromContainer(UserRepository::class);
+            $countryRepository = $this->getServiceFromContainer(CountryRepository::class);
             $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
             $response = $this->getServiceFromContainer(AdyenAPIResponsePaymentMethods::class);
 
@@ -64,7 +69,7 @@ trait AdyenAPI
             $currencyFilterAmount = '10' . str_repeat('0', $currencyDecimals);
             $paymentMethods->setCurrencyFilterAmount($currencyFilterAmount);
 
-            $paymentMethods->setCountryCode($userRepository->getUserCountryIso());
+            $paymentMethods->setCountryCode($countryRepository->getCountryIso());
 
             $paymentMethods->setShopperLocale($userRepository->getUserLocale());
 
@@ -74,5 +79,16 @@ trait AdyenAPI
             $this->paymentMethods = $response;
         }
         return $this->paymentMethods;
+    }
+
+    /**
+     * return array with PaymentMethods (array)
+     * @throws \Adyen\AdyenException
+     * @throws \Exception
+     */
+    protected function getAdyenPaymentMethodsRaw(): array
+    {
+        $paymentMethodsData = $this->getAdyenPaymentMethodsData();
+        return $paymentMethodsData->getAdyenPaymentMethods();
     }
 }

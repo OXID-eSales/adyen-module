@@ -118,6 +118,7 @@ class AdyenHistory extends BaseModel
 
         if (is_a($resultDB, Result::class)) {
             $oxid = $resultDB->fetchOne();
+            $oxid = is_string($oxid) ? $oxid : '';
             $result = $this->load($oxid);
         }
         return $result;
@@ -156,7 +157,8 @@ class AdyenHistory extends BaseModel
         $resultDB = $queryBuilder->setParameters($parameters)
             ->execute();
         if (is_a($resultDB, Result::class)) {
-            $result = (float)$resultDB->fetchOne();
+            $result = $resultDB->fetchOne();
+            $result = is_float($result) ? $result : 0;
         }
         return $result;
     }
@@ -188,29 +190,30 @@ class AdyenHistory extends BaseModel
             ->execute();
 
         if (is_a($resultDB, Result::class)) {
-            $result = (string)$resultDB->fetchOne();
+            $result = $resultDB->fetchOne();
+            $result = is_string($result) ? $result : '';
         }
         return $result;
     }
 
     public function getOrderId(): string
     {
-        return (string) $this->getFieldData('orderid');
+        return $this->getHistoryData('orderid');
     }
 
     public function getPSPReference(): string
     {
-        return (string) $this->getFieldData(self::PSPREFERENCEFIELD);
+        return $this->getHistoryData(self::PSPREFERENCEFIELD);
     }
 
     public function getParentPSPReference(): string
     {
-        return (string) $this->getFieldData(self::PSPPARENTREFERENCEFIELD);
+        return $this->getHistoryData(self::PSPPARENTREFERENCEFIELD);
     }
 
     public function getPrice(): float
     {
-        return (float) $this->getFieldData('oxprice');
+        return $this->getFloatHistoryData('oxprice');
     }
 
     public function getFormatedPrice(): string
@@ -220,22 +223,22 @@ class AdyenHistory extends BaseModel
 
     public function getCurrency(): string
     {
-        return $this->getFieldData('currency');
+        return $this->getHistoryData('currency');
     }
 
     public function getAdyenStatus(): string
     {
-        return (string) $this->getFieldData('adyenstatus');
+        return $this->getHistoryData('adyenstatus');
     }
 
     public function getAdyenAction(): string
     {
-        return (string) $this->getFieldData('adyenaction');
+        return $this->getHistoryData('adyenaction');
     }
 
     public function getTimeStamp(): string
     {
-        return (string) $this->getFieldData('oxtimestamp');
+        return $this->getHistoryData('oxtimestamp');
     }
 
     public function setOrderId(string $orderId): void
@@ -364,5 +367,19 @@ class AdyenHistory extends BaseModel
             $queryBuilder->setParameters($parameters)
                 ->execute();
         }
+    }
+
+    protected function getHistoryData(string $key): string
+    {
+        /** @var null|string $value */
+        $value = $this->getFieldData($key);
+        return $value ?? '';
+    }
+
+    protected function getFloatHistoryData(string $key): float
+    {
+        /** @var null|float $value */
+        $value = $this->getFieldData($key);
+        return is_float($value) ? $value : 0;
     }
 }

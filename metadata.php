@@ -193,6 +193,12 @@ $aModule = [
             'value' => ''
         ],
         [
+            'group' => 'osc_adyen_SANDBOX',
+            'name' => 'osc_adyen_SandboxPayPalMerchantId',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
             'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveAPIKey',
             'type' => 'str',
@@ -225,6 +231,12 @@ $aModule = [
         [
             'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveNotificationPassword',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LivePayPalMerchantId',
             'type' => 'str',
             'value' => ''
         ],

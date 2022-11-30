@@ -11,12 +11,9 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Doctrine\DBAL\Query\QueryBuilder;
-use OxidEsales\Eshop\Application\Model\Address;
-use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\Eshop\Core\Session as EshopSession;
 use OxidEsales\Eshop\Application\Model\Country;
 
 /**
@@ -33,26 +30,26 @@ class UserRepository
     /** @var EshopCoreConfig */
     private EshopCoreConfig $config;
 
-    /** @var EshopSession */
-    private EshopSession $session;
+    /** @var CountryRepository */
+    private CountryRepository $country;
 
     /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
-    protected array $userCountryIso = [];
+
     protected array $userLocale = [];
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         ContextInterface $context,
         EshopCoreConfig $config,
-        EshopSession $session,
+        CountryRepository $countryRepository,
         ModuleSettings $moduleSettings
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->context = $context;
         $this->config = $config;
-        $this->session = $session;
+        $this->country = $countryRepository;
         $this->moduleSettings = $moduleSettings;
     }
 
@@ -76,53 +73,13 @@ class UserRepository
         return !empty($userId);
     }
 
-    public function getUserCountryIso(): string
-    {
-        $countryId = $this->getCountryId();
-        if (!isset($this->userCountryIso[$countryId])) {
-            $country = oxNew(Country::class);
-            $country->load($countryId);
-            $this->userCountryIso[$countryId] = (string) $country->getFieldData('oxisoalpha2');
-        }
-        return $this->userCountryIso[$countryId];
-    }
-
     public function getUserLocale(): string
     {
-        $countryIso = $this->getUserCountryIso();
+        $countryIso = $this->country->getCountryIso();
         if (!isset($this->userLocale[$countryIso])) {
             $this->userLocale[$countryIso] = $this->moduleSettings->getLocaleForCountryIso($countryIso);
         }
         return $this->userLocale[$countryIso];
-    }
-
-    /**
-     * Tries to fetch user country ID
-     *
-     * @return string
-     */
-    public function getCountryId(): string
-    {
-        $countryId = $this->config->getGlobalParameter('delcountryid');
-
-        if (!$countryId) {
-            $addressId = $this->session->getVariable('deladrid');
-            $deliveryAddress = oxNew(Address::class);
-            $countryId = $deliveryAddress->load($addressId) ? $deliveryAddress->getFieldData('oxcountryid') : '';
-        }
-
-        if (!$countryId) {
-            /** @var ?User $user */
-            $user = $this->session->getUser();
-            $countryId = $user ? $user->getFieldData('oxcountryid') : '';
-        }
-
-        if (!$countryId) {
-            $homeCountry = $this->config->getConfigParam('aHomeCountry');
-            $countryId = is_array($homeCountry) ? current($homeCountry) : '';
-        }
-
-        return $countryId;
     }
 
     private function getUserId(string $userEmail, bool $hasPassword): string
@@ -155,8 +112,9 @@ class UserRepository
 
         if (is_a($resultDB, Result::class)) {
             $userId = $resultDB->fetchOne();
+            $userId = is_string($userId) ? $userId : '';
         }
 
-        return (string) $userId;
+        return $userId;
     }
 }

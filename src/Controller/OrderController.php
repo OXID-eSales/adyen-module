@@ -9,12 +9,15 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
-use OxidSolutionCatalysts\Adyen\Core\AdyenSession;
 use OxidSolutionCatalysts\Adyen\Exception\Redirect;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 class OrderController extends OrderController_parent
 {
+    use ServiceContainer;
+
     /**
      * @inheritDoc
      *
@@ -24,12 +27,13 @@ class OrderController extends OrderController_parent
      */
     protected function _getNextStep($success) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        $redirectLink = AdyenSession::getRedirctLink();
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        $redirectLink = $session->getRedirctLink();
         if (
             (Order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET == $success) &&
             $redirectLink
         ) {
-            AdyenSession::deleteRedirctLink();
+            $session->deleteRedirctLink();
             throw new Redirect($redirectLink);
         }
         return parent::_getNextStep($success);
