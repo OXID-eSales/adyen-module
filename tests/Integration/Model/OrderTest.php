@@ -76,6 +76,16 @@ class OrderTest extends UnitTestCase
         $order = oxNew(Order::class);
         $order->load($orderId);
 
+        //Module::isAdyenPayment($this->getAdyenOrderData('oxpaymenttype'))
+/*
+        $moduleMock = $this->getMockBuilder(Module::class)
+            ->onlyMethods(['isAdyenPayment'])
+            ->getMock();
+        $moduleMock->method('isAdyenPayment')
+            ->willReturn(true);
+*/
+
+
         $this->assertSame($paymentName, $order->getAdyenPaymentName());
     }
 
