@@ -97,8 +97,7 @@ class SessionSettings
 
     public function getUser(): User
     {
-        $user = $this->session->getUser();
-        return $user ?: oxNew(User::class);
+        return $this->session->getUser();
     }
 
     public function getPaymentId(): string

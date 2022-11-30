@@ -42,13 +42,13 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
             $service = $this->createCheckout();
             $params = $paymentMethodParams->getAdyenPaymentMethodsParams();
             $resultApi = $service->paymentMethods($params);
+            $resultApi = is_array($resultApi) ? $resultApi : [];
             $result = $this->saveAdyenPaymentMethods($resultApi);
-            if (!is_array($resultApi) || !$result) {
+            if (!$result) {
                 throw new Exception('paymentMethodsData not found in Adyen-Response');
             }
         } catch (AdyenException | Exception $exception) {
             Registry::getLogger()->error($exception->getMessage());
-            //Registry::getLogger()->error('bla');
         }
         return $result;
     }

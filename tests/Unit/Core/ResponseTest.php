@@ -14,7 +14,7 @@ class ResponseTest extends TestCase
 {
     public function testSetData()
     {
-        $idString = uniqid();
+        $idString = uniqid('', true);
         $data = [
             'id' => $idString,
         ];
