@@ -22,6 +22,7 @@ class AdyenWebhookController extends WidgetController
 {
     /**
      * @inheritDoc
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function init(): void
     {

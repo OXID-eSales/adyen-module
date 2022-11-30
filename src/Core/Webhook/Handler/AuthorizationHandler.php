@@ -16,14 +16,15 @@ use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
-final class AuthorisationHandler extends WebhookHandlerBase
+final class AuthorizationHandler extends WebhookHandlerBase
 {
-    private const AUTHORIZATION_EVENT_CODE = "AUTHORISATION";
+    public const AUTHORIZATION_EVENT_CODE = "AUTHORIZATION";
 
     /**
      * @param array $notificationItem
      * @return void
      * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function updateStatus(array $notificationItem): void
     {
@@ -31,7 +32,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_CODE];
 
-        if ($eventCode != self::AUTHORIZATION_EVENT_CODE) {
+        if ($eventCode !== self::AUTHORIZATION_EVENT_CODE) {
             throw WebhookEventTypeException::handlerNotFound(self::AUTHORIZATION_EVENT_CODE);
         }
 
@@ -62,8 +63,11 @@ final class AuthorisationHandler extends WebhookHandlerBase
             return;
         }
 
+        /** @var null|string $paymentId */
         $paymentId = $order->getFieldData('oxpaymenttype');
-
+        if (is_null($paymentId)) {
+            return;
+        }
         /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
         $payment = oxNew(Payment::class);
         $payment->load($paymentId);
@@ -80,11 +84,7 @@ final class AuthorisationHandler extends WebhookHandlerBase
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($pspReference);
         // TODO: Translate Adyen status
-        $eventCode = strtolower($eventCode);
-        if ($eventCode === 'authorisation') {
-            $eventCode = Module::ADYEN_STATUS_AUTHORISED;
-        }
-        $adyenHistory->setAdyenStatus($eventCode);
+        $adyenHistory->setAdyenStatus(Module::ADYEN_STATUS_AUTHORISED);
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
 
         $adyenHistory->save();

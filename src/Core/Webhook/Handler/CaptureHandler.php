@@ -16,15 +16,21 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 
 final class CaptureHandler extends WebhookHandlerBase
 {
-    private const CAPTURE_EVENT_CODE = "CAPTURE";
+    public const CAPTURE_EVENT_CODE = "CAPTURE";
 
+    /**
+     * @param array $notificationItem
+     * @return void
+     * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     public function updateStatus(array $notificationItem): void
     {
         $eventCode = $notificationItem
             [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
             [self::JSON_FIELD_EVENT_CODE];
 
-        if ($eventCode != self::CAPTURE_EVENT_CODE) {
+        if ($eventCode !== self::CAPTURE_EVENT_CODE) {
             throw WebhookEventTypeException::handlerNotFound(self::CAPTURE_EVENT_CODE);
         }
 
@@ -72,11 +78,7 @@ final class CaptureHandler extends WebhookHandlerBase
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($parentPspReference);
         // TODO: Translate Adyen status
-        $eventCode = strtolower($eventCode);
-        if ($eventCode === 'capture') {
-            $eventCode = Module::ADYEN_STATUS_CAPTURED;
-        }
-        $adyenHistory->setAdyenStatus($eventCode);
+        $adyenHistory->setAdyenStatus(Module::ADYEN_STATUS_CAPTURED);
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CAPTURE);
 
         $adyenHistory->save();

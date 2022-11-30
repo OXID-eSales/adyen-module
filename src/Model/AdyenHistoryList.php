@@ -91,11 +91,11 @@ class AdyenHistoryList extends ListModel
 
     /**
      * @param string $pspReference
-     * @return string|null
+     * @return string
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getOxidOrderIdByPSPReference(string $pspReference): ?string
+    public function getOxidOrderIdByPSPReference(string $pspReference): string
     {
         $oxId = '';
 
@@ -124,7 +124,8 @@ class AdyenHistoryList extends ListModel
 
         if (is_a($resultDB, Result::class)) {
             $oxId = $resultDB->fetchOne();
+            $oxId = is_string($oxId) ? $oxId : '';
         }
-        return $oxId ?: null;
+        return $oxId;
     }
 }

@@ -64,4 +64,6 @@ $aLang = [
     'OSC_ADYEN_CONFIG_OPTIONS' => 'Module-options',
     'OSC_ADYEN_CONFIG_SDK' => 'used SDK-Version',
     'OSC_ADYEN_CONFIG_WEBHOOKURL' => 'Webhook-Url (Please copy and store in the Adyen backend)',
+    'OSC_ADYEN_CONFIG_HEALTH_CONFIG' => 'configuration complete',
+    'OSC_ADYEN_CONFIG_HEALTH_ADYEN' => 'Payment methods available in Adyen-Admin',
 ];

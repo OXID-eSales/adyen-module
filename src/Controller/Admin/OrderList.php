@@ -54,8 +54,12 @@ class OrderList extends OrderList_parent
     protected function _buildSelectString($listObject = null): string
     {
         $request = Registry::getRequest();
+        /** @var null|string $searchField */
         $searchField = $request->getRequestEscapedParameter('addsearchfld');
+        /** @var null|string $searchQuery */
         $searchQuery = $request->getRequestEscapedParameter('addsearch');
+        $searchQuery = $searchQuery ?? '';
+
         $tableName = Module::ADYEN_HISTORY_TABLE;
 
         if ($tableName !== $searchField || is_null($listObject)) {

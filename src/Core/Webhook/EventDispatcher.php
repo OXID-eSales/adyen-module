@@ -16,6 +16,7 @@ class EventDispatcher
     /**
      * @param Event $event
      * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function dispatch(Event $event): void
     {

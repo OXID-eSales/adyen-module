@@ -57,7 +57,7 @@ class ModuleSettings
         $this->moduleSettingBridge = $moduleSettingBridge;
     }
 
-    public function checkHealth(): bool
+    public function checkConfigHealth(): bool
     {
         return (
             $this->getAPIKey() &&
@@ -76,7 +76,9 @@ class ModuleSettings
 
     public function getOperationMode(): string
     {
-        $value = (string) $this->getSettingValue(self::OPERATION_MODE);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue(self::OPERATION_MODE);
+        $value = (string)$settingValue;
 
         return (!empty($value) && in_array($value, self::OPERATION_MODE_VALUES)) ?
             $value :
@@ -91,43 +93,57 @@ class ModuleSettings
     public function getAPIKey(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_API_KEY : self::LIVE_API_KEY);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getClientKey(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_CLIENT_KEY : self::LIVE_CLIENT_KEY);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getHmacSignature(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_HMAC_SIGNATURE : self::LIVE_HMAC_SIGNATURE);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getMerchantAccount(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getNotificationUsername(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_USERNAME : self::LIVE_NOTIFICATION_USERNAME);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getNotificationPassword(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function getPayPalMerchantId(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_PAYPAL_MERCHANT_ID : self::LIVE_PAYPAL_MERCHANT_ID);
-        return (string)$this->getSettingValue($key);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
     }
 
     public function isManualCapture(string $paymentId): bool
@@ -144,8 +160,11 @@ class ModuleSettings
     {
         // make sure provided keys and searched keys are in lower case
         $countryIso = strtolower($countryIso);
-        $languages = array_change_key_case($this->getSettingValue('osc_adyen_Languages'), CASE_LOWER);
 
+        /** @var null|array $languageSettings */
+        $languageSettings = $this->getSettingValue('osc_adyen_Languages');
+        $languageSettings = $languageSettings ?? [];
+        $languages = array_change_key_case($languageSettings, CASE_LOWER);
         return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';
     }
 
@@ -161,6 +180,7 @@ class ModuleSettings
 
     private function getCaptureDelay(string $paymentId): string
     {
+        /** @var null|string $captureDelay */
         $captureDelay = $this->getSettingValue(self::CAPTURE_DELAY . $paymentId);
         return $captureDelay ?? '';
     }

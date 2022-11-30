@@ -22,7 +22,7 @@ class PaymentCapture
 {
     use AdyenPayment;
 
-    private ?array $captureResult = null;
+    private array $captureResult = [];
 
     /** @var Context */
     private Context $context;
@@ -48,8 +48,7 @@ class PaymentCapture
         $this->captureResult = $captureResult;
     }
 
-    /** @return mixed */
-    public function getCaptureResult()
+    public function getCaptureResult(): array
     {
         return $this->captureResult;
     }
@@ -76,9 +75,11 @@ class PaymentCapture
         $captures->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
 
         try {
-            $result = $this->APICaptures->setCapture($captures);
-            $this->setCaptureResult($result);
-            $result = true;
+            $resultCapture = $this->APICaptures->setCapture($captures);
+            if (is_array($resultCapture)) {
+                $this->setCaptureResult($resultCapture);
+                $result = true;
+            }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setCapture call.", [$exception]);
         }

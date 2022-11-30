@@ -83,16 +83,19 @@ class AdminOrderController extends AdminDetailsController
      */
     public function captureAdyenAmount(): void
     {
-        /** @var Order $order */
-        $order = $this->getEditObject();
-        $pspReference = $order->getFieldData('adyenpspreference');
-        $reference = $order->getFieldData('oxordernr');
+        $pspReference = $this->getAdyenPspReference();
+        $reference = $this->getOrderData('oxordernr');
 
         $request = Registry::getRequest();
-        $amount = (float)$request->getRequestParameter('capture_amount');
+        /** @var null|string $amount */
+        $amount = $request->getRequestParameter('capture_amount');
+        $amount = (float)($amount ?? '');
+
         $possibleAmount = $this->getPossibleCaptureAmount();
         $amount = min($amount, $possibleAmount);
+        /** @var null|string $currency */
         $currency = $request->getRequestParameter('capture_currency');
+        $currency = $currency ?? '';
 
         $paymentService = $this->getServiceFromContainer(PaymentCapture::class);
         $success = $paymentService->doAdyenCapture(
@@ -109,7 +112,7 @@ class AdminOrderController extends AdminDetailsController
                 $this->setAdyenHistoryEntry(
                     $captureResult['pspReference'],
                     $captureResult['paymentPspReference'],
-                    $order->getId(),
+                    $this->getEditObjectId(),
                     $amount,
                     $currency,
                     $captureResult['status'] ?? "",
@@ -124,16 +127,19 @@ class AdminOrderController extends AdminDetailsController
      */
     public function refundAdyenAmount(): void
     {
-        /** @var Order $order */
-        $order = $this->getEditObject();
-        $pspReference = $order->getFieldData('adyenpspreference');
-        $reference = $order->getFieldData('oxordernr');
+        $pspReference = $this->getAdyenPspReference();
+        $reference = $this->getOrderData('oxordernr');
 
         $request = Registry::getRequest();
-        $amount = (float)$request->getRequestParameter('refund_amount');
+        /** @var null|string $amount */
+        $amount = $request->getRequestParameter('refund_amount');
+        $amount = (float)($amount ?? '');
+
         $possibleAmount = $this->getPossibleRefundAmount();
         $amount = min($amount, $possibleAmount);
+        /** @var null|string $currency */
         $currency = $request->getRequestParameter('refund_currency');
+        $currency = $currency ?? '';
 
         $paymentService = $this->getServiceFromContainer(PaymentRefund::class);
         $success = $paymentService->doAdyenRefund(
@@ -150,7 +156,7 @@ class AdminOrderController extends AdminDetailsController
                 $this->setAdyenHistoryEntry(
                     $refundResult['pspReference'],
                     $refundResult['paymentPspReference'],
-                    $order->getId(),
+                    $this->getEditObjectId(),
                     $amount,
                     $currency,
                     $refundResult['status'] ?? "",
@@ -175,11 +181,9 @@ class AdminOrderController extends AdminDetailsController
         if (is_null($this->isCapturePossible)) {
             $this->isCapturePossible = false;
             if ($this->isAdyenOrder()) {
-                /** @var Order $order */
-                $order = $this->getEditObject();
                 /** @var Payment $payment */
                 $payment = oxNew(eShopPayment::class);
-                $payment->load($order->getFieldData('oxpaymenttype'));
+                $payment->load($this->getOrderData('oxpaymenttype'));
                 $this->isCapturePossible = (
                     $payment->isAdyenManualCapture() &&
                     $this->getPossibleCaptureAmount() > 0
@@ -205,11 +209,11 @@ class AdminOrderController extends AdminDetailsController
         if (is_null($this->isCancelPossible)) {
             $this->isCancelPossible = false;
             if ($this->isAdyenOrder()) {
-                /** @var Order $order */
-                $order = $this->getEditObject();
-                $pspReference = $order->getFieldData('adyenpspreference');
+                $pspReference = $this->getAdyenPspReference();
                 $adyenHistory = oxNew(AdyenHistory::class);
                 $canceledAmount = $adyenHistory->getCanceledSum($pspReference);
+                /** @var Order $order */
+                $order = $this->getEditObject();
                 $this->isCancelPossible = (
                     $order->isAdyenCancelPossible() &&
                     !$canceledAmount
@@ -223,11 +227,11 @@ class AdminOrderController extends AdminDetailsController
     {
         $result = 0;
         if ($this->isAdyenOrder()) {
-            /** @var Order $order */
-            $order = $this->getEditObject();
-            $pspReference = $order->getFieldData('adyenpspreference');
+            $pspReference = $this->getAdyenPspReference();
             $adyenHistory = oxNew(AdyenHistory::class);
             $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+            /** @var Order $order */
+            $order = $this->getEditObject();
             $result = (float)$order->getTotalOrderSum() - $capturedAmount;
         }
         return $result;
@@ -237,9 +241,7 @@ class AdminOrderController extends AdminDetailsController
     {
         $result = 0;
         if ($this->isAdyenOrder()) {
-            /** @var Order $order */
-            $order = $this->getEditObject();
-            $pspReference = $order->getFieldData('adyenpspreference');
+            $pspReference = $this->getAdyenPspReference();
             $adyenHistory = oxNew(AdyenHistory::class);
             $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
             $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
@@ -279,6 +281,20 @@ class AdminOrderController extends AdminDetailsController
             }
         }
         return $this->adyenHistoryList;
+    }
+
+    protected function getAdyenPspReference(): string
+    {
+        return $this->getOrderData('adyenpspreference');
+    }
+
+    protected function getOrderData(string $key): string
+    {
+        /** @var Order $order */
+        $order = $this->getEditObject();
+        /** @var null|string $value */
+        $value = $order->getFieldData($key);
+        return $value ?? '';
     }
 
     protected function setAdyenHistoryEntry(

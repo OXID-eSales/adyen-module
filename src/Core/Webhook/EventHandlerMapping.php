@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook;
 
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CaptureHandler;
 
 class EventHandlerMapping
 {
     public const MAPPING = [
-        'AUTHORISATION' => AuthorisationHandler::class,
-        'CAPTURE' => CaptureHandler::class
+        AuthorizationHandler::AUTHORIZATION_EVENT_CODE => AuthorizationHandler::class,
+        CaptureHandler::CAPTURE_EVENT_CODE => CaptureHandler::class
     ];
 }

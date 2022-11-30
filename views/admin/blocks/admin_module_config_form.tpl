@@ -9,6 +9,14 @@
             [{oxmultilang ident="OSC_ADYEN_CONFIG_WEBHOOKURL" suffix="COLON"}]
             <b>[{$oViewConf->getWebhookControllerUrl()}]</b>
         </li>
+        <li>
+            [{oxmultilang ident="OSC_ADYEN_CONFIG_HEALTH_CONFIG" suffix="COLON"}]
+            <b>[{if $oViewConf->checkAdyenConfigHealth()}][{oxmultilang ident="GENERAL_YES"}][{else}][{oxmultilang ident="GENERAL_NO"}][{/if}]</b>
+        </li>
+        <li>
+            [{oxmultilang ident="OSC_ADYEN_CONFIG_HEALTH_ADYEN" suffix="COLON"}]
+            <b>[{if $oViewConf->checkAdyenHealth()}][{oxmultilang ident="GENERAL_YES"}][{else}][{oxmultilang ident="GENERAL_NO"}][{/if}]</b>
+        </li>
     </ol><br />
     <h3>[{oxmultilang ident="OSC_ADYEN_CONFIG_OPTIONS"}]</h3>
 [{/if}]
