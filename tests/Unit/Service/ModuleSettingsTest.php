@@ -45,9 +45,15 @@ final class ModuleSettingsTest extends UnitTestCase
         string $varName,
         string $paymentId
     ): void {
-        foreach ([false, true] as $gettingValue) {
+        $gettingValues = [
+            Module::ADYEN_CAPTURE_DELAY_MANUAL => true,
+            Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => false,
+            Module::ADYEN_CAPTURE_DELAY_DAYS => false
+        ];
+
+        foreach ($gettingValues as $gettingKey => $gettingValue) {
             $bridgeStub = $this->createPartialMock(ModuleSettingBridgeInterface::class, ['save', 'get']);
-            $bridgeStub->method('get')->willReturnMap([[$varName, Module::MODULE_ID, $gettingValue]]);
+            $bridgeStub->method('get')->willReturnMap([[$varName, Module::MODULE_ID, $gettingKey]]);
             $sut = new ModuleSettings(
                 $bridgeStub
             );

@@ -5,6 +5,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Service;
 use Adyen\Service\Checkout;
 use Exception;
 use Monolog\Logger;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -13,6 +14,7 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use Psr\Log\LoggerInterface;
 
 class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
 {
@@ -31,11 +33,13 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
         return new AdyenSDKLoader($moduleSettings, $loggingHandler);
     }
 
-    protected function createSession(): SessionSettings
+    protected function createSession(bool $setPayment = true): SessionSettings
     {
         $session = new Session();
         $session->setId('test');
-        $session->setVariable(SessionSettings::ADYEN_SESSION_PAYMENTMETHODS_NAME, ['test_paymentmethods_data']);
+        if ($setPayment) {
+            $session->setVariable(SessionSettings::ADYEN_SESSION_PAYMENTMETHODS_NAME, ['test_paymentmethods_data']);
+        }
 
         return new SessionSettings($session);
     }
@@ -63,7 +67,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     public function testExceptionGetAdyenPaymentMethods(): void
     {
         $adyenSDKLoader = $this->createTestAdyenSDKLoader();
-        $session = $this->createSession();
+        $session = $this->createSession(false);
 
         $payment = new AdyenAPIResponsePaymentMethods($adyenSDKLoader, $session);
         $this->expectExceptionMessage('Load the paymentMethods before getting the paymentMethods');
@@ -125,21 +129,27 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
         $adyenAPIPaymentMethods->setMerchantAccount('TestMerchant');
 
         $adyenSDKLoaderMock = $this->createTestAdyenSDKLoader();
+
+        $logger = $this->getLoggerMock();
+
+        $logger->expects($this->once())
+            ->method('error')
+            ->with('paymentMethodsData not found in Adyen-Response');
+        Registry::set('logger', $logger);
+
         $sessionMock = $this->createSession();
 
         $checkoutMock = $this->getMockBuilder(Checkout::class)
             ->disableOriginalConstructor()->getMock();
+
+        // Answer without "paymentMethods"
         $checkoutMock->method('paymentMethods')->willReturn([
             'amount' => [
                 'currency' => 'EUR',
                 'value' => '1000',
             ],
             'countryCode' => 'DE',
-            'merchantAccount' => 'TestMerchant',
-            //'paymentMethods' => [
-            //    ['name' => 'Test CreditCard'],
-            //    ['name' => 'Test PayPal'],
-            //]
+            'merchantAccount' => 'TestMerchant'
         ]);
 
         $paymentMock = $this->getMockBuilder(AdyenAPIResponsePaymentMethods::class)
@@ -147,9 +157,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
             ->onlyMethods(['createCheckout'])->getMock();
         $paymentMock->method('createCheckout')
             ->willReturn($checkoutMock);
-
         $paymentMock->loadAdyenPaymentMethods($adyenAPIPaymentMethods);
-        $this->assertLoggedException(Exception::class, 'paymentMethodsData not found in Adyen-Response');
     }
 
     /**
@@ -186,5 +194,25 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
 
         $this->expectExceptionMessage('Load the paymentMethods before getting the paymentMethods');
         $payment->getAdyenPaymentMethods();
+    }
+
+    protected function getLoggerMock(): LoggerInterface
+    {
+        return $this->getMockBuilder(LoggerInterface::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(
+                [
+                    'emergency',
+                    'alert',
+                    'critical',
+                    'error',
+                    'warning',
+                    'notice',
+                    'info',
+                    'debug',
+                    'log'
+                ]
+            )
+            ->getMock();
     }
 }
