@@ -7,9 +7,9 @@
 
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
-use Doctrine\DBAL\Exception;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Core\Header;
 use OxidSolutionCatalysts\Adyen\Core\Response;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\EventDispatcher;
@@ -39,8 +39,7 @@ class AdyenWebhookController extends WidgetController
                 throw WebhookEventException::dataNotFound();
             }
 
-            $eventType = $data["notificationItems"][0]["NotificationRequestItem"]["eventCode"];
-            $event = new Event($data, $eventType);
+            $event = new Event($data);
 
             $eventDispatcher = oxNew(EventDispatcher::class);
             $eventDispatcher->dispatch($event);
@@ -58,13 +57,15 @@ class AdyenWebhookController extends WidgetController
     }
 
     /**
-     * @SuppressWarnings(PHPMD.ExitExpression)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     private function sendErrorResponse(): void
     {
-        header('Content-Type: text/html', true, 500);
-        // TODO: A hard exit is ok here for now. If this changes, please remove the SuppressWarnings
-        exit();
+        $header = Registry::get(Header::class);
+        $header->setHeader('Cache-Control: no-cache');
+        $header->setHeader('Content-Type: text/html');
+        $header->setHeader('Status: 500');
+        Registry::getUtils()->showMessageAndExit('');
     }
 
     private function sendAccceptedResponse(): void
