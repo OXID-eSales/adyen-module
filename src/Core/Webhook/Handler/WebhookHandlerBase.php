@@ -25,10 +25,12 @@ abstract class WebhookHandlerBase
     public function handle(Event $event): void
     {
         if (!$event->isHMACVerified()) {
+            Registry::getLogger()->debug("Webhook: HMAC could not verified");
             return;
         }
 
         if (!$event->isMerchantVerified()) {
+            Registry::getLogger()->debug("Webhook: MerchantCode could not verified");
             return;
         }
 
