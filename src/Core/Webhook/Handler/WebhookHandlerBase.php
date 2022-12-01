@@ -9,149 +9,42 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
-use Adyen\AdyenException;
-use Adyen\Util\HmacSignature;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
-use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 abstract class WebhookHandlerBase
 {
-    protected const JSON_FIELD_LIVE = "live";
-    protected const JSON_FIELD_NOTIFICATION_ITEMS = "notificationItems";
-    protected const JSON_FIELD_NOTIFICATION_REQUEST_ITEM = "NotificationRequestItem";
-    protected const JSON_FIELD_ADDITIONAL_DATA = "additionalData";
-    protected const JSON_FIELD_HMAC_SIGNATURE = "hmacSignature";
-    protected const JSON_FIELD_EVENT_CODE = "eventCode";
-    protected const JSON_FIELD_SUCCESS = "success";
-    protected const JSON_FIELD_EVENT_DATE = "eventDate";
-    protected const JSON_FIELD_MERCHANT_ACCOUNT_CODE = "merchantAccountCode";
-    protected const JSON_FIELD_MERCHANT_REFERENCE = "merchantReference";
-    protected const JSON_FIELD_PSP_REFERENCE = "pspReference";
-    protected const JSON_FIELD_PARENT_PSP_REFERENCE = "originalReference";
-    protected const JSON_FIELD_AMOUNT = "amount";
-    protected const JSON_FIELD_PRICE = "value";
-    protected const JSON_FIELD_CURRENCY = "currency";
+    use ServiceContainer;
 
     public function handle(Event $event): void
     {
-        if (!$this->verifyHMACSignature($event)) {
+        if (!$event->isHMACVerified()) {
             return;
         }
 
-        if (!$this->verifyMerchantAccountCode($event)) {
+        if (!$event->isMerchantVerified()) {
             return;
         }
 
-        foreach ($this->getNotificationItems($event) as $notificationItem) {
-            $success = $notificationItem
-                [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
-                [self::JSON_FIELD_SUCCESS];
-
-            if ($success) {
-                try {
-                    $this->updateStatus($notificationItem);
-                } catch (WebhookEventTypeException $e) {
-                    Registry::getLogger()->debug($e->getMessage());
-                }
+        if ($event->isSuccess()) {
+            try {
+                $this->updateStatus($event);
+            } catch (WebhookEventTypeException $e) {
+                Registry::getLogger()->debug($e->getMessage());
             }
         }
     }
 
-    /**
-     * @param Event $event
-     * @return bool
-     */
-    public function isLiveStatus(Event $event): bool
-    {
-        return $event->getData()[self::JSON_FIELD_LIVE] == "true";
-    }
-
-    /**
-     * @param Event $event
-     * @return array
-     */
-    public function getNotificationItems(Event $event): array
-    {
-        return $event->getData()[self::JSON_FIELD_NOTIFICATION_ITEMS];
-    }
-
-    /**
-     * @param Event $event
-     * @return bool
-     */
-    public function verifyHMACSignature(Event $event): bool
-    {
-        try {
-            /** @var ModuleSettings $moduleSettings */
-            $moduleSettings = ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(ModuleSettings::class);
-        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
-            return false;
-        }
-
-        $hmacKey = $moduleSettings->getHmacSignature();
-        $hmac = new HmacSignature();
-
-        try {
-            foreach ($this->getNotificationItems($event) as $notificationItem) {
-                $params = $notificationItem[self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM];
-                if (!$hmac->isValidNotificationHMAC($hmacKey, $params)) {
-                    return false;
-                }
-            }
-        } catch (AdyenException $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
-            return false;
-        }
-
-        return true;
-    }
-
-    public function verifyMerchantAccountCode(Event $event): bool
-    {
-        try {
-            /** @var ModuleSettings $moduleSettings */
-            $moduleSettings = ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(ModuleSettings::class);
-        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
-            return false;
-        }
-
-        $merchantAccount = $moduleSettings->getMerchantAccount();
-
-        foreach ($this->getNotificationItems($event) as $notificationItem) {
-            $testMerchantAccount = $notificationItem
-                [self::JSON_FIELD_NOTIFICATION_REQUEST_ITEM]
-                [self::JSON_FIELD_MERCHANT_ACCOUNT_CODE];
-
-            if ($merchantAccount != $testMerchantAccount) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $pspReference
-     * @return Order|null
-     */
-    public function getOrderByAdyenPSPReference(string $pspReference): ?Order
+    protected function getOrderByAdyenPSPReference(string $pspReference): ?Order
     {
         $adyenHistoryList = oxNew(AdyenHistoryList::class);
-        $adyenHistoryList->init(AdyenHistory::class);
+
         $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
 
         $order = oxNew(Order::class);
@@ -161,9 +54,51 @@ abstract class WebhookHandlerBase
     }
 
     /**
-     * @param array $notificationItem
+     * @param Event $event
+     * @return void
+     * @throws WebhookEventTypeException
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function updateStatus(Event $event): void
+    {
+        /** @var Context $context */
+        $context = $this->getServiceFromContainer(Context::class);
+
+        $pspReference = $event->getPspReference();
+        $parentPspReference = $event->getParentPspReference() !== '' ?
+            $event->getParentPspReference() :
+            $pspReference;
+        $order = $this->getOrderByAdyenPSPReference($pspReference);
+        if (is_null($order)) {
+            Registry::getLogger()->debug("order not found by psp reference " . $pspReference);
+            return;
+        }
+
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $adyenHistory->setOrderId($order->getId());
+        $adyenHistory->setShopId($context->getCurrentShopId());
+        $adyenHistory->setPrice($event->getAmountValue());
+        $adyenHistory->setCurrency($event->getAmountCurrency());
+        $adyenHistory->setTimeStamp($event->getEventDate());
+        $adyenHistory->setPSPReference($pspReference);
+        $adyenHistory->setParentPSPReference($parentPspReference);
+        $adyenHistory->setAdyenStatus($this->getAdyenStatus());
+        $adyenHistory->setAdyenAction($this->getAdyenAction());
+
+        $adyenHistory->save();
+
+        $this->additionalUpdates($event, $order);
+    }
+
+    /**
+     * @param Event $event
+     * @param Order $order
      * @return void
      * @throws WebhookEventTypeException
      */
-    abstract public function updateStatus(array $notificationItem): void;
+    abstract protected function additionalUpdates(Event $event, Order $order): void;
+
+    abstract protected function getAdyenStatus(): string;
+
+    abstract protected function getAdyenAction(): string;
 }

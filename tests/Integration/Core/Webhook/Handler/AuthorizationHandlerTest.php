@@ -42,7 +42,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
         $adyenHistory->setPrice(1000);
-        $adyenHistory->setTimeStamp("2021-01-01T01:00:00+01:00");
+        $adyenHistory->setTimeStamp("2021-01-01 01:00:00");
         $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
         $adyenHistory->setAdyenStatus("AUTHORIZATION");
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
@@ -72,8 +72,10 @@ final class AuthorizationHandlerTest extends UnitTestCase
      */
     public function testUpdateStatus()
     {
+        $event = oxNew(Event::class, $this->proceedNotificationData());
+
         $authorizationHandler = oxNew(AuthorizationHandler::class);
-        $authorizationHandler->updateStatus($this->proceedNotificationRequestsItem());
+        $authorizationHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
         $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
@@ -88,13 +90,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
 
     public function testHandle()
     {
-        $data = [
-            "live" => "false",
-            "notificationItems" => [
-                $this->proceedNotificationRequestsItem()
-            ]
-        ];
-        $event = oxNew(Event::class, $data, AuthorizationHandler::AUTHORIZATION_EVENT_CODE);
+        $event = oxNew(Event::class, $this->proceedNotificationData());
 
         $authorizationHandler = oxNew(AuthorizationHandler::class);
         $authorizationHandler->handle($event);
@@ -111,7 +107,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
         $this->assertNotNull($order);
     }
 
-    private function proceedNotificationRequestsItem()
+    private function proceedNotificationData()
     {
         /** @var ModuleSettings $moduleSettings */
         try {
@@ -124,24 +120,29 @@ final class AuthorizationHandlerTest extends UnitTestCase
         }
 
         return [
-            "NotificationRequestItem" => [
-                "additionalData" => [
-                    "recurring.recurringDetailReference" => "9915692881181044",
-                    "recurring.shopperReference" => "YOUR_SHOPPER_REFERENCE",
-                    "hmacSignature" => '695BB571079C6553880542A611FD36EF2F962EBE56FED0B9E887093296E83DF4'
-                ],
-                "amount" => [
-                    "currency" => "EUR",
-                    "value" => 1000
-                ],
-                "eventCode" => "AUTHORIZATION",
-                "eventDate" => "2021-01-01T01:00:00+01:00",
-                "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
-                "merchantReference" => "YOUR_MERCHANT_REFERENCE",
-                "paymentMethod" => "ach",
-                "pspReference" => "YOUR_PSP_REFERENCE",
-                "reason" => "null",
-                "success" => "true"
+            "live" => "false",
+            "notificationItems" => [
+                [
+                    "NotificationRequestItem" => [
+                        "additionalData" => [
+                            "recurring.recurringDetailReference" => "9915692881181044",
+                            "recurring.shopperReference" => "YOUR_SHOPPER_REFERENCE",
+                            "hmacSignature" => '695BB571079C6553880542A611FD36EF2F962EBE56FED0B9E887093296E83DF4'
+                        ],
+                        "amount" => [
+                            "currency" => "EUR",
+                            "value" => 1000
+                        ],
+                        "eventCode" => "AUTHORIZATION",
+                        "eventDate" => "2021-01-01T01:00:00+01:00",
+                        "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
+                        "merchantReference" => "YOUR_MERCHANT_REFERENCE",
+                        "paymentMethod" => "ach",
+                        "pspReference" => "YOUR_PSP_REFERENCE",
+                        "reason" => "null",
+                        "success" => "true"
+                    ]
+                ]
             ]
         ];
     }

@@ -16,8 +16,17 @@ trait AdyenPayment
 {
     protected function getAdyenAmount(float $amount, int $currencyDecimals): string
     {
-        $decimalFactor = (int)('1' . str_repeat('0', $currencyDecimals));
-        $currencyAmountInt = $amount * $decimalFactor;
+        $currencyAmountInt = $amount * $this->getDecimalFactor($currencyDecimals);
         return (string)$currencyAmountInt;
+    }
+
+    protected function getOxidAmount(float $amount, int $currencyDecimals): float
+    {
+        return $amount / $this->getDecimalFactor($currencyDecimals);
+    }
+
+    protected function getDecimalFactor(int $currencyDecimals): int
+    {
+        return (int)('1' . str_repeat('0', $currencyDecimals));
     }
 }
