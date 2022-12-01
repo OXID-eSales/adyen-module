@@ -12,17 +12,19 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidEsales\Eshop\Application\Model\Order;
 
 final class AuthorizationHandler extends WebhookHandlerBase
 {
-    public const AUTHORIZATION_EVENT_CODE = "AUTHORIZATION";
+    /**
+     * "AUTHORISATION" in british english spelling
+     */
+    public const AUTHORIZATION_EVENT_CODE = "AUTHORISATION";
 
     /**
      * @param Event $event
+     * @param Order $order
      * @return void
-     * @throws WebhookEventTypeException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function additionalUpdates(Event $event, Order $order): void

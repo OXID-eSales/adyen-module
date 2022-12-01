@@ -62,7 +62,7 @@ class CaptureHandlerTest extends UnitTestCase
 
     public function testUpdateStatus()
     {
-        $event = oxNew(Event::class,  $this->proceedNotificationData());
+        $event = oxNew(Event::class, $this->proceedNotificationData());
 
         $captureHandler = oxNew(CaptureHandler::class);
         $captureHandler->updateStatus($event);

@@ -12,7 +12,6 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 
 final class CaptureHandler extends WebhookHandlerBase
 {
@@ -22,7 +21,6 @@ final class CaptureHandler extends WebhookHandlerBase
      * @param Event $event
      * @param Order $order
      * @return void
-     * @throws WebhookEventTypeException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function additionalUpdates(Event $event, Order $order): void
