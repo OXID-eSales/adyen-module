@@ -70,7 +70,8 @@ class Order extends Order_parent
     {
         parent::cancelOrder();
         if ($this->isAdyenCancelPossible()) {
-            $reference = $this->getFloatAdyenOrderData('oxordernr');
+            // Adyen References are Strings
+            $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
             $pspReference = $this->getAdyenOrderData('adyenpspreference');
 
             $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
