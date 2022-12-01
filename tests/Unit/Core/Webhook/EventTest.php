@@ -13,42 +13,41 @@ use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
 {
-    public function testGetData()
+    public function testGetter()
     {
-        $arrayData = [
+        $event = oxNew(Event::class, $this->proceedNotificationData());
+
+        $this->assertEquals(false, $event->isLive());
+        $this->assertEquals('9313547924770610', $event->getPspReference());
+        $this->assertEquals('1233547924770610', $event->getParentPspReference());
+        $this->assertEquals('AUTHORIZATION', $event->getEventType());
+        $this->assertEquals('TestMerchantReference', $event->getMerchantReference());
+        $this->assertEquals(true, $event->isSuccess());
+    }
+
+    private function proceedNotificationData()
+    {
+        return [
             "live" => "false",
             "notificationItems" => [
-                "NotificationRequestItem" => [
-                    "pspReference" => "9313547924770610",
-                    "eventCode" => "AUTHORIZATION",
-                    "merchantAccountCode" => "testMerchantAccount",
-                    "merchantReference" => "TestMerchantReference",
-                    "success" => "true",
+                [
+                    "NotificationRequestItem" => [
+                        "additionalData" => [
+                            "hmacSignature" => 'dummyHmac',
+                        ],
+                        "amount" => [
+                            "currency" => "EUR",
+                            "value" => 1000
+                        ],
+                        "eventDate" => "2021-01-01T01:00:00+01:00",
+                        "pspReference" => "9313547924770610",
+                        "originalReference" => "1233547924770610",
+                        "eventCode" => "AUTHORIZATION",
+                        "merchantReference" => "TestMerchantReference",
+                        "success" => "true"
+                    ]
                 ]
             ]
         ];
-
-        $event = oxNew(Event::class, $arrayData, AuthorizationHandler::AUTHORIZATION_EVENT_CODE);
-
-        $data = $event->getData();
-
-        $this->assertEquals("false", $data["live"]);
-        $this->assertEquals(
-            "9313547924770610",
-            $data["notificationItems"]["NotificationRequestItem"]["pspReference"]
-        );
-        $this->assertEquals(
-            "AUTHORIZATION",
-            $data["notificationItems"]["NotificationRequestItem"]["eventCode"]
-        );
-        $this->assertEquals(
-            "testMerchantAccount",
-            $data["notificationItems"]["NotificationRequestItem"]["merchantAccountCode"]
-        );
-        $this->assertEquals(
-            "TestMerchantReference",
-            $data["notificationItems"]["NotificationRequestItem"]["merchantReference"]
-        );
-        $this->assertEquals("true", $data["notificationItems"]["NotificationRequestItem"]["success"]);
     }
 }

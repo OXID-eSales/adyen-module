@@ -37,7 +37,7 @@ class CaptureHandlerTest extends UnitTestCase
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
         $adyenHistory->setPrice(1000);
-        $adyenHistory->setTimeStamp("2021-01-01T01:00:00+01:00");
+        $adyenHistory->setTimeStamp("2021-01-01 01:00:00");
         $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
         $adyenHistory->setAdyenStatus("AUTHORIZATION");
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
@@ -62,8 +62,10 @@ class CaptureHandlerTest extends UnitTestCase
 
     public function testUpdateStatus()
     {
+        $event = oxNew(Event::class,  $this->proceedNotificationData());
+
         $captureHandler = oxNew(CaptureHandler::class);
-        $captureHandler->updateStatus($this->proceedNotificationRequestsItem());
+        $captureHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
         $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
@@ -73,13 +75,7 @@ class CaptureHandlerTest extends UnitTestCase
 
     public function testHandle()
     {
-        $data = [
-            "live" => "false",
-            "notificationItems" => [
-                $this->proceedNotificationRequestsItem()
-            ]
-        ];
-        $event = oxNew(Event::class, $data, CaptureHandler::CAPTURE_EVENT_CODE);
+        $event = oxNew(Event::class, $this->proceedNotificationData());
 
         $captureHandler = oxNew(CaptureHandler::class);
         $captureHandler->handle($event);
@@ -87,10 +83,10 @@ class CaptureHandlerTest extends UnitTestCase
         $historyList = oxNew(AdyenHistoryList::class);
         $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
 
-        $this->assertNotNull($orderId);
+        $this->assertNotEmpty($orderId);
     }
 
-    private function proceedNotificationRequestsItem()
+    private function proceedNotificationData()
     {
         /** @var ModuleSettings $moduleSettings */
         try {
@@ -103,23 +99,28 @@ class CaptureHandlerTest extends UnitTestCase
         }
 
         return [
-            "NotificationRequestItem" => [
-                "additionalData" => [
-                    "hmacSignature" => $moduleSettings->getHmacSignature(),
-                ],
-                "amount" => [
-                    "currency" => "EUR",
-                    "value" => 1000
-                ],
-                "eventCode" => "CAPTURE",
-                "eventDate" => "2021-01-01T01:00:00+01:00",
-                "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
-                "merchantReference" => "YOUR_MERCHANT_REFERENCE",
-                "originalReference" => "9913140798220028",
-                "paymentMethod" => "visa",
-                "pspReference" => "YOUR_PSP_REFERENCE",
-                "reason" => "",
-                "success" => "true"
+            "live" => "false",
+            "notificationItems" => [
+                [
+                    "NotificationRequestItem" => [
+                        "additionalData" => [
+                            "hmacSignature" => $moduleSettings->getHmacSignature(),
+                        ],
+                        "amount" => [
+                            "currency" => "EUR",
+                            "value" => 1000
+                        ],
+                        "eventCode" => "CAPTURE",
+                        "eventDate" => "2021-01-01T01:00:00+01:00",
+                        "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
+                        "merchantReference" => "YOUR_MERCHANT_REFERENCE",
+                        "originalReference" => "9913140798220028",
+                        "paymentMethod" => "visa",
+                        "pspReference" => "YOUR_PSP_REFERENCE",
+                        "reason" => "",
+                        "success" => "true"
+                    ]
+                ]
             ]
         ];
     }
