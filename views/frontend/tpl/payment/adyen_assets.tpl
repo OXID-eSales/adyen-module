@@ -87,7 +87,6 @@
                     [{assign var="paymentID" value=$payment->getId()}]
                     [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
                         paypal: {
-                            merchantId: "[{$oViewConf->getAdyenPayPalMerchantId()}]",
                             intent: "authorize",
                             cspNonce: "MY_CSP_NONCE",
                             onShippingChange: function(data, actions) {

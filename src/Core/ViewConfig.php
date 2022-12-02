@@ -58,11 +58,6 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->getClientKey();
     }
 
-    public function getAdyenPayPalMerchantId(): string
-    {
-        return $this->moduleSettings->getPayPalMerchantId();
-    }
-
     public function getAdyenSDKVersion(): string
     {
         return Module::ADYEN_SDK_VERSION;
