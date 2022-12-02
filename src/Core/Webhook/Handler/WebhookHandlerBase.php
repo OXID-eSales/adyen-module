@@ -45,14 +45,16 @@ abstract class WebhookHandlerBase
 
     protected function getOrderByAdyenPSPReference(string $pspReference): ?Order
     {
+        $result = null;
         $adyenHistoryList = oxNew(AdyenHistoryList::class);
 
         $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
 
         $order = oxNew(Order::class);
-        $order->load($oxidOrderId);
-
-        return $order;
+        if ($order->load($oxidOrderId)) {
+            $result = $order;
+        }
+        return $result;
     }
 
     /**
