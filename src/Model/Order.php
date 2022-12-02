@@ -70,7 +70,8 @@ class Order extends Order_parent
     {
         parent::cancelOrder();
         if ($this->isAdyenCancelPossible()) {
-            $reference = $this->getAdyenOrderData('oxordernr');
+            // Adyen References are Strings
+            $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
             $pspReference = $this->getAdyenOrderData('adyenpspreference');
 
             $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
@@ -163,7 +164,8 @@ class Order extends Order_parent
     public function createNumberForAdyenPayment(): string
     {
         $this->_setNumber();
-        return $this->getAdyenOrderData('oxordernr');
+        // Adyen References are Strings
+        return (string)$this->getFloatAdyenOrderData('oxordernr');
     }
 
     /**
@@ -237,5 +239,12 @@ class Order extends Order_parent
         /** @var null|string $value */
         $value = $this->getFieldData($key);
         return $value ?? '';
+    }
+
+    protected function getFloatAdyenOrderData(string $key): float
+    {
+        /** @var null|float $value */
+        $value = $this->getFieldData($key);
+        return is_float($value) ? $value : 0;
     }
 }
