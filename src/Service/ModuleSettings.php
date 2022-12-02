@@ -26,7 +26,6 @@ class ModuleSettings
     public const SANDBOX_MERCHANT_ACCOUNT = 'osc_adyen_SandboxMerchantAccount';
     public const SANDBOX_NOTIFICATION_USERNAME = 'osc_adyen_SandboxNotificationUsername';
     public const SANDBOX_NOTIFICATION_PASSWORD = 'osc_adyen_SandboxNotificationPassword';
-    public const SANDBOX_PAYPAL_MERCHANT_ID = 'osc_adyen_SandboxPayPalMerchantId';
 
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
@@ -34,7 +33,6 @@ class ModuleSettings
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_NOTIFICATION_USERNAME = 'osc_adyen_LiveNotificationUsername';
     public const LIVE_NOTIFICATION_PASSWORD = 'osc_adyen_LiveNotificationPassword';
-    public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
 
     public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
 
@@ -133,14 +131,6 @@ class ModuleSettings
     public function getNotificationPassword(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
-        /** @var null|string $settingValue */
-        $settingValue = $this->getSettingValue($key);
-        return (string)$settingValue;
-    }
-
-    public function getPayPalMerchantId(): string
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_PAYPAL_MERCHANT_ID : self::LIVE_PAYPAL_MERCHANT_ID);
         /** @var null|string $settingValue */
         $settingValue = $this->getSettingValue($key);
         return (string)$settingValue;
