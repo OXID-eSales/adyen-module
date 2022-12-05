@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
@@ -78,6 +79,14 @@ abstract class WebhookHandlerBase
             return;
         }
 
+        $payment = oxNew(Payment::class);
+
+        /** @var null|string $paymentId */
+        $paymentId = $order->getFieldData('oxpaymenttype');
+        if (!is_null($paymentId)) {
+            $payment->load($paymentId);
+        }
+
         $adyenHistory = oxNew(AdyenHistory::class);
         $adyenHistory->setOrderId($order->getId());
         $adyenHistory->setShopId($context->getCurrentShopId());
@@ -86,23 +95,24 @@ abstract class WebhookHandlerBase
         $adyenHistory->setTimeStamp($event->getEventDate());
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($parentPspReference);
-        $adyenHistory->setAdyenStatus($this->getAdyenStatus());
-        $adyenHistory->setAdyenAction($this->getAdyenAction());
+        $adyenHistory->setAdyenStatus($this->getAdyenStatus($event, $order, $payment));
+        $adyenHistory->setAdyenAction($this->getAdyenAction($event, $order, $payment));
 
         $adyenHistory->save();
 
-        $this->additionalUpdates($event, $order);
+        $this->additionalUpdates($event, $order, $payment);
     }
 
     /**
      * @param Event $event
      * @param Order $order
+     * @param Payment $payment
      * @return void
      * @throws WebhookEventTypeException
      */
-    abstract protected function additionalUpdates(Event $event, Order $order): void;
+    abstract protected function additionalUpdates(Event $event, Order $order, Payment $payment): void;
 
-    abstract protected function getAdyenStatus(): string;
+    abstract protected function getAdyenStatus(Event $event, Order $order, Payment $payment): string;
 
-    abstract protected function getAdyenAction(): string;
+    abstract protected function getAdyenAction(Event $event, Order $order, Payment $payment): string;
 }
