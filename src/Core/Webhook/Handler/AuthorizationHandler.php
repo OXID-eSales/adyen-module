@@ -49,11 +49,11 @@ final class AuthorizationHandler extends WebhookHandlerBase
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_AUTHORISED;
+        return Module::ADYEN_ACTION_AUTHORIZE;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_AUTHORIZE;
+        return Module::ADYEN_STATUS_AUTHORISED;
     }
 }

@@ -129,17 +129,21 @@ abstract class WebhookHandlerBase
         string $status,
         string $action
     ): void {
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->setOrderId($orderId);
-        $adyenHistory->setShopId($shopId);
-        $adyenHistory->setPrice($amount);
-        $adyenHistory->setCurrency($currency);
-        $adyenHistory->setTimeStamp($timestamp);
-        $adyenHistory->setPSPReference($pspReference);
-        $adyenHistory->setParentPSPReference($parentPspReference);
-        $adyenHistory->setAdyenStatus($status);
-        $adyenHistory->setAdyenAction($action);
-        $adyenHistory->save();
+        try {
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $adyenHistory->setOrderId($orderId);
+            $adyenHistory->setShopId($shopId);
+            $adyenHistory->setPrice($amount);
+            $adyenHistory->setCurrency($currency);
+            $adyenHistory->setTimeStamp($timestamp);
+            $adyenHistory->setPSPReference($pspReference);
+            $adyenHistory->setParentPSPReference($parentPspReference);
+            $adyenHistory->setAdyenStatus($status);
+            $adyenHistory->setAdyenAction($action);
+            $adyenHistory->save();
+        } catch (Exception $e) {
+            Registry::getLogger()->info($e->getMessage());
+        }
     }
 
     /**
