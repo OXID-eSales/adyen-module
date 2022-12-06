@@ -55,7 +55,7 @@
                     [{/foreach}]
                 </table>
                 <!-- Show AdyenHistory END -->
-                [{if $oView->isAdyenCapturePossible()}]
+                [{if $edit->isAdyenCapturePossible()}]
                     <!-- Adyen Capture -->
                     <div style="margin-top: 20px;">
                         <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>
@@ -66,7 +66,7 @@
                             <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
                             <input type="text"
                                    name="capture_amount"
-                                   value="[{$adyenCaptureAmount|escape|string_format:"%.2f"}]" />
+                                   value="[{$edit->getPossibleCaptureAmount()|escape|string_format:"%.2f"}]" />
                             <input type="hidden"
                                    name="capture_currency"
                                    value="[{$adyenCurrency}]" />
@@ -76,7 +76,7 @@
                     </div>
                     <!-- Adyen Capture END -->
                 [{/if}]
-                [{if $oView->isAdyenRefundPossible()}]
+                [{if $edit->isAdyenRefundPossible()}]
                 <!-- Adyen Refund -->
                 <div style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_REFUNDMONEY"}]</h3>
@@ -87,7 +87,7 @@
                         <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
                         <input type="text"
                                name="refund_amount"
-                               value="[{$adyenRefundAmount|escape|string_format:"%.2f"}]" />
+                               value="[{$edit->getPossibleRefundAmount()|escape|string_format:"%.2f"}]" />
                         <input type="hidden"
                                name="refund_currency"
                                value="[{$adyenCurrency}]" />
@@ -97,7 +97,7 @@
                 </div>
                 <!-- Adyen Refund END -->
                 [{/if}]
-                [{if $oView->isAdyenCancelPossible()}]
+                [{if $edit->isAdyenCancelPossible()}]
                 <!-- Adyen Cancel -->
                 <div style="margin-top: 20px;">
                     <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CANCELORDER"}]</h3>
