@@ -14,6 +14,7 @@ use OxidSolutionCatalysts\Adyen\Core\Response;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\EventDispatcher;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventException;
+use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 
 /**
  * Class AdyenWebhookController
@@ -45,7 +46,7 @@ class AdyenWebhookController extends WidgetController
             $eventDispatcher->dispatch($event);
 
             $this->sendAccceptedResponse();
-        } catch (\Exception $exception) {
+        } catch (WebhookEventTypeException | \Exception $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
             $this->sendErrorResponse();
         }

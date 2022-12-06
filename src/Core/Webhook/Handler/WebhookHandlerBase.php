@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
+use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\Payment;
@@ -22,6 +23,12 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 abstract class WebhookHandlerBase
 {
     use ServiceContainer;
+
+    protected int $shopId;
+    protected string $pspReference;
+    protected string $parentPspReference;
+    protected Order $order;
+    protected ?Payment $payment;
 
     public function handle(Event $event): void
     {
@@ -37,8 +44,9 @@ abstract class WebhookHandlerBase
 
         if ($event->isSuccess()) {
             try {
+                $this->setData($event);
                 $this->updateStatus($event);
-            } catch (WebhookEventTypeException $e) {
+            } catch (WebhookEventTypeException | Exception $e) {
                 Registry::getLogger()->debug($e->getMessage());
             }
         }
@@ -61,58 +69,86 @@ abstract class WebhookHandlerBase
     /**
      * @param Event $event
      * @return void
-     * @throws WebhookEventTypeException
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @throws Exception
      */
-    public function updateStatus(Event $event): void
+    public function setData(Event $event): void
     {
         /** @var Context $context */
         $context = $this->getServiceFromContainer(Context::class);
+        $this->shopId = $context->getCurrentShopId();
 
-        $pspReference = $event->getPspReference();
-        $parentPspReference = $event->getParentPspReference() !== '' ?
+        $this->pspReference = $event->getPspReference();
+        $this->parentPspReference = $event->getParentPspReference() !== '' ?
             $event->getParentPspReference() :
-            $pspReference;
-        $order = $this->getOrderByAdyenPSPReference($pspReference);
+            $this->pspReference;
+        $order = $this->getOrderByAdyenPSPReference($this->pspReference);
         if (is_null($order)) {
-            Registry::getLogger()->debug("order not found by psp reference " . $pspReference);
-            return;
+            throw new Exception("order not found by psp reference " . $this->pspReference);
         }
+        $this->order = $order;
 
-        $payment = oxNew(Payment::class);
+        $this->payment = oxNew(Payment::class);
 
         /** @var null|string $paymentId */
-        $paymentId = $order->getFieldData('oxpaymenttype');
+        $paymentId = $this->order->getFieldData('oxpaymenttype');
         if (!is_null($paymentId)) {
-            $payment->load($paymentId);
+            $this->payment->load($paymentId);
         }
-
-        $adyenHistory = oxNew(AdyenHistory::class);
-        $adyenHistory->setOrderId($order->getId());
-        $adyenHistory->setShopId($context->getCurrentShopId());
-        $adyenHistory->setPrice($event->getAmountValue());
-        $adyenHistory->setCurrency($event->getAmountCurrency());
-        $adyenHistory->setTimeStamp($event->getEventDate());
-        $adyenHistory->setPSPReference($pspReference);
-        $adyenHistory->setParentPSPReference($parentPspReference);
-        $adyenHistory->setAdyenStatus($this->getAdyenStatus($event, $order, $payment));
-        $adyenHistory->setAdyenAction($this->getAdyenAction($event, $order, $payment));
-
-        $adyenHistory->save();
-
-        $this->additionalUpdates($event, $order, $payment);
     }
 
     /**
      * @param Event $event
-     * @param Order $order
-     * @param Payment $payment
      * @return void
-     * @throws WebhookEventTypeException
      */
-    abstract protected function additionalUpdates(Event $event, Order $order, Payment $payment): void;
+    public function updateStatus(Event $event): void
+    {
+        $this->setHistoryEntry(
+            $this->order->getId(),
+            $this->shopId,
+            $event->getAmountValue(),
+            $event->getAmountCurrency(),
+            $event->getEventDate(),
+            $this->pspReference,
+            $this->parentPspReference,
+            $this->getAdyenStatus(),
+            $this->getAdyenAction()
+        );
 
-    abstract protected function getAdyenStatus(Event $event, Order $order, Payment $payment): string;
+        $this->additionalUpdates($event);
+    }
 
-    abstract protected function getAdyenAction(Event $event, Order $order, Payment $payment): string;
+    protected function setHistoryEntry(
+        string $orderId,
+        int $shopId,
+        float $amount,
+        string $currency,
+        string $timestamp,
+        string $pspReference,
+        string $parentPspReference,
+        string $status,
+        string $action
+    ): void {
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $adyenHistory->setOrderId($orderId);
+        $adyenHistory->setShopId($shopId);
+        $adyenHistory->setPrice($amount);
+        $adyenHistory->setCurrency($currency);
+        $adyenHistory->setTimeStamp($timestamp);
+        $adyenHistory->setPSPReference($pspReference);
+        $adyenHistory->setParentPSPReference($parentPspReference);
+        $adyenHistory->setAdyenStatus($status);
+        $adyenHistory->setAdyenAction($action);
+        $adyenHistory->save();
+    }
+
+    /**
+     * @param Event $event
+     * @return void
+     */
+    abstract protected function additionalUpdates(Event $event): void;
+
+    abstract protected function getAdyenStatus(): string;
+
+    abstract protected function getAdyenAction(): string;
 }
