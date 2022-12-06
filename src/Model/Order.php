@@ -90,42 +90,12 @@ class Order extends Order_parent
     public function cancelOrder(): void
     {
         parent::cancelOrder();
-        $this->cancelAdyenOrder();
-    }
-
-    public function cancelAdyenOrder(): void
-    {
-        if (!$this->isAdyenCancelPossible()) {
-            return;
+        if ($this->isAdyenRefundPossible()) {
+            $amount = $this->getPossibleRefundAmount();
+            $this->refundAdyenOrder($amount);
         }
-
-        // Adyen References are Strings
-        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
-        $pspReference = $this->getAdyenOrderData('adyenpspreference');
-
-        $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
-        $success = $paymentService->doAdyenCancel(
-            $pspReference,
-            $reference
-        );
-
-        if ($success) {
-            $cancelResult = $paymentService->getCancelResult();
-
-            // everything is fine, we can save the references
-            if (isset($cancelResult['paymentPspReference'])) {
-                $adyenHistory = oxNew(AdyenHistory::class);
-                $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
-                $adyenHistory->setPSPReference($cancelResult['pspReference']);
-                $adyenHistory->setOrderId($this->getId());
-                $adyenHistory->setPrice((float)$this->getTotalOrderSum());
-                $adyenHistory->setCurrency($this->getAdyenOrderData('oxcurrency'));
-                if (isset($cancelResult['status'])) {
-                    $adyenHistory->setAdyenStatus($cancelResult['status']);
-                }
-                $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CANCEL);
-                $adyenHistory->save();
-            }
+        else {
+            $this->cancelAdyenOrder();
         }
     }
 
@@ -143,7 +113,6 @@ class Order extends Order_parent
         }
         return $result;
     }
-
 
     public function isAdyenRefundPossible(): bool
     {
@@ -170,7 +139,7 @@ class Order extends Order_parent
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function captureAdyenAmount(float $amount): void
+    public function captureAdyenOrder(float $amount): void
     {
         if (!$this->isAdyenCapturePossible()) {
             return;
@@ -209,10 +178,46 @@ class Order extends Order_parent
         }
     }
 
+    public function cancelAdyenOrder(): void
+    {
+        if (!$this->isAdyenCancelPossible()) {
+            return;
+        }
+
+        // Adyen References are Strings
+        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+        $pspReference = $this->getAdyenOrderData('adyenpspreference');
+
+        $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+        $success = $paymentService->doAdyenCancel(
+            $pspReference,
+            $reference
+        );
+
+        if ($success) {
+            $cancelResult = $paymentService->getCancelResult();
+
+            // everything is fine, we can save the references
+            if (isset($cancelResult['paymentPspReference'])) {
+                $adyenHistory = oxNew(AdyenHistory::class);
+                $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
+                $adyenHistory->setPSPReference($cancelResult['pspReference']);
+                $adyenHistory->setOrderId($this->getId());
+                $adyenHistory->setPrice((float)$this->getTotalOrderSum());
+                $adyenHistory->setCurrency($this->getAdyenOrderData('oxcurrency'));
+                if (isset($cancelResult['status'])) {
+                    $adyenHistory->setAdyenStatus($cancelResult['status']);
+                }
+                $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CANCEL);
+                $adyenHistory->save();
+            }
+        }
+    }
+
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function refundAdyenAmount(float $amount): void
+    public function refundAdyenOrder(float $amount): void
     {
         if (!$this->isAdyenRefundPossible()) {
             return;

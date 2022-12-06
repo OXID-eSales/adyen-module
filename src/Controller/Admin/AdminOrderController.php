@@ -81,7 +81,7 @@ class AdminOrderController extends AdminDetailsController
 
         /** @var Order $order */
         $order = $this->getEditObject();
-        $order->captureAdyenAmount($amount);
+        $order->captureAdyenOrder($amount);
     }
 
     /**
@@ -96,7 +96,7 @@ class AdminOrderController extends AdminDetailsController
 
         /** @var Order $order */
         $order = $this->getEditObject();
-        $order->refundAdyenAmount($amount);
+        $order->refundAdyenOrder($amount);
     }
 
     /**
