@@ -55,62 +55,64 @@
                     [{/foreach}]
                 </table>
                 <!-- Show AdyenHistory END -->
-                [{if $edit->isAdyenCapturePossible()}]
-                    <!-- Adyen Capture -->
+                [{oxhasrights ident="ADYENSTORNO"}]
+                    [{if $edit->isAdyenCapturePossible()}]
+                        <!-- Adyen Capture -->
+                        <div style="margin-top: 20px;">
+                            <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>
+                            <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                                [{$oViewConf->getHiddenSid()}]
+                                <input type="hidden" name="fnc" value="captureAdyenAmount" />
+                                <input type="hidden" name="oxid" value="[{$oxid}]" />
+                                <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                                <input type="text"
+                                       name="capture_amount"
+                                       value="[{$edit->getPossibleCaptureAmount()|escape|string_format:"%.2f"}]" />
+                                <input type="hidden"
+                                       name="capture_currency"
+                                       value="[{$adyenCurrency}]" />
+
+                                <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CAPTURE"}]" />
+                            </form>
+                        </div>
+                        <!-- Adyen Capture END -->
+                    [{/if}]
+                    [{if $edit->isAdyenRefundPossible()}]
+                    <!-- Adyen Refund -->
                     <div style="margin-top: 20px;">
-                        <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>
+                        <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_REFUNDMONEY"}]</h3>
                         <form action="[{$oViewConf->getSelfLink()}]" method="post">
                             [{$oViewConf->getHiddenSid()}]
-                            <input type="hidden" name="fnc" value="captureAdyenAmount" />
+                            <input type="hidden" name="fnc" value="refundAdyenAmount" />
                             <input type="hidden" name="oxid" value="[{$oxid}]" />
                             <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
                             <input type="text"
-                                   name="capture_amount"
-                                   value="[{$edit->getPossibleCaptureAmount()|escape|string_format:"%.2f"}]" />
+                                   name="refund_amount"
+                                   value="[{$edit->getPossibleRefundAmount()|escape|string_format:"%.2f"}]" />
                             <input type="hidden"
-                                   name="capture_currency"
+                                   name="refund_currency"
                                    value="[{$adyenCurrency}]" />
 
-                            <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CAPTURE"}]" />
+                            <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_REFUND"}]" />
                         </form>
                     </div>
-                    <!-- Adyen Capture END -->
-                [{/if}]
-                [{if $edit->isAdyenRefundPossible()}]
-                <!-- Adyen Refund -->
-                <div style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_REFUNDMONEY"}]</h3>
-                    <form action="[{$oViewConf->getSelfLink()}]" method="post">
-                        [{$oViewConf->getHiddenSid()}]
-                        <input type="hidden" name="fnc" value="refundAdyenAmount" />
-                        <input type="hidden" name="oxid" value="[{$oxid}]" />
-                        <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
-                        <input type="text"
-                               name="refund_amount"
-                               value="[{$edit->getPossibleRefundAmount()|escape|string_format:"%.2f"}]" />
-                        <input type="hidden"
-                               name="refund_currency"
-                               value="[{$adyenCurrency}]" />
-
-                        <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_REFUND"}]" />
-                    </form>
-                </div>
-                <!-- Adyen Refund END -->
-                [{/if}]
-                [{if $edit->isAdyenCancelPossible()}]
-                <!-- Adyen Cancel -->
-                <div style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CANCELORDER"}]</h3>
-                    <form action="[{$oViewConf->getSelfLink()}]" method="post">
-                        [{$oViewConf->getHiddenSid()}]
-                        <input type="hidden" name="fnc" value="cancelAdyenOrder" />
-                        <input type="hidden" name="oxid" value="[{$oxid}]" />
-                        <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
-                        <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CANCEL"}]" />
-                    </form>
-                </div>
-                <!-- Adyen Cancel END -->
-                [{/if}]
+                    <!-- Adyen Refund END -->
+                    [{/if}]
+                    [{if $edit->isAdyenCancelPossible()}]
+                    <!-- Adyen Cancel -->
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CANCELORDER"}]</h3>
+                        <form action="[{$oViewConf->getSelfLink()}]" method="post">
+                            [{$oViewConf->getHiddenSid()}]
+                            <input type="hidden" name="fnc" value="cancelAdyenOrder" />
+                            <input type="hidden" name="oxid" value="[{$oxid}]" />
+                            <input type="hidden" name="cl" value="[{$oViewConf->getTopActiveClassName()}]" />
+                            <input type="submit" value="[{oxmultilang ident="OSC_ADYEN_CANCEL"}]" />
+                        </form>
+                    </div>
+                    <!-- Adyen Cancel END -->
+                    [{/if}]
+                [{/oxhasrights}]
             </td>
             <!-- left side END, right side -->
             <td style="width:28%; padding:1%; vertical-align: text-top;">
