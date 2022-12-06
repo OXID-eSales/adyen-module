@@ -86,6 +86,7 @@ class Order extends Order_parent
 
     /**
      * @inheritDoc
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function cancelOrder(): void
     {
