@@ -33,6 +33,11 @@ class_alias(
 );
 
 class_alias(
+    \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class,
+    \OxidSolutionCatalysts\Adyen\Controller\Admin\OrderArticle_parent::class
+);
+
+class_alias(
     \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class,
     \OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList_parent::class
 );
