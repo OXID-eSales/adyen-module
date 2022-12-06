@@ -378,8 +378,8 @@ class AdyenHistory extends BaseModel
 
     protected function getFloatHistoryData(string $key): float
     {
-        /** @var null|float $value */
+        /** @var null|string $value */
         $value = $this->getFieldData($key);
-        return is_float($value) ? $value : 0;
+        return (float)($value ?? '0');
     }
 }
