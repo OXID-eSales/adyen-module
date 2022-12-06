@@ -93,8 +93,7 @@ class Order extends Order_parent
         if ($this->isAdyenRefundPossible()) {
             $amount = $this->getPossibleRefundAmount();
             $this->refundAdyenOrder($amount);
-        }
-        else {
+        } else {
             $this->cancelAdyenOrder();
         }
     }

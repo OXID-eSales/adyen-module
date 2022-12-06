@@ -156,7 +156,9 @@ class AdyenHistory extends BaseModel
         $resultDB = $queryBuilder->setParameters($parameters)
             ->execute();
         if (is_a($resultDB, Result::class)) {
-            $result = (float)$resultDB->fetchOne();
+            /** @var null|String  $result */
+            $result = $resultDB->fetchOne();
+            $result = (float)($result ?? '0');
         }
         return $result;
     }
