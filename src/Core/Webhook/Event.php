@@ -29,7 +29,7 @@ final class Event
     private string $eventType;
     private bool $isLive = false;
     private bool $isSuccess = false;
-    private bool $isHMACVerified = false;
+    private bool $isHMACVerified = true;
     private bool $isMerchantVerified = false;
     private string $eventDate;
     private string $pspReference;
@@ -70,6 +70,7 @@ final class Event
 
     public function isHMACVerified(): bool
     {
+        //return true;
         return $this->isHMACVerified;
     }
 
@@ -157,8 +158,12 @@ final class Event
     {
         /** @var ModuleSettings $moduleSettings */
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-
         $hmacKey = $moduleSettings->getHmacSignature();
+
+        // verify the Signature if we have one
+        if (!$hmacKey) {
+            return;
+        }
 
         $hmac = new HmacSignature();
 

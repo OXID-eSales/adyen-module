@@ -62,10 +62,7 @@ class ModuleSettings
         return (
             $this->getAPIKey() &&
             $this->getClientKey() &&
-            $this->getHmacSignature() &&
-            $this->getMerchantAccount() &&
-            $this->getNotificationUsername() &&
-            $this->getNotificationPassword()
+            $this->getMerchantAccount()
         );
     }
 
@@ -117,22 +114,6 @@ class ModuleSettings
     public function getMerchantAccount(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
-        /** @var null|string $settingValue */
-        $settingValue = $this->getSettingValue($key);
-        return (string)$settingValue;
-    }
-
-    public function getNotificationUsername(): string
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_USERNAME : self::LIVE_NOTIFICATION_USERNAME);
-        /** @var null|string $settingValue */
-        $settingValue = $this->getSettingValue($key);
-        return (string)$settingValue;
-    }
-
-    public function getNotificationPassword(): string
-    {
-        $key = ($this->isSandBoxMode() ? self::SANDBOX_NOTIFICATION_PASSWORD : self::LIVE_NOTIFICATION_PASSWORD);
         /** @var null|string $settingValue */
         $settingValue = $this->getSettingValue($key);
         return (string)$settingValue;
