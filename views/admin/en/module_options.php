@@ -32,15 +32,11 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_SandboxHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Merchant Account',
-    'SHOP_MODULE_osc_adyen_SandboxNotificationUsername' => 'Notification Username',
-    'SHOP_MODULE_osc_adyen_SandboxNotificationPassword' => 'Notification Password',
 
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'API Key',
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Merchant Account',
-    'SHOP_MODULE_osc_adyen_LiveNotificationUsername' => 'Notification Username',
-    'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Notification Password',
 
     $keyDelayCreditCard => $descCreditCard,
     $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',
