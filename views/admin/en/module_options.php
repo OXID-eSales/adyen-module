@@ -32,8 +32,6 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_SandboxHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Merchant Account',
-    'SHOP_MODULE_osc_adyen_SandboxNotificationUsername' => 'Notification Username',
-    'SHOP_MODULE_osc_adyen_SandboxNotificationPassword' => 'Notification Password',
     'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
     'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'The Live-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 
@@ -41,8 +39,6 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Merchant Account',
-    'SHOP_MODULE_osc_adyen_LiveNotificationUsername' => 'Notification Username',
-    'SHOP_MODULE_osc_adyen_LiveNotificationPassword' => 'Notification Password',
     'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
     'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'The Sandbox-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 

@@ -27,8 +27,6 @@ final class ViewConfigTest extends UnitTestCase
         $this->updateModuleSetting('osc_adyen_SandboxClientKey', 'SandboxClientKey');
         $this->updateModuleSetting('osc_adyen_SandboxHmacSignature', 'SandboxHmacSignature');
         $this->updateModuleSetting('osc_adyen_SandboxMerchantAccount', 'SandboxMerchantAccount');
-        $this->updateModuleSetting('osc_adyen_SandboxNotificationUsername', 'SandboxNotificationUsername');
-        $this->updateModuleSetting('osc_adyen_SandboxNotificationPassword', 'SandboxNotificationPassword');
 
         $viewConfig = $this->getViewConfig();
         $this->assertTrue($viewConfig->checkAdyenConfigHealth());
