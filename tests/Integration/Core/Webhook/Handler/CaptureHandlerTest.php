@@ -65,6 +65,7 @@ class CaptureHandlerTest extends UnitTestCase
         $event = oxNew(Event::class, $this->proceedNotificationData());
 
         $captureHandler = oxNew(CaptureHandler::class);
+        $captureHandler->setData($event);
         $captureHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);

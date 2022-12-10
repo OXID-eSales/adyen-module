@@ -75,6 +75,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
         $event = oxNew(Event::class, $this->proceedNotificationData());
 
         $authorizationHandler = oxNew(AuthorizationHandler::class);
+        $authorizationHandler->setData($event);
         $authorizationHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);

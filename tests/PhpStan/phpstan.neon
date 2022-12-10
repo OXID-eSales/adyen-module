@@ -5,6 +5,7 @@ parameters:
     stubFiles:
         - stubs/BasketModel.stub
         - stubs/OrderController.stub
+        - stubs/OrderArticleController.stub
         - stubs/OrderListController.stub
         - stubs/OrderModel.stub
         - stubs/PaymentController.stub

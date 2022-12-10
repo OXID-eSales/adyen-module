@@ -12,9 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 
-final class CaptureHandler extends WebhookHandlerBase
+final class RefundHandler extends WebhookHandlerBase
 {
-    public const CAPTURE_EVENT_CODE = "CAPTURE";
+    public const REFUND_EVENT_CODE = "REFUND";
 
     /**
      * @param Event $event
@@ -23,18 +23,15 @@ final class CaptureHandler extends WebhookHandlerBase
      */
     protected function additionalUpdates(Event $event): void
     {
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
-        $order = $this->order;
-        $order->markAdyenOrderAsPaid();
     }
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_CAPTURED;
+        return Module::ADYEN_STATUS_REFUNDED;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_CAPTURE;
+        return Module::ADYEN_ACTION_REFUND;
     }
 }

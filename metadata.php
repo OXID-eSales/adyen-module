@@ -7,6 +7,7 @@
 
 use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
+use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderArticle;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
@@ -51,6 +52,7 @@ $aModule = [
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => OrderArticle::class,
         // frontend-controller
         \OxidEsales\Eshop\Application\Controller\OrderController::class => OrderController::class,
         \OxidEsales\Eshop\Application\Controller\PaymentController::class => PaymentController::class,
@@ -184,18 +186,6 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxNotificationUsername',
-            'type' => 'str',
-            'value' => ''
-        ],
-        [
-            'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxNotificationPassword',
-            'type' => 'str',
-            'value' => ''
-        ],
-        [
-            'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveAPIKey',
             'type' => 'str',
             'value' => ''
@@ -220,18 +210,6 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveNotificationUsername',
-            'type' => 'str',
-            'value' => ''
-        ],
-        [
-            'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveNotificationPassword',
-            'type' => 'str',
-            'value' => ''
-        ],
-        [
-            'group' => 'osc_adyen_CaptureDelay',
             'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,

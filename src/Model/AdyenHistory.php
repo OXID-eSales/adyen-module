@@ -139,8 +139,7 @@ class AdyenHistory extends BaseModel
 
         $parameters = [
             'pspReference' => $pspReference,
-            'adyenAction' => $action,
-            'adyenStatus' => $status
+            'adyenAction' => $action
         ];
 
         if ($status) {
@@ -157,8 +156,9 @@ class AdyenHistory extends BaseModel
         $resultDB = $queryBuilder->setParameters($parameters)
             ->execute();
         if (is_a($resultDB, Result::class)) {
+            /** @var null|String  $result */
             $result = $resultDB->fetchOne();
-            $result = is_float($result) ? $result : 0;
+            $result = (float)($result ?? '0');
         }
         return $result;
     }
@@ -174,7 +174,7 @@ class AdyenHistory extends BaseModel
             ->from($this->getCoreTableName())
             ->setMaxResults(1)
             ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspReference')
-            ->orderBy('oxtimestamp', 'asc');
+            ->orderBy('oxtimestamp', 'desc');
 
         $parameters = [
             'pspReference' => $pspReference
@@ -378,8 +378,8 @@ class AdyenHistory extends BaseModel
 
     protected function getFloatHistoryData(string $key): float
     {
-        /** @var null|float $value */
+        /** @var null|string $value */
         $value = $this->getFieldData($key);
-        return is_float($value) ? $value : 0;
+        return (float)($value ?? '0');
     }
 }

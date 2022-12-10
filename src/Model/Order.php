@@ -16,6 +16,8 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
+use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -50,6 +52,25 @@ class Order extends Order_parent
     }
 
     /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function isAdyenOrder(): bool
+    {
+        return (
+            Module::isAdyenPayment($this->getAdyenOrderData('oxpaymenttype')) &&
+            $this->getAdyenPSPReference()
+        );
+    }
+
+    public function isAdyenOrderPaid(): bool
+    {
+        return (
+            'OK' === $this->getFieldData('oxtransstatus') &&
+            !str_contains($this->getAdyenOrderData('oxpaid'), '0000')
+        );
+    }
+
+    /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -65,40 +86,40 @@ class Order extends Order_parent
 
     /**
      * @inheritDoc
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function cancelOrder(): void
     {
         parent::cancelOrder();
-        if ($this->isAdyenCancelPossible()) {
-            // Adyen References are Strings
-            $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
-            $pspReference = $this->getAdyenOrderData('adyenpspreference');
-
-            $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
-            $success = $paymentService->doAdyenCancel(
-                $pspReference,
-                $reference
-            );
-
-            if ($success) {
-                $cancelResult = $paymentService->getCancelResult();
-
-                // everything is fine, we can save the references
-                if (isset($cancelResult['paymentPspReference'])) {
-                    $adyenHistory = oxNew(AdyenHistory::class);
-                    $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
-                    $adyenHistory->setPSPReference($cancelResult['pspReference']);
-                    $adyenHistory->setOrderId($this->getId());
-                    $adyenHistory->setPrice((float)$this->getTotalOrderSum());
-                    $adyenHistory->setCurrency($this->getAdyenOrderData('oxcurrency'));
-                    if (isset($cancelResult['status'])) {
-                        $adyenHistory->setAdyenStatus($cancelResult['status']);
-                    }
-                    $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CANCEL);
-                    $adyenHistory->save();
-                }
-            }
+        if ($this->isAdyenRefundPossible()) {
+            $amount = $this->getPossibleRefundAmount();
+            $this->refundAdyenOrder($amount);
+        } else {
+            $this->cancelAdyenOrder();
         }
+    }
+
+    public function isAdyenCapturePossible(): bool
+    {
+        $result = false;
+        if ($this->isAdyenOrder()) {
+            /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
+            $payment = oxNew(Payment::class);
+            $payment->load($this->getAdyenOrderData('oxpaymenttype'));
+            $result = (
+                $payment->isAdyenManualCapture() &&
+                $this->getPossibleCaptureAmount() > 0
+            );
+        }
+        return $result;
+    }
+
+    public function isAdyenRefundPossible(): bool
+    {
+        return (
+            $this->isAdyenOrder() &&
+            $this->getPossibleRefundAmount() > 0
+        );
     }
 
     public function isAdyenCancelPossible(): bool
@@ -118,20 +139,146 @@ class Order extends Order_parent
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function isAdyenOrder(): bool
+    public function captureAdyenOrder(float $amount): void
     {
-        return (
-            Module::isAdyenPayment($this->getAdyenOrderData('oxpaymenttype')) &&
-            $this->getAdyenPSPReference()
+        if (!$this->isAdyenCapturePossible()) {
+            return;
+        }
+
+        $pspReference = $this->getAdyenPspReference();
+        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+
+        $possibleAmount = $this->getPossibleCaptureAmount();
+        $amount = min($amount, $possibleAmount);
+
+        $currency = $this->getAdyenOrderData('oxcurrency');
+
+        $paymentService = $this->getServiceFromContainer(PaymentCapture::class);
+        $success = $paymentService->doAdyenCapture(
+            $amount,
+            $pspReference,
+            $reference
         );
+
+        if ($success) {
+            $captureResult = $paymentService->getCaptureResult();
+
+            // everything is fine, we can save the references
+            if (isset($captureResult['paymentPspReference'])) {
+                $this->setAdyenHistoryEntry(
+                    $captureResult['pspReference'],
+                    $captureResult['paymentPspReference'],
+                    $this->getId(),
+                    $amount,
+                    $currency,
+                    $captureResult['status'] ?? "",
+                    Module::ADYEN_ACTION_CAPTURE
+                );
+            }
+        }
     }
 
-    public function isAdyenOrderPaid(): bool
+    public function cancelAdyenOrder(): void
     {
-        return (
-            'OK' === $this->getFieldData('oxtransstatus') &&
-            !str_contains($this->getAdyenOrderData('oxpaid'), '0000')
+        if (!$this->isAdyenCancelPossible()) {
+            return;
+        }
+
+        // Adyen References are Strings
+        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+        $pspReference = $this->getAdyenOrderData('adyenpspreference');
+
+        $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+        $success = $paymentService->doAdyenCancel(
+            $pspReference,
+            $reference
         );
+
+        if ($success) {
+            $cancelResult = $paymentService->getCancelResult();
+
+            // everything is fine, we can save the references
+            if (isset($cancelResult['paymentPspReference'])) {
+                $adyenHistory = oxNew(AdyenHistory::class);
+                $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
+                $adyenHistory->setPSPReference($cancelResult['pspReference']);
+                $adyenHistory->setOrderId($this->getId());
+                $adyenHistory->setPrice((float)$this->getTotalOrderSum());
+                $adyenHistory->setCurrency($this->getAdyenOrderData('oxcurrency'));
+                if (isset($cancelResult['status'])) {
+                    $adyenHistory->setAdyenStatus($cancelResult['status']);
+                }
+                $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_CANCEL);
+                $adyenHistory->save();
+            }
+        }
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function refundAdyenOrder(float $amount): void
+    {
+        if (!$this->isAdyenRefundPossible()) {
+            return;
+        }
+
+        $pspReference = $this->getAdyenPspReference();
+        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+
+        $possibleAmount = $this->getPossibleRefundAmount();
+        $amount = min($amount, $possibleAmount);
+
+        $currency = $this->getAdyenOrderData('oxcurrency');
+
+        $paymentService = $this->getServiceFromContainer(PaymentRefund::class);
+        $success = $paymentService->doAdyenRefund(
+            $amount,
+            $pspReference,
+            $reference
+        );
+
+        if ($success) {
+            $refundResult = $paymentService->getRefundResult();
+
+            // everything is fine, we can save the references
+            if (isset($refundResult['paymentPspReference'])) {
+                $this->setAdyenHistoryEntry(
+                    $refundResult['pspReference'],
+                    $refundResult['paymentPspReference'],
+                    $this->getId(),
+                    $amount,
+                    $currency,
+                    $refundResult['status'] ?? "",
+                    Module::ADYEN_ACTION_REFUND
+                );
+            }
+        }
+    }
+
+    public function getPossibleCaptureAmount(): float
+    {
+        $result = 0;
+        if ($this->isAdyenOrder()) {
+            $pspReference = $this->getAdyenPspReference();
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+            $result = (float)$this->getTotalOrderSum() - $capturedAmount;
+        }
+        return $result;
+    }
+
+    public function getPossibleRefundAmount(): float
+    {
+        $result = 0;
+        if ($this->isAdyenOrder()) {
+            $pspReference = $this->getAdyenPspReference();
+            $adyenHistory = oxNew(AdyenHistory::class);
+            $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
+            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
+            $result = $capturedAmount - $refundedAmount;
+        }
+        return $result;
     }
 
     public function getAdyenPaymentName(): string
@@ -234,6 +381,8 @@ class Order extends Order_parent
         return parent::delete($oxid);
     }
 
+
+
     protected function getAdyenOrderData(string $key): string
     {
         /** @var null|string $value */
@@ -246,5 +395,25 @@ class Order extends Order_parent
         /** @var null|float $value */
         $value = $this->getFieldData($key);
         return is_float($value) ? $value : 0;
+    }
+
+    protected function setAdyenHistoryEntry(
+        string $pspReference,
+        string $parentPspReference,
+        string $orderId,
+        float $amount,
+        string $currency,
+        string $status,
+        string $action
+    ): bool {
+        $adyenHistory = oxNew(AdyenHistory::class);
+        $adyenHistory->setPSPReference($pspReference);
+        $adyenHistory->setParentPSPReference($parentPspReference);
+        $adyenHistory->setOrderId($orderId);
+        $adyenHistory->setPrice($amount);
+        $adyenHistory->setCurrency($currency);
+        $adyenHistory->setAdyenStatus($status);
+        $adyenHistory->setAdyenAction($action);
+        return (bool) $adyenHistory->save();
     }
 }

@@ -9,10 +9,8 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
-use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidEsales\Eshop\Application\Model\Order;
 
 final class AuthorizationHandler extends WebhookHandlerBase
 {
@@ -23,33 +21,39 @@ final class AuthorizationHandler extends WebhookHandlerBase
 
     /**
      * @param Event $event
-     * @param Order $order
      * @return void
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function additionalUpdates(Event $event, Order $order): void
+    public function additionalUpdates(Event $event): void
     {
-        /** @var null|string $paymentId */
-        $paymentId = $order->getFieldData('oxpaymenttype');
-        if (is_null($paymentId)) {
-            return;
-        }
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
-        $payment = oxNew(Payment::class);
-        $payment->load($paymentId);
-        if ($payment->isAdyenImmediateCapture()) {
+        /** @var null|\OxidSolutionCatalysts\Adyen\Model\Payment $payment */
+        $payment = $this->payment;
+        if (!is_null($payment) && $payment->isAdyenImmediateCapture()) {
             /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+            $order = $this->order;
             $order->markAdyenOrderAsPaid();
+
+            $this->setHistoryEntry(
+                $order->getId(),
+                $this->shopId,
+                $event->getAmountValue(),
+                $event->getAmountCurrency(),
+                $event->getEventDate(),
+                $this->pspReference,
+                $this->parentPspReference,
+                Module::ADYEN_STATUS_CAPTURED,
+                Module::ADYEN_ACTION_CAPTURE
+            );
         }
     }
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_AUTHORISED;
+        return Module::ADYEN_ACTION_AUTHORIZE;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_AUTHORIZE;
+        return Module::ADYEN_STATUS_AUTHORISED;
     }
 }
