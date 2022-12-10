@@ -27,4 +27,9 @@ class WebhookEventException extends Exception
     {
         return new self('Can not get request data');
     }
+
+    public static function hmacValidationFailed(): self
+    {
+        return new self('HMAC Signature Validation F');
+    }
 }

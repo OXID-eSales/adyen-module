@@ -45,6 +45,10 @@ class AdyenWebhookController extends WidgetController
             $eventDispatcher = oxNew(EventDispatcher::class);
             $eventDispatcher->dispatch($event);
 
+            if (!$event->isHMACVerified()) {
+                throw WebhookEventException::hmacValidationFailed();
+            }
+
             $this->sendAccceptedResponse();
         } catch (WebhookEventTypeException | \Exception $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);

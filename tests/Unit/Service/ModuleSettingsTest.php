@@ -86,10 +86,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                     ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
                     ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
-                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
                     ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
-                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
-                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
                 ],
                 'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
@@ -99,10 +96,7 @@ final class ModuleSettingsTest extends UnitTestCase
                     ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                     ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
                     ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
-                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
                     ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
-                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
-                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
                 ],
                 'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
@@ -206,42 +200,6 @@ final class ModuleSettingsTest extends UnitTestCase
                 ],
                 'gettingMethod' => 'getMerchantAccount',
                 'gettingValue' => 'liveMerchantAccount'
-            ],
-            [
-                'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
-                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
-                ],
-                'gettingMethod' => 'getNotificationUsername',
-                'gettingValue' => 'sandboxNotificationUsername'
-            ],
-            [
-                'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxNotificationUsername', Module::MODULE_ID, 'sandboxNotificationUsername'],
-                    ['osc_adyen_LiveNotificationUsername', Module::MODULE_ID, 'liveNotificationUsername'],
-                ],
-                'gettingMethod' => 'getNotificationUsername',
-                'gettingValue' => 'liveNotificationUsername'
-            ],
-            [
-                'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
-                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
-                ],
-                'gettingMethod' => 'getNotificationPassword',
-                'gettingValue' => 'sandboxNotificationPassword'
-            ],
-            [
-                'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxNotificationPassword', Module::MODULE_ID, 'sandboxNotificationPassword'],
-                    ['osc_adyen_LiveNotificationPassword', Module::MODULE_ID, 'liveNotificationPassword'],
-                ],
-                'gettingMethod' => 'getNotificationPassword',
-                'gettingValue' => 'liveNotificationPassword'
             ],
             [
                 'values' => [
