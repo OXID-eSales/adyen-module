@@ -185,7 +185,7 @@ $aModule = [
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_SANDBOX',
+            'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveAPIKey',
             'type' => 'str',
             'value' => ''
