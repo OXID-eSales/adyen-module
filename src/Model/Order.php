@@ -37,6 +37,8 @@ class Order extends Order_parent
 
     protected const PSPREFERENCEFIELD = 'adyenpspreference';
 
+    protected const ORDERREFERENCEFIELD = 'adyenorderreference';
+
     protected string $adyenPaymentName = '';
 
     private QueryBuilderFactoryInterface $queryBuilderFactory;
@@ -308,11 +310,28 @@ class Order extends Order_parent
         );
     }
 
-    public function createNumberForAdyenPayment(): string
+    public function getAdyenOrderReference(): string
     {
-        $this->_setNumber();
-        // Adyen References are Strings
-        return (string)$this->getFloatAdyenOrderData('oxordernr');
+        $orderReference = $this->getAdyenOrderData('adyenorderreference');
+        if (!$orderReference) {
+            $orderReference = Registry::getUtilsObject()->generateUId();
+            $this->setAdyenOrderReference($orderReference);
+        }
+        return $orderReference;
+    }
+
+    /**
+     * We need a reference for Adyen like the oxordernr. But even before the order even exists.
+     * Therefore, it should be possible to create a clear reference beforehand and then save it
+     * in the order later
+     */
+    public function setAdyenOrderReference(string $orderReference): void
+    {
+        $this->assign(
+            [
+                self::ORDERREFERENCEFIELD => $orderReference
+            ]
+        );
     }
 
     /**

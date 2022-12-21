@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
-use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
@@ -77,23 +76,30 @@ class Payment
 
     /**
      * @param double $amount Goods amount
-     * @param eShopOrder $order User ordering object
+     * @param string $reference Unique Order-Reference
      */
-    public function doAdyenAuthorization(float $amount, eShopOrder $order): bool
+    public function doAdyenAuthorization(float $amount, string $reference): bool
     {
-        $result = false;
-
-        /** @var Order $order */
-        $reference = $order->createNumberForAdyenPayment();
-
         $paymentState = $this->session->getPaymentState();
         // not necessary anymore, so cleanup
         $this->session->deletePaymentState();
 
+        return $this->collectPayments($amount, $reference, $paymentState);
+    }
+
+    /**
+     * @param double $amount Goods amount
+     * @param string $reference Unique Order-Reference
+     * @param array $paymentMethod
+     */
+    public function collectPayments(float $amount, string $reference, array $paymentMethod): bool
+    {
+        $result = false;
+
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
-        $payments->setPaymentMethod($paymentState);
+        $payments->setPaymentMethod($paymentMethod);
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

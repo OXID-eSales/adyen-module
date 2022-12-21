@@ -53,7 +53,10 @@ class PaymentGateway extends PaymentGateway_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $paymentService = $this->getServiceFromContainer(Payment::class);
         $context = $this->getServiceFromContainer(Context::class);
-        $success = $paymentService->doAdyenAuthorization($amount, $order);
+
+        /** @var Order $order */
+        $orderReference = $order->getAdyenOrderReference();
+        $success = $paymentService->doAdyenAuthorization($amount, $orderReference);
 
         if ($success) {
             $paymentResult = $paymentService->getPaymentResult();
@@ -62,7 +65,6 @@ class PaymentGateway extends PaymentGateway_parent
             if (isset($paymentResult['pspReference'])) {
                 $pspReference = $paymentResult['pspReference'];
 
-                /** @var Order $order */
                 $order->setAdyenPSPReference($pspReference);
                 $order->save();
 
