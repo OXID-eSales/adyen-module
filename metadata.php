@@ -209,7 +209,7 @@ $aModule = [
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_LIVE',
+            'group' => 'osc_adyen_CaptureDelay',
             'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
