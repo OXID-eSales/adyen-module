@@ -25,6 +25,7 @@ use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 trait AdyenAPI
 {
     use ServiceContainer;
+    use Json;
 
     protected ?AdyenAPIResponsePaymentMethods $paymentMethods = null;
 
@@ -35,8 +36,7 @@ trait AdyenAPI
      */
     public function getAdyenPaymentMethods(): string
     {
-        $result = json_encode($this->getAdyenPaymentMethodsRaw(), JSON_THROW_ON_ERROR);
-        return $result ?: '';
+        return $this->arrayToJson($this->getAdyenPaymentMethodsRaw());
     }
 
     public function existsAdyenPaymentMethods(): bool

@@ -4,9 +4,12 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 use OxidEsales\Eshop\Core\Header;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 class Response
 {
+    use Json;
+
     private const HEADER_OK = [
         'code' => 200,
         'status' => 'OK'
@@ -99,7 +102,6 @@ class Response
     }
 
     /**
-     * @throws \JsonException
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function sendJson(): void
@@ -111,10 +113,7 @@ class Response
         $header->setHeader('Status: ' . $this->status);
 
         Registry::getUtils()->showMessageAndExit(
-            json_encode(
-                $this->data,
-                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK
-            )
+            $this->arrayToJson($this->data)
         );
     }
 }
