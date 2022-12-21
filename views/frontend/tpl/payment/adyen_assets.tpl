@@ -7,10 +7,12 @@
       crossorigin="anonymous">
 [{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
 [{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]
+[{if $phpStorm}]<script>[{/if}]
 [{capture assign="adyenJS"}]
     [{if $oViewConf->getTopActiveClassName() == 'payment'}]
-        var adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
-        var nextStepEl = document.getElementById('paymentNextStepBottom');
+        const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
+
+        const nextStepEl = document.getElementById('paymentNextStepBottom');
         [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
         document.getElementsByName('paymentid').forEach(function (e) {
             e.addEventListener('change', function (event) {
@@ -144,4 +146,5 @@
     // Call adyenAsync
     adyenAsync();
 [{/capture}]
+[{if $phpStorm}]</script>[{/if}]
 [{oxscript add=$adyenJS}]
