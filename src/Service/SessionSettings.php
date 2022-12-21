@@ -11,14 +11,19 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 /**
  * @extendable-class
  */
 class SessionSettings
 {
+    use Json;
+
+    public const ADYEN_SESSION_ORDER_REFERENCE = 'sess_adyen_order_reference';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
@@ -28,7 +33,8 @@ class SessionSettings
 
     public function __construct(
         Session $session
-    ) {
+    )
+    {
         $this->session = $session;
     }
 
@@ -47,6 +53,25 @@ class SessionSettings
     public function deleteRedirctLink(): void
     {
         $this->removeSettingValue(self::ADYEN_SESSION_REDIRECTLINK_NAME);
+    }
+
+    public function createOrderReference(): string
+    {
+        $orderReference = Registry::getUtilsObject()->generateUId();
+        $this->saveSettingValue(self::ADYEN_SESSION_ORDER_REFERENCE, $orderReference);
+        return $orderReference;
+    }
+
+    public function getOrderReference(): string
+    {
+        /** @var null|string $orderReference */
+        $orderReference = $this->getSettingValue(self::ADYEN_SESSION_ORDER_REFERENCE);
+        return $orderReference ?? '';
+    }
+
+    public function deleteOrderReference(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_ORDER_REFERENCE);
     }
 
     public function setPaymentMethods(array $paymentMethods): void
@@ -79,8 +104,7 @@ class SessionSettings
         /** @var null|string $paymentStateJson */
         $paymentStateJson = $this->getSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
         $paymentStateJson = $paymentStateJson ?? '';
-        $paymentState = json_decode($paymentStateJson, true, 512, JSON_THROW_ON_ERROR);
-        return is_array($paymentState) ? $paymentState : [];
+        return $this->jsonToArray($paymentStateJson);
     }
 
     public function deletePaymentState(): void
