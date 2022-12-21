@@ -53,6 +53,13 @@ final class Version20220908162100 extends AbstractMigration
                 ['columnDefinition' => 'char(32) collate latin1_general_ci']
             );
         }
+        if (!$order->hasColumn('ADYENORDERREFERENCE')) {
+            $order->addColumn(
+                'ADYENORDERREFERENCE',
+                Types::STRING,
+                ['columnDefinition' => 'char(32) collate latin1_general_ci']
+            );
+        }
     }
 
     /**
