@@ -15,10 +15,13 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class ViewConfig extends ViewConfig_parent
 {
@@ -28,7 +31,7 @@ class ViewConfig extends ViewConfig_parent
 
     protected ModuleSettings $moduleSettings;
     protected Context $context;
-    protected Payment $adyenPayment;
+    protected PaymentMethods $adyenPaymentMethods;
     protected CountryRepository $countryRepository;
 
     /**
@@ -40,10 +43,13 @@ class ViewConfig extends ViewConfig_parent
 
         $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
         $this->context = $this->getServiceFromContainer(Context::class);
-        $this->adyenPayment = $this->getServiceFromContainer(Payment::class);
+        $this->adyenPaymentMethods = $this->getServiceFromContainer(PaymentMethods::class);
         $this->countryRepository = $this->getServiceFromContainer(CountryRepository::class);
     }
 
+    /**
+     * @throws AdyenException
+     */
     public function checkAdyenHealth(): bool
     {
         return (
@@ -109,7 +115,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function getAdyenPaymentMethods(): string
     {
-        return $this->arrayToJson($this->adyenPayment->getAdyenPaymentMethods());
+        return $this->arrayToJson($this->adyenPaymentMethods->getAdyenPaymentMethods());
     }
 
     /**
@@ -117,9 +123,13 @@ class ViewConfig extends ViewConfig_parent
      */
     public function existsAdyenPaymentMethods(): bool
     {
-        return (bool)count($this->adyenPayment->getAdyenPaymentMethods());
+        return (bool)count($this->adyenPaymentMethods->getAdyenPaymentMethods());
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenShopperLocale(): string
     {
         return $this->getServiceFromContainer(UserRepository::class)->getUserLocale();
@@ -145,5 +155,4 @@ class ViewConfig extends ViewConfig_parent
     {
         return $this->context->getActiveCurrencyName();
     }
-
 }
