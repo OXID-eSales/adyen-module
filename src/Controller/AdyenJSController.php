@@ -8,12 +8,12 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
-use OxidSolutionCatalysts\Adyen\Traits\AdyenAPI;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 class AdyenJSController extends FrontendController
 {
-    use AdyenAPI;
+    use ServiceContainer;
     use Json;
 
     /**
