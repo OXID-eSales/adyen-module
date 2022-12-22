@@ -24,12 +24,12 @@ class ModuleSettings
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
     public const SANDBOX_HMAC_SIGNATURE = 'osc_adyen_SandboxHmacSignature';
     public const SANDBOX_MERCHANT_ACCOUNT = 'osc_adyen_SandboxMerchantAccount';
-
+    public const SANDBOX_PAYPAL_MERCHANT_ID = 'osc_adyen_SandboxPayPalMerchantId';
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
     public const LIVE_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
-
+    public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
     public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
@@ -108,6 +108,14 @@ class ModuleSettings
     public function getMerchantAccount(): string
     {
         $key = ($this->isSandBoxMode() ? self::SANDBOX_MERCHANT_ACCOUNT : self::LIVE_MERCHANT_ACCOUNT);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
+    }
+
+    public function getPayPalMerchantId(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_PAYPAL_MERCHANT_ID : self::LIVE_PAYPAL_MERCHANT_ID);
         /** @var null|string $settingValue */
         $settingValue = $this->getSettingValue($key);
         return (string)$settingValue;

@@ -32,11 +32,15 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_SandboxHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Merchant Account',
+    'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'The Live-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'API Key',
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Merchant Account',
+    'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'The Sandbox-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 
     $keyDelayCreditCard => $descCreditCard,
     $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',

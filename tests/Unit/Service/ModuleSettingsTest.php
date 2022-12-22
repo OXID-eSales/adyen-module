@@ -203,6 +203,24 @@ final class ModuleSettingsTest extends UnitTestCase
             ],
             [
                 'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    ['osc_adyen_SandboxPayPalMerchantId', Module::MODULE_ID, 'sandboxPayPalMerchantId'],
+                    ['osc_adyen_LivePayPalMerchantId', Module::MODULE_ID, 'livePayPalMerchantId'],
+                ],
+                'gettingMethod' => 'getPayPalMerchantId',
+                'gettingValue' => 'sandboxPayPalMerchantId'
+            ],
+            [
+                'values' => [
+                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    ['osc_adyen_SandboxPayPalMerchantId', Module::MODULE_ID, 'sandboxPayPalMerchantId'],
+                    ['osc_adyen_LivePayPalMerchantId', Module::MODULE_ID, 'livePayPalMerchantId'],
+                ],
+                'gettingMethod' => 'getPayPalMerchantId',
+                'gettingValue' => 'livePayPalMerchantId'
+            ],
+            [
+                'values' => [
                     ['osc_adyen_LoggingActive', Module::MODULE_ID, true],
                 ],
                 'gettingMethod' => 'isLoggingActive',
