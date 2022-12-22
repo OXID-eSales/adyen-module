@@ -18,13 +18,17 @@ trait Json
 {
     protected function getJsonPostData(): string
     {
-        return file_get_contents('php://input');
+        $result = file_get_contents('php://input');
+        return $result ?: '';
     }
 
     protected function jsonToArray(string $json): array
     {
         try {
             $result = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($result)) {
+                throw new JsonException;
+            }
         } catch (JsonException $exception) {
             $result = [];
         }

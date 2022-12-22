@@ -33,8 +33,7 @@ class SessionSettings
 
     public function __construct(
         Session $session
-    )
-    {
+    ) {
         $this->session = $session;
     }
 

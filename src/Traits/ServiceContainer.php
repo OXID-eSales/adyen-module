@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Traits;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Convenience trait to fetch services from DI container.
@@ -18,6 +20,14 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
  */
 trait ServiceContainer
 {
+    /**
+     * @template T
+     * @psalm-param class-string<T> $serviceName
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     *
+     * @return T
+     */
     protected function getServiceFromContainer(string $serviceName)
     {
         return ContainerFactory::getInstance()

@@ -23,6 +23,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 /**
  *
  * @mixin \OxidEsales\Eshop\Application\Model\Order
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Order extends Order_parent
 {
