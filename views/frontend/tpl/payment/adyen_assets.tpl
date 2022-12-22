@@ -19,6 +19,12 @@
                 nextStepEl.disabled = false;
             });
         });
+    [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
+        [{assign var="orderPaymentPayPal" value=false}]
+        [{assign var="paymentID" value=$payment->getId()}]
+        [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+            [{assign var="orderPaymentPayPal" value=true}]
+        [{/if}]
     [{/if}]
     const adyenAsync = async function () {
         const configuration = {
@@ -29,7 +35,18 @@
                 enabled: [{if $oViewConf->isAdyenLoggingActive()}]true[{else}]false[{/if}]
             },
             locale: '[{$oViewConf->getAdyenShopperLocale()}]',
-            paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
+            [{if $oViewConf->getTopActiveClassName() == 'payment'}]
+                paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
+            [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
+                countryCode: '[{$oViewConf->getAdyenCountryIso()}]',
+                amount: {
+                    currency: '[{$oViewConf->getAdyenAmountCurrency()}]',
+                    value: [{$oViewConf->getAdyenAmountValue()}]
+                },
+                [{if $orderPaymentPayPal}]
+                    merchantId: '[{$oViewConf->getAdyenPayPalMerchantId()}]',
+                [{/if}]
+            [{/if}]
             onError: (error, component) => {
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.error(error.name, error.message, error.stack, component);
@@ -53,11 +70,12 @@
                 [{if $oViewConf->isAdyenLoggingActive()}]
                     console.log('onSubmit:', state);
                 [{/if}]
+                component.setStatus('loading');
                 makePayment(state.data)
                 .then(response => {
                     if (response.action) {
                         // Drop-in handles the action object from the /payments response
-                        dropin.handleAction(response.action);
+                        component.handleAction(response.action);
                     } else {
                         // Your function to show the final result to the shopper
                         //showFinalResult(response);
@@ -86,8 +104,7 @@
                         [{/if}]
                     [{/foreach}]
                 [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
-                    [{assign var="paymentID" value=$payment->getId()}]
-                    [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+                    [{if $orderPaymentPayPal}]
                         paypal: {
                             intent: "authorize",
                             cspNonce: "MY_CSP_NONCE",
@@ -119,8 +136,7 @@
                 [{/if}]
             [{/foreach}]
         [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
-            [{assign var="paymentID" value=$payment->getId()}]
-            [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+            [{if $orderPaymentPayPal}]
                 const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
             [{/if}]
         [{/if}]
