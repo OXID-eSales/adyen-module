@@ -417,7 +417,7 @@ class Order extends Order_parent
         return is_float($value) ? $value : 0;
     }
 
-    protected function setAdyenHistoryEntry(
+    public function setAdyenHistoryEntry(
         string $pspReference,
         string $parentPspReference,
         string $orderId,
