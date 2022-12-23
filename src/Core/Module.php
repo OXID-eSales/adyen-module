@@ -53,8 +53,8 @@ final class Module
     public const ADYEN_STATUS_REFUNDEDREVERSED = 'refundedreversed';
     public const ADYEN_STATUS_REFUNDSCHEDULED = 'refundscheduled';
     public const ADYEN_STATUS_SENTFORREFUND = 'sentforrefund';
-
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
+    public const ADYEN_HTMLPARAM_PSPREFERENCE_NAME = 'adyenPspReference';
 
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,

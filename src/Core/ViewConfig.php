@@ -103,6 +103,11 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME;
     }
 
+    public function getAdyenHtmlParamPspReferenceName(): string
+    {
+        return Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME;
+    }
+
     public function getWebhookControllerUrl(): string
     {
         return $this->context->getWebhookControllerUrl();

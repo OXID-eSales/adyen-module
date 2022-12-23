@@ -5,3 +5,5 @@
          data-paymentid="payment_[{$sPaymentID}]"
     ></div>
 </div>
+[{assign var="adyenPspReferenceIdEl" value=$oViewConf->getAdyenHtmlParamPspReferenceName()}]
+<input id="[{$adyenPspReferenceIdEl}]" type="hidden" name="[{$adyenPspReferenceIdEl}]" value="" />
