@@ -31,6 +31,7 @@
         [{/if}]
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
         const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
+        const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
         const submitForm = document.getElementById('orderConfirmAgbBottom');
     [{/if}]
     const adyenAsync = async function () {
@@ -99,6 +100,7 @@
                     if (response.pspReference) {
                         adyenPspReferenceEl.value = response.pspReference;
                         adyenResultCodeEl.value = response.resultCode;
+                        adyenAmountCurrencyEl.value = response.amount.currency;
                         submitForm.submit();
                     }
                 })

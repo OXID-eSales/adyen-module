@@ -56,6 +56,7 @@ final class Module
     public const ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME = 'adyenStateDataPaymentMethod';
     public const ADYEN_HTMLPARAM_PSPREFERENCE_NAME = 'adyenPspReference';
     public const ADYEN_HTMLPARAM_RESULTCODE_NAME = 'adyenResultCode';
+    public const ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME = 'adyenAmountCurrency';
 
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
