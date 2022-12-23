@@ -15,7 +15,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
 /**
  * @extendable-class
  */
-class PaymentCancel
+class PaymentCancel extends PaymentBase
 {
     private array $cancelResult = [];
 
@@ -55,7 +55,6 @@ class PaymentCancel
         $cancels->setPspReference($pspReference);
         $cancels->setMerchantAccount($this->moduleSettings->getMerchantAccount());
 
-
         try {
             $resultCancel = $this->APICancels->setCancel($cancels);
             if (is_array($resultCancel)) {
@@ -64,6 +63,7 @@ class PaymentCancel
             }
         } catch (\Adyen\AdyenException $exception) {
             Registry::getLogger()->error("Error on setCancel call.", [$exception]);
+            $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }
         return $result;
     }

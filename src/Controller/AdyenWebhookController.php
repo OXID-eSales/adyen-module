@@ -15,12 +15,15 @@ use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\EventDispatcher;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventException;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
+use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 /**
  * Class AdyenWebhookController
  */
 class AdyenWebhookController extends WidgetController
 {
+    use Json;
+
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -30,13 +33,12 @@ class AdyenWebhookController extends WidgetController
         parent::init();
 
         try {
-            $request = file_get_contents('php://input');
+            $request = $this->getJsonPostData();
             if (!is_string($request)) {
                 throw WebhookEventException::dataNotFound();
             }
-
-            $data = json_decode($request, true, 512, JSON_THROW_ON_ERROR);
-            if (!is_array($data)) {
+            $data = $this->jsonToArray($this->getJsonPostData());
+            if (empty($data)) {
                 throw WebhookEventException::dataNotFound();
             }
 

@@ -14,7 +14,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Core\Config as EshopCoreConfig;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\Eshop\Application\Model\Country;
 
 /**
  * @extendable-class

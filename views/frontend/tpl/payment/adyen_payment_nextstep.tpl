@@ -1,2 +1,2 @@
-[{assign var="stateName" value=$oViewConf->getAdyenHtmlParamStateName()}]
-<input id="[{$stateName}]" type="hidden" name="[{$stateName}]" value="" />
+[{assign var="adyenStateEl" value=$oViewConf->getAdyenHtmlParamStateName()}]
+<input id="[{$adyenStateEl}]" type="hidden" name="[{$adyenStateEl}]" value="" />

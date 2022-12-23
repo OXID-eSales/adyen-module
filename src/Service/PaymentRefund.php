@@ -18,7 +18,7 @@ use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 /**
  * @extendable-class
  */
-class PaymentRefund
+class PaymentRefund extends PaymentBase
 {
     use AdyenPayment;
 
@@ -82,6 +82,7 @@ class PaymentRefund
             }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setRefund call.", [$exception]);
+            $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }
         return $result;
     }

@@ -11,4 +11,5 @@ $aLang = [
     'charset' => 'UTF-8',
     'OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE' => 'This order was paid with',
     'OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE' => 'The reference ID is',
+    'OSC_ADYEN_BUY_NOW_PAY_WITH' => 'Buy now and pay with',
 ];

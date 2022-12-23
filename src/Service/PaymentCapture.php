@@ -18,7 +18,7 @@ use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 /**
  * @extendable-class
  */
-class PaymentCapture
+class PaymentCapture extends PaymentBase
 {
     use AdyenPayment;
 
@@ -82,6 +82,7 @@ class PaymentCapture
             }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on setCapture call.", [$exception]);
+            $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }
         return $result;
     }

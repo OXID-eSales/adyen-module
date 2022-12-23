@@ -5,6 +5,7 @@
  * See LICENSE file for license details.
  */
 
+use OxidSolutionCatalysts\Adyen\Controller\AdyenJSController;
 use OxidSolutionCatalysts\Adyen\Controller\AdyenWebhookController;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderArticle;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\OrderList;
@@ -43,7 +44,6 @@ $aModule = [
     'email' => 'support@oxid-esales.com',
     'extend' => [
         // model
-        \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
@@ -64,6 +64,7 @@ $aModule = [
         // admin
         'adyen_admin_order' => AdminOrderController::class,
         // frontend
+        'AdyenJSController' => AdyenJSController::class,
         'AdyenWebhookController' => AdyenWebhookController::class
     ],
     'templates' => [
