@@ -11,13 +11,14 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Adyen\AdyenException;
 use Exception;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 
 /**
  * @extendable-class
  */
-class PaymentMethods
+class PaymentMethods extends PaymentBase
 {
     use AdyenPayment;
 
@@ -47,9 +48,6 @@ class PaymentMethods
         $this->countryRepository = $countryRepository;
     }
 
-    /**
-     * @throws AdyenException
-     */
     public function collectAdyenPaymentMethods(): AdyenAPIResponsePaymentMethods
     {
         $paymentMethods = oxNew(AdyenAPIPaymentMethods::class);
@@ -62,7 +60,12 @@ class PaymentMethods
         $paymentMethods->setShopperLocale($this->userRepository->getUserLocale());
         $paymentMethods->setMerchantAccount($this->moduleSettings->getMerchantAccount());
 
-        $this->APIPaymentMethods->loadAdyenPaymentMethods($paymentMethods);
+        try {
+            $this->APIPaymentMethods->loadAdyenPaymentMethods($paymentMethods);
+        } catch (Exception $exception) {
+            Registry::getLogger()->error("Error on loadAdyenPaymentMethods call.", [$exception]);
+            $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
+        }
 
         return $this->APIPaymentMethods;
     }
