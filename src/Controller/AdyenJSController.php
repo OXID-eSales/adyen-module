@@ -6,6 +6,7 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
@@ -28,19 +29,39 @@ class AdyenJSController extends FrontendController
         /** @var Basket $basket */
         $basket = Registry::getSession()->getBasket();
         $amount = $basket->getPrice()->getBruttoPrice();
-        $paymentMethod = $this->jsonToArray($this->getJsonPostData());
+        $postData = $this->jsonToArray($this->getJsonPostData());
 
-        if (!$amount || !isset($paymentMethod['paymentMethod'])) {
+        if (!$amount || !isset($postData['paymentMethod'])) {
             $response->setNotFound()->sendJson();
         }
 
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentService->collectPayments($amount, $reference, $paymentMethod['paymentMethod']['paymentMethod']);
+        $paymentService->collectPayments($amount, $reference, $postData['paymentMethod']['paymentMethod']);
         $payments = $paymentService->getPaymentResult();
 
         $response->setData(
             $payments
+        )->sendJson();
+    }
+
+    public function details(): void
+    {
+        $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
+
+        $postData = $this->jsonToArray($this->getJsonPostData());
+
+        //if (!isset($postData['paymentMethod'])) {
+        //    $response->setNotFound()->sendJson();
+        //}
+
+        /** @var PaymentDetails $paymentService */
+        $paymentService = $this->getServiceFromContainer(Payment::class);
+        $paymentService->collectPaymentDetails($postData);
+        $paymentDetails = $paymentService->getPaymentDetailsResult();
+
+        $response->setData(
+            $paymentDetails
         )->sendJson();
     }
 }
