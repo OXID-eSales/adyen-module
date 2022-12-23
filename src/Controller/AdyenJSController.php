@@ -51,12 +51,12 @@ class AdyenJSController extends FrontendController
 
         $postData = $this->jsonToArray($this->getJsonPostData());
 
-        //if (!isset($postData['paymentMethod'])) {
-        //    $response->setNotFound()->sendJson();
-        //}
+        if (!isset($postData['details'])) {
+            $response->setNotFound()->sendJson();
+        }
 
         /** @var PaymentDetails $paymentService */
-        $paymentService = $this->getServiceFromContainer(Payment::class);
+        $paymentService = $this->getServiceFromContainer(PaymentDetails::class);
         $paymentService->collectPaymentDetails($postData);
         $paymentDetails = $paymentService->getPaymentDetailsResult();
 
