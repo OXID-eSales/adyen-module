@@ -27,7 +27,7 @@ trait Json
         try {
             $result = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
             if (!is_array($result)) {
-                throw new JsonException;
+                throw new JsonException();
             }
         } catch (JsonException $exception) {
             $result = [];
