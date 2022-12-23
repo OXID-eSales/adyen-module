@@ -18,14 +18,9 @@ use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 /**
  * @extendable-class
  */
-class Payment
+class Payment extends PaymentBase
 {
     use AdyenPayment;
-
-    public const PAYMENT_ERROR_NONE = 'ADYEN_PAYMENT_ERROR_NONE';
-    public const PAYMENT_ERROR_GENERIC = 'ADYEN_PAYMENT_ERROR_GENERIC';
-
-    private string $executionError = self::PAYMENT_ERROR_NONE;
 
     private array $paymentResult = [];
 
@@ -49,16 +44,6 @@ class Payment
         $this->APIPayments = $APIPayments;
     }
 
-    public function setPaymentExecutionError(string $text): void
-    {
-        $this->executionError = $text;
-    }
-
-    public function getPaymentExecutionError(): string
-    {
-        return $this->executionError;
-    }
-
     public function setPaymentResult(array $paymentResult): void
     {
         $this->paymentResult = $paymentResult;
@@ -72,6 +57,7 @@ class Payment
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
+     * @throws \JsonException
      */
     public function doAdyenAuthorization(float $amount, string $reference): bool
     {
