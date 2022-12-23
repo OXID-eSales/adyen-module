@@ -44,7 +44,6 @@ $aModule = [
     'email' => 'support@oxid-esales.com',
     'extend' => [
         // model
-        \OxidEsales\Eshop\Application\Model\Basket::class => Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
