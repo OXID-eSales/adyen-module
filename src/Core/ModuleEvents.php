@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 use Exception;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
@@ -49,10 +50,11 @@ final class ModuleEvents
         $activePaymentMethods = [];
         $paymentIds = array_keys(Module::PAYMENT_DEFINTIONS);
         foreach ($paymentIds as $paymentId) {
+            /** @var Payment $paymentMethod */
             $paymentMethod = oxNew(EshopModelPayment::class);
             if (
                 $paymentMethod->load($paymentId)
-                && $paymentMethod->getFieldData('oxactive')
+                && $paymentMethod->getAdyenBoolData('oxactive') === true
             ) {
                 $paymentMethod->assign([
                     'oxpayments__oxactive' => true

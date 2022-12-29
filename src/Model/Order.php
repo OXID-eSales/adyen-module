@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Model;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -18,6 +18,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
+use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -28,6 +29,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 class Order extends Order_parent
 {
     use ServiceContainer;
+    use DataGetter;
 
     /**
      * Payment needs redirect
@@ -60,7 +62,7 @@ class Order extends Order_parent
     public function isAdyenOrder(): bool
     {
         return (
-            Module::isAdyenPayment($this->getAdyenOrderData('oxpaymenttype')) &&
+            Module::isAdyenPayment($this->getAdyenStringData('oxpaymenttype')) &&
             $this->getAdyenPSPReference()
         );
     }
@@ -68,8 +70,8 @@ class Order extends Order_parent
     public function isAdyenOrderPaid(): bool
     {
         return (
-            'OK' === $this->getFieldData('oxtransstatus') &&
-            !str_contains($this->getAdyenOrderData('oxpaid'), '0000')
+            'OK' === $this->getAdyenStringData('oxtransstatus') &&
+            !str_contains($this->getAdyenStringData('oxpaid'), '0000')
         );
     }
 
@@ -106,9 +108,9 @@ class Order extends Order_parent
     {
         $result = false;
         if ($this->isAdyenOrder()) {
-            /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
-            $payment = oxNew(Payment::class);
-            $payment->load($this->getAdyenOrderData('oxpaymenttype'));
+            /** @var Payment $payment */
+            $payment = oxNew(EshopModelPayment::class);
+            $payment->load($this->getAdyenStringData('oxpaymenttype'));
             $result = (
                 $payment->isAdyenManualCapture() &&
                 $this->getPossibleCaptureAmount() > 0
@@ -129,7 +131,7 @@ class Order extends Order_parent
     {
         $result = false;
         if ($this->isAdyenOrder()) {
-            $pspReference = $this->getAdyenOrderData(self::PSPREFERENCEFIELD);
+            $pspReference = $this->getAdyenStringData(self::PSPREFERENCEFIELD);
             $adyenHistory = oxNew(AdyenHistory::class);
             $lastAction = $adyenHistory->getLastAction($pspReference);
             $result = (
@@ -149,12 +151,12 @@ class Order extends Order_parent
         }
 
         $pspReference = $this->getAdyenPspReference();
-        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+        $reference = (string)$this->getAdyenFloatData('oxordernr');
 
         $possibleAmount = $this->getPossibleCaptureAmount();
         $amount = min($amount, $possibleAmount);
 
-        $currency = $this->getAdyenOrderData('oxcurrency');
+        $currency = $this->getAdyenStringData('oxcurrency');
 
         $paymentService = $this->getServiceFromContainer(PaymentCapture::class);
         $success = $paymentService->doAdyenCapture(
@@ -188,8 +190,8 @@ class Order extends Order_parent
         }
 
         // Adyen References are Strings
-        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
-        $pspReference = $this->getAdyenOrderData('adyenpspreference');
+        $reference = (string)$this->getAdyenFloatData('oxordernr');
+        $pspReference = $this->getAdyenStringData('adyenpspreference');
 
         $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
         $success = $paymentService->doAdyenCancel(
@@ -207,7 +209,7 @@ class Order extends Order_parent
                 $adyenHistory->setPSPReference($cancelResult['pspReference']);
                 $adyenHistory->setOrderId($this->getId());
                 $adyenHistory->setPrice((float)$this->getTotalOrderSum());
-                $adyenHistory->setCurrency($this->getAdyenOrderData('oxcurrency'));
+                $adyenHistory->setCurrency($this->getAdyenStringData('oxcurrency'));
                 if (isset($cancelResult['status'])) {
                     $adyenHistory->setAdyenStatus($cancelResult['status']);
                 }
@@ -227,12 +229,12 @@ class Order extends Order_parent
         }
 
         $pspReference = $this->getAdyenPspReference();
-        $reference = (string)$this->getFloatAdyenOrderData('oxordernr');
+        $reference = (string)$this->getAdyenFloatData('oxordernr');
 
         $possibleAmount = $this->getPossibleRefundAmount();
         $amount = min($amount, $possibleAmount);
 
-        $currency = $this->getAdyenOrderData('oxcurrency');
+        $currency = $this->getAdyenStringData('oxcurrency');
 
         $paymentService = $this->getServiceFromContainer(PaymentRefund::class);
         $success = $paymentService->doAdyenRefund(
@@ -287,11 +289,12 @@ class Order extends Order_parent
     public function getAdyenPaymentName(): string
     {
         if (!$this->adyenPaymentName && $this->isAdyenOrder()) {
-            $paymentId = $this->getAdyenOrderData('oxpaymenttype');
-            $payment = oxNew(Payment::class);
+            $paymentId = $this->getAdyenStringData('oxpaymenttype');
+            /** @var Payment $payment */
+            $payment = oxNew(EshopModelPayment::class);
             $payment->load($paymentId);
             /** @var null|string $desc */
-            $desc = $payment->getFieldData('oxdesc');
+            $desc = $payment->getAdyenStringData('oxdesc');
             $this->adyenPaymentName = $desc ?? '';
         }
         return $this->adyenPaymentName;
@@ -299,7 +302,7 @@ class Order extends Order_parent
 
     public function getAdyenPSPReference(): string
     {
-        return $this->getAdyenOrderData('adyenpspreference');
+        return $this->getAdyenStringData('adyenpspreference');
     }
 
     public function setAdyenPSPReference(string $pspReference): void
@@ -313,7 +316,7 @@ class Order extends Order_parent
 
     public function getAdyenOrderReference(): string
     {
-        $orderReference = $this->getAdyenOrderData('adyenorderreference');
+        $orderReference = $this->getAdyenStringData('adyenorderreference');
         if (!$orderReference) {
             $orderReference = Registry::getUtilsObject()->generateUId();
             $this->setAdyenOrderReference($orderReference);
@@ -399,22 +402,6 @@ class Order extends Order_parent
             }
         }
         return parent::delete($oxid);
-    }
-
-
-
-    protected function getAdyenOrderData(string $key): string
-    {
-        /** @var null|string $value */
-        $value = $this->getFieldData($key);
-        return $value ?? '';
-    }
-
-    protected function getFloatAdyenOrderData(string $key): float
-    {
-        /** @var null|float $value */
-        $value = $this->getFieldData($key);
-        return is_float($value) ? $value : 0;
     }
 
     public function setAdyenHistoryEntry(

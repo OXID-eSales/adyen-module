@@ -6,6 +6,9 @@ parameters:
         - stubs/OrderController.stub
         - stubs/OrderArticleController.stub
         - stubs/OrderListController.stub
+        - stubs/AddressModel.stub
+        - stubs/CountryModel.stub
+        - stubs/UserModel.stub
         - stubs/OrderModel.stub
         - stubs/PaymentController.stub
         - stubs/PaymentGatewayModel.stub

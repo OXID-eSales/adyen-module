@@ -11,12 +11,13 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\Order as EshopModelOrder;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
+use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -27,7 +28,7 @@ abstract class WebhookHandlerBase
     protected int $shopId;
     protected string $pspReference;
     protected string $parentPspReference;
-    protected Order $order;
+    protected EshopModelOrder $order;
     protected ?Payment $payment;
 
     public function handle(Event $event): void
@@ -52,14 +53,14 @@ abstract class WebhookHandlerBase
         }
     }
 
-    protected function getOrderByAdyenPSPReference(string $pspReference): ?Order
+    protected function getOrderByAdyenPSPReference(string $pspReference): ?EshopModelOrder
     {
         $result = null;
         $adyenHistoryList = oxNew(AdyenHistoryList::class);
 
         $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
 
-        $order = oxNew(Order::class);
+        $order = oxNew(EshopModelOrder::class);
         if ($order->load($oxidOrderId)) {
             $result = $order;
         }
@@ -82,8 +83,9 @@ abstract class WebhookHandlerBase
         $this->parentPspReference = $event->getParentPspReference() !== '' ?
             $event->getParentPspReference() :
             $this->pspReference;
+        /** @var Order $order */
         $order = $this->getOrderByAdyenPSPReference($this->pspReference);
-        if (is_null($order)) {
+        if (!is_object($order)) {
             throw new Exception("order not found by psp reference " . $this->pspReference);
         }
         $this->order = $order;
@@ -91,7 +93,7 @@ abstract class WebhookHandlerBase
         $this->payment = oxNew(Payment::class);
 
         /** @var null|string $paymentId */
-        $paymentId = $this->order->getFieldData('oxpaymenttype');
+        $paymentId = $this->order->getAdyenStringData('oxpaymenttype');
         if (!is_null($paymentId)) {
             $this->payment->load($paymentId);
         }

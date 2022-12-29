@@ -14,10 +14,13 @@ use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\Basket;
+use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
+use OxidSolutionCatalysts\Adyen\Model\User;
 
 /**
  * Metadata version
@@ -44,9 +47,12 @@ $aModule = [
     'email' => 'support@oxid-esales.com',
     'extend' => [
         // model
+        \OxidEsales\Eshop\Application\Model\Address::class => Address::class,
+        \OxidEsales\Eshop\Application\Model\Country::class => Country::class,
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
+        \OxidEsales\Eshop\Application\Model\User::class => User::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller
