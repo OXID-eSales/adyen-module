@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
 use OxidEsales\Eshop\Core\Config;
 use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\Country;
+use OxidSolutionCatalysts\Adyen\Model\User;
 
 /**
  * @extendable-class
@@ -73,6 +74,7 @@ class CountryRepository
 
         // try from Session Invoice Address
         if (!$countryId) {
+            /** @var User $user */
             $user = $this->session->getUser();
             $countryId = $user->getAdyenStringData('oxcountryid');
         }

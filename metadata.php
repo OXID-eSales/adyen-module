@@ -20,6 +20,7 @@ use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
+use OxidSolutionCatalysts\Adyen\Model\User;
 
 /**
  * Metadata version
@@ -51,6 +52,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Order::class => Order::class,
         \OxidEsales\Eshop\Application\Model\Payment::class => Payment::class,
         \OxidEsales\Eshop\Application\Model\PaymentGateway::class => PaymentGateway::class,
+        \OxidEsales\Eshop\Application\Model\User::class => User::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
         // admin-controller

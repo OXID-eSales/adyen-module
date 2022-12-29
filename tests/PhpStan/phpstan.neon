@@ -8,6 +8,7 @@ parameters:
         - stubs/OrderListController.stub
         - stubs/AddressModel.stub
         - stubs/CountryModel.stub
+        - stubs/UserModel.stub
         - stubs/OrderModel.stub
         - stubs/PaymentController.stub
         - stubs/PaymentGatewayModel.stub
