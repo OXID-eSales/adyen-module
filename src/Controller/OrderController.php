@@ -13,10 +13,12 @@ use OxidSolutionCatalysts\Adyen\Exception\Redirect;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class OrderController extends OrderController_parent
 {
     use ServiceContainer;
+    use UserAddress;
 
     /**
      * @inheritDoc
