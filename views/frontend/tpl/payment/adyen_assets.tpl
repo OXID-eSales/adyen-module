@@ -15,6 +15,7 @@
     [{if $oViewConf->getTopActiveClassName() == 'payment'}]
         [{assign var="isPaymentPage" value=true}]
         const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
+        const adyenBrowserInfoEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamBrowserInfoName()}]');
         const nextStepEl = document.getElementById('paymentNextStepBottom');
         [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
         document.getElementsByName('paymentid').forEach(function (e) {
@@ -70,6 +71,7 @@
                     nextStepEl.disabled = !state.isValid;
                     if (state.isValid) {
                         adyenStateEl.value = JSON.stringify(state.data.paymentMethod);
+                        adyenBrowserInfoEl.value = JSON.stringify(state.data.browserInfo);
                     }
                 [{/if}]
                 [{if $isLog}]
@@ -128,7 +130,6 @@
                     [{if $orderPaymentPayPal}]
                         paypal: {
                             intent: "authorize",
-                            cspNonce: "MY_CSP_NONCE",
                             onShippingChange: function(data, actions) {
                                 // Listen to shipping changes.
                                 [{if $isLog}]

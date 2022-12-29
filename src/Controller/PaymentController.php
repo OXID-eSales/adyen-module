@@ -83,6 +83,10 @@ class PaymentController extends PaymentController_parent
             $state = $request->getRequestParameter(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
             $state = $state ?? '';
             $session->setPaymentState($state);
+            /** @var null|string $browserInfo */
+            $browserInfo = $request->getRequestParameter(Module::ADYEN_HTMLPARAM_BROWSERINFO_NAME);
+            $browserInfo = $browserInfo ?? '';
+            $session->setBrowserInfo($browserInfo);
         }
         return $result;
     }

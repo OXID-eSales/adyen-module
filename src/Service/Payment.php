@@ -62,18 +62,21 @@ class Payment extends PaymentBase
     public function doAdyenAuthorization(float $amount, string $reference): bool
     {
         $paymentState = $this->session->getPaymentState();
+        $browserInfo = $this->session->getBrowserInfo();
         // not necessary anymore, so cleanup
         $this->session->deletePaymentState();
+        $this->session->deleteBrowserInfo();
 
-        return $this->collectPayments($amount, $reference, $paymentState);
+        return $this->collectPayments($amount, $reference, $paymentState, $browserInfo);
     }
 
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
      * @param array $paymentMethod
+     * @param array $browserInfo
      */
-    public function collectPayments(float $amount, string $reference, array $paymentMethod): bool
+    public function collectPayments(float $amount, string $reference, array $paymentMethod, array $browserInfo): bool
     {
         $result = false;
 

@@ -26,6 +26,7 @@ class AdyenAPIPayments
     protected string $applicationName;
 
     protected string $applicationVersion;
+    protected array $browserInfo;
 
     public function setReference(string $reference): void
     {
@@ -35,6 +36,11 @@ class AdyenAPIPayments
     public function setPaymentMethod(array $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
+    }
+
+    public function setBrowserInfo(array $browserInfo): void
+    {
+        $this->browserInfo = $browserInfo;
     }
 
     public function setMerchantAccount(string $merchantAccount): void
@@ -71,6 +77,7 @@ class AdyenAPIPayments
     {
         return [
             'paymentMethod' => $this->paymentMethod,
+            'browserInfo' => $this->browserInfo,
             'amount' => [
                 'currency' => $this->currencyName,
                 'value' => $this->currencyAmount,
