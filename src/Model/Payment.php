@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -20,6 +21,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 class Payment extends Payment_parent
 {
     use ServiceContainer;
+    use DataGetter;
 
     /**
      * Checks if the payment method is an Adyen payment method
@@ -42,7 +44,7 @@ class Payment extends Payment_parent
     {
         return ($this->isAdyenPayment() &&
             Module::showInPaymentCtrl($this->getId()) &&
-            $this->getFieldData('oxactive') === '1'
+            $this->getAdyenBoolData('oxactive') === true
         );
     }
 

@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Address as EshopModelAddress;
+use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Application\Model\Country;
+use OxidSolutionCatalysts\Adyen\Model\Address;
+use OxidSolutionCatalysts\Adyen\Model\Country;
 
 /**
  * @extendable-class
@@ -38,12 +40,13 @@ class CountryRepository
     {
         $countryId = $this->getCountryId();
         if (!isset($this->countryIso[$countryId])) {
-            $country = oxNew(Country::class);
+            /** @var Country $country */
+            $country = oxNew(EshopModelCountry::class);
             $country->load($countryId);
             /** @var null|string $countryIso */
-            $countryIso = $country->getFieldData('oxisoalpha2');
+            $countryIso = $country->getAdyenStringData('oxisoalpha2');
             if (!is_null($countryIso)) {
-                $this->countryIso[$countryId] = $country->getFieldData('oxisoalpha2');
+                $this->countryIso[$countryId] = $countryIso;
             }
         }
         return $this->countryIso[$countryId];
@@ -61,16 +64,17 @@ class CountryRepository
         // try from Session Delivery-Address
         if (!$countryId) {
             $addressId = $this->session->getDeliveryId();
-            $deliveryAddress = oxNew(Address::class);
+            /** @var Address $deliveryAddress */
+            $deliveryAddress = oxNew(EshopModelAddress::class);
             $countryId = $deliveryAddress->load($addressId) ?
-                $deliveryAddress->getFieldData('oxcountryid') :
+                $deliveryAddress->getAdyenStringData('oxcountryid') :
                 '';
         }
 
         // try from Session Invoice Address
         if (!$countryId) {
             $user = $this->session->getUser();
-            $countryId = $user->getFieldData('oxcountryid');
+            $countryId = $user->getAdyenStringData('oxcountryid');
         }
 
         // try global shop config

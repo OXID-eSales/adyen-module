@@ -91,7 +91,7 @@ abstract class WebhookHandlerBase
         $this->payment = oxNew(Payment::class);
 
         /** @var null|string $paymentId */
-        $paymentId = $this->order->getFieldData('oxpaymenttype');
+        $paymentId = $this->order->getAdyenStringData('oxpaymenttype');
         if (!is_null($paymentId)) {
             $this->payment->load($paymentId);
         }
