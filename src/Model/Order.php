@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Model;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -108,8 +108,8 @@ class Order extends Order_parent
     {
         $result = false;
         if ($this->isAdyenOrder()) {
-            /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
-            $payment = oxNew(Payment::class);
+            /** @var Payment $payment */
+            $payment = oxNew(EshopModelPayment::class);
             $payment->load($this->getAdyenStringData('oxpaymenttype'));
             $result = (
                 $payment->isAdyenManualCapture() &&
@@ -290,7 +290,8 @@ class Order extends Order_parent
     {
         if (!$this->adyenPaymentName && $this->isAdyenOrder()) {
             $paymentId = $this->getAdyenStringData('oxpaymenttype');
-            $payment = oxNew(Payment::class);
+            /** @var Payment $payment */
+            $payment = oxNew(EshopModelPayment::class);
             $payment->load($paymentId);
             /** @var null|string $desc */
             $desc = $payment->getAdyenStringData('oxdesc');

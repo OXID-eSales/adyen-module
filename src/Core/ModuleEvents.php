@@ -50,7 +50,7 @@ final class ModuleEvents
         $activePaymentMethods = [];
         $paymentIds = array_keys(Module::PAYMENT_DEFINTIONS);
         foreach ($paymentIds as $paymentId) {
-            /** @var $paymentMethod Payment */
+            /** @var Payment $paymentMethod */
             $paymentMethod = oxNew(EshopModelPayment::class);
             if (
                 $paymentMethod->load($paymentId)
