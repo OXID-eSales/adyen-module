@@ -43,6 +43,8 @@
                 enabled: [{if $isLog}]true[{else}]false[{/if}]
             },
             locale: '[{$oViewConf->getAdyenShopperLocale()}]',
+            deliveryAddress: [{$oView->getAdyenDeliveryAddress()}],
+            shopperName: [{$oView->getAdyenShopperName()}],
             [{if $isPaymentPage}]
                 paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
             [{elseif $isOrderPage}]
