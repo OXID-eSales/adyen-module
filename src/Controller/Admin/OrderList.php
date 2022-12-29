@@ -72,7 +72,8 @@ class OrderList extends OrderList_parent
         $queryPart = "oxorder
             left join {$tableName}
             on {$tableName}.oxorderid = oxorder.oxid
-            where {$tableName}.pspreference like " . $database->quote("%{$searchQuery}%") . " and ";
+            where ({$tableName}.pspreference like " . $database->quote("%{$searchQuery}%") . "
+            or oxorder.adyenorderreference like " . $database->quote("%{$searchQuery}%") . " ) and ";
         return str_replace('oxorder where', $queryPart, $query);
     }
 }
