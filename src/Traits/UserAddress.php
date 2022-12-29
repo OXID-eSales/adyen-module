@@ -20,7 +20,6 @@ use OxidSolutionCatalysts\Adyen\Model\Country;
 trait UserAddress
 {
     use Json;
-    use DataGetter;
 
     public function getAdyenShopperName(): string
     {

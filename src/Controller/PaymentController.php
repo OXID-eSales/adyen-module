@@ -16,10 +16,12 @@ use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class PaymentController extends PaymentController_parent
 {
     use ServiceContainer;
+    use UserAddress;
 
     /**
      * Template variable getter. Returns paymentlist
