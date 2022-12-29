@@ -84,6 +84,7 @@ class Payment extends PaymentBase
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
         $payments->setPaymentMethod($paymentMethod);
+        $payments->setOrigin($this->context->getShopUrl());
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

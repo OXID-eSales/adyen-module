@@ -26,7 +26,10 @@ class AdyenAPIPayments
     protected string $applicationName;
 
     protected string $applicationVersion;
+
     protected array $browserInfo;
+
+    protected string $origin;
 
     public function setReference(string $reference): void
     {
@@ -73,6 +76,11 @@ class AdyenAPIPayments
         $this->applicationVersion = $applicationVersion;
     }
 
+    public function setOrigin(string $origin): void
+    {
+        $this->origin = $origin;
+    }
+
     public function getAdyenPaymentsParams(): array
     {
         return [
@@ -90,7 +98,10 @@ class AdyenAPIPayments
                     'name' => $this->applicationName,
                     'version' => $this->applicationVersion
                 ]
-            ]
+            ],
+            'authenticationData.threeDSRequestData.nativeThreeDS' => 'preferred',
+            'channel' => 'Web',
+            'origin' => $this->origin
         ];
     }
 }
