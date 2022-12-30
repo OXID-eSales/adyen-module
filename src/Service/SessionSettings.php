@@ -27,6 +27,7 @@ class SessionSettings
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
     public const ADYEN_SESSION_BROWSERINFO_NAME = 'sess_adyen_browserinfodata';
+    public const ADYEN_HTMLPARAM_ORIGIN_NAME = 'sess_adyen_origindata';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
     /** @var Session */
@@ -110,27 +111,6 @@ class SessionSettings
     public function deletePaymentState(): void
     {
         $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
-    }
-
-    public function setBrowserInfo(string $browserInfo): void
-    {
-        $this->saveSettingValue(self::ADYEN_SESSION_BROWSERINFO_NAME, $browserInfo);
-    }
-
-    /**
-     * @throws \JsonException
-     */
-    public function getBrowserInfo(): array
-    {
-        /** @var null|string $browserInfoJson */
-        $browserInfoJson = $this->getSettingValue(self::ADYEN_SESSION_BROWSERINFO_NAME);
-        $browserInfoJson = $browserInfoJson ?? '';
-        return $this->jsonToArray($browserInfoJson);
-    }
-
-    public function deleteBrowserInfo(): void
-    {
-        $this->removeSettingValue(self::ADYEN_SESSION_BROWSERINFO_NAME);
     }
 
     public function getDeliveryId(): string

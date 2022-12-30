@@ -31,6 +31,10 @@ class AdyenAPIPayments
 
     protected string $origin;
 
+    protected string $shopperEmail;
+
+    protected string $shopperIP;
+
     public function setReference(string $reference): void
     {
         $this->reference = $reference;
@@ -81,6 +85,16 @@ class AdyenAPIPayments
         $this->origin = $origin;
     }
 
+    public function setShopperEmail(string $shopperEmail): void
+    {
+        $this->shopperEmail = $shopperEmail;
+    }
+
+    public function setShopperIP(string $shopperIP): void
+    {
+        $this->shopperIP = $shopperIP;
+    }
+
     public function getAdyenPaymentsParams(): array
     {
         return [
@@ -99,7 +113,13 @@ class AdyenAPIPayments
                     'version' => $this->applicationVersion
                 ]
             ],
-            'authenticationData.threeDSRequestData.nativeThreeDS' => 'preferred',
+            'shopperEmail' => $this->shopperEmail,
+            'shopperIP' => $this->shopperIP,
+            'authenticationData' => [
+                'threeDSRequestData' => [
+                    'nativeThreeDS' => 'preferred'
+                ]
+            ],
             'channel' => 'Web',
             'origin' => $this->origin
         ];

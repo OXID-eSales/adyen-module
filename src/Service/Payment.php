@@ -62,29 +62,29 @@ class Payment extends PaymentBase
     public function doAdyenAuthorization(float $amount, string $reference): bool
     {
         $paymentState = $this->session->getPaymentState();
-        $browserInfo = $this->session->getBrowserInfo();
         // not necessary anymore, so cleanup
         $this->session->deletePaymentState();
-        $this->session->deleteBrowserInfo();
 
-        return $this->collectPayments($amount, $reference, $paymentState, $browserInfo);
+        return $this->collectPayments($amount, $reference, $paymentState);
     }
 
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
-     * @param array $paymentMethod
-     * @param array $browserInfo
+     * @param array $paymentState
      */
-    public function collectPayments(float $amount, string $reference, array $paymentMethod, array $browserInfo): bool
+    public function collectPayments(float $amount, string $reference, array $paymentState): bool
     {
         $result = false;
 
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
-        $payments->setPaymentMethod($paymentMethod);
-        $payments->setOrigin($this->context->getShopUrl());
+        $payments->setPaymentMethod($paymentState['paymentMethod'] ?? []);
+        $payments->setOrigin($paymentState['origin'] ?? '');
+        $payments->setBrowserInfo($paymentState['browserInfo'] ?? []);
+        $payments->setShopperEmail($paymentState['shopperEmail'] ?? '');
+        $payments->setShopperIP($paymentState['shopperIP'] ?? '');
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

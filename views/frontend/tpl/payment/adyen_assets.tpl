@@ -15,7 +15,6 @@
     [{if $oViewConf->getTopActiveClassName() == 'payment'}]
         [{assign var="isPaymentPage" value=true}]
         const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
-        const adyenBrowserInfoEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamBrowserInfoName()}]');
         const nextStepEl = document.getElementById('paymentNextStepBottom');
         [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
         document.getElementsByName('paymentid').forEach(function (e) {
@@ -46,6 +45,8 @@
             locale: '[{$oViewConf->getAdyenShopperLocale()}]',
             deliveryAddress: [{$oView->getAdyenDeliveryAddress()}],
             shopperName: [{$oView->getAdyenShopperName()}],
+            shopperEmail: '[{$oView->getAdyenShopperEmail()}]',
+            shopperIP: '[{$oViewConf->getRemoteAddress()}]',
             [{if $isPaymentPage}]
                 paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
             [{elseif $isOrderPage}]
@@ -70,8 +71,10 @@
                     // negate isValid to Button
                     nextStepEl.disabled = !state.isValid;
                     if (state.isValid) {
-                        adyenStateEl.value = JSON.stringify(state.data.paymentMethod);
-                        adyenBrowserInfoEl.value = JSON.stringify(state.data.browserInfo);
+                        state.data.deliveryAddress = configuration.deliveryAddress;
+                        state.data.shopperEmail = configuration.shopperEmail;
+                        state.data.shopperIP = configuration.shopperIP;
+                        adyenStateEl.value = JSON.stringify(state.data);
                     }
                 [{/if}]
                 [{if $isLog}]

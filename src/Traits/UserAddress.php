@@ -21,6 +21,13 @@ trait UserAddress
 {
     use Json;
 
+    public function getAdyenShopperEmail(): string
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        return $user->getAdyenStringData('oxusername');
+    }
+
     public function getAdyenShopperName(): string
     {
         /** @var User $user */

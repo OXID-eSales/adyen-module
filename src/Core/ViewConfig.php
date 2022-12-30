@@ -14,7 +14,6 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
@@ -99,11 +98,6 @@ class ViewConfig extends ViewConfig_parent
     }
 
     public function getAdyenHtmlParamStateName(): string
-    {
-        return Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME;
-    }
-
-    public function getAdyenHtmlParamBrowserInfoName(): string
     {
         return Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME;
     }
