@@ -45,6 +45,8 @@
             locale: '[{$oViewConf->getAdyenShopperLocale()}]',
             deliveryAddress: [{$oView->getAdyenDeliveryAddress()}],
             shopperName: [{$oView->getAdyenShopperName()}],
+            shopperEmail: '[{$oView->getAdyenShopperEmail()}]',
+            shopperIP: '[{$oViewConf->getRemoteAddress()}]',
             [{if $isPaymentPage}]
                 paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
             [{elseif $isOrderPage}]
@@ -69,7 +71,10 @@
                     // negate isValid to Button
                     nextStepEl.disabled = !state.isValid;
                     if (state.isValid) {
-                        adyenStateEl.value = JSON.stringify(state.data.paymentMethod);
+                        state.data.deliveryAddress = configuration.deliveryAddress;
+                        state.data.shopperEmail = configuration.shopperEmail;
+                        state.data.shopperIP = configuration.shopperIP;
+                        adyenStateEl.value = JSON.stringify(state.data);
                     }
                 [{/if}]
                 [{if $isLog}]
@@ -128,7 +133,6 @@
                     [{if $orderPaymentPayPal}]
                         paypal: {
                             intent: "authorize",
-                            cspNonce: "MY_CSP_NONCE",
                             onShippingChange: function(data, actions) {
                                 // Listen to shipping changes.
                                 [{if $isLog}]

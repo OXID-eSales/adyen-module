@@ -71,16 +71,20 @@ class Payment extends PaymentBase
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
-     * @param array $paymentMethod
+     * @param array $paymentState
      */
-    public function collectPayments(float $amount, string $reference, array $paymentMethod): bool
+    public function collectPayments(float $amount, string $reference, array $paymentState): bool
     {
         $result = false;
 
         $payments = oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
-        $payments->setPaymentMethod($paymentMethod);
+        $payments->setPaymentMethod($paymentState['paymentMethod'] ?? []);
+        $payments->setOrigin($paymentState['origin'] ?? '');
+        $payments->setBrowserInfo($paymentState['browserInfo'] ?? []);
+        $payments->setShopperEmail($paymentState['shopperEmail'] ?? '');
+        $payments->setShopperIP($paymentState['shopperIP'] ?? '');
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

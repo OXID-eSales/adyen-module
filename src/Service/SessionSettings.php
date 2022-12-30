@@ -26,6 +26,8 @@ class SessionSettings
     public const ADYEN_SESSION_ORDER_REFERENCE = 'sess_adyen_order_reference';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
+    public const ADYEN_SESSION_BROWSERINFO_NAME = 'sess_adyen_browserinfodata';
+    public const ADYEN_HTMLPARAM_ORIGIN_NAME = 'sess_adyen_origindata';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
     /** @var Session */

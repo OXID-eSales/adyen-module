@@ -27,6 +27,14 @@ class AdyenAPIPayments
 
     protected string $applicationVersion;
 
+    protected array $browserInfo;
+
+    protected string $origin;
+
+    protected string $shopperEmail;
+
+    protected string $shopperIP;
+
     public function setReference(string $reference): void
     {
         $this->reference = $reference;
@@ -35,6 +43,11 @@ class AdyenAPIPayments
     public function setPaymentMethod(array $paymentMethod): void
     {
         $this->paymentMethod = $paymentMethod;
+    }
+
+    public function setBrowserInfo(array $browserInfo): void
+    {
+        $this->browserInfo = $browserInfo;
     }
 
     public function setMerchantAccount(string $merchantAccount): void
@@ -67,10 +80,26 @@ class AdyenAPIPayments
         $this->applicationVersion = $applicationVersion;
     }
 
+    public function setOrigin(string $origin): void
+    {
+        $this->origin = $origin;
+    }
+
+    public function setShopperEmail(string $shopperEmail): void
+    {
+        $this->shopperEmail = $shopperEmail;
+    }
+
+    public function setShopperIP(string $shopperIP): void
+    {
+        $this->shopperIP = $shopperIP;
+    }
+
     public function getAdyenPaymentsParams(): array
     {
         return [
             'paymentMethod' => $this->paymentMethod,
+            'browserInfo' => $this->browserInfo,
             'amount' => [
                 'currency' => $this->currencyName,
                 'value' => $this->currencyAmount,
@@ -83,7 +112,16 @@ class AdyenAPIPayments
                     'name' => $this->applicationName,
                     'version' => $this->applicationVersion
                 ]
-            ]
+            ],
+            'shopperEmail' => $this->shopperEmail,
+            'shopperIP' => $this->shopperIP,
+            'authenticationData' => [
+                'threeDSRequestData' => [
+                    'nativeThreeDS' => 'preferred'
+                ]
+            ],
+            'channel' => 'Web',
+            'origin' => $this->origin
         ];
     }
 }
