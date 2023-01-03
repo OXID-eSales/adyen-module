@@ -25,9 +25,14 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setPaymentMethod(['TestPaymentMethods']);
         $model->setMerchantApplicationName('TestMerchantApplicationName');
         $model->setMerchantApplicationVersion('Testv1.0.0');
+        $model->setBrowserInfo(['browserInfo']);
+        $model->setShopperEmail('test@test.de');
+        $model->setShopperIP('1.2.3.4');
+        $model->setOrigin('https://origin.test.de');
 
         $this->assertSame([
             'paymentMethod' => ['TestPaymentMethods'],
+            'browserInfo' => ['browserInfo'],
             'amount' => [
                 'currency' => 'EUR',
                 'value' => '1000',
@@ -40,7 +45,16 @@ class AdyenAPIPaymentsTest extends UnitTestCase
                     'name' => 'TestMerchantApplicationName',
                     'version' => 'Testv1.0.0'
                 ]
-            ]
+            ],
+            'shopperEmail' => 'test@test.de',
+            'shopperIP' => '1.2.3.4',
+            'authenticationData' => [
+                'threeDSRequestData' => [
+                    'nativeThreeDS' => 'preferred'
+                ]
+            ],
+            'channel' => 'Web',
+            'origin' => 'https://origin.test.de'
         ], $model->getAdyenPaymentsParams());
     }
 }
