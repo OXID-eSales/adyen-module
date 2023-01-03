@@ -12,10 +12,15 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 use Exception;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -36,7 +41,6 @@ final class ModuleEvents
         self::executeModuleMigrations();
 
         // add static contents like payment methods
-        //NOTE: this assumes the module's servies.yaml is already in place at the time this method is called
         self::addStaticContents();
     }
 
@@ -63,6 +67,14 @@ final class ModuleEvents
                 $activePaymentMethods[] = $paymentId;
             }
         }
+
+        /*
+         * We could not yet access the services in the onActivate,
+         * since they are only available after the onActivate. When
+         * deactivating, the services "still" exist when the method
+         * is called (no longer after that). That's why we can still
+         * use them here
+         */
 
         /** @var ModuleSettings $service */
         $service = ContainerFactory::getInstance()
@@ -95,10 +107,42 @@ final class ModuleEvents
     private static function addStaticContents(): void
     {
         /** @var StaticContents $service */
+        $service = self::getStaticContentService();
+        $service->ensurePaymentMethods();
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private static function getStaticContentService(): StaticContents
+    {
+        /*
+        Normally I would fetch the StaticContents service like this:
+
         $service = ContainerFactory::getInstance()
             ->getContainer()
             ->get(StaticContents::class);
 
-        $service->ensurePaymentMethods();
+        But the services are not ready when the onActivate method is triggered.
+        That's why I build the containers by hand as an exception.:
+        */
+
+        /** @var ContainerInterface $container */
+        $container = ContainerFactory::getInstance()
+            ->getContainer();
+        /** @var ModuleSettingBridgeInterface $moduleSettingBridge */
+        $moduleSettingBridge = $container->get(ModuleSettingBridgeInterface::class);
+        /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
+        $queryBuilderFactory = $container->get(QueryBuilderFactoryInterface::class);
+
+        $moduleSettings = new ModuleSettings(
+            $moduleSettingBridge
+        );
+
+        return new StaticContents(
+            $queryBuilderFactory,
+            $moduleSettings
+        );
     }
 }
