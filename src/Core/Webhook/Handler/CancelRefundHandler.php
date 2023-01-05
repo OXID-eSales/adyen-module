@@ -12,9 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 
-final class CancellationHandler extends WebhookHandlerBase
+final class CancelRefundHandler extends WebhookHandlerBase
 {
-    public const CANCEL_EVENT_CODE = "CANCELLATION";
+    public const CANCELORREFUND_EVENT_CODE = "CANCEL_OR_REFUND";
 
     /**
      * @param Event $event
