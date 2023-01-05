@@ -7,3 +7,4 @@ tests/reports/
 tests/.phpunit.result.cache
 source/
 /resources/node_modules/
+/tests/.env
