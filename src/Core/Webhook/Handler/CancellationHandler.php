@@ -14,7 +14,7 @@ use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 
 final class CancellationHandler extends WebhookHandlerBase
 {
-    public const CANCEL_EVENT_CODE = "CANCEL";
+    public const CANCEL_EVENT_CODE = "CANCELLATION";
 
     /**
      * @param Event $event
