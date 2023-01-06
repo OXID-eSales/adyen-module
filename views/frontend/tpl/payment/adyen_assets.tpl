@@ -96,9 +96,14 @@
                     component.setStatus('loading');
                     makePayment(state.data)
                         .then(response => {
-                            console.log('onSubmit-response:', response);
+                            [{if $isLog}]
+                                console.log('onSubmit-response:', response);
+                            [{/if}]
                             if (response.action) {
                                 // Drop-in handles the action object from the /payments response
+                                if (component.paymentIdViewEl !== 'undefined') {
+                                    component.paymentIdViewEl.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+                                }
                                 component.handleAction(response.action);
                             } else {
                                 setPspReference(response);
@@ -164,6 +169,7 @@
                 [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
                     [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
                         const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
+                        cardComponent.paymentIdViewEl = undefined;
                     [{/if}]
                 [{/foreach}]
             [{elseif $isOrderPage}]
@@ -213,10 +219,11 @@
 
             [{if $isPaymentPage}]
                 nextStepEl.addEventListener("click", function(e) {
-                    if (nextStepEl.dataset.adyensubmit !== '') {
+                    if (this.dataset.adyensubmit !== '') {
                         e.preventDefault();
-                        nextStepEl.disabled;
-                        if (nextStepEl.dataset.adyensubmit === '[{$adyenCreditCard}]') {
+                        this.disabled = true;
+                        if (this.dataset.adyensubmit === '[{$adyenCreditCard}]') {
+                            cardComponent.paymentIdViewEl = document.getElementById('payment_[{$adyenCreditCard}]').parentElement;
                             cardComponent.submit();
                         }
                     }
