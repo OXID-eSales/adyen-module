@@ -26,8 +26,9 @@ class SessionSettings
     public const ADYEN_SESSION_ORDER_REFERENCE = 'sess_adyen_order_reference';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
-    public const ADYEN_SESSION_BROWSERINFO_NAME = 'sess_adyen_browserinfodata';
-    public const ADYEN_HTMLPARAM_ORIGIN_NAME = 'sess_adyen_origindata';
+    public const ADYEN_SESSION_PSPREFERENCE_NAME = 'sess_adyen_pspreference';
+    public const ADYEN_SESSION_RESULTCODE_NAME = 'sess_adyen_resultcode';
+    public const ADYEN_SESSION_AMOUNTCURRENCY_NAME = 'sess_adyen_amountcurrency';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
     /** @var Session */
@@ -111,6 +112,56 @@ class SessionSettings
     public function deletePaymentState(): void
     {
         $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
+    }
+
+    public function setPspReference(string $pspReference): void
+    {
+        $this->saveSettingValue(self::ADYEN_SESSION_PSPREFERENCE_NAME, $pspReference);
+    }
+
+    public function getPspReference(): string
+    {
+        /** @var null|string $pspReference */
+        $pspReference = $this->getSettingValue(self::ADYEN_SESSION_PSPREFERENCE_NAME);
+        return $pspReference ?? '';
+    }
+
+    public function deletePspReference(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_PSPREFERENCE_NAME);
+    }
+
+    public function setResultCode(string $resultCode): void
+    {
+        $this->saveSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME, $resultCode);
+    }
+
+    public function getResultCode(): string
+    {
+        /** @var null|string $resultCode */
+        $resultCode = $this->getSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME);
+        return $resultCode ?? '';
+    }
+
+    public function deleteResultCode(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME);
+    }
+    public function setAmountCurrency(string $amountCurrency): void
+    {
+        $this->saveSettingValue(self::ADYEN_SESSION_AMOUNTCURRENCY_NAME, $amountCurrency);
+    }
+
+    public function getAmountCurrency(): string
+    {
+        /** @var null|string $amountCurrency */
+        $amountCurrency = $this->getSettingValue(self::ADYEN_SESSION_AMOUNTCURRENCY_NAME);
+        return $amountCurrency ?? '';
+    }
+
+    public function deleteAmountCurrency(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_AMOUNTCURRENCY_NAME);
     }
 
     public function getDeliveryId(): string
