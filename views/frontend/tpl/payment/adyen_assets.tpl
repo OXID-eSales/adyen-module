@@ -72,11 +72,7 @@
                 },
                 onChange: (state, component) => {
                     [{if $isPaymentPage}]
-                        const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
-                        paymentIdEl.checked = true;
-                        // negate isValid to Button
-                        nextStepEl.disabled = !state.isValid;
-                        nextStepEl.dataset.adyensubmit = '';
+                        var paymentIdEl = setPaymentIdEl(component, !state.isValid);
                         if (state.isValid) {
                             nextStepEl.dataset.adyensubmit = paymentIdEl.value;
                             state.data.deliveryAddress = configuration.deliveryAddress;
@@ -116,10 +112,13 @@
                 onAdditionalDetails: (state, component) => {
                     makeDetailsCall(state.data)
                         .then(response => {
+                            var paymentIdEl = setPaymentIdEl(component, true);
                             [{if $isLog}]
                                 console.log('makeDetailsCall:', response);
                             [{/if}]
-                            setPspReference(response);
+                            if (setPspReference(response) === false) {
+                                nextStepEl.disabled = false;
+                            }
                         })
                         .catch(error => {
                             throw Error(error);
@@ -188,6 +187,14 @@
                     .catch(console.error);
             };
 
+            const setPaymentIdEl = (component, nextStepElDisabled) => {
+                const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
+                paymentIdEl.checked = true;
+                nextStepEl.disabled = nextStepElDisabled;
+                nextStepEl.dataset.adyensubmit = '';
+                return paymentIdEl;
+            };
+
             const makeDetailsCall = data =>
                 httpPost('details', data)
                     .then(response => {
@@ -207,14 +214,19 @@
                 }).then(response => response.json());
 
             const setPspReference = (response) => {
-                if (response.pspReference) {
+                var result = false;
+                if (response.pspReference && response.resultCode !== 'Refused') {
                     adyenPspReferenceEl.value = response.pspReference;
                     adyenResultCodeEl.value = response.resultCode;
                     adyenAmountCurrencyEl.value = response.amount.currency;
+                    result = true;
+                }
+                if (result === true) {
                     if (typeof submitForm !== 'undefined') {
                         submitForm.submit();
                     }
                 }
+                return result;
             }
 
             [{if $isPaymentPage}]
