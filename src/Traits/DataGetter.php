@@ -23,9 +23,7 @@ trait DataGetter
 
     public function getAdyenFloatData(string $key): float
     {
-        /** @var null|float $value */
-        $value = $this->getFieldData($key);
-        return is_float($value) ? $value : 0;
+        return (float)$this->getAdyenStringData($key);
     }
 
     public function getAdyenBoolData(string $key): bool
