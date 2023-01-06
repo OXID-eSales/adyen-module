@@ -101,7 +101,7 @@
                             [{/if}]
                             if (response.action) {
                                 // Drop-in handles the action object from the /payments response
-                                if (component.paymentIdViewEl !== 'undefined') {
+                                if ('paymentIdViewEl' in component) {
                                     component.paymentIdViewEl.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
                                 }
                                 component.handleAction(response.action);
