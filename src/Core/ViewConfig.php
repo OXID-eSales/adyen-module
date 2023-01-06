@@ -117,6 +117,16 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME;
     }
 
+    public function getAdyenPaymentCreditCardId(): string
+    {
+        return Module::PAYMENT_CREDITCARD_ID;
+    }
+
+    public function getAdyenPaymentPayPalId(): string
+    {
+        return Module::PAYMENT_PAYPAL_ID;
+    }
+
     public function getWebhookControllerUrl(): string
     {
         return $this->context->getWebhookControllerUrl();
