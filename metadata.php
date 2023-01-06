@@ -80,6 +80,7 @@ $aModule = [
         'modules/osc/adyen/payment/adyen_assets.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets.tpl',
         'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
         'modules/osc/adyen/payment/adyen_payment_nextstep.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_nextstep.tpl',
+        'modules/osc/adyen/payment/adyen_payment_psp.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_psp.tpl',
         // frontend - orderpage
         'modules/osc/adyen/payment/adyen_order_submit.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_order_submit.tpl',
         // frontend - account
