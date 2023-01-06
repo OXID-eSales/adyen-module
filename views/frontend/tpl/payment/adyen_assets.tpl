@@ -7,13 +7,17 @@
       crossorigin="anonymous">
 [{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
 [{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]
+[{assign var="adyenCreditCard" value=$oViewConf->getAdyenPaymentCreditCardId()}]
+[{assign var="adyenPayPal" value=$oViewConf->getAdyenPaymentPayPalId()}]
 [{if $phpStorm}]<script>[{/if}]
     [{capture assign="adyenJS"}]
         [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
         [{assign var="isPaymentPage" value=false}]
         [{assign var="isOrderPage" value=false}]
+        let submitForm;
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{assign var="isPaymentPage" value=true}]
+            submitForm = document.getElementById('payment');
             const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
             const nextStepEl = document.getElementById('paymentNextStepBottom');
             [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
@@ -27,14 +31,15 @@
             [{assign var="isOrderPage" value=true}]
             [{assign var="orderPaymentPayPal" value=false}]
             [{assign var="paymentID" value=$payment->getId()}]
-            [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
+            [{if $paymentID === $adyenPayPal}]
                 [{assign var="orderPaymentPayPal" value=true}]
             [{/if}]
-            const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
-            const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
-            const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
-            const submitForm = document.getElementById('orderConfirmAgbBottom');
+            submitForm = document.getElementById('orderConfirmAgbBottom');
         [{/if}]
+        const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
+        const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
+        const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
+
         const adyenAsync = async function () {
             const configuration = {
                 environment: '[{$oViewConf->getAdyenOperationMode()}]',
@@ -67,13 +72,13 @@
                 },
                 onChange: (state, component) => {
                     [{if $isPaymentPage}]
-                        var paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
+                        const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
                         paymentIdEl.checked = true;
                         // negate isValid to Button
                         nextStepEl.disabled = !state.isValid;
                         nextStepEl.dataset.adyensubmit = '';
                         if (state.isValid) {
-                            nextStepEl.dataset.adyensubmit = 'cardComponent';
+                            nextStepEl.dataset.adyensubmit = paymentIdEl.value;
                             state.data.deliveryAddress = configuration.deliveryAddress;
                             state.data.shopperEmail = configuration.shopperEmail;
                             state.data.shopperIP = configuration.shopperIP;
@@ -81,23 +86,22 @@
                         }
                     [{/if}]
                     [{if $isLog}]
-                        console.log('onChange:', state);
+                        console.log('onChange:', state, component);
                     [{/if}]
                 },
                 onSubmit: (state, component) => {
                     [{if $isLog}]
-                        console.log('onSubmit:', state);
+                        console.log('onSubmit:', state.data);
                     [{/if}]
                     component.setStatus('loading');
                     makePayment(state.data)
                         .then(response => {
+                            console.log('onSubmit-response:', response);
                             if (response.action) {
                                 // Drop-in handles the action object from the /payments response
-                                console.log('YEAH!');
                                 component.handleAction(response.action);
                             } else {
-                                // Your function to show the final result to the shopper
-                                console.log('toDo: Your function to show the final result to the shopper');
+                                setPspReference(response);
                             }
                         })
                         .catch(error => {
@@ -107,14 +111,10 @@
                 onAdditionalDetails: (state, component) => {
                     makeDetailsCall(state.data)
                         .then(response => {
-                            console.log('makeDetailsCall:', response);
-                            // call on the Orderpage
-                            if (typeof submitForm !== 'undefined' && response.pspReference) {
-                                adyenPspReferenceEl.value = response.pspReference;
-                                adyenResultCodeEl.value = response.resultCode;
-                                adyenAmountCurrencyEl.value = response.amount.currency;
-                                submitForm.submit();
-                            }
+                            [{if $isLog}]
+                                console.log('makeDetailsCall:', response);
+                            [{/if}]
+                            setPspReference(response);
                         })
                         .catch(error => {
                             throw Error(error);
@@ -126,7 +126,7 @@
                 paymentMethodsConfiguration: {
                     [{if $isPaymentPage}]
                         [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj name=paymentListJS}]
-                            [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
+                            [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
                                 card: {
                                     hasHolderName: true,
                                     holderNameRequired: true,
@@ -162,7 +162,7 @@
             [{/if}]
             [{if $isPaymentPage}]
                 [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
-                    [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
+                    [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
                         const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
                     [{/if}]
                 [{/foreach}]
@@ -200,11 +200,25 @@
                     body: JSON.stringify(data)
                 }).then(response => response.json());
 
+            const setPspReference = (response) => {
+                if (response.pspReference) {
+                    adyenPspReferenceEl.value = response.pspReference;
+                    adyenResultCodeEl.value = response.resultCode;
+                    adyenAmountCurrencyEl.value = response.amount.currency;
+                    if (typeof submitForm !== 'undefined') {
+                        submitForm.submit();
+                    }
+                }
+            }
+
             [{if $isPaymentPage}]
                 nextStepEl.addEventListener("click", function(e) {
-                    if (nextStepEl.dataset.adyensubmit === 'cardComponent') {
+                    if (nextStepEl.dataset.adyensubmit !== '') {
                         e.preventDefault();
-                        cardComponent.submit();
+                        nextStepEl.disabled;
+                        if (nextStepEl.dataset.adyensubmit === '[{$adyenCreditCard}]') {
+                            cardComponent.submit();
+                        }
                     }
                 }, false);
             [{/if}]
