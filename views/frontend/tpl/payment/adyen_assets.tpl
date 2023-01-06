@@ -123,7 +123,7 @@
                         })
                         .catch(error => {
                             throw Error(error);
-                        }),
+                        });
                     [{if $isLog}]
                         console.log('onAdditionalDetails:', state, component);
                     [{/if}]
