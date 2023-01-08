@@ -78,6 +78,7 @@
                             state.data.deliveryAddress = configuration.deliveryAddress;
                             state.data.shopperEmail = configuration.shopperEmail;
                             state.data.shopperIP = configuration.shopperIP;
+                            state.data.preAuth = true;
                             adyenStateEl.value = JSON.stringify(state.data);
                         }
                     [{/if}]

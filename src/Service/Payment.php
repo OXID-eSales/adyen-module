@@ -94,6 +94,10 @@ class Payment extends PaymentBase
         $payments->setMerchantApplicationName(Module::MODULE_NAME_EN);
         $payments->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
 
+        if ($paymentState['preAuth']) {
+            $payments->setIsPreAuth();
+        }
+
         try {
             $resultPayments = $this->APIPayments->getPayments($payments);
             if (is_array($resultPayments)) {
