@@ -120,7 +120,7 @@ jobs:
 
       - name: Create .env-file
         continue-on-error: true
-        working-directory: source/test-module
+        working-directory: source/test-module/tests
         run: |
           echo "${{ secrets.DOTENV }}" > ./.env
 
