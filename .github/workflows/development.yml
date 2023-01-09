@@ -93,7 +93,7 @@ jobs:
       - name: Create .env-file
         continue-on-error: true
         run: |
-          makedir -p /var/www/test-module/tests/
+          mkdir -p /var/www/test-module/tests/
           echo "${{ secrets.DOTENV }}" > /var/www/test-module/tests/.env
 
       - name: Stop containers
