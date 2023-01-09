@@ -190,7 +190,7 @@ class Order extends Order_parent
         }
 
         $pspReference = $this->getAdyenStringData('adyenpspreference');
-        $reference =  $this->getAdyenOrderReference();
+        $reference = $this->getAdyenOrderReference();
 
         $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
         $success = $paymentService->doAdyenCancel(
