@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -92,8 +93,8 @@ class PaymentController extends PaymentController_parent
             }
         } catch (NotFoundExceptionInterface | ContainerExceptionInterface $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
-            return $result;
         }
+        return $result;
     }
 
     /**
@@ -122,14 +123,21 @@ class PaymentController extends PaymentController_parent
     protected function removeAdyenPaymentFromSession(): void
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
+
         // cancel authorization
-        // https://docs.adyen.com/online-payments/cancel
         $pspReference = $session->getPspReference();
-        if ($pspReference) {
+        $reference = $session->getOrderReference();
+        if ($pspReference && $reference) {
+            $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+            $paymentService->doAdyenCancel(
+                $pspReference,
+                $reference
+            );
             $session->deletePspReference();
             $session->deleteResultCode();
             $session->deleteAmountCurrency();
             $session->deletePaymentState();
+            $session->deleteOrderReference();
         }
     }
 }
