@@ -92,7 +92,7 @@ jobs:
       - name: Create .env-file
         continue-on-error: true
         run: |
-          echo "${{ secrets.DOTENV}}" > source/modules/osc/adyen/.en
+          echo "${{ secrets.DOTENV}}" > /var/www/test-module/tests/.env
 
       - name: Stop containers
         run: |
