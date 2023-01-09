@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
-use Codeception\Util\Fixtures;
+use OxidEsales\Codeception\Module\Translation\Translator;
+use OxidEsales\Codeception\Page\Account\UserOrderHistory;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 /**
- * @group unzer_module
- * @group ThirdGroup
+ * @group CreditCard
  */
 final class CreditCardCest extends BaseCest
 {
@@ -39,13 +39,34 @@ final class CreditCardCest extends BaseCest
     }
 
     /**
-     * @param string $name Fixtures name
+     * @param AcceptanceTester $I
      * @return void
+     * @throws \Exception
      */
-    private function _submitCreditCardPayment(string $name)
+    private function _submitCreditCardPayment(AcceptanceTester $I)
     {
-        $orderPage = $this->_choosePayment($this->cardPaymentLabel);
+        $orderPage = $this->_fillCreditCardDetails();
+        $orderPage->submitOrder();
+    }
 
-        $fixtures = Fixtures::get($name);
+    public function checkOrderCreditCard(AcceptanceTester $I)
+    {
+        $this->_initializeTest();
+        $this->_submitCreditCardPayment($I);
+        $orderNumber = $this->_checkSuccessfulPayment();
+
+        $I->updateInDatabase(
+            'oxorder',
+            ['ADYENPSPREFERENCE' => $orderNumber],
+            ['OXORDERNR' => $orderNumber]
+        );
+
+        $orderHistoryPage = new UserOrderHistory($I);
+        $I->amOnPage($orderHistoryPage->URL);
+        $I->makeScreenshot(time() . ' Order History');
+        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
+            . ': ' . Translator::translate("OSC_ADYEN_PAYMENT_METHOD_CREDITCARD"));
+        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
+            . ': ' . $orderNumber);
     }
 }

@@ -80,6 +80,7 @@ jobs:
       - name: Install dependencies and reset shop
         run: |
           docker-compose exec -T php composer update --no-interaction
+          docker-compose exec -T php composer require vlucas/phpdotenv --no-interaction --dev
           docker-compose exec -T php php vendor/bin/reset-shop
 
       - name: Put module settings
@@ -88,6 +89,10 @@ jobs:
           mkdir -p source/var/configuration/environment/
           echo "${{ secrets.MODULE_SETTINGS }}" > source/var/configuration/environment/1.yaml
           docker-compose exec -T php php bin/oe-console oe:module:apply-configuration
+      - name: Create .env-file
+        continue-on-error: true
+        run: |
+          echo "${{ secrets.DOTENV}}" > source/modules/osc/adyen/.en
 
       - name: Stop containers
         run: |
