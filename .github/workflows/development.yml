@@ -253,6 +253,7 @@ jobs:
             source/vendor/${{ env.PACKAGE_NAME }}/Tests/Codeception/_output/
             source/source/log/oxideshop.log
             source/data/php/logs/error_log.txt
+            source/test-module/tests/.env
 
   sonarcloud:
     needs: [ styles, unit_tests ]
