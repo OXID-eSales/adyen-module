@@ -15,6 +15,7 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
@@ -32,6 +33,7 @@ class ViewConfig extends ViewConfig_parent
     protected Context $context;
     protected PaymentMethods $adyenPaymentMethods;
     protected CountryRepository $countryRepository;
+    protected SessionSettings $sessionSettings;
 
     /**
      * @inheritDoc
@@ -44,6 +46,7 @@ class ViewConfig extends ViewConfig_parent
         $this->context = $this->getServiceFromContainer(Context::class);
         $this->adyenPaymentMethods = $this->getServiceFromContainer(PaymentMethods::class);
         $this->countryRepository = $this->getServiceFromContainer(CountryRepository::class);
+        $this->sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
     }
 
     /**
@@ -125,6 +128,11 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenPaymentPayPalId(): string
     {
         return Module::PAYMENT_PAYPAL_ID;
+    }
+
+    public function isInAdyenAuthorization(): bool
+    {
+        return $this->sessionSettings->getPspReference() !== '';
     }
 
     public function getWebhookControllerUrl(): string

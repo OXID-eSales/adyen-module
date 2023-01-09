@@ -37,6 +37,7 @@ class PaymentGateway extends PaymentGateway_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $paymentId = $session->getPaymentId();
 
+        /** @var eShopOrder $order */
         if (!Module::isAdyenPayment($paymentId)) {
             return parent::executePayment($amount, $order);
         }

@@ -18,6 +18,8 @@ use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class PaymentController extends PaymentController_parent
 {
@@ -74,6 +76,7 @@ class PaymentController extends PaymentController_parent
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      * @return  mixed
      */
     public function validatePayment()
@@ -81,7 +84,26 @@ class PaymentController extends PaymentController_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $result = parent::validatePayment();
         $paymentId = $session->getPaymentId();
-        if (Module::isAdyenPayment($paymentId)) {
+        try {
+            if (Module::isAdyenPayment($paymentId)) {
+                $this->saveAdyenPaymentInSession();
+            } else {
+                $this->removeAdyenPaymentFromSession();
+            }
+        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $exception) {
+            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            return $result;
+        }
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function saveAdyenPaymentInSession(): void
+    {
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        if (!$session->getPspReference()) {
             $state = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME);
             $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
             $resultCode = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_RESULTCODE_NAME);
@@ -91,6 +113,23 @@ class PaymentController extends PaymentController_parent
             $session->setResultCode($resultCode);
             $session->setAmountCurrency($amountCurrency);
         }
-        return $result;
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function removeAdyenPaymentFromSession(): void
+    {
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        // cancel authorization
+        // https://docs.adyen.com/online-payments/cancel
+        $pspReference = $session->getPspReference();
+        if ($pspReference) {
+            $session->deletePspReference();
+            $session->deleteResultCode();
+            $session->deleteAmountCurrency();
+            $session->deletePaymentState();
+        }
     }
 }

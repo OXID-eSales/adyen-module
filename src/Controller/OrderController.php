@@ -17,7 +17,6 @@ use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class OrderController extends OrderController_parent
 {
-
     use UserAddress;
 
     //use ServiceContainer;
