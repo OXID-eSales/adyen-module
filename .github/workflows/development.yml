@@ -90,6 +90,12 @@ jobs:
           echo "${{ secrets.MODULE_SETTINGS }}" > source/var/configuration/environment/1.yaml
           docker-compose exec -T php php bin/oe-console oe:module:apply-configuration
 
+      - name: Create .env-file
+        continue-on-error: true
+        working-directory: source/test-module/tests
+        run: |
+          echo "${{ secrets.DOTENV }}" > .env
+
       - name: Stop containers
         run: |
           docker-compose down
@@ -117,12 +123,6 @@ jobs:
         id: dependencies
         working-directory: source/test-module
         run: composer install
-
-      - name: Create .env-file
-        continue-on-error: true
-        working-directory: source/test-module/tests
-        run: |
-          echo "${{ secrets.DOTENV }}" > ./.env
 
       - name: Run phpcs
         id: phpcs
