@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
@@ -52,6 +53,9 @@ final class CreditCardCest extends BaseCest
 
     public function checkOrderCreditCard(AcceptanceTester $I)
     {
+        $actual_link = $I->executeJS('return location.href');
+        Registry::getLogger()->error($I->getShopUrl(), []);
+        error_log($I->getShopUrl());
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
         $orderNumber = $this->_checkSuccessfulPayment();
