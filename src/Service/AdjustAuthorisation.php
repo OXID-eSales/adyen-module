@@ -108,7 +108,7 @@ class AdjustAuthorisation
         $adjust->setMerchantAccount($this->moduleSettings->getMerchantAccount());
 
         try {
-            $resultAdjust = $this->APIAdjust->getAdjustAuthorisation($adjustAuthorisation);
+            $resultAdjust = $this->APIAdjust->getAdjustAuthorisation($adjust);
             if (is_array($resultAdjust)) {
                 $this->setAdjustAuthorisationResult($resultAdjust);
                 $result = true;

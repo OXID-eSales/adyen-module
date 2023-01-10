@@ -37,7 +37,7 @@ class AdyenJSController extends FrontendController
 
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentService->collectPayments($amount, $reference, $postData['paymentMethod']);
+        $paymentService->collectPayments($amount, $reference, $postData);
         $payments = $paymentService->getPaymentResult();
 
         $response->setData(
