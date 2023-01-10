@@ -95,8 +95,7 @@ abstract class BaseCest
 
         $inputName = '[name="holderName"]';
 
-        $this->I->waitForElement('.js-iframe', 60);
-
+        $this->I->waitForElement($iframeCreditCardNumber, 60);
         $this->I->switchToIFrame($iframeCreditCardNumber);
         $this->I->fillField($inputCreditCardNumber, $_ENV['CREDITCARDNUMBER']);
         $this->I->switchToIFrame();
