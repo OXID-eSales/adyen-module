@@ -39,6 +39,7 @@
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
         const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
         const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
+        const adyenAdjustAuthorisationEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAdjustAuthorisationName()}]');
 
         const adyenAsync = async function () {
             const configuration = {
@@ -220,6 +221,7 @@
                     adyenPspReferenceEl.value = response.pspReference;
                     adyenResultCodeEl.value = response.resultCode;
                     adyenAmountCurrencyEl.value = response.amount.currency;
+                    adyenAdjustAuthorisationEl.value = response.adjustAuthorisationData;
                     result = true;
                 }
                 if (result === true) {

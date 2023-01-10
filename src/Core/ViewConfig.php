@@ -110,6 +110,11 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME;
     }
 
+    public function getAdyenHtmlParamAdjustAuthorisationName(): string
+    {
+        return Module::ADYEN_HTMLPARAM_ADJUSTAUTHORISATION_NAME;
+    }
+
     public function getAdyenHtmlParamResultCodeName(): string
     {
         return Module::ADYEN_HTMLPARAM_RESULTCODE_NAME;

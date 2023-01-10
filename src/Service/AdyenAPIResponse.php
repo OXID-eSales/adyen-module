@@ -12,6 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Adyen\AdyenException;
 use Adyen\Client;
 use Adyen\Service\Checkout;
+use Adyen\Service\Modification;
 
 /**
  * @extendable-class
@@ -39,5 +40,10 @@ class AdyenAPIResponse
     protected function createCheckout(): Checkout
     {
         return new Checkout($this->client);
+    }
+
+    protected function createModification(): Modification
+    {
+        return new Modification($this->client);
     }
 }

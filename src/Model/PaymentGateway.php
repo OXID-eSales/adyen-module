@@ -9,9 +9,10 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\AdjustAuthorisation;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
@@ -37,13 +38,15 @@ class PaymentGateway extends PaymentGateway_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $paymentId = $session->getPaymentId();
 
-        /** @var eShopOrder $order */
         if (!Module::isAdyenPayment($paymentId)) {
             return parent::executePayment($amount, $order);
         }
 
-        // put RequestData from OrderCtrl in the session as well as from PaymentCtrl
-        if (!Module::showInPaymentCtrl($paymentId)) {
+        /** @var eShopOrder $order */
+        if (Module::showInPaymentCtrl($paymentId)) {
+            $this->doFinishAdyenAuthorization($amount, $order);
+        } else {
+            // put RequestData from OrderCtrl in the session as well as from PaymentCtrl
             $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
             $resultCode = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_RESULTCODE_NAME);
             $amountCurrency = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME);
@@ -60,6 +63,19 @@ class PaymentGateway extends PaymentGateway_parent
 //        }
 //        /** @var eShopOrder $order */
 //        return $this->doExecuteAdyenPayment($amount, $order);
+    }
+
+    /**
+     * @param double $amount Goods amount
+     */
+    protected function doFinishAdyenAuthorization(float $amount): bool
+    {
+        $adjustAuthorisationService = $this->getServiceFromContainer(AdjustAuthorisation::class);
+        $success = $adjustAuthorisationService->doAdyenAdjustAuthorisation($amount);
+
+        $this->_sLastError = $adjustAuthorisationService->getAdjustAuthorisationError();
+
+        return $success;
     }
 
     /**

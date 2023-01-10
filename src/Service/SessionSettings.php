@@ -28,6 +28,7 @@ class SessionSettings
     public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
     public const ADYEN_SESSION_PSPREFERENCE_NAME = 'sess_adyen_pspreference';
     public const ADYEN_SESSION_RESULTCODE_NAME = 'sess_adyen_resultcode';
+    public const ADYEN_SESSION_ADJUSTAUTHORISATION_NAME = 'sess_adyen_ajustauthorisation';
     public const ADYEN_SESSION_AMOUNTCURRENCY_NAME = 'sess_adyen_amountcurrency';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
@@ -147,6 +148,24 @@ class SessionSettings
     {
         $this->removeSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME);
     }
+
+    public function setAdjustAuthorisation(string $adjustAuthorisation): void
+    {
+        $this->saveSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME, $adjustAuthorisation);
+    }
+
+    public function getAdjustAuthorisation(): string
+    {
+        /** @var null|string $adjustAuthorisation */
+        $adjustAuthorisation = $this->getSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME);
+        return $adjustAuthorisation ?? '';
+    }
+
+    public function deleteAdjustAuthorisation(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME);
+    }
+
     public function setAmountCurrency(string $amountCurrency): void
     {
         $this->saveSettingValue(self::ADYEN_SESSION_AMOUNTCURRENCY_NAME, $amountCurrency);
