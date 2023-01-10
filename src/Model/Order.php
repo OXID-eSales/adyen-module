@@ -106,15 +106,20 @@ class Order extends Order_parent
 
     public function isAdyenCapturePossible(): bool
     {
+        return (
+            $this->isAdyenOrder() &&
+            $this->getPossibleCaptureAmount() > 0
+        );
+    }
+
+    public function isAdyenManualCapture(): bool
+    {
         $result = false;
         if ($this->isAdyenOrder()) {
             /** @var Payment $payment */
             $payment = oxNew(EshopModelPayment::class);
             $payment->load($this->getAdyenStringData('oxpaymenttype'));
-            $result = (
-                $payment->isAdyenManualCapture() &&
-                $this->getPossibleCaptureAmount() > 0
-            );
+            $result = $payment->isAdyenManualCapture();
         }
         return $result;
     }
