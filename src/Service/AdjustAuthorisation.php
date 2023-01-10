@@ -26,9 +26,9 @@ class AdjustAuthorisation
     public const ADJUST_AUTHORISATION_ERROR_NONE = 'ADYEN_ADJUST_AUTHORISATION_ERROR_NONE';
     public const ADJUST_AUTHORISATION_ERROR_GENERIC = 'ADYEN_ADJUST_AUTHORISATION_ERROR_GENERIC';
 
-    private string $adjustAuthorisationError = self::ADJUST_AUTHORISATION_ERROR_NONE;
+    private string $adjustError = self::ADJUST_AUTHORISATION_ERROR_NONE;
 
-    private array $adjustAuthorisationResult = [];
+    private array $adjustResult = [];
 
     private SessionSettings $session;
 
@@ -36,38 +36,38 @@ class AdjustAuthorisation
 
     private ModuleSettings $moduleSettings;
 
-    private AdyenAPIResponseAdjustAuthorisation $APIAdjustAuthorisation;
+    private AdyenAPIResponseAdjustAuthorisation $APIAdjust;
 
     public function __construct(
         SessionSettings $session,
         Context $context,
         ModuleSettings $moduleSettings,
-        AdyenAPIResponseAdjustAuthorisation $APIAdjustAuthorisation
+        AdyenAPIResponseAdjustAuthorisation $APIAdjust
     ) {
         $this->session = $session;
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
-        $this->APIAdjustAuthorisation = $APIAdjustAuthorisation;
+        $this->APIAdjust = $APIAdjust;
     }
 
-    public function setAdjustAuthorisationResult(array $adjustAuthorisationResult): void
+    public function setAdjustAuthorisationResult(array $adjustResult): void
     {
-        $this->adjustAuthorisationResult = $adjustAuthorisationResult;
+        $this->adjustResult = $adjustResult;
     }
 
     public function getAdjustAuthorisationResult(): array
     {
-        return $this->adjustAuthorisationResult;
+        return $this->adjustResult;
     }
 
     public function setAdjustAuthorisationError(string $text): void
     {
-        $this->adjustAuthorisationError = $text;
+        $this->adjustError = $text;
     }
 
     public function getAdjustAuthorisationError(): string
     {
-        return $this->adjustAuthorisationError;
+        return $this->adjustError;
     }
 
     /**
@@ -77,41 +77,45 @@ class AdjustAuthorisation
     {
         $pspReference = $this->session->getPspReference();
         $reference = $this->session->getOrderReference();
-        $adjustAuthorisationData = $this->session->getAdjustAuthorisation();
+        $adjustAuthorisation = $this->session->getAdjustAuthorisation();
 
-        return $this->collectAdjustAuthorisation($amount, $reference, $pspReference, $adjustAuthorisationData);
+        return $this->collectAdjustAuthorisation($amount, $reference, $pspReference, $adjustAuthorisation);
     }
 
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
      * @param string $pspReference pspReference
-     * @param string $adjustAuthorisationData The previous adjustAuthorisationData blob.
+     * @param string $adjustAuthorisation The previous adjustAuthorisationData blob.
      */
-    public function collectAdjustAuthorisation(float $amount, string $reference, string $pspReference, string $adjustAuthorisationData): bool
-    {
+    public function collectAdjustAuthorisation(
+        float $amount,
+        string $reference,
+        string $pspReference,
+        string $adjustAuthorisation
+    ): bool {
         $result = false;
 
-        $adjustAuthorisation = oxNew(AdyenAPIAdjustAuthorisation::class);
-        $adjustAuthorisation->setCurrencyName($this->context->getActiveCurrencyName());
-        $adjustAuthorisation->setReference($reference);
-        $adjustAuthorisation->setPspReference($pspReference);
-        $adjustAuthorisation->setAdjustAuthorisationData($adjustAuthorisationData);
-        $adjustAuthorisation->setCurrencyAmount($this->getAdyenAmount(
+        $adjust = oxNew(AdyenAPIAdjustAuthorisation::class);
+        $adjust->setCurrencyName($this->context->getActiveCurrencyName());
+        $adjust->setReference($reference);
+        $adjust->setPspReference($pspReference);
+        $adjust->setAdjustAuthorisationData($adjustAuthorisation);
+        $adjust->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()
         ));
-        $adjustAuthorisation->setMerchantAccount($this->moduleSettings->getMerchantAccount());
+        $adjust->setMerchantAccount($this->moduleSettings->getMerchantAccount());
 
         try {
-            $resultAdjustAuthorisation = $this->APIAdjustAuthorisation->getAdjustAuthorisation($adjustAuthorisation);
-            if (is_array($resultAdjustAuthorisation)) {
-                $this->setAdjustAuthorisationResult($resultAdjustAuthorisation);
+            $resultAdjust = $this->APIAdjust->getAdjustAuthorisation($adjustAuthorisation);
+            if (is_array($resultAdjust)) {
+                $this->setAdjustAuthorisationResult($resultAdjust);
                 $result = true;
             }
         } catch (Exception $exception) {
             Registry::getLogger()->error("Error on getAdjustAuthorisation call.", [$exception]);
-            $this->setPaymentExecutionError(self::ADJUST_AUTHORISATION_ERROR_GENERIC);
+            $this->setAdjustAuthorisationError(self::ADJUST_AUTHORISATION_ERROR_GENERIC);
         }
         return $result;
     }

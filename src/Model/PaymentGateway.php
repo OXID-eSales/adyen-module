@@ -32,6 +32,7 @@ class PaymentGateway extends PaymentGateway_parent
      * @param double $amount Goods amount
      * @param object $order  User ordering object
      * @SuppressWarnings(PHPMD.StaticAccess)
+     * @SuppressWarnings(PHPMD.ElseExpression)
      */
     public function executePayment($amount, &$order): bool
     {
@@ -44,7 +45,7 @@ class PaymentGateway extends PaymentGateway_parent
 
         /** @var eShopOrder $order */
         if (Module::showInPaymentCtrl($paymentId)) {
-            $this->doFinishAdyenAuthorization($amount, $order);
+            $this->doFinishAdyenAuthorization($amount);
         } else {
             // put RequestData from OrderCtrl in the session as well as from PaymentCtrl
             $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
@@ -70,10 +71,10 @@ class PaymentGateway extends PaymentGateway_parent
      */
     protected function doFinishAdyenAuthorization(float $amount): bool
     {
-        $adjustAuthorisationService = $this->getServiceFromContainer(AdjustAuthorisation::class);
-        $success = $adjustAuthorisationService->doAdyenAdjustAuthorisation($amount);
+        $adjustService = $this->getServiceFromContainer(AdjustAuthorisation::class);
+        $success = $adjustService->doAdyenAdjustAuthorisation($amount);
 
-        $this->_sLastError = $adjustAuthorisationService->getAdjustAuthorisationError();
+        $this->_sLastError = $adjustService->getAdjustAuthorisationError();
 
         return $success;
     }

@@ -26,12 +26,12 @@ class AdyenAPIResponseAdjustAuthorisation extends AdyenAPIResponse
      * @throws AdyenException
      * @return mixed
      */
-    public function getAdjustAuthorisation(AdyenAPIAdjustAuthorisation $adjustAuthorisationParams)
+    public function getAdjustAuthorisation(AdyenAPIAdjustAuthorisation $adjustParams)
     {
         $result = false;
         try {
             $service = $this->createModification();
-            $params = $adjustAuthorisationParams->getAdyenAdjustAuthorisationParams();
+            $params = $adjustParams->getAdyenAdjustAuthorisationParams();
             $result = $service->adjustAuthorisation($params);
             if (!$result) {
                 throw new Exception('adjustAuthorisation not found in Adyen-Response');

@@ -21,7 +21,7 @@ class AdyenAPIAdjustAuthorisation
 
     protected string $currencyAmount;
 
-    protected string $adjustAuthorisationData;
+    protected string $adjustAuthorisation;
 
     public function setReference(string $reference): void
     {
@@ -48,9 +48,9 @@ class AdyenAPIAdjustAuthorisation
         $this->currencyAmount = $currencyAmount;
     }
 
-    public function setAdjustAuthorisationData(string $adjustAuthorisationData): void
+    public function setAdjustAuthorisationData(string $adjustAuthorisation): void
     {
-        $this->adjustAuthorisationData = $adjustAuthorisationData;
+        $this->adjustAuthorisation = $adjustAuthorisation;
     }
 
     public function getAdyenAdjustAuthorisationParams(): array
@@ -63,7 +63,7 @@ class AdyenAPIAdjustAuthorisation
                 'currency' => $this->currencyName,
                 'value' => $this->currencyAmount,
             ],
-            'additionalData' => $this->adjustAuthorisationData
+            'additionalData' => $this->adjustAuthorisation
         ];
     }
 }
