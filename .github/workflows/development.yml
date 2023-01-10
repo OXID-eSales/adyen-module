@@ -250,7 +250,7 @@ jobs:
         with:
           name: CodeceptionTestsLog-${{ matrix.php }}
           path: |
-            source/vendor/${{ env.PACKAGE_NAME }}/Tests/Codeception/_output/
+            source/vendor/${{ env.PACKAGE_NAME }}/tests/Codeception/_output/
             source/source/log/oxideshop.log
             source/data/php/logs/error_log.txt
 
