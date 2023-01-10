@@ -94,27 +94,6 @@ class SessionSettings
         $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTMETHODS_NAME);
     }
 
-    public function setPaymentState(string $paymentState): void
-    {
-        $this->saveSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME, $paymentState);
-    }
-
-    /**
-     * @throws \JsonException
-     */
-    public function getPaymentState(): array
-    {
-        /** @var null|string $paymentStateJson */
-        $paymentStateJson = $this->getSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
-        $paymentStateJson = $paymentStateJson ?? '';
-        return $this->jsonToArray($paymentStateJson);
-    }
-
-    public function deletePaymentState(): void
-    {
-        $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATEDATA_NAME);
-    }
-
     public function setPspReference(string $pspReference): void
     {
         $this->saveSettingValue(self::ADYEN_SESSION_PSPREFERENCE_NAME, $pspReference);

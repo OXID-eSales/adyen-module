@@ -18,7 +18,6 @@
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{assign var="isPaymentPage" value=true}]
             submitForm = document.getElementById('payment');
-            const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
             const nextStepEl = document.getElementById('paymentNextStepBottom');
             [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
             document.getElementsByName('paymentid').forEach(function (e) {
@@ -76,11 +75,6 @@
                         var paymentIdEl = setPaymentIdEl(component, !state.isValid);
                         if (state.isValid) {
                             nextStepEl.dataset.adyensubmit = paymentIdEl.value;
-                            state.data.deliveryAddress = configuration.deliveryAddress;
-                            state.data.shopperEmail = configuration.shopperEmail;
-                            state.data.shopperIP = configuration.shopperIP;
-                            state.data.preAuth = true;
-                            adyenStateEl.value = JSON.stringify(state.data);
                         }
                     [{/if}]
                     [{if $isLog}]
@@ -92,6 +86,12 @@
                         console.log('onSubmit:', state.data);
                     [{/if}]
                     component.setStatus('loading');
+                    [{if $isPaymentPage}]
+                        state.data.deliveryAddress = configuration.deliveryAddress;
+                        state.data.shopperEmail = configuration.shopperEmail;
+                        state.data.shopperIP = configuration.shopperIP;
+                        state.data.preAuth = true;
+                    [{/if}]
                     makePayment(state.data)
                         .then(response => {
                             [{if $isLog}]
@@ -114,13 +114,18 @@
                 onAdditionalDetails: (state, component) => {
                     makeDetailsCall(state.data)
                         .then(response => {
-                            var paymentIdEl = setPaymentIdEl(component, true);
+                            [{if $isPaymentPage}]
+                                setPaymentIdEl(component, true);
+                            [{/if}]
                             [{if $isLog}]
                                 console.log('makeDetailsCall:', response);
                             [{/if}]
-                            if (setPspReference(response) === false) {
-                                nextStepEl.disabled = false;
-                            }
+                            let resultSetPspReference = setPspReference(response);
+                            [{if $isPaymentPage}]
+                                if (resultSetPspReference === false) {
+                                    nextStepEl.disabled = false;
+                                }
+                            [{/if}]
                         })
                         .catch(error => {
                             throw Error(error);
@@ -179,8 +184,7 @@
                 [{/if}]
             [{/if}]
 
-            const makePayment = (paymentMethod = {}) => {
-                const paymentRequest = {paymentMethod};
+            const makePayment = (paymentRequest = {}) => {
                 return httpPost('payments', paymentRequest)
                     .then(response => {
                         if (response.error) throw new Error('Payment initiation failed');
@@ -221,7 +225,9 @@
                     adyenPspReferenceEl.value = response.pspReference;
                     adyenResultCodeEl.value = response.resultCode;
                     adyenAmountCurrencyEl.value = response.amount.currency;
-                    adyenAdjustAuthorisationEl.value = response.adjustAuthorisationData;
+                    [{if $isPaymentPage}]
+                        adyenAdjustAuthorisationEl.value = response.additionalData.adjustAuthorisationData;
+                    [{/if}]
                     result = true;
                 }
                 if (result === true) {
