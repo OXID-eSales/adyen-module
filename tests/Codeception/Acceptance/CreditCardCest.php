@@ -16,6 +16,7 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 /**
  * @group CreditCard
+ * @group osc_adyen
  */
 final class CreditCardCest extends BaseCest
 {
