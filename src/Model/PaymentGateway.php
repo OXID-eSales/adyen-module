@@ -80,6 +80,7 @@ class PaymentGateway extends PaymentGateway_parent
     /**
      * @param double $amount Goods amount
      * @param eShopOrder $order User ordering object
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     protected function doFinishAdyenPayment($amount, $order): bool
     {

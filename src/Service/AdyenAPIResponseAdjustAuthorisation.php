@@ -22,7 +22,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentsUpdate;
 class AdyenAPIResponseAdjustAuthorisation extends AdyenAPIResponse
 {
     /**
-     * @param AdyenAPIAdjustAuthorisation $adjustAuthorisationParams
+     * @param AdyenAPIAdjustAuthorisation $adjustParams
      * @throws AdyenException
      * @return mixed
      */
