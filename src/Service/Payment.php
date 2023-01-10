@@ -57,20 +57,6 @@ class Payment extends PaymentBase
     /**
      * @param double $amount Goods amount
      * @param string $reference Unique Order-Reference
-     * @throws \JsonException
-     */
-    public function doAdyenAuthorization(float $amount, string $reference): bool
-    {
-        $paymentState = $this->session->getPaymentState();
-        // not necessary anymore, so cleanup
-        $this->session->deletePaymentState();
-
-        return $this->collectPayments($amount, $reference, $paymentState);
-    }
-
-    /**
-     * @param double $amount Goods amount
-     * @param string $reference Unique Order-Reference
      * @param array $paymentState
      */
     public function collectPayments(float $amount, string $reference, array $paymentState): bool
