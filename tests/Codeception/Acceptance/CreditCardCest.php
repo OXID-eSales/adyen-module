@@ -53,7 +53,6 @@ final class CreditCardCest extends BaseCest
 
     public function checkOrderCreditCard(AcceptanceTester $I)
     {
-        $actual_link = $I->executeJS('return location.href');
         Registry::getLogger()->error($I->getShopUrl(), []);
         error_log($I->getShopUrl());
         $this->_initializeTest();
