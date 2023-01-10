@@ -84,6 +84,8 @@ abstract class BaseCest
 
     protected function _fillCreditCardDetails(): Page
     {
+        $spinner = 'div[class^="LoadingWrapper-module_loading-input__spinner"]';
+
         $iframeCreditCardNumber = '.adyen-checkout__card__cardNumber__input iframe';
         $inputCreditCardNumber = '[data-fieldtype="encryptedCardNumber"]';
 
@@ -95,7 +97,10 @@ abstract class BaseCest
 
         $inputName = '[name="holderName"]';
 
+
         $this->I->waitForElement($iframeCreditCardNumber, 60);
+        $this->I->waitForElementNotVisible($spinner, 90);
+
         $this->I->switchToIFrame($iframeCreditCardNumber);
         $this->I->fillField($inputCreditCardNumber, $_ENV['CREDITCARDNUMBER']);
         $this->I->switchToIFrame();
