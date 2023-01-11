@@ -7,7 +7,7 @@
                    [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]checked[{/if}]>
             <label for="payment_[{$sPaymentID}]">
                 <b>[{$paymentmethod->oxpayments__oxdesc->value}]</b>
-                - [{oxmultilang ident="OSC_ADYEN_IN_AUTHORIZATION"}]
+                - [{oxmultilang ident="OSC_ADYEN_IN_AUTHORISATION"}]
             </label>
         </dt>
     </dl>

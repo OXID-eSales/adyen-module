@@ -1,4 +1,4 @@
-[{if $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && !$oViewConf->isInAdyenAuthorization()}]
+[{if $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && !$oViewConf->isInAdyenAuthorisation()}]
     [{* We include it as template, so that it can be modified in custom themes *}]
     [{include file="modules/osc/adyen/payment/adyen_assets.tpl"}]
 [{/if}]

@@ -44,7 +44,7 @@ class PaymentGateway extends PaymentGateway_parent
 
         /** @var eShopOrder $order */
         if (Module::showInPaymentCtrl($paymentId)) {
-            $this->doFinishAdyenAuthorization($amount);
+            $this->doFinishAdyenAuthorisation($amount);
         } else {
             $this->doCollectAdyenRequestData();
         }
@@ -67,7 +67,7 @@ class PaymentGateway extends PaymentGateway_parent
     /**
      * @param double $amount Goods amount
      */
-    protected function doFinishAdyenAuthorization(float $amount): bool
+    protected function doFinishAdyenAuthorisation(float $amount): bool
     {
         $adjustService = $this->getServiceFromContainer(AdjustAuthorisation::class);
         $success = $adjustService->doAdyenAdjustAuthorisation($amount);

@@ -130,7 +130,7 @@ class ViewConfig extends ViewConfig_parent
         return Module::PAYMENT_PAYPAL_ID;
     }
 
-    public function isInAdyenAuthorization(): bool
+    public function isInAdyenAuthorisation(): bool
     {
         return $this->sessionSettings->getPspReference() !== '';
     }
