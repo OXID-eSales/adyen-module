@@ -138,7 +138,7 @@ final class PaypalCest extends BaseCest
 
         $langCode = Registry::getLang()->getLanguageAbbr();
         $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
-            . ': ' . Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions'][$langCode]['desc']);
+            . ': ' . Translator::translate("OSC_ADYEN_PAYMENT_METHOD_PAYPAL"));
         $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
             . ': ' . $orderNumber);
     }
