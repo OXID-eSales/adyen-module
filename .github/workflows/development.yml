@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone testing environment v3.0.0
-        run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git . && git reset --hard v3.0.0
+        run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git .
 
       - name: Clone the shop
         run: git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.5.x --single-branch source
@@ -54,7 +54,7 @@ jobs:
                  -e 's/<dbName>/example/'\
                  -e 's/<dbPwd>/root/'\
                  -e 's/<dbPort>/3306/'\
-                 -e 's/<sShopURL>/http:\/\/localhost.local\//'\
+                 -e 's/<sShopURL>/https:\/\/localhost.local\//'\
                  -e 's/<sShopDir>/\/var\/www\/source\//'\
                  -e 's/<sCompileDir>/\/var\/www\/source\/tmp\//'\
               source/source/config.inc.php
@@ -80,6 +80,7 @@ jobs:
       - name: Install dependencies and reset shop
         run: |
           docker-compose exec -T php composer update --no-interaction
+          docker-compose exec -T php composer require vlucas/phpdotenv --no-interaction --dev
           docker-compose exec -T php php vendor/bin/reset-shop
 
       - name: Put module settings
@@ -88,6 +89,12 @@ jobs:
           mkdir -p source/var/configuration/environment/
           echo "${{ secrets.MODULE_SETTINGS }}" > source/var/configuration/environment/1.yaml
           docker-compose exec -T php php bin/oe-console oe:module:apply-configuration
+
+      - name: Create .env-file
+        continue-on-error: true
+        working-directory: source/test-module/tests
+        run: |
+          echo "${{ secrets.DOTENV }}" > .env
 
       - name: Stop containers
         run: |
@@ -229,7 +236,7 @@ jobs:
             -e RUN_TESTS_FOR_SHOP=0 \
             -e RUN_TESTS_FOR_MODULES=0 \
             -e ADDITIONAL_TEST_PATHS='/var/www/vendor/${{ env.PACKAGE_NAME }}/tests' \
-            php php vendor/bin/runtests-codeception --group=${{ matrix.group }}
+            php php vendor/bin/runtests-codeception --group=${{ matrix.group }} --steps --debug
 
       - name: Stop containers
         if: always()
@@ -243,7 +250,7 @@ jobs:
         with:
           name: CodeceptionTestsLog-${{ matrix.php }}
           path: |
-            source/vendor/${{ env.PACKAGE_NAME }}/Tests/Codeception/_output/
+            source/vendor/${{ env.PACKAGE_NAME }}/tests/Codeception/_output/
             source/source/log/oxideshop.log
             source/data/php/logs/error_log.txt
 
