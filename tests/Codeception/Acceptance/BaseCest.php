@@ -15,6 +15,7 @@ use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
+use PHPUnit\Util\Xml\Exception;
 
 abstract class BaseCest
 {
@@ -54,7 +55,12 @@ abstract class BaseCest
      */
     protected function _initializeTest()
     {
-        $this->I->openShop();
+        try{
+            $this->I->openShop();
+        } catch ( Exception $exception){
+            $this->I->click('#proceed-link');
+        }
+
 
         $basketItem = Fixtures::get('product');
         $basketSteps = new BasketSteps($this->I);
