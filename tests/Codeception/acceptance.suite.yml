@@ -15,8 +15,6 @@ modules:
         restart: true
         capabilities:
           acceptInsecureCerts: true
-          goog:chromeOptions:
-            args: [ "allow-insecure-localhost","headless","start-maximized","ignore-certificate-errors" ]
     - Db:
         dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%;charset=utf8'
         user: '%DB_USERNAME%'

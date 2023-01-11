@@ -53,8 +53,6 @@ final class CreditCardCest extends BaseCest
 
     public function checkOrderCreditCard(AcceptanceTester $I)
     {
-        Registry::getLogger()->error($I->getShopUrl(), []);
-        error_log($I->getShopUrl());
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
         $orderNumber = $this->_checkSuccessfulPayment();
