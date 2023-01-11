@@ -90,20 +90,8 @@ final class PaypalCest extends BaseCest
         $I->waitForElement($paypalButtonContainer);
         $I->click($paypalButtonContainer);
 
-        // after clicking the Paypal button, a popup opens to authenticate the user. We need to switch the context.
-        // this will be the main window handle, because we need to switch back to this window
-        // after the paypal popup has closed.
-        $mainWindow = null;
-
-        // https://stackoverflow.com/questions/39588100
-        $I->executeInSelenium(function (RemoteWebDriver $webdriver) use (&$mainWindow) {
-            $handles = $webdriver->getWindowHandles();
-            $last_window = end($handles);
-            if (isset($handles[0]) && null !== $handles[0]) {
-                $mainWindow = $handles[0];
-            }
-            $webdriver->switchTo()->window($last_window);
-        });
+        // After clicking the Paypal button, a popup opens to authenticate the user. We need to switch the context.
+        $I->switchToNextTab();
 
         // Paypal Testuser comes from environment
         $paypalUser = $_ENV['PAYPAL_USER'];
@@ -133,12 +121,8 @@ final class PaypalCest extends BaseCest
         $I->waitForElement('#payment-submit-btn');
         $I->click('#payment-submit-btn');
 
-        // Paypal popup will close after the payment
-        // we must switch back to the main window to check successful payment
-        if (!$mainWindow) {
-            throw new \Exception('Main window handle is NULL');
-        }
-        $I->switchToWindow($mainWindow);
+        // Paypal popup will close after the payment, switch back to main window
+        $I->switchToPreviousTab();
         $orderNumber = $this->_checkSuccessfulPayment();
 
         // Database updates
