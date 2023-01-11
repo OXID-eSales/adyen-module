@@ -11,11 +11,11 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use Codeception\Util\Fixtures;
 use OxidEsales\Codeception\Page\Checkout\ThankYou;
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
+use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
-use OxidEsales\Codeception\Module\Translation\Translator;
+use PHPUnit\Util\Xml\Exception;
 
 abstract class BaseCest
 {
@@ -56,7 +56,6 @@ abstract class BaseCest
     protected function _initializeTest()
     {
         $this->I->openShop();
-
         $basketItem = Fixtures::get('product');
         $basketSteps = new BasketSteps($this->I);
         $basketSteps->addProductToBasket($basketItem['oxid'], $this->amount);
@@ -80,6 +79,42 @@ abstract class BaseCest
         $this->I->waitForElement($label);
         $this->I->click($label);
 
+        return $this->paymentSelection->goToNextStep();
+    }
+
+    protected function _fillCreditCardDetails(): Page
+    {
+        $spinner = 'div[class^="LoadingWrapper-module_loading-input__spinner"]';
+
+        $iframeCreditCardNumber = '.adyen-checkout__card__cardNumber__input iframe';
+        $inputCreditCardNumber = '[data-fieldtype="encryptedCardNumber"]';
+
+        $iframeCreditCardDate = '.adyen-checkout__card__exp-date__input iframe';
+        $inputValidationDate = '[data-fieldtype="encryptedExpiryDate"]';
+
+        $iframeCreditCardCVC = '.adyen-checkout__card__cvc__input iframe';
+        $inputCVC = '[data-fieldtype="encryptedSecurityCode"]';
+
+        $inputName = '[name="holderName"]';
+
+
+        $this->I->waitForElement($iframeCreditCardNumber, 60);
+        $this->I->waitForElementNotVisible($spinner, 90);
+
+        $this->I->switchToIFrame($iframeCreditCardNumber);
+        $this->I->fillField($inputCreditCardNumber, $_ENV['CREDITCARDNUMBER']);
+        $this->I->switchToIFrame();
+
+        $this->I->switchToIFrame($iframeCreditCardDate);
+        $this->I->fillField($inputValidationDate, $_ENV['CREDITCARDDATE']);
+        $this->I->switchToIFrame();
+
+        $this->I->switchToIFrame($iframeCreditCardCVC);
+        $this->I->fillField($inputCVC, $_ENV['CREDITCARDCVC']);
+        $this->I->switchToIFrame();
+
+
+        $this->I->fillField($inputName, $_ENV['CREDITCARDNAME']);
         return $this->paymentSelection->goToNextStep();
     }
 
