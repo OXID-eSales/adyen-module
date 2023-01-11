@@ -55,13 +55,6 @@ abstract class BaseCest
      */
     protected function _initializeTest()
     {
-        try{
-            $this->I->openShop();
-        } catch ( Exception $exception){
-            $this->I->click('#proceed-link');
-        }
-
-
         $basketItem = Fixtures::get('product');
         $basketSteps = new BasketSteps($this->I);
         $basketSteps->addProductToBasket($basketItem['oxid'], $this->amount);
