@@ -35,8 +35,6 @@ class AdyenAPIPayments
 
     protected string $shopperIP;
 
-    protected bool $preAuth = false;
-
     public function setReference(string $reference): void
     {
         $this->reference = $reference;
@@ -97,14 +95,9 @@ class AdyenAPIPayments
         $this->shopperIP = $shopperIP;
     }
 
-    public function setIsPreAuth(): void
-    {
-        $this->preAuth = true;
-    }
-
     public function getAdyenPaymentsParams(): array
     {
-        $result = [
+        return [
             'paymentMethod' => $this->paymentMethod,
             'browserInfo' => $this->browserInfo,
             'amount' => [
@@ -130,11 +123,5 @@ class AdyenAPIPayments
             'channel' => 'Web',
             'origin' => $this->origin
         ];
-
-        if ($this->preAuth) {
-            $result['additionalData']['authorisationType'] = "PreAuth";
-        }
-
-        return $result;
     }
 }

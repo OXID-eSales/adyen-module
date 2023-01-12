@@ -9,7 +9,6 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Service;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponse;
-use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseAdjustAuthorisation;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCancels;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCaptures;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentDetails;
@@ -47,7 +46,6 @@ class ServiceAvailabilityTest extends TestCase
     {
         return [
             [AdyenAPIResponse::class],
-            [AdyenAPIResponseAdjustAuthorisation::class],
             [AdyenAPIResponseCancels::class],
             [AdyenAPIResponseCaptures::class],
             [AdyenAPIResponsePaymentDetails::class],

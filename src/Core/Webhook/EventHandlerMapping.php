@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook;
 
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationAdjustmentHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler;
@@ -20,7 +19,6 @@ class EventHandlerMapping
 {
     public const MAPPING = [
         AuthorisationHandler::AUTHORISATION_EVENT_CODE => AuthorisationHandler::class,
-        AuthorisationAdjustmentHandler::AUTHORISATION_ADJUSTMENT_EVENT_CODE => AuthorisationAdjustmentHandler::class,
         CaptureHandler::CAPTURE_EVENT_CODE => CaptureHandler::class,
         RefundHandler::REFUND_EVENT_CODE => RefundHandler::class,
         CancellationHandler::CANCEL_EVENT_CODE => CancellationHandler::class,

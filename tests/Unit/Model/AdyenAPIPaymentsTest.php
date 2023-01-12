@@ -29,7 +29,6 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setShopperEmail('test@test.de');
         $model->setShopperIP('1.2.3.4');
         $model->setOrigin('https://origin.test.de');
-        $model->setIsPreAuth();
 
         $this->assertSame([
             'paymentMethod' => ['TestPaymentMethods'],
@@ -55,10 +54,7 @@ class AdyenAPIPaymentsTest extends UnitTestCase
                 ]
             ],
             'channel' => 'Web',
-            'origin' => 'https://origin.test.de',
-            'additionalData' => [
-                'authorisationType' => "PreAuth"
-            ]
+            'origin' => 'https://origin.test.de'
         ], $model->getAdyenPaymentsParams());
     }
 }
