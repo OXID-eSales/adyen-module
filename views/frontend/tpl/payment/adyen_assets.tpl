@@ -231,6 +231,9 @@
                     adyenAmountValueEl.value = response.amount.value;
                     result = true;
                 }
+                else if (response.resultCode === 'Refused') {
+                    window.location.replace('[{$sSelfLink}]cl=payment&payerror=2&stoken=[{$sToken}]');
+                }
                 if (result === true) {
                     if (typeof submitForm !== 'undefined') {
                         submitForm.submit();
