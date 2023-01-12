@@ -190,7 +190,9 @@
                         if (response.error) throw new Error('Payment initiation failed');
                         return response;
                     })
-                    .catch(console.error);
+                    .catch(error => {
+                        throw Error(error);
+                    });
             };
 
             const setPaymentIdEl = (component, nextStepElDisabled) => {
@@ -207,7 +209,9 @@
                         if (response.error || response.errorCode) throw new Error('Details call failed');
                         return response;
                     })
-                    .catch(err => console.error(err));
+                    .catch(error => {
+                        throw Error(error);
+                    });
 
             const httpPost = (endpoint, data) =>
                 fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&context=continue&stoken=[{$sToken}]', {
