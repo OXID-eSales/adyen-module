@@ -83,24 +83,29 @@ class PaymentController extends PaymentController_parent
     public function validatePayment()
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
-        $result = parent::validatePayment();
-        $paymentId = $session->getPaymentId();
-        try {
-            if (Module::isAdyenPayment($paymentId)) {
-                $this->saveAdyenPaymentInSession();
-            } else {
-                $this->removeAdyenPaymentFromSession();
-            }
-        } catch (NotFoundExceptionInterface | ContainerExceptionInterface $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+        $actualPaymentId = $session->getPaymentId();
+        $newPaymentId = $this->getStringRequestData('paymentid');
+
+        // remove a possible old adyen payment if another one was selected
+        if (
+            $actualPaymentId &&
+            $actualPaymentId !== $newPaymentId &&
+            Module::isAdyenPayment($actualPaymentId)
+        ) {
+            $this->removeAdyenPaymentFromSession();
         }
+
+        $result = parent::validatePayment();
+
+        // collect the paymentId again, because it may have changed in the meantime
+        $actualPaymentId = $session->getPaymentId();
+        if ($actualPaymentId && Module::isAdyenPayment($actualPaymentId)) {
+            $this->saveAdyenPaymentInSession();
+        }
+
         return $result;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     protected function saveAdyenPaymentInSession(): void
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
@@ -116,10 +121,6 @@ class PaymentController extends PaymentController_parent
         }
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     protected function removeAdyenPaymentFromSession(): void
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
