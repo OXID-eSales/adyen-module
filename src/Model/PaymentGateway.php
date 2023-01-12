@@ -11,6 +11,8 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\AdjustAuthorisation;
+use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -44,7 +46,7 @@ class PaymentGateway extends PaymentGateway_parent
 
         /** @var eShopOrder $order */
         if (Module::showInPaymentCtrl($paymentId)) {
-            $this->doFinishAdyenAuthorisation($amount);
+            $this->checkAdyenAuthorisation($amount);
         } else {
             $this->doCollectAdyenRequestData();
         }
@@ -65,16 +67,34 @@ class PaymentGateway extends PaymentGateway_parent
     }
 
     /**
+     * if the amount of authorisation differs from the amount of the current shopping cart,
+     * the authorisation must be revoked and the order re-authorised
+     *
      * @param double $amount Goods amount
      */
-    protected function doFinishAdyenAuthorisation(float $amount): bool
+    protected function checkAdyenAuthorisation(float $amount): void
     {
-        $adjustService = $this->getServiceFromContainer(AdjustAuthorisation::class);
-        $success = $adjustService->doAdyenAdjustAuthorisation($amount);
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        // reauthorize is necessary
+        if ($session->getAmountValue() < $amount) {
+            $pspReference = $session->getPspReference();
+            $orderReference = $session->getOrderReference();
+            $paymentState = $session->getPaymentState();
 
-        $this->_sLastError = $adjustService->getAdjustAuthorisationError();
-
-        return $success;
+            $paymentCancel = $this->getServiceFromContainer(PaymentCancel::class);
+            $paymentCancel->doAdyenCancel(
+                $pspReference,
+                $orderReference
+            );
+            $paymentService = $this->getServiceFromContainer(Payment::class);
+            $paymentService->collectPayments(
+                $amount,
+                $orderReference,
+                $paymentState
+            );
+            $payments = $paymentService->getPaymentResult();
+            $session->setPspReference($payments['pspReference']);
+        }
     }
 
     /**
@@ -97,10 +117,7 @@ class PaymentGateway extends PaymentGateway_parent
         // everything is fine, we can save the references
         if ($pspReference && $resultCode && $orderReference) {
             // not necessary anymore, so cleanup
-            $session->deletePspReference();
-            $session->deleteResultCode();
-            $session->deleteAmountCurrency();
-            $session->deleteOrderReference();
+            $session->deletePaymentSession();
 
             /** @var Order $order */
             $order->setAdyenOrderReference($orderReference);

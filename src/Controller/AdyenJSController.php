@@ -35,6 +35,10 @@ class AdyenJSController extends FrontendController
             $response->setNotFound()->sendJson();
         }
 
+        // save paymentState & amount to session if a reauthorisation is necessary
+        $session->setPaymentState($postData);
+        $session->setAmountValue($amount);
+
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
         $paymentService->collectPayments($amount, $reference, $postData);

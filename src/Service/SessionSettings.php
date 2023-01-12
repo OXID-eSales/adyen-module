@@ -206,7 +206,7 @@ class SessionSettings
         if (is_null($paymentId)) {
             /** @var null|Basket $basket */
             $basket = $this->session->getBasket();
-            $paymentId = !is_null($basket) ? $basket->getPaymentId() : '';
+            $paymentId = !is_null($basket) && $basket->getPaymentId() ? $basket->getPaymentId() : '';
         }
 
         return $paymentId;

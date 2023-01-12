@@ -38,7 +38,7 @@
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
         const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
         const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
-        const adyenAdjustAuthorisationEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAdjustAuthorisationName()}]');
+        const adyenAmountValueEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountValueName()}]');
 
         const adyenAsync = async function () {
             const configuration = {
@@ -90,7 +90,6 @@
                         state.data.deliveryAddress = configuration.deliveryAddress;
                         state.data.shopperEmail = configuration.shopperEmail;
                         state.data.shopperIP = configuration.shopperIP;
-                        state.data.preAuth = true;
                     [{/if}]
                     makePayment(state.data)
                         .then(response => {
@@ -214,7 +213,7 @@
                     });
 
             const httpPost = (endpoint, data) =>
-                fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&context=continue&stoken=[{$sToken}]', {
+                fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&stoken=[{$sToken}][{if $oViewConf->isAdyenSandboxMode()}]&XDEBUG_SESSION_START=1[{/if}]', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json, text/plain, */*',
@@ -229,9 +228,7 @@
                     adyenPspReferenceEl.value = response.pspReference;
                     adyenResultCodeEl.value = response.resultCode;
                     adyenAmountCurrencyEl.value = response.amount.currency;
-                    [{if $isPaymentPage}]
-                        adyenAdjustAuthorisationEl.value = response.additionalData.adjustAuthorisationData;
-                    [{/if}]
+                    adyenAmountValueEl.value = response.amount.value;
                     result = true;
                 }
                 if (result === true) {
