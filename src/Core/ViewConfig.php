@@ -75,6 +75,11 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->isLoggingActive();
     }
 
+    public function isAdyenSandboxMode(): bool
+    {
+        return $this->moduleSettings->isSandBoxMode();
+    }
+
     public function getAdyenClientKey(): string
     {
         return $this->moduleSettings->getClientKey();
