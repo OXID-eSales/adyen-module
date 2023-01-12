@@ -113,9 +113,7 @@ class PaymentController extends PaymentController_parent
             $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
             $resultCode = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_RESULTCODE_NAME);
             $amountCurrency = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME);
-            $adjustAuthorisation = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_ADJUSTAUTHORISATION_NAME);
             $session->setPspReference($pspReference);
-            $session->setAdjustAuthorisation($adjustAuthorisation);
             $session->setResultCode($resultCode);
             $session->setAmountCurrency($amountCurrency);
         }
@@ -134,11 +132,7 @@ class PaymentController extends PaymentController_parent
                 $pspReference,
                 $reference
             );
-            $session->deletePspReference();
-            $session->deleteResultCode();
-            $session->deleteAmountCurrency();
-            $session->deleteOrderReference();
-            $session->deleteAdjustAuthorisation();
+            $session->deletePaymentSession();
         }
     }
 }

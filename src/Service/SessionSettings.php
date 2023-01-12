@@ -13,7 +13,6 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
-use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 /**
@@ -25,10 +24,10 @@ class SessionSettings
 
     public const ADYEN_SESSION_ORDER_REFERENCE = 'sess_adyen_order_reference';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
-    public const ADYEN_SESSION_PAYMENTSTATEDATA_NAME = 'sess_adyen_paymentstatedata';
+    public const ADYEN_SESSION_PAYMENTSTATE_NAME = 'sess_adyen_paymentstate';
     public const ADYEN_SESSION_PSPREFERENCE_NAME = 'sess_adyen_pspreference';
     public const ADYEN_SESSION_RESULTCODE_NAME = 'sess_adyen_resultcode';
-    public const ADYEN_SESSION_ADJUSTAUTHORISATION_NAME = 'sess_adyen_ajustauthorisation';
+    public const ADYEN_SESSION_AMOUNTVALUE_NAME = 'sess_adyen_amountvalue';
     public const ADYEN_SESSION_AMOUNTCURRENCY_NAME = 'sess_adyen_amountcurrency';
     public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
@@ -128,21 +127,38 @@ class SessionSettings
         $this->removeSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME);
     }
 
-    public function setAdjustAuthorisation(string $adjustAuthorisation): void
+    public function setPaymentState(array $paymentState): void
     {
-        $this->saveSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME, $adjustAuthorisation);
+        $this->saveSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME, $paymentState);
     }
 
-    public function getAdjustAuthorisation(): string
+    public function getPaymentState(): array
     {
-        /** @var null|string $adjustAuthorisation */
-        $adjustAuthorisation = $this->getSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME);
-        return $adjustAuthorisation ?? '';
+        /** @var null|array $paymentState */
+        $paymentState = $this->getSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME);
+        return $paymentState ?? [''];
     }
 
-    public function deleteAdjustAuthorisation(): void
+    public function deletePaymentState(): void
     {
-        $this->removeSettingValue(self::ADYEN_SESSION_ADJUSTAUTHORISATION_NAME);
+        $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME);
+    }
+
+    public function setAmountValue(float $amountValue): void
+    {
+        $this->saveSettingValue(self::ADYEN_SESSION_AMOUNTVALUE_NAME, $amountValue);
+    }
+
+    public function getAmountValue(): float
+    {
+        /** @var null|float $amountValue */
+        $amountValue = $this->getSettingValue(self::ADYEN_SESSION_AMOUNTVALUE_NAME);
+        return $amountValue ?? 0.0;
+    }
+
+    public function deleteAmountValue(): void
+    {
+        $this->removeSettingValue(self::ADYEN_SESSION_AMOUNTVALUE_NAME);
     }
 
     public function setAmountCurrency(string $amountCurrency): void
@@ -160,6 +176,15 @@ class SessionSettings
     public function deleteAmountCurrency(): void
     {
         $this->removeSettingValue(self::ADYEN_SESSION_AMOUNTCURRENCY_NAME);
+    }
+
+    public function deletePaymentSession(): void
+    {
+        $this->deletePspReference();
+        $this->deletePaymentState();
+        $this->deleteOrderReference();
+        $this->deleteAmountCurrency();
+        $this->deleteAmountValue();
     }
 
     public function getDeliveryId(): string
