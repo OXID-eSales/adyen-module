@@ -80,17 +80,17 @@ class AdyenHistory extends BaseModel
 
     public function getCapturedSum(string $pspReference): float
     {
-        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CAPTURE);
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CAPTURE, Module::ADYEN_STATUS_CAPTURED);
     }
 
     public function getRefundedSum(string $pspReference): float
     {
-        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_REFUND);
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_REFUND, Module::ADYEN_STATUS_REFUNDED);
     }
 
     public function getCanceledSum(string $pspReference): float
     {
-        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CANCEL);
+        return $this->getSumByAction($pspReference, Module::ADYEN_ACTION_CANCEL, Module::ADYEN_STATUS_CANCELLED);
     }
 
     protected function loadByIdent(string $var, string $value): bool
