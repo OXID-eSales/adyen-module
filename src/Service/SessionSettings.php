@@ -203,7 +203,7 @@ class SessionSettings
     {
         /** @var null|Basket $basket */
         $basket = $this->session->getBasket();
-        $basketOxidAmount = !is_null($basket) && $basket->getPrice() ? $basket->getPrice()->getBruttoPrice() : 0.0;
+        $basketOxidAmount = !is_null($basket) ? $basket->getPrice()->getBruttoPrice() : 0.0;
         return (float)$this->getAdyenAmount(
             $basketOxidAmount,
             $this->context->getActiveCurrencyDecimals()
@@ -212,7 +212,7 @@ class SessionSettings
 
     /**
      * @param string $key
-     * @param bool|int|string|array $value
+     * @param bool|int|string|array|float $value
      */
     private function saveSettingValue($key, $value): void
     {
