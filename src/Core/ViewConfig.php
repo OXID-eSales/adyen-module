@@ -15,6 +15,7 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
@@ -32,6 +33,7 @@ class ViewConfig extends ViewConfig_parent
     protected Context $context;
     protected PaymentMethods $adyenPaymentMethods;
     protected CountryRepository $countryRepository;
+    protected SessionSettings $sessionSettings;
 
     /**
      * @inheritDoc
@@ -44,6 +46,7 @@ class ViewConfig extends ViewConfig_parent
         $this->context = $this->getServiceFromContainer(Context::class);
         $this->adyenPaymentMethods = $this->getServiceFromContainer(PaymentMethods::class);
         $this->countryRepository = $this->getServiceFromContainer(CountryRepository::class);
+        $this->sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
     }
 
     /**
@@ -72,6 +75,11 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->isLoggingActive();
     }
 
+    public function isAdyenSandboxMode(): bool
+    {
+        return $this->moduleSettings->isSandBoxMode();
+    }
+
     public function getAdyenClientKey(): string
     {
         return $this->moduleSettings->getClientKey();
@@ -97,14 +105,14 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_INTEGRITY_CSS;
     }
 
-    public function getAdyenHtmlParamStateName(): string
-    {
-        return Module::ADYEN_HTMLPARAM_PAYMENTSTATEDATA_NAME;
-    }
-
     public function getAdyenHtmlParamPspReferenceName(): string
     {
         return Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME;
+    }
+
+    public function getAdyenHtmlParamAmountValueName(): string
+    {
+        return Module::ADYEN_HTMLPARAM_AMOUNTVALUE_NAME;
     }
 
     public function getAdyenHtmlParamResultCodeName(): string
@@ -115,6 +123,21 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenHtmlParamAmountCurrencyName(): string
     {
         return Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME;
+    }
+
+    public function getAdyenPaymentCreditCardId(): string
+    {
+        return Module::PAYMENT_CREDITCARD_ID;
+    }
+
+    public function getAdyenPaymentPayPalId(): string
+    {
+        return Module::PAYMENT_PAYPAL_ID;
+    }
+
+    public function getAdyenErrorInvalidSession(): string
+    {
+        return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
     }
 
     public function getWebhookControllerUrl(): string

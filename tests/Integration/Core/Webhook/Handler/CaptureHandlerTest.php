@@ -25,12 +25,16 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class CaptureHandlerTest extends UnitTestCase
 {
+    protected ?string $pspReference;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->pspReference = Registry::getUtilsObject()->generateUId();
+
         $order = oxNew(Order::class);
-        $order->setAdyenPSPReference("YOUR_PSP_REFERENCE");
+        $order->setAdyenPSPReference($this->pspReference);
         $order->save();
 
         $adyenHistory = oxNew(AdyenHistory::class);
@@ -38,7 +42,7 @@ class CaptureHandlerTest extends UnitTestCase
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
         $adyenHistory->setPrice(1000);
         $adyenHistory->setTimeStamp("2021-01-01 01:00:00");
-        $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
+        $adyenHistory->setPSPReference($this->pspReference);
         $adyenHistory->setAdyenStatus("AUTHORIZATION");
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
         $adyenHistory->save();
@@ -69,7 +73,7 @@ class CaptureHandlerTest extends UnitTestCase
         $captureHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference($this->pspReference);
 
         $this->assertNotNull($orderId);
     }
@@ -82,7 +86,7 @@ class CaptureHandlerTest extends UnitTestCase
         $captureHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference($this->pspReference);
 
         $this->assertNotEmpty($orderId);
     }
@@ -117,7 +121,7 @@ class CaptureHandlerTest extends UnitTestCase
                         "merchantReference" => "YOUR_MERCHANT_REFERENCE",
                         "originalReference" => "9913140798220028",
                         "paymentMethod" => "visa",
-                        "pspReference" => "YOUR_PSP_REFERENCE",
+                        "pspReference" => $this->pspReference,
                         "reason" => "",
                         "success" => "true"
                     ]

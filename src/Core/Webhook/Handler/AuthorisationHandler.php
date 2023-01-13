@@ -12,12 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 
-final class AuthorizationHandler extends WebhookHandlerBase
+final class AuthorisationHandler extends WebhookHandlerBase
 {
-    /**
-     * "AUTHORISATION" in british english spelling
-     */
-    public const AUTHORIZATION_EVENT_CODE = "AUTHORISATION";
+    public const AUTHORISATION_EVENT_CODE = "AUTHORISATION";
 
     /**
      * @param Event $event

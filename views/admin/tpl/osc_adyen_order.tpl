@@ -45,7 +45,6 @@
                             <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
                             <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
                             <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
-
                         </tr>
                         [{if $blWhite == "2"}]
                             [{assign var="blWhite" value=""}]
@@ -56,7 +55,7 @@
                 </table>
                 <!-- Show AdyenHistory END -->
                 [{oxhasrights ident="ADYENSTORNO"}]
-                    [{if $edit->isAdyenCapturePossible()}]
+                    [{if $edit->isAdyenManualCapture()}]
                         <!-- Adyen Capture -->
                         <div style="margin-top: 20px;">
                             <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>

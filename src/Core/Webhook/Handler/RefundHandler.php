@@ -27,11 +27,11 @@ final class RefundHandler extends WebhookHandlerBase
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_REFUNDED;
+        return Module::ADYEN_ACTION_REFUND;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_REFUND;
+        return Module::ADYEN_STATUS_REFUNDED;
     }
 }

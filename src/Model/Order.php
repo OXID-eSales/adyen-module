@@ -106,15 +106,20 @@ class Order extends Order_parent
 
     public function isAdyenCapturePossible(): bool
     {
+        return (
+            $this->isAdyenOrder() &&
+            $this->getPossibleCaptureAmount() > 0
+        );
+    }
+
+    public function isAdyenManualCapture(): bool
+    {
         $result = false;
         if ($this->isAdyenOrder()) {
             /** @var Payment $payment */
             $payment = oxNew(EshopModelPayment::class);
             $payment->load($this->getAdyenStringData('oxpaymenttype'));
-            $result = (
-                $payment->isAdyenManualCapture() &&
-                $this->getPossibleCaptureAmount() > 0
-            );
+            $result = $payment->isAdyenManualCapture();
         }
         return $result;
     }
@@ -151,7 +156,7 @@ class Order extends Order_parent
         }
 
         $pspReference = $this->getAdyenPspReference();
-        $reference = (string)$this->getAdyenFloatData('oxordernr');
+        $reference = $this->getAdyenOrderReference();
 
         $possibleAmount = $this->getPossibleCaptureAmount();
         $amount = min($amount, $possibleAmount);
@@ -189,9 +194,8 @@ class Order extends Order_parent
             return;
         }
 
-        // Adyen References are Strings
-        $reference = (string)$this->getAdyenFloatData('oxordernr');
         $pspReference = $this->getAdyenStringData('adyenpspreference');
+        $reference = $this->getAdyenOrderReference();
 
         $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
         $success = $paymentService->doAdyenCancel(
@@ -229,7 +233,7 @@ class Order extends Order_parent
         }
 
         $pspReference = $this->getAdyenPspReference();
-        $reference = (string)$this->getAdyenFloatData('oxordernr');
+        $reference = $this->getAdyenOrderReference();
 
         $possibleAmount = $this->getPossibleRefundAmount();
         $amount = min($amount, $possibleAmount);
@@ -316,12 +320,7 @@ class Order extends Order_parent
 
     public function getAdyenOrderReference(): string
     {
-        $orderReference = $this->getAdyenStringData('adyenorderreference');
-        if (!$orderReference) {
-            $orderReference = Registry::getUtilsObject()->generateUId();
-            $this->setAdyenOrderReference($orderReference);
-        }
-        return $orderReference;
+        return $this->getAdyenStringData('adyenorderreference');
     }
 
     /**

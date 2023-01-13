@@ -7,195 +7,257 @@
       crossorigin="anonymous">
 [{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
 [{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]
+[{assign var="adyenCreditCard" value=$oViewConf->getAdyenPaymentCreditCardId()}]
+[{assign var="adyenPayPal" value=$oViewConf->getAdyenPaymentPayPalId()}]
 [{if $phpStorm}]<script>[{/if}]
-[{capture assign="adyenJS"}]
-    [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
-    [{assign var="isPaymentPage" value=false}]
-    [{assign var="isOrderPage" value=false}]
-    [{if $oViewConf->getTopActiveClassName() == 'payment'}]
-        [{assign var="isPaymentPage" value=true}]
-        const adyenStateEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamStateName()}]');
-        const nextStepEl = document.getElementById('paymentNextStepBottom');
-        [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
-        document.getElementsByName('paymentid').forEach(function (e) {
-            e.addEventListener('change', function (event) {
-                nextStepEl.disabled = false;
+    [{capture assign="adyenJS"}]
+        [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
+        [{assign var="isPaymentPage" value=false}]
+        [{assign var="isOrderPage" value=false}]
+        let submitForm;
+        [{if $oViewConf->getTopActiveClassName() == 'payment'}]
+            [{assign var="isPaymentPage" value=true}]
+            submitForm = document.getElementById('payment');
+            const nextStepEl = document.getElementById('paymentNextStepBottom');
+            [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
+            document.getElementsByName('paymentid').forEach(function (e) {
+                e.addEventListener('change', function () {
+                    nextStepEl.disabled = false;
+                    nextStepEl.dataset.adyensubmit = '';
+                });
             });
-        });
-    [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
-        [{assign var="isOrderPage" value=true}]
-        [{assign var="orderPaymentPayPal" value=false}]
-        [{assign var="paymentID" value=$payment->getId()}]
-        [{if $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_PAYPAL_ID')}]
-            [{assign var="orderPaymentPayPal" value=true}]
+        [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
+            [{assign var="isOrderPage" value=true}]
+            [{assign var="orderPaymentPayPal" value=false}]
+            [{assign var="paymentID" value=$payment->getId()}]
+            [{if $paymentID === $adyenPayPal}]
+                [{assign var="orderPaymentPayPal" value=true}]
+            [{/if}]
+            submitForm = document.getElementById('orderConfirmAgbBottom');
         [{/if}]
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
         const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
         const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
-        const submitForm = document.getElementById('orderConfirmAgbBottom');
-    [{/if}]
-    const adyenAsync = async function () {
-        const configuration = {
-            environment: '[{$oViewConf->getAdyenOperationMode()}]',
-            clientKey: '[{$oViewConf->getAdyenClientKey()}]',
-            analytics: {
-                [{* Set to false to not send analytics data to Adyen. *}]
-                enabled: [{if $isLog}]true[{else}]false[{/if}]
-            },
-            locale: '[{$oViewConf->getAdyenShopperLocale()}]',
-            deliveryAddress: [{$oView->getAdyenDeliveryAddress()}],
-            shopperName: [{$oView->getAdyenShopperName()}],
-            shopperEmail: '[{$oView->getAdyenShopperEmail()}]',
-            shopperIP: '[{$oViewConf->getRemoteAddress()}]',
-            [{if $isPaymentPage}]
-                paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
-            [{elseif $isOrderPage}]
-                countryCode: '[{$oViewConf->getAdyenCountryIso()}]',
-                amount: {
-                    currency: '[{$oViewConf->getAdyenAmountCurrency()}]',
-                    value: [{$oViewConf->getAdyenAmountValue()}]
+        const adyenAmountValueEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountValueName()}]');
+
+        const adyenAsync = async function () {
+            const configuration = {
+                environment: '[{$oViewConf->getAdyenOperationMode()}]',
+                clientKey: '[{$oViewConf->getAdyenClientKey()}]',
+                analytics: {
+                    [{* Set to false to not send analytics data to Adyen. *}]
+                    enabled: [{if $isLog}]true[{else}]false[{/if}]
                 },
-                [{if $orderPaymentPayPal}]
-                    merchantId: '[{$oViewConf->getAdyenPayPalMerchantId()}]',
-                [{/if}]
-            [{/if}]
-            onError: (error, component) => {
-                [{if $isLog}]
-                    console.error(error.name, error.message, error.stack, component);
-                [{/if}]
-            },
-            onChange: (state, component) => {
+                locale: '[{$oViewConf->getAdyenShopperLocale()}]',
+                deliveryAddress: [{$oView->getAdyenDeliveryAddress()}],
+                shopperName: [{$oView->getAdyenShopperName()}],
+                shopperEmail: '[{$oView->getAdyenShopperEmail()}]',
+                shopperIP: '[{$oViewConf->getRemoteAddress()}]',
                 [{if $isPaymentPage}]
-                    var paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
-                    paymentIdEl.checked = true;
-                    // negate isValid to Button
-                    nextStepEl.disabled = !state.isValid;
-                    if (state.isValid) {
+                    paymentMethodsResponse: [{$oViewConf->getAdyenPaymentMethods()}],
+                [{elseif $isOrderPage}]
+                    countryCode: '[{$oViewConf->getAdyenCountryIso()}]',
+                    amount: {
+                        currency: '[{$oViewConf->getAdyenAmountCurrency()}]',
+                        value: [{$oViewConf->getAdyenAmountValue()}]
+                    },
+                    [{if $orderPaymentPayPal}]
+                        merchantId: '[{$oViewConf->getAdyenPayPalMerchantId()}]',
+                    [{/if}]
+                [{/if}]
+                onError: (error, component) => {
+                    [{if $isLog}]
+                        console.error(error.name, error.message, error.stack, component);
+                    [{/if}]
+                },
+                onChange: (state, component) => {
+                    [{if $isPaymentPage}]
+                        var paymentIdEl = setPaymentIdEl(component, !state.isValid);
+                        if (state.isValid) {
+                            nextStepEl.dataset.adyensubmit = paymentIdEl.value;
+                        }
+                    [{/if}]
+                    [{if $isLog}]
+                        console.log('onChange:', state, component);
+                    [{/if}]
+                },
+                onSubmit: (state, component) => {
+                    [{if $isLog}]
+                        console.log('onSubmit:', state.data);
+                    [{/if}]
+                    component.setStatus('loading');
+                    [{if $isPaymentPage}]
                         state.data.deliveryAddress = configuration.deliveryAddress;
                         state.data.shopperEmail = configuration.shopperEmail;
                         state.data.shopperIP = configuration.shopperIP;
-                        adyenStateEl.value = JSON.stringify(state.data);
-                    }
+                    [{/if}]
+                    makePayment(state.data)
+                        .then(response => {
+                            [{if $isLog}]
+                                console.log('onSubmit-response:', response);
+                            [{/if}]
+                            if (response.action) {
+                                // Drop-in handles the action object from the /payments response
+                                if ('paymentIdViewEl' in component) {
+                                    component.paymentIdViewEl.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+                                }
+                                component.handleAction(response.action);
+                            } else {
+                                setPspReference(response);
+                            }
+                        })
+                        .catch(error => {
+                            throw Error(error);
+                        });
+                },
+                onAdditionalDetails: (state, component) => {
+                    makeDetailsCall(state.data)
+                        .then(response => {
+                            [{if $isPaymentPage}]
+                                setPaymentIdEl(component, true);
+                            [{/if}]
+                            [{if $isLog}]
+                                console.log('makeDetailsCall:', response);
+                            [{/if}]
+                            let resultSetPspReference = setPspReference(response);
+                            [{if $isPaymentPage}]
+                                if (resultSetPspReference === false) {
+                                    nextStepEl.disabled = false;
+                                }
+                            [{/if}]
+                        })
+                        .catch(error => {
+                            throw Error(error);
+                        });
+                    [{if $isLog}]
+                        console.log('onAdditionalDetails:', state, component);
+                    [{/if}]
+                },
+                paymentMethodsConfiguration: {
+                    [{if $isPaymentPage}]
+                        [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj name=paymentListJS}]
+                            [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
+                                card: {
+                                    hasHolderName: true,
+                                    holderNameRequired: true,
+                                    hideCVC: false
+                                },
+                            [{/if}]
+                        [{/foreach}]
+                    [{elseif $isOrderPage}]
+                        [{if $orderPaymentPayPal}]
+                            paypal: {
+                                intent: "authorize",
+                                onShippingChange: function(data, actions) {
+                                    // Listen to shipping changes.
+                                    [{if $isLog}]
+                                        console.log('onPayPalShippingChange:', data);
+                                    [{/if}]
+                                },
+                                onClick: () => {
+                                    // onClick is called when the button is clicked.
+                                },
+                                blockPayPalCreditButton: true,
+                                blockPayPalPayLaterButton: true
+                            }
+                        [{/if}]
+                    [{/if}]
+                }
+            };
+
+            const checkout = await AdyenCheckout(configuration);
+            // Access the available payment methods for the session.
+            [{if $isLog}]
+                console.log(checkout.paymentMethodsResponse);
+            [{/if}]
+            [{if $isPaymentPage}]
+                [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
+                    [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
+                        const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
+                        cardComponent.paymentIdViewEl = undefined;
+                    [{/if}]
+                [{/foreach}]
+            [{elseif $isOrderPage}]
+                [{if $orderPaymentPayPal}]
+                    const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
                 [{/if}]
-                [{if $isLog}]
-                    console.log('onChange:', state);
-                [{/if}]
-            },
-            onSubmit: (state, component) => {
-                [{if $isLog}]
-                    console.log('onSubmit:', state);
-                [{/if}]
-                component.setStatus('loading');
-                makePayment(state.data)
-                .then(response => {
-                    if (response.action) {
-                        // Drop-in handles the action object from the /payments response
-                        component.handleAction(response.action);
-                    } else {
-                        // Your function to show the final result to the shopper
-                        console.log('toDo: Your function to show the final result to the shopper');
-                    }
-                })
-                .catch(error => {
-                    throw Error(error);
-                });
-            },
-            onAdditionalDetails: (state, component) => {
-                makeDetailsCall(state.data)
-                .then(response => {
-                    console.log('makeDetailsCall:', response);
-                    if (response.pspReference) {
-                        adyenPspReferenceEl.value = response.pspReference;
-                        adyenResultCodeEl.value = response.resultCode;
-                        adyenAmountCurrencyEl.value = response.amount.currency;
+            [{/if}]
+
+            const makePayment = (paymentRequest = {}) => {
+                return httpPost('payments', paymentRequest)
+                    .then(response => {
+                        if (response.error) throw new Error('Payment initiation failed');
+                        return response;
+                    })
+                    .catch(error => {
+                        throw Error(error);
+                    });
+            };
+
+            const setPaymentIdEl = (component, nextStepElDisabled) => {
+                const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
+                paymentIdEl.checked = true;
+                nextStepEl.disabled = nextStepElDisabled;
+                nextStepEl.dataset.adyensubmit = '';
+                return paymentIdEl;
+            };
+
+            const makeDetailsCall = data =>
+                httpPost('details', data)
+                    .then(response => {
+                        if (response.error || response.errorCode) throw new Error('Details call failed');
+                        return response;
+                    })
+                    .catch(error => {
+                        throw Error(error);
+                    });
+
+            const httpPost = (endpoint, data) =>
+                fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&stoken=[{$sToken}][{if $oViewConf->isAdyenSandboxMode()}]&XDEBUG_SESSION_START=1[{/if}]', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => response.json());
+
+            const setPspReference = (response) => {
+                var result = false;
+                if (response.pspReference && response.resultCode !== 'Refused') {
+                    adyenPspReferenceEl.value = response.pspReference;
+                    adyenResultCodeEl.value = response.resultCode;
+                    adyenAmountCurrencyEl.value = response.amount.currency;
+                    adyenAmountValueEl.value = response.amount.value;
+                    result = true;
+                }
+                else if (response.resultCode === 'Refused') {
+                    window.location.replace('[{$sSelfLink}]cl=payment&payerror=2&stoken=[{$sToken}]');
+                }
+                if (result === true) {
+                    if (typeof submitForm !== 'undefined') {
                         submitForm.submit();
                     }
-                })
-                .catch(error => {
-                    throw Error(error);
-                });
-                [{if $isLog}]
-                    console.log('onAdditionalDetails:', state, component);
-                [{/if}]
-            },
-            paymentMethodsConfiguration: {
-                [{if $isPaymentPage}]
-                    [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj name=paymentListJS}]
-                        [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
-                            card: {
-                                hasHolderName: true,
-                                holderNameRequired: true,
-                                hideCVC: false
-                            },
-                        [{/if}]
-                    [{/foreach}]
-                [{elseif $isOrderPage}]
-                    [{if $orderPaymentPayPal}]
-                        paypal: {
-                            intent: "authorize",
-                            onShippingChange: function(data, actions) {
-                                // Listen to shipping changes.
-                                [{if $isLog}]
-                                    console.log('onPayPalShippingChange:', data);
-                                [{/if}]
-                            },
-                            onClick: () => {
-                                // onClick is called when the button is clicked.
-                            },
-                            blockPayPalCreditButton: true,
-                            blockPayPalPayLaterButton: true
-                        }
-                    [{/if}]
-                [{/if}]
+                }
+                return result;
             }
-        };
-        const checkout = await AdyenCheckout(configuration);
-        // Access the available payment methods for the session.
-        [{if $isLog}]
-            console.log(checkout.paymentMethodsResponse);
-        [{/if}]
-        [{if $isPaymentPage}]
-            [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
-                [{if $paymentObj->showInPaymentCtrl() && $paymentID == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_CREDITCARD_ID')}]
-                    const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
-                [{/if}]
-            [{/foreach}]
-        [{elseif $isOrderPage}]
-            [{if $orderPaymentPayPal}]
-                const paypalComponent = checkout.create('paypal').mount('#[{$paymentID}]-container');
+
+            [{if $isPaymentPage}]
+                nextStepEl.addEventListener("click", function(e) {
+                    if (this.dataset.adyensubmit !== '') {
+                        e.preventDefault();
+                        this.disabled = true;
+                        if (this.dataset.adyensubmit === '[{$adyenCreditCard}]') {
+                            cardComponent.paymentIdViewEl = document.getElementById('payment_[{$adyenCreditCard}]').parentElement;
+                            cardComponent.submit();
+                        }
+                    }
+                }, false);
             [{/if}]
-        [{/if}]
+        }
+        // Call adyenAsync
+        adyenAsync();
 
-        const makePayment = (paymentMethod = {}) => {
-            const paymentRequest = {paymentMethod};
-            return httpPost('payments', paymentRequest)
-            .then(response => {
-                if (response.error) throw new Error('Payment initiation failed');
-                return response;
-            })
-            .catch(console.error);
-        };
-
-        const makeDetailsCall = data =>
-            httpPost('details', data)
-            .then(response => {
-                if (response.error || response.errorCode) throw new Error('Details call failed');
-                return response;
-            })
-            .catch(err => console.error(err));
-
-        const httpPost = (endpoint, data) =>
-            fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&context=continue&stoken=[{$sToken}]', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => response.json());
-    }
-    // Call adyenAsync
-    adyenAsync();
-[{/capture}]
-[{if $phpStorm}]</script>[{/if}]
+    [{/capture}]
+    [{if $phpStorm}]</script>[{/if}]
 [{oxscript add=$adyenJS}]

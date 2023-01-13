@@ -8,15 +8,9 @@
 namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-use OxidEsales\Eshop\Application\Model\Payment as eShopPayment;
 use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
-use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
-use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**

@@ -12,6 +12,6 @@ $aLang = [
     'OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE' => 'This order was paid with',
     'OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE' => 'The reference ID is',
     'OSC_ADYEN_BUY_NOW_PAY_WITH' => 'Buy now and pay with',
-    'OSC_ADYEN_PAYMENT_METHOD_CREDITCARD' => 'Creditcard',
-    'OSC_ADYEN_PAYMENT_METHOD_PAYPAL' => 'PayPal'
+    'OSC_ADYEN_IN_AUTHORISATION' => 'Credit card payment is authorized.',
+    'OSC_ADYEN_REAUTHNECESSARY' => 'The cart total has changed. A re-authorization is necessary.'
 ];

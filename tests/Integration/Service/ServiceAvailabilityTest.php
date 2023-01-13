@@ -11,6 +11,7 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponse;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCancels;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCaptures;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentDetails;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePayments;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseRefunds;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
@@ -21,8 +22,9 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
+use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
+use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
-use OxidSolutionCatalysts\Adyen\Service\Repository;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
@@ -46,6 +48,7 @@ class ServiceAvailabilityTest extends TestCase
             [AdyenAPIResponse::class],
             [AdyenAPIResponseCancels::class],
             [AdyenAPIResponseCaptures::class],
+            [AdyenAPIResponsePaymentDetails::class],
             [AdyenAPIResponsePaymentMethods::class],
             [AdyenAPIResponsePayments::class],
             [AdyenAPIResponseRefunds::class],
@@ -56,6 +59,8 @@ class ServiceAvailabilityTest extends TestCase
             [Payment::class],
             [PaymentCancel::class],
             [PaymentCapture::class],
+            [PaymentDetails::class],
+            [PaymentMethods::class],
             [PaymentRefund::class],
             [ResponseHandler::class],
             [SessionSettings::class],

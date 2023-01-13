@@ -79,7 +79,8 @@ $aModule = [
         // frontend - paymentpage
         'modules/osc/adyen/payment/adyen_assets.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets.tpl',
         'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
-        'modules/osc/adyen/payment/adyen_payment_nextstep.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_nextstep.tpl',
+        'modules/osc/adyen/payment/adyen_payment_inauthorisation.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_inauthorisation.tpl',
+        'modules/osc/adyen/payment/adyen_payment_psp.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_psp.tpl',
         // frontend - orderpage
         'modules/osc/adyen/payment/adyen_order_submit.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_order_submit.tpl',
         // frontend - account
@@ -103,6 +104,11 @@ $aModule = [
             'template' => 'page/checkout/payment.tpl',
             'block' => 'checkout_payment_nextstep',
             'file' => 'views/frontend/blocks/page/checkout/checkout_payment_nextstep.tpl'
+        ],
+        [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_errors',
+            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_errors.tpl'
         ],
         [
             'template' => 'page/checkout/order.tpl',

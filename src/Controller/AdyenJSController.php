@@ -6,6 +6,7 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
+use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
@@ -24,20 +25,38 @@ class AdyenJSController extends FrontendController
     {
         $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
         $session = $this->getServiceFromContainer(SessionSettings::class);
-        $reference = $session->createOrderReference();
 
         /** @var Basket $basket */
         $basket = Registry::getSession()->getBasket();
         $amount = $basket->getPrice()->getBruttoPrice();
+        $orderReference = $session->getOrderReference();
+        $pspReference = $session->getPspReference();
+
         $postData = $this->jsonToArray($this->getJsonPostData());
 
         if (!$amount || !isset($postData['paymentMethod'])) {
             $response->setNotFound()->sendJson();
         }
 
+        // check if a AdyenAuthorisation exists and a cancel is necessary
+        if ($pspReference && $session->getAmountValue() < $amount) {
+            $paymentCancel = $this->getServiceFromContainer(PaymentCancel::class);
+            $paymentCancel->doAdyenCancel(
+                $pspReference,
+                $orderReference
+            );
+        }
+
+        // no orderReference? create!
+        // and save the amount to the session for AdyenAuthorisation-check
+        if (!$orderReference) {
+            $orderReference = $session->createOrderReference();
+            $session->setAmountValue($amount);
+        }
+
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentService->collectPayments($amount, $reference, $postData['paymentMethod']);
+        $paymentService->collectPayments($amount, $orderReference, $postData);
         $payments = $paymentService->getPaymentResult();
 
         $response->setData(

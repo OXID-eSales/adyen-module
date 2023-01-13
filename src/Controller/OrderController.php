@@ -17,9 +17,9 @@ use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class OrderController extends OrderController_parent
 {
-    use ServiceContainer;
     use UserAddress;
 
+    //use ServiceContainer;
     /**
      * @inheritDoc
      *
@@ -27,6 +27,7 @@ class OrderController extends OrderController_parent
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @return  string  $sNextStep  partial parameter url for next step
      */
+    /*
     protected function _getNextStep($success) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
@@ -40,4 +41,5 @@ class OrderController extends OrderController_parent
         }
         return parent::_getNextStep($success);
     }
+    */
 }

@@ -30,11 +30,11 @@ final class CaptureHandler extends WebhookHandlerBase
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_CAPTURED;
+        return Module::ADYEN_ACTION_CAPTURE;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_CAPTURE;
+        return Module::ADYEN_STATUS_CAPTURED;
     }
 }

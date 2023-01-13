@@ -27,11 +27,11 @@ final class CancellationHandler extends WebhookHandlerBase
 
     protected function getAdyenAction(): string
     {
-        return Module::ADYEN_STATUS_CANCELLED;
+        return Module::ADYEN_ACTION_CANCEL;
     }
 
     protected function getAdyenStatus(): string
     {
-        return Module::ADYEN_ACTION_CANCEL;
+        return Module::ADYEN_STATUS_CANCELLED;
     }
 }

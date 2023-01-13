@@ -24,8 +24,6 @@ class Payment extends PaymentBase
 
     private array $paymentResult = [];
 
-    private SessionSettings $session;
-
     private Context $context;
 
     private ModuleSettings $moduleSettings;
@@ -33,12 +31,10 @@ class Payment extends PaymentBase
     private AdyenAPIResponsePayments $APIPayments;
 
     public function __construct(
-        SessionSettings $session,
         Context $context,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments
     ) {
-        $this->session = $session;
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
@@ -52,20 +48,6 @@ class Payment extends PaymentBase
     public function getPaymentResult(): array
     {
         return $this->paymentResult;
-    }
-
-    /**
-     * @param double $amount Goods amount
-     * @param string $reference Unique Order-Reference
-     * @throws \JsonException
-     */
-    public function doAdyenAuthorization(float $amount, string $reference): bool
-    {
-        $paymentState = $this->session->getPaymentState();
-        // not necessary anymore, so cleanup
-        $this->session->deletePaymentState();
-
-        return $this->collectPayments($amount, $reference, $paymentState);
     }
 
     /**
