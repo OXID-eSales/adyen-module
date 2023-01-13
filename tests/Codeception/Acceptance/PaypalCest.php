@@ -2,12 +2,8 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
-use Codeception\Util\Fixtures;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use OxidEsales\Codeception\Module\Translation\Translator;
-use OxidEsales\Codeception\Page\Account\UserOrderHistory;
-use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits\OrderHistory;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 /**
@@ -15,6 +11,11 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
  */
 final class PaypalCest extends BaseCest
 {
+    use OrderHistory;
+
+    protected $orderNumber;
+    protected $placeholderPaymentMethod;
+
     protected AcceptanceTester $user;
     protected string $spinner = '#spinner';
     protected string $globalSpinner = "//div[@data-testid='global-spinner']";
@@ -79,7 +80,7 @@ final class PaypalCest extends BaseCest
         $I->wantToTest(" Paypal (Adyen) on Frontend order");
         $this->user = $I;
 
-         // init includes login to OXID shop using credentials from fixtures
+        // init includes login to OXID shop using credentials from fixtures
         $this->_initializeTest();
 
         $orderPage = $this->_choosePayment();
@@ -123,23 +124,12 @@ final class PaypalCest extends BaseCest
 
         // Paypal popup will close after the payment, switch back to main window
         $I->switchToPreviousTab();
-        $orderNumber = $this->_checkSuccessfulPayment();
 
-        // Database updates
-        $I->updateInDatabase(
-            'oxorder',
-            ['ADYENPSPREFERENCE' => $orderNumber],
-            ['OXORDERNR' => $orderNumber]
-        );
+        // Check for the "Thank you" page
+        $this->orderNumber = $this->_checkSuccessfulPayment();
+        // set up the order history check (payment method placeholder is specific to the used payment)
+        $this->placeholderPaymentMethod = 'OSC_ADYEN_PAYMENT_METHOD_PAYPAL';
 
-        // Check order history
-        $orderHistoryPage = new UserOrderHistory($I);
-        $I->amOnPage($orderHistoryPage->URL);
-
-        $langCode = Registry::getLang()->getLanguageAbbr();
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
-            . ': ' . Translator::translate("OSC_ADYEN_PAYMENT_METHOD_PAYPAL"));
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
-            . ': ' . $orderNumber);
+        $this->checkOrderHistory($I);
     }
 }

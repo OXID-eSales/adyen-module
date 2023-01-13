@@ -14,6 +14,7 @@ use OxidEsales\Codeception\Page\Account\UserOrderHistory;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits\OrderHistory;
 
 /**
  * @group CreditCard
@@ -21,6 +22,11 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
  */
 final class CreditCardCest extends BaseCest
 {
+    use OrderHistory;
+
+    protected $orderNumber;
+    protected $placeholderPaymentMethod;
+
     protected function _getOXID(): array
     {
         return [Module::PAYMENT_CREDITCARD_ID];
@@ -55,8 +61,11 @@ final class CreditCardCest extends BaseCest
     {
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
-        $orderNumber = $this->_checkSuccessfulPayment();
+        $this->orderNumber = $this->_checkSuccessfulPayment();
+        $this->placeholderPaymentMethod = 'OSC_ADYEN_PAYMENT_METHOD_CREDITCARD';
 
+        $this->checkOrderHistory($I);
+/*
         $I->updateInDatabase(
             'oxorder',
             ['ADYENPSPREFERENCE' => $orderNumber],
@@ -70,5 +79,6 @@ final class CreditCardCest extends BaseCest
             . ': ' . Translator::translate("OSC_ADYEN_PAYMENT_METHOD_CREDITCARD"));
         $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
             . ': ' . $orderNumber);
+*/
     }
 }
