@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
+use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 /**
@@ -21,10 +22,10 @@ use OxidSolutionCatalysts\Adyen\Traits\Json;
 class SessionSettings
 {
     use Json;
+    use AdyenPayment;
 
     public const ADYEN_SESSION_ORDER_REFERENCE = 'sess_adyen_order_reference';
     public const ADYEN_SESSION_PAYMENTMETHODS_NAME = 'sess_adyen_payment_methods';
-    public const ADYEN_SESSION_PAYMENTSTATE_NAME = 'sess_adyen_paymentstate';
     public const ADYEN_SESSION_PSPREFERENCE_NAME = 'sess_adyen_pspreference';
     public const ADYEN_SESSION_RESULTCODE_NAME = 'sess_adyen_resultcode';
     public const ADYEN_SESSION_AMOUNTVALUE_NAME = 'sess_adyen_amountvalue';
@@ -34,10 +35,14 @@ class SessionSettings
     /** @var Session */
     private Session $session;
 
+    private Context $context;
+
     public function __construct(
-        Session $session
+        Session $session,
+        Context $context
     ) {
         $this->session = $session;
+        $this->context = $context;
     }
 
     public function setRedirctLink(string $redirectLink): void
@@ -127,23 +132,6 @@ class SessionSettings
         $this->removeSettingValue(self::ADYEN_SESSION_RESULTCODE_NAME);
     }
 
-    public function setPaymentState(array $paymentState): void
-    {
-        $this->saveSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME, $paymentState);
-    }
-
-    public function getPaymentState(): array
-    {
-        /** @var null|array $paymentState */
-        $paymentState = $this->getSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME);
-        return $paymentState ?? [''];
-    }
-
-    public function deletePaymentState(): void
-    {
-        $this->removeSettingValue(self::ADYEN_SESSION_PAYMENTSTATE_NAME);
-    }
-
     public function setAmountValue(float $amountValue): void
     {
         $this->saveSettingValue(self::ADYEN_SESSION_AMOUNTVALUE_NAME, $amountValue);
@@ -181,7 +169,6 @@ class SessionSettings
     public function deletePaymentSession(): void
     {
         $this->deletePspReference();
-        $this->deletePaymentState();
         $this->deleteOrderReference();
         $this->deleteAmountCurrency();
         $this->deleteAmountValue();
@@ -210,6 +197,17 @@ class SessionSettings
         }
 
         return $paymentId;
+    }
+
+    public function getAdyenBasketAmount(): float
+    {
+        /** @var null|Basket $basket */
+        $basket = $this->session->getBasket();
+        $basketOxidAmount = !is_null($basket) && $basket->getPrice() ? $basket->getPrice()->getBruttoPrice() : 0.0;
+        return (float)$this->getAdyenAmount(
+            $basketOxidAmount,
+            $this->context->getActiveCurrencyDecimals()
+        );
     }
 
     /**

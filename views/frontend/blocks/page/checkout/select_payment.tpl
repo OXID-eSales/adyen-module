@@ -2,7 +2,7 @@
     [{* Show Adyen Payments only if Adyen is healthy *}]
     [{if $oViewConf->checkAdyenHealth()}]
         [{* We include it as template, so that it can be modified in custom themes *}]
-        [{if $oViewConf->isInAdyenAuthorisation()}]
+        [{if $oView->isValidAdyenAuthorisation()}]
             [{include file="modules/osc/adyen/payment/adyen_payment_inauthorisation.tpl"}]
         [{else}]
             [{include file="modules/osc/adyen/payment/adyen_payment.tpl"}]

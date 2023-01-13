@@ -135,9 +135,9 @@ class ViewConfig extends ViewConfig_parent
         return Module::PAYMENT_PAYPAL_ID;
     }
 
-    public function isInAdyenAuthorisation(): bool
+    public function getAdyenErrorInvalidSession(): string
     {
-        return $this->sessionSettings->getPspReference() !== '';
+        return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
     }
 
     public function getWebhookControllerUrl(): string

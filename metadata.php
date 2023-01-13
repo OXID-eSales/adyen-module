@@ -106,6 +106,11 @@ $aModule = [
             'file' => 'views/frontend/blocks/page/checkout/checkout_payment_nextstep.tpl'
         ],
         [
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_errors',
+            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_errors.tpl'
+        ],
+        [
             'template' => 'page/checkout/order.tpl',
             'block' => 'checkout_order_btn_submit_bottom',
             'file' => 'views/frontend/blocks/page/checkout/checkout_order_btn_submit_bottom.tpl'

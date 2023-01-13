@@ -26,4 +26,10 @@ trait RequestGetter
         $value = $request->getRequestParameter($key, '');
         return $value;
     }
+
+    protected function getFloatRequestData(string $key): float
+    {
+        $value = $this->getStringRequestData($key);
+        return (float)$value;
+    }
 }

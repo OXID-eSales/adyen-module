@@ -57,6 +57,7 @@ final class Module
     public const ADYEN_HTMLPARAM_RESULTCODE_NAME = 'adyenResultCode';
     public const ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME = 'adyenAmountCurrency';
     public const ADYEN_HTMLPARAM_AMOUNTVALUE_NAME = 'adyenAmountValue';
+    public const ADYEN_ERROR_INVALIDSESSION_NAME = 'invalidAdyenSession';
 
     private const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
