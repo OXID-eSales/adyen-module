@@ -5,6 +5,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Service;
 use Adyen\Service\Checkout;
 use Exception;
 use Monolog\Logger;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\TestingLibrary\UnitTestCase;
@@ -12,6 +13,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
+use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use Psr\Log\LoggerInterface;
@@ -36,12 +38,14 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
     protected function createSession(bool $setPayment = true): SessionSettings
     {
         $session = new Session();
+        $config = new Config();
+        $context = new Context($config);
         $session->setId('test');
         if ($setPayment) {
             $session->setVariable(SessionSettings::ADYEN_SESSION_PAYMENTMETHODS_NAME, ['test_paymentmethods_data']);
         }
 
-        return new SessionSettings($session);
+        return new SessionSettings($session, $context);
     }
 
     protected function createTestPayment(): AdyenAPIResponsePaymentMethods

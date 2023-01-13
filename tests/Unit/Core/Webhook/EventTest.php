@@ -8,7 +8,6 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook;
 
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
 use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase

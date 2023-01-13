@@ -16,7 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\Mod
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorizationHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
@@ -25,14 +25,18 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-final class AuthorizationHandlerTest extends UnitTestCase
+final class AuthorisationHandlerTest extends UnitTestCase
 {
+    protected ?string $pspReference;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->pspReference = Registry::getUtilsObject()->generateUId();
+
         $order = oxNew(Order::class);
-        $order->setAdyenPSPReference("YOUR_PSP_REFERENCE");
+        $order->setAdyenPSPReference($this->pspReference);
         $order->assign([
             'oxorder__oxpaymenttype' => Module::PAYMENT_CREDITCARD_ID
         ]);
@@ -43,7 +47,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
         $adyenHistory->setShopId(Registry::getConfig()->getShopId());
         $adyenHistory->setPrice(1000);
         $adyenHistory->setTimeStamp("2021-01-01 01:00:00");
-        $adyenHistory->setPSPReference("YOUR_PSP_REFERENCE");
+        $adyenHistory->setPSPReference($this->pspReference);
         $adyenHistory->setAdyenStatus("AUTHORIZATION");
         $adyenHistory->setAdyenAction(Module::ADYEN_ACTION_AUTHORIZE);
         $adyenHistory->save();
@@ -74,12 +78,12 @@ final class AuthorizationHandlerTest extends UnitTestCase
     {
         $event = oxNew(Event::class, $this->proceedNotificationData());
 
-        $authorizationHandler = oxNew(AuthorizationHandler::class);
-        $authorizationHandler->setData($event);
-        $authorizationHandler->updateStatus($event);
+        $authorisationHandler = oxNew(AuthorisationHandler::class);
+        $authorisationHandler->setData($event);
+        $authorisationHandler->updateStatus($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference($this->pspReference);
 
         $this->assertNotNull($orderId);
 
@@ -93,12 +97,12 @@ final class AuthorizationHandlerTest extends UnitTestCase
     {
         $event = oxNew(Event::class, $this->proceedNotificationData());
 
-        $authorizationHandler = oxNew(AuthorizationHandler::class);
-        $authorizationHandler->handle($event);
+        $authorisationHandler = oxNew(AuthorisationHandler::class);
+        $authorisationHandler->handle($event);
 
         $historyList = oxNew(AdyenHistoryList::class);
         $historyList->init(AdyenHistory::class);
-        $orderId = $historyList->getOxidOrderIdByPSPReference("YOUR_PSP_REFERENCE");
+        $orderId = $historyList->getOxidOrderIdByPSPReference($this->pspReference);
 
         $this->assertNotNull($orderId);
 
@@ -139,7 +143,7 @@ final class AuthorizationHandlerTest extends UnitTestCase
                         "merchantAccountCode" => $moduleSettings->getMerchantAccount(),
                         "merchantReference" => "YOUR_MERCHANT_REFERENCE",
                         "paymentMethod" => "ach",
-                        "pspReference" => "YOUR_PSP_REFERENCE",
+                        "pspReference" => $this->pspReference,
                         "reason" => "null",
                         "success" => "true"
                     ]
