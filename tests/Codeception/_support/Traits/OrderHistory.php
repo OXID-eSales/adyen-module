@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
+use OxidEsales\EshopCommunity\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
