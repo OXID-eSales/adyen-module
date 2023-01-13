@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 trait OrderHistory
@@ -19,7 +20,7 @@ trait OrderHistory
      * use this trait to check the appearance of the order in the history
      * Class using this trait mus provide the following properties
      * - $orderNumber (as retrieved by BaseCest::_checkSuccessfulPayment())
-     * - $placeholderPaymentMethod (the placeholder for translated text of the payment method)
+     * - $placeholderPaymentId (the placeholder for translated text of the payment method)
      * @param AcceptanceTester $I
      * @return void
      */
@@ -27,7 +28,7 @@ trait OrderHistory
     {
         // both properties are expected to exist in the using class
         $orderNumber = $this->orderNumber;
-        $placeholderPaymentMethod = $this->placeholderPaymentMethod;
+        $placeholderPaymentId = $this->placeholderPaymentId;
 
         // Database updates
         $I->updateInDatabase(
@@ -36,15 +37,18 @@ trait OrderHistory
             ['OXORDERNR' => $orderNumber]
         );
 
+        $langAbbr = Registry::getLang()->getLanguageAbbr();
+        $paymentName = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions'][$langAbbr]['desc'];
+
         // Check order history
         $orderHistoryPage = new UserOrderHistory($I);
         $I->amOnPage($orderHistoryPage->URL);
 
-        $I->makeScreenshot(date('Y-m-d_His') . ' Order History ' . $placeholderPaymentMethod);
+        $I->makeScreenshot(date('Y-m-d_His') . ' Order History ' . $placeholderPaymentId);
 
         $I->waitForText(
             Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE") . ': ' .
-            Translator::translate($placeholderPaymentMethod)
+            $paymentName
         );
         $I->waitForText(
             Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE") . ': ' .

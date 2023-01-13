@@ -14,7 +14,7 @@ final class PaypalCest extends BaseCest
     use OrderHistory;
 
     protected $orderNumber;
-    protected $placeholderPaymentMethod;
+    protected $placeholderPaymentId;
 
     protected AcceptanceTester $user;
     protected string $spinner = '#spinner';
@@ -128,7 +128,7 @@ final class PaypalCest extends BaseCest
         // Check for the "Thank you" page
         $this->orderNumber = $this->_checkSuccessfulPayment();
         // set up the order history check (payment method placeholder is specific to the used payment)
-        $this->placeholderPaymentMethod = 'OSC_ADYEN_PAYMENT_METHOD_PAYPAL';
+        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
 
         $this->checkOrderHistory($I);
     }

@@ -25,7 +25,7 @@ final class CreditCardCest extends BaseCest
     use OrderHistory;
 
     protected $orderNumber;
-    protected $placeholderPaymentMethod;
+    protected $placeholderPaymentId;
 
     protected function _getOXID(): array
     {
@@ -62,23 +62,8 @@ final class CreditCardCest extends BaseCest
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
         $this->orderNumber = $this->_checkSuccessfulPayment();
-        $this->placeholderPaymentMethod = 'OSC_ADYEN_PAYMENT_METHOD_CREDITCARD';
+        $this->placeholderPaymentId = Module::PAYMENT_CREDITCARD_ID;
 
         $this->checkOrderHistory($I);
-/*
-        $I->updateInDatabase(
-            'oxorder',
-            ['ADYENPSPREFERENCE' => $orderNumber],
-            ['OXORDERNR' => $orderNumber]
-        );
-
-        $orderHistoryPage = new UserOrderHistory($I);
-        $I->amOnPage($orderHistoryPage->URL);
-        $I->makeScreenshot(time() . ' Order History');
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_PAYMENT_NOTE")
-            . ': ' . Translator::translate("OSC_ADYEN_PAYMENT_METHOD_CREDITCARD"));
-        $I->waitForText(Translator::translate("OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE")
-            . ': ' . $orderNumber);
-*/
     }
 }

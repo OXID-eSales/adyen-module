@@ -20,11 +20,11 @@ final class UserHistoryCest
     protected AcceptanceTester $I;
     protected UserOrderHistory $orderHistoryPage;
     protected $orderNumber;
-    protected $placeholderPaymentMethod;
+    protected $placeholderPaymentId;
 
     protected $placeholder = [
-        Module::PAYMENT_CREDITCARD_ID => 'OSC_ADYEN_PAYMENT_METHOD_CREDITCARD',
-        Module::PAYMENT_PAYPAL_ID => 'OSC_ADYEN_PAYMENT_METHOD_PAYPAL'
+        Module::PAYMENT_CREDITCARD_ID,
+        Module::PAYMENT_PAYPAL_ID
     ];
 
     public function _before(AcceptanceTester $I): void
@@ -125,21 +125,20 @@ final class UserHistoryCest
 
     public function checkUserHistoryAfterPaypalPayment(AcceptanceTester $I)
     {
-        $paymentType = Module::PAYMENT_PAYPAL_ID;
-        $this->_initializeDatabase($paymentType);
+        $this->_initializeDatabase(Module::PAYMENT_PAYPAL_ID);
         $this->_initializeTest();
 
-        $this->placeholderPaymentMethod = $this->placeholder[ $paymentType ];
+        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
         $this->checkOrderHistory($I);
     }
 
     public function checkUserHistoryAfterCreditcardPayment(AcceptanceTester $I)
     {
         $paymentType = Module::PAYMENT_CREDITCARD_ID;
-        $this->_initializeDatabase($paymentType);
+        $this->_initializeDatabase(Module::PAYMENT_PAYPAL_ID);
         $this->_initializeTest();
 
-        $this->placeholderPaymentMethod = $this->placeholder[ $paymentType ];
+        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
         $this->checkOrderHistory($I);
     }
 }
