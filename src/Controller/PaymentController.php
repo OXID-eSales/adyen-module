@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\Request;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
@@ -19,8 +18,6 @@ use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class PaymentController extends PaymentController_parent
 {
@@ -74,6 +71,33 @@ class PaymentController extends PaymentController_parent
         return $paymentList;
     }
 
+    public function isActiveAdyenSession(): bool
+    {
+        /** @var SessionSettings $session */
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        return $session->getPspReference() !== '';
+    }
+
+    public function isValidAdyenAuthorisation(): bool
+    {
+        /** @var SessionSettings $session */
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+        $validSessionAmount = $session->getAdyenBasketAmount() <= $session->getAmountValue();
+        return $this->isActiveAdyenSession() && $validSessionAmount;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPaymentError(): ?string
+    {
+        return (
+            $this->isActiveAdyenSession() && !$this->isValidAdyenAuthorisation() ?
+            Module::ADYEN_ERROR_INVALIDSESSION_NAME :
+            parent::getPaymentError()
+        );
+    }
+
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -109,14 +133,14 @@ class PaymentController extends PaymentController_parent
     protected function saveAdyenPaymentInSession(): void
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
-        if (!$session->getPspReference()) {
-            $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
-            $resultCode = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_RESULTCODE_NAME);
-            $amountCurrency = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME);
-            $session->setPspReference($pspReference);
-            $session->setResultCode($resultCode);
-            $session->setAmountCurrency($amountCurrency);
-        }
+        $pspReference = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME);
+        $resultCode = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_RESULTCODE_NAME);
+        $amountCurrency = $this->getStringRequestData(Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME);
+        $amountValue = $this->getFloatRequestData(Module::ADYEN_HTMLPARAM_AMOUNTVALUE_NAME);
+        $session->setPspReference($pspReference);
+        $session->setResultCode($resultCode);
+        $session->setAmountCurrency($amountCurrency);
+        $session->setAmountValue($amountValue);
     }
 
     protected function removeAdyenPaymentFromSession(): void

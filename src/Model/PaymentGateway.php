@@ -40,18 +40,15 @@ class PaymentGateway extends PaymentGateway_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $paymentId = $session->getPaymentId();
 
-        if (!Module::isAdyenPayment($paymentId)) {
-            return parent::executePayment($amount, $order);
+        if (Module::isAdyenPayment($paymentId)) {
+            if (!Module::showInPaymentCtrl($paymentId)) {
+                $this->doCollectAdyenRequestData();
+            }
+            /** @var eShopOrder $order */
+            $this->doFinishAdyenPayment($amount, $order);
         }
 
-        /** @var eShopOrder $order */
-        if (Module::showInPaymentCtrl($paymentId)) {
-            $this->checkAdyenAuthorisation($amount);
-        } else {
-            $this->doCollectAdyenRequestData();
-        }
-
-        return $this->doFinishAdyenPayment($amount, $order);
+        return parent::executePayment($amount, $order);
     }
 
     protected function doCollectAdyenRequestData(): void
@@ -64,37 +61,6 @@ class PaymentGateway extends PaymentGateway_parent
         $session->setPspReference($pspReference);
         $session->setResultCode($resultCode);
         $session->setAmountCurrency($amountCurrency);
-    }
-
-    /**
-     * if the amount of authorisation differs from the amount of the current shopping cart,
-     * the authorisation must be revoked and the order re-authorised
-     *
-     * @param double $amount Goods amount
-     */
-    protected function checkAdyenAuthorisation(float $amount): void
-    {
-        $session = $this->getServiceFromContainer(SessionSettings::class);
-        // reauthorize is necessary
-        if ($session->getAmountValue() < $amount) {
-            $pspReference = $session->getPspReference();
-            $orderReference = $session->getOrderReference();
-            $paymentState = $session->getPaymentState();
-
-            $paymentCancel = $this->getServiceFromContainer(PaymentCancel::class);
-            $paymentCancel->doAdyenCancel(
-                $pspReference,
-                $orderReference
-            );
-            $paymentService = $this->getServiceFromContainer(Payment::class);
-            $paymentService->collectPayments(
-                $amount,
-                $orderReference,
-                $paymentState
-            );
-            $payments = $paymentService->getPaymentResult();
-            $session->setPspReference($payments['pspReference']);
-        }
     }
 
     /**
