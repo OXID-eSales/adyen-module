@@ -75,6 +75,9 @@ class Payment extends PaymentBase
         $payments->setReturnUrl($this->context->getPaymentReturnUrl());
         $payments->setMerchantApplicationName(Module::MODULE_NAME_EN);
         $payments->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
+        $payments->setPlatformName(Module::MODULE_PLATFORM_NAME);
+        $payments->setPlatformVersion(Module::MODULE_PLATFORM_VERSION);
+        $payments->setPlatformIntegrator(Module::MODULE_PLATFORM_INTEGRATOR);
 
         try {
             $resultPayments = $this->APIPayments->getPayments($payments);

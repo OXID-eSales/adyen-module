@@ -73,6 +73,9 @@ class PaymentRefund extends PaymentBase
         $refunds->setMerchantAccount($this->moduleSettings->getMerchantAccount());
         $refunds->setMerchantApplicationName(Module::MODULE_NAME_EN);
         $refunds->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
+        $refunds->setPlatformName(Module::MODULE_PLATFORM_NAME);
+        $refunds->setPlatformVersion(Module::MODULE_PLATFORM_VERSION);
+        $refunds->setPlatformIntegrator(Module::MODULE_PLATFORM_INTEGRATOR);
 
         try {
             $resultRefund = $this->APIRefunds->setRefund($refunds);

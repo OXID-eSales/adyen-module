@@ -25,6 +25,9 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setPaymentMethod(['TestPaymentMethods']);
         $model->setMerchantApplicationName('TestMerchantApplicationName');
         $model->setMerchantApplicationVersion('Testv1.0.0');
+        $model->setPlatformName('TestPlatformName');
+        $model->setPlatformVersion('TestPlatformVersion');
+        $model->setPlatformIntegrator('TestPlatformVersion');
         $model->setBrowserInfo(['browserInfo']);
         $model->setShopperEmail('test@test.de');
         $model->setShopperIP('1.2.3.4');
@@ -44,6 +47,11 @@ class AdyenAPIPaymentsTest extends UnitTestCase
                 'merchantApplication' => [
                     'name' => 'TestMerchantApplicationName',
                     'version' => 'Testv1.0.0'
+                ],
+                'externalPlatform' => [
+                    'name' => 'TestPlatformName',
+                    'version' => 'TestPlatformVersion',
+                    'integrator' => 'TestPlatformVersion'
                 ]
             ],
             'shopperEmail' => 'test@test.de',
