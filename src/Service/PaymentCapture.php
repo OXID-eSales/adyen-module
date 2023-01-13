@@ -73,6 +73,9 @@ class PaymentCapture extends PaymentBase
         $captures->setMerchantAccount($this->moduleSettings->getMerchantAccount());
         $captures->setMerchantApplicationName(Module::MODULE_NAME_EN);
         $captures->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
+        $captures->setPlatformName(Module::MODULE_PLATFORM_NAME);
+        $captures->setPlatformVersion(Module::MODULE_PLATFORM_VERSION);
+        $captures->setPlatformIntegrator(Module::MODULE_PLATFORM_INTEGRATOR);
 
         try {
             $resultCapture = $this->APICaptures->setCapture($captures);

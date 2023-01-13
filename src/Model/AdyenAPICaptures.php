@@ -12,18 +12,15 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 class AdyenAPICaptures
 {
     protected string $reference;
-
     protected string $pspReference;
-
     protected string $merchantAccount;
-
     protected string $currencyName;
-
     protected string $currencyAmount;
-
     protected string $applicationName;
-
     protected string $applicationVersion;
+    protected string $platformName;
+    protected string $platformVersion;
+    protected string $platformIntegrator;
 
     public function setReference(string $reference): void
     {
@@ -60,6 +57,21 @@ class AdyenAPICaptures
         $this->applicationVersion = $applicationVersion;
     }
 
+    public function setPlatformName(string $platformName): void
+    {
+        $this->platformName = $platformName;
+    }
+
+    public function setPlatformVersion(string $platformVersion): void
+    {
+        $this->platformVersion = $platformVersion;
+    }
+
+    public function setPlatformIntegrator(string $platformIntegrator): void
+    {
+        $this->platformIntegrator = $platformIntegrator;
+    }
+
     public function getAdyenCapturesParams(): array
     {
         return [
@@ -74,6 +86,11 @@ class AdyenAPICaptures
                 'merchantApplication' => [
                     'name' => $this->applicationName,
                     'version' => $this->applicationVersion
+                ],
+                'externalPlatform' => [
+                    'name' => $this->platformName,
+                    'version' => $this->platformVersion,
+                    'integrator' => $this->platformIntegrator
                 ]
             ]
         ];

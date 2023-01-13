@@ -12,27 +12,19 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 class AdyenAPIPayments
 {
     protected string $reference;
-
     protected array $paymentMethod;
-
     protected string $merchantAccount;
-
     protected string $returnUrl;
-
     protected string $currencyName;
-
     protected string $currencyAmount;
-
     protected string $applicationName;
-
     protected string $applicationVersion;
-
+    protected string $platformName;
+    protected string $platformVersion;
+    protected string $platformIntegrator;
     protected array $browserInfo;
-
     protected string $origin;
-
     protected string $shopperEmail;
-
     protected string $shopperIP;
 
     public function setReference(string $reference): void
@@ -80,6 +72,22 @@ class AdyenAPIPayments
         $this->applicationVersion = $applicationVersion;
     }
 
+
+    public function setPlatformName(string $platformName): void
+    {
+        $this->platformName = $platformName;
+    }
+
+    public function setPlatformVersion(string $platformVersion): void
+    {
+        $this->platformVersion = $platformVersion;
+    }
+
+    public function setPlatformIntegrator(string $platformIntegrator): void
+    {
+        $this->platformIntegrator = $platformIntegrator;
+    }
+
     public function setOrigin(string $origin): void
     {
         $this->origin = $origin;
@@ -111,6 +119,11 @@ class AdyenAPIPayments
                 'merchantApplication' => [
                     'name' => $this->applicationName,
                     'version' => $this->applicationVersion
+                ],
+                'externalPlatform' => [
+                    'name' => $this->platformName,
+                    'version' => $this->platformVersion,
+                    'integrator' => $this->platformIntegrator
                 ]
             ],
             'shopperEmail' => $this->shopperEmail,

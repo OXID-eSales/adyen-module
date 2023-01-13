@@ -24,6 +24,9 @@ class AdyenAPIRefundsTest extends UnitTestCase
         $model->setPspReference('TestPSPReference');
         $model->setMerchantApplicationName('TestMerchantApplicationName');
         $model->setMerchantApplicationVersion('Testv1.0.0');
+        $model->setPlatformName('TestPlatformName');
+        $model->setPlatformVersion('TestPlatformVersion');
+        $model->setPlatformIntegrator('TestPlatformVersion');
 
         $this->assertSame([
             'amount' => [
@@ -37,6 +40,11 @@ class AdyenAPIRefundsTest extends UnitTestCase
                 'merchantApplication' => [
                     'name' => 'TestMerchantApplicationName',
                     'version' => 'Testv1.0.0'
+                ],
+                'externalPlatform' => [
+                    'name' => 'TestPlatformName',
+                    'version' => 'TestPlatformVersion',
+                    'integrator' => 'TestPlatformVersion'
                 ]
             ]
         ], $model->getAdyenRefundsParams());
