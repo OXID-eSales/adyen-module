@@ -165,39 +165,6 @@ class AdyenHistory extends BaseModel
         return $result;
     }
 
-    public function getLastAction(string $pspReference): string
-    {
-        $result = '';
-
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->queryBuilderFactory->create();
-
-        $queryBuilder->select('adyenaction')
-            ->from($this->getCoreTableName())
-            ->setMaxResults(1)
-            ->where(self::PSPPARENTREFERENCEFIELD . ' = :pspReference')
-            ->orderBy('oxtimestamp', 'desc');
-
-        $parameters = [
-            'pspReference' => $pspReference
-        ];
-
-        if (!$this->config->getConfigParam('blMallUsers')) {
-            $queryBuilder->andWhere('oxshopid = :oxshopid');
-            $parameters['oxshopid'] = $this->context->getCurrentShopId();
-        }
-
-        /** @var Result $resultDB */
-        $resultDB = $queryBuilder->setParameters($parameters)
-            ->execute();
-
-        if (is_a($resultDB, Result::class)) {
-            $result = $resultDB->fetchOne();
-            $result = is_string($result) ? $result : '';
-        }
-        return $result;
-    }
-
     public function getOrderId(): string
     {
         return $this->getAdyenStringData('orderid');
