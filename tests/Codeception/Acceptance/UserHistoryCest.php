@@ -3,7 +3,6 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use Codeception\Util\Fixtures;
-use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
@@ -13,11 +12,11 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits\OrderHistory;
  * @group UserHistory
  * @group osc_adyen
  */
-final class UserHistoryCest
+final class UserHistoryCest extends BaseCest
 {
     use OrderHistory;
 
-    protected AcceptanceTester $I;
+
     protected UserOrderHistory $orderHistoryPage;
     protected $orderNumber;
     protected $placeholderPaymentId;
@@ -27,9 +26,19 @@ final class UserHistoryCest
         Module::PAYMENT_PAYPAL_ID
     ];
 
+    protected function _getOXID(): array
+    {
+        return [$this->placeholderPaymentId];
+    }
+
+    protected function _getPaymentId(): string
+    {
+        return "payment_" . $this->placeholderPaymentId;
+    }
+
     public function _before(AcceptanceTester $I): void
     {
-        $this->I = $I;
+        $this->_setAcceptance($I);
     }
 
     public function _after(AcceptanceTester $I): void
@@ -38,15 +47,17 @@ final class UserHistoryCest
 
     protected function _initializeDatabase($payment)
     {
+        $I = $this->_getAcceptance();
+
         // activate payment method
-        $this->I->updateInDatabase(
+        $I->updateInDatabase(
             'oxpayments',
             ['OXACTIVE' => 1],
             ['OXID' => $payment]
         );
 
         // assign country to payment method
-        $this->I->haveInDatabase(
+        $I->haveInDatabase(
             'oxobject2payment',
             ['OXID' => 'test' . $payment,
                 'OXOBJECTID' => 'a7c40f631fc920687.20179984',
@@ -59,7 +70,7 @@ final class UserHistoryCest
         $basketItem = Fixtures::get('product');
 
         // create a user basket
-        $this->I->haveInDatabase(
+        $I->haveInDatabase(
             'oxuserbaskets',
             [
                 'OXID' => 'basket_' . $payment,
@@ -69,7 +80,7 @@ final class UserHistoryCest
         );
 
         // put item into basket
-        $this->I->haveInDatabase(
+        $I->haveInDatabase(
             'oxuserbasketitems',
             [
                 'OXID' => 'item_' . $payment,
@@ -83,7 +94,7 @@ final class UserHistoryCest
         // set up the order for the basket
         $this->orderNumber = 4711;
 
-        $this->I->haveInDatabase(
+        $I->haveInDatabase(
             'oxorder',
             [
                 'OXID' => 'order_' . $payment,
@@ -103,7 +114,7 @@ final class UserHistoryCest
         );
 
         // fake the payment, so it appears in the order history
-        $this->I->haveInDatabase(
+        $I->haveInDatabase(
             'oxuserpayments',
             [
                 'OXID' => 'payment_' . $payment,
@@ -116,29 +127,28 @@ final class UserHistoryCest
 
     protected function _initializeTest()
     {
-        $homePage = $this->I->openShop();
+        $I = $this->_getAcceptance();
+        $homePage = $I->openShop();
         $homePage->loginUser(Fixtures::get('userName'), Fixtures::get('userPassword'));
 
-        $this->orderHistoryPage = new UserOrderHistory($this->I);
-        $this->I->amOnPage($this->orderHistoryPage->URL);
+        $homePage->switchLanguage('.en');
     }
 
     public function checkUserHistoryAfterPaypalPayment(AcceptanceTester $I)
     {
+        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
         $this->_initializeDatabase(Module::PAYMENT_PAYPAL_ID);
         $this->_initializeTest();
 
-        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
         $this->checkOrderHistory($I);
     }
 
     public function checkUserHistoryAfterCreditcardPayment(AcceptanceTester $I)
     {
-        $paymentType = Module::PAYMENT_CREDITCARD_ID;
-        $this->_initializeDatabase(Module::PAYMENT_PAYPAL_ID);
+        $this->placeholderPaymentId = Module::PAYMENT_CREDITCARD_ID;
+        $this->_initializeDatabase(Module::PAYMENT_CREDITCARD_ID);
         $this->_initializeTest();
 
-        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
         $this->checkOrderHistory($I);
     }
 }
