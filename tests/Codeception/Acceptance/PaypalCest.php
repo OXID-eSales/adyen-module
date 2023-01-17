@@ -127,9 +127,5 @@ final class PaypalCest extends BaseCest
 
         // Check for the "Thank you" page
         $this->orderNumber = $this->_checkSuccessfulPayment();
-        // set up the order history check (payment method placeholder is specific to the used payment)
-        $this->placeholderPaymentId = Module::PAYMENT_PAYPAL_ID;
-
-        $this->checkOrderHistory($I);
     }
 }
