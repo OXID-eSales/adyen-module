@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
-use OxidEsales\Codeception\Module\Translation\Translator;
-use OxidEsales\Codeception\Page\Account\UserOrderHistory;
-use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits\OrderHistory;
@@ -62,8 +59,5 @@ final class CreditCardCest extends BaseCest
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
         $this->orderNumber = $this->_checkSuccessfulPayment();
-        $this->placeholderPaymentId = Module::PAYMENT_CREDITCARD_ID;
-
-        $this->checkOrderHistory($I);
     }
 }

@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
-use OxidEsales\Codeception\Page\Account\UserOrderHistory;
-use OxidEsales\EshopCommunity\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidEsales\EshopCommunity\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 trait OrderHistory
@@ -38,12 +36,15 @@ trait OrderHistory
             ['OXORDERNR' => $orderNumber]
         );
 
-        $langAbbr = Registry::getLang()->getLanguageAbbr();
-        $paymentName = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions'][$langAbbr]['desc'];
+        // always english!
+        $langId = 1;
+        // page "Check order history"
+        $I->amOnPage('index.php?cl=account_order&lang=' . $langId);
 
-        // Check order history
-        $orderHistoryPage = new UserOrderHistory($I);
-        $I->amOnPage($orderHistoryPage->URL);
+        // get the payment description from database
+        $oPayment = oxNew(Payment::class);
+        $oPayment->loadInLang($langId, $placeholderPaymentId);
+        $paymentName = $oPayment->oxpayments__oxdesc->value;
 
         $I->makeScreenshot(date('Y-m-d_His') . ' Order History ' . $placeholderPaymentId);
 
