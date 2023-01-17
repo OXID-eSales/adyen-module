@@ -49,6 +49,20 @@ class Payment extends Payment_parent
     }
 
     /**
+     * Checks if the payment method is show on Order Controller
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * @return bool
+     */
+    public function showInOrderCtrl(): bool
+    {
+        return ($this->isAdyenPayment() &&
+            !Module::showInPaymentCtrl($this->getId()) &&
+            $this->getAdyenBoolData('oxactive') === true
+        );
+    }
+
+    /**
      * Checks if the payment allow manual Capture
      *
      * @SuppressWarnings(PHPMD.StaticAccess)
