@@ -109,6 +109,7 @@ class PaymentController extends PaymentController_parent
         $session = $this->getServiceFromContainer(SessionSettings::class);
         $actualPaymentId = $session->getPaymentId();
         $newPaymentId = $this->getStringRequestData('paymentid');
+        $pspReference = $session->getPspReference();
 
         // remove a possible old adyen payment if another one was selected
         if (
@@ -123,7 +124,11 @@ class PaymentController extends PaymentController_parent
 
         // collect the paymentId again, because it may have changed in the meantime
         $actualPaymentId = $session->getPaymentId();
-        if ($actualPaymentId && Module::isAdyenPayment($actualPaymentId)) {
+        if (
+            $actualPaymentId &&
+            !$pspReference &&
+            Module::isAdyenPayment($actualPaymentId)
+        ) {
             $this->saveAdyenPaymentInSession();
         }
 
