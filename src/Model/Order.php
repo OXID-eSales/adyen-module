@@ -108,7 +108,7 @@ class Order extends Order_parent
     {
         return (
             $this->isAdyenOrder() &&
-            $this->getPossibleCaptureAmount() > 0
+            $this->getPossibleCaptureAmount() > 0.0
         );
     }
 
@@ -128,22 +128,13 @@ class Order extends Order_parent
     {
         return (
             $this->isAdyenOrder() &&
-            $this->getPossibleRefundAmount() > 0
+            $this->getPossibleRefundAmount() > 0.0
         );
     }
 
     public function isAdyenCancelPossible(): bool
     {
-        $result = false;
-        if ($this->isAdyenOrder()) {
-            $pspReference = $this->getAdyenStringData(self::PSPREFERENCEFIELD);
-            $adyenHistory = oxNew(AdyenHistory::class);
-            $lastAction = $adyenHistory->getLastAction($pspReference);
-            $result = (
-                $lastAction === Module::ADYEN_ACTION_AUTHORIZE
-            );
-        }
-        return $result;
+        return $this->getCapturedAmount() === 0.0;
     }
 
     /**
@@ -265,27 +256,41 @@ class Order extends Order_parent
         }
     }
 
-    public function getPossibleCaptureAmount(): float
+    public function getCapturedAmount(): float
     {
-        $result = 0;
+        $result = 0.0;
         if ($this->isAdyenOrder()) {
             $pspReference = $this->getAdyenPspReference();
             $adyenHistory = oxNew(AdyenHistory::class);
-            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
-            $result = (float)$this->getTotalOrderSum() - $capturedAmount;
+            $result = $adyenHistory->getCapturedSum($pspReference);
         }
         return $result;
     }
 
-    public function getPossibleRefundAmount(): float
+    public function getPossibleCaptureAmount(): float
     {
-        $result = 0;
+        $result = 0.0;
+        if ($this->isAdyenOrder()) {
+            $result = (float)$this->getTotalOrderSum() - $this->getCapturedAmount();
+        }
+        return $result;
+    }
+
+    public function getRefundedAmount(): float
+    {
+        $result = 0.0;
         if ($this->isAdyenOrder()) {
             $pspReference = $this->getAdyenPspReference();
             $adyenHistory = oxNew(AdyenHistory::class);
-            $refundedAmount = $adyenHistory->getRefundedSum($pspReference);
-            $capturedAmount = $adyenHistory->getCapturedSum($pspReference);
-            $result = $capturedAmount - $refundedAmount;
+            $result = $adyenHistory->getRefundedSum($pspReference);
+        }
+        return $result;
+    }
+    public function getPossibleRefundAmount(): float
+    {
+        $result = 0.0;
+        if ($this->isAdyenOrder()) {
+            $result = $this->getCapturedAmount() - $this->getRefundedAmount();
         }
         return $result;
     }
