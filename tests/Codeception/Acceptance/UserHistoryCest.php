@@ -3,7 +3,6 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
 use Codeception\Util\Fixtures;
-use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\Codeception\Page\Account\UserOrderHistory;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
