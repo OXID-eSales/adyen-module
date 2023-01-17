@@ -224,14 +224,14 @@
 
             const setPspReference = (response) => {
                 var result = false;
-                if (response.pspReference && response.resultCode !== 'Refused') {
+                if (response.pspReference && response.resultCode === 'Authorised') {
                     adyenPspReferenceEl.value = response.pspReference;
                     adyenResultCodeEl.value = response.resultCode;
                     adyenAmountCurrencyEl.value = response.amount.currency;
                     adyenAmountValueEl.value = response.amount.value;
                     result = true;
                 }
-                else if (response.resultCode === 'Refused') {
+                else if (response.resultCode !== 'Authorised') {
                     window.location.replace('[{$sSelfLink}]cl=payment&payerror=2&stoken=[{$sToken}]');
                 }
                 if (result === true) {
