@@ -29,7 +29,7 @@
     "prefer-dist": true,
     "require": {
         "php": "^7.4 | ^8.0",
-        "oxid-esales/oxideshop-ce": "^6.12 | 6.5.x-dev",
+        "oxid-esales/oxideshop-ce": "^6.12 | dev-b-6.5.x",
         "adyen/php-api-library": "13.*"
     },
     "require-dev": {
