@@ -21,6 +21,8 @@ use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class PaymentController extends PaymentController_parent
 {
+    protected ?bool $assetsNecessary = null;
+
     use ServiceContainer;
     use UserAddress;
     use RequestGetter;
@@ -69,6 +71,22 @@ class PaymentController extends PaymentController_parent
             }
         }
         return $paymentList;
+    }
+
+    public function isAdyenAssetsNecessary(): bool
+    {
+        if (is_null($this->assetsNecessary)) {
+            $this->assetsNecessary = false;
+            foreach ($this->getPaymentList() as $paymentObj)
+            {
+                if ($paymentObj->showInPaymentCtrl()) {
+                    $this->assetsNecessary = true;
+                    break;
+                }
+            }
+            $this->assetsNecessary = $this->assetsNecessary && !$this->isValidAdyenAuthorisation();
+        }
+        return $this->assetsNecessary;
     }
 
     public function isActiveAdyenSession(): bool
