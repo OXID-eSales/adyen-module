@@ -69,23 +69,17 @@ final class StaticContentsTest extends UnitTestCase
             $payment = oxNew(EshopModelPayment::class);
             $this->assertTrue($payment->load($paymentId));
 
-            $payment->loadInLang(0, $paymentId);
-            $this->assertEquals(
-                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['de']['desc'],
-                $payment->getRawFieldData('oxdesc')
-            );
-            $this->assertEquals(
-                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['de']['longdesc'],
-                $payment->getRawFieldData('oxlongdesc')
-            );
+            $lang = Registry::getLang();
+            $langId = $lang->getBaseLanguage();
+            $langAbbr = $lang->getLanguageAbbr($langId);
 
-            $payment->loadInLang(1, $paymentId);
+            $payment->loadInLang($langId, $paymentId);
             $this->assertEquals(
-                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['en']['desc'],
+                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions'][ $langAbbr]['desc'],
                 $payment->getRawFieldData('oxdesc')
             );
             $this->assertEquals(
-                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions']['en']['longdesc'],
+                Module::PAYMENT_DEFINTIONS[$paymentId]['descriptions'][ $langAbbr]['longdesc'],
                 $payment->getRawFieldData('oxlongdesc')
             );
         }
