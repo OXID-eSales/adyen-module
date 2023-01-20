@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
@@ -77,11 +78,14 @@ class PaymentController extends PaymentController_parent
     {
         if (is_null($this->assetsNecessary)) {
             $this->assetsNecessary = false;
-            foreach ($this->getPaymentList() as $paymentObj)
-            {
-                if ($paymentObj->showInPaymentCtrl()) {
-                    $this->assetsNecessary = true;
-                    break;
+            $paymentList = $this->getPaymentList();
+            if (is_array($paymentList)) {
+                /** @var Payment $paymentObj */
+                foreach ($paymentList as $paymentObj) {
+                    if ($paymentObj->showInPaymentCtrl()) {
+                        $this->assetsNecessary = true;
+                        break;
+                    }
                 }
             }
             $this->assetsNecessary = $this->assetsNecessary && !$this->isValidAdyenAuthorisation();
