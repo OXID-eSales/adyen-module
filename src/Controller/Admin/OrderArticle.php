@@ -45,8 +45,6 @@ class OrderArticle extends OrderArticle_parent
             $amountAfter = (float)$order->getTotalOrderSum();
             $amount = $amountBefore - $amountAfter;
             $order->refundAdyenOrder($amount);
-            // set transstatus again, because recalculate order set the transstatus back to "NOT_FINISHED"
-            $order->setAdyenOrderStatus('OK');
         }
     }
 }

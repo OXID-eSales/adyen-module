@@ -23,6 +23,9 @@ final class RefundHandler extends WebhookHandlerBase
      */
     protected function additionalUpdates(Event $event): void
     {
+        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+        $order = $this->order;
+        $order->setAdyenOrderStatus('OK');
     }
 
     protected function getAdyenAction(): string
