@@ -33,6 +33,7 @@ $aLang = [
 
     'OSC_ADYEN_CANCELORDER' => 'Cancel Order',
     'OSC_ADYEN_CANCEL' => 'cancel',
+    'OSC_ADYEN_CANCEL_NOT_POSSIBLE' => 'Unfortunately, it is not possible to delete the order because funds have already been transferred from Adyen.',
 
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_AUTHORIZE => 'Authorization',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CAPTURE => 'Capture',

@@ -33,6 +33,7 @@ $aLang = [
 
     'OSC_ADYEN_CANCELORDER' => 'Bestellung stornieren',
     'OSC_ADYEN_CANCEL' => 'stornieren',
+    'OSC_ADYEN_CANCEL_NOT_POSSIBLE' => 'Das löschen der Bestellung ist leider nicht möglich, da bereits Gelder von Adyen transferiert wurden.',
 
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_AUTHORIZE => 'Authorisierung',
     'OSC_ADYEN_ACTION' . Module::ADYEN_ACTION_CAPTURE => 'Geldeinzug',

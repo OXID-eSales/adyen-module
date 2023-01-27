@@ -398,7 +398,23 @@ class Order extends Order_parent
 
     public function delete($oxid = null): bool
     {
+        if (
+            (
+                $oxid &&
+                !$this->load($oxid)
+            ) ||
+            !$this->isLoaded()
+        ) {
+             return false;
+        }
+
         if ($this->isAdyenOrder()) {
+            if (!$this->isAdyenCancelPossible()) {
+                Registry::getUtilsView()->addErrorToDisplay('OSC_ADYEN_CANCEL_NOT_POSSIBLE');
+                return false;
+            }
+            $this->cancelAdyenOrder();
+            // delete AdyenHistory
             $pspReference = $this->getAdyenPSPReference();
             $adyenHistory = oxNew(AdyenHistory::class);
             if ($adyenHistory->loadByPSPReference($pspReference)) {
