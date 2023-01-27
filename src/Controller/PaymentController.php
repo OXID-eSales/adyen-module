@@ -22,11 +22,11 @@ use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class PaymentController extends PaymentController_parent
 {
-    protected ?bool $assetsNecessary = null;
-
     use ServiceContainer;
     use UserAddress;
     use RequestGetter;
+
+    protected ?bool $assetsNecessary = null;
 
     /**
      * Template variable getter. Returns paymentlist

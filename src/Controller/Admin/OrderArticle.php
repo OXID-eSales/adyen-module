@@ -25,25 +25,50 @@ class OrderArticle extends OrderArticle_parent
      */
     public function storno(): void
     {
-        $order = oxNew(Order::class);
-        $orderLoaded = $order->load($this->getEditObjectId());
-        $amountBefore = 0;
-
-        // collect the Order Amount before the change
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
-        if ($orderLoaded && $order->isAdyenOrder()) {
-            $amountBefore = (float)$order->getTotalOrderSum();
-        }
+        $amountBefore = $this->collectAmountForAdyenRefund();
 
         parent::storno();
 
-        // load order again because of the changes
-        $orderLoaded = $order->load($this->getEditObjectId());
+        $this->runAdyenRefund($amountBefore);
+    }
 
-        // if Refund is possible, collect the Order Amount after the change
-        if ($orderLoaded && $order->isAdyenOrder() && $order->isAdyenRefundPossible()) {
-            $amountAfter = (float)$order->getTotalOrderSum();
-            $amount = $amountBefore - $amountAfter;
+    /**
+     * @inheritDoc
+     */
+    public function deleteThisArticle(): void
+    {
+        $amountBefore = $this->collectAmountForAdyenRefund();
+
+        parent::deleteThisArticle();
+
+        $this->runAdyenRefund($amountBefore);
+    }
+
+    protected function collectAmountForAdyenRefund(): float
+    {
+        $order = oxNew(Order::class);
+        $orderLoaded = $order->load($this->getEditObjectId());
+        $amount = 0.0;
+
+        if ($orderLoaded) {
+            $amount = (float)$order->getTotalOrderSum();
+        }
+        return $amount;
+    }
+
+    protected function runAdyenRefund(float $amountBefore): void
+    {
+        $amountAfter = $this->collectAmountForAdyenRefund();
+        $order = oxNew(Order::class);
+        $orderLoaded = $order->load($this->getEditObjectId());
+        $amount = $amountBefore - $amountAfter;
+        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+        if (
+            $orderLoaded &&
+            $amount > 0 &&
+            $order->isAdyenOrder() &&
+            $order->isAdyenRefundPossible()
+        ) {
             $order->refundAdyenOrder($amount);
         }
     }
