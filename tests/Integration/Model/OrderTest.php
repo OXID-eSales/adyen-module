@@ -71,17 +71,43 @@ class OrderTest extends UnitTestCase
     /**
      * @dataProvider providerTestOrderData
      */
+    public function testIsAdyenOrderPaid($orderId, $orderData): void
+    {
+        $order = oxNew(Order::class);
+        $order->load($orderId);
+        $isAdyenOrderPaid = (
+            'OK' === $orderData['oxorder__oxtransstatus'] &&
+            !str_contains($orderData['oxorder__oxpaid'], '0000')
+        );
+
+        $this->assertSame($isAdyenOrderPaid, $order->isAdyenOrderPaid());
+    }
+
+    /**
+     * @dataProvider providerTestOrderData
+     */
     public function testGetAdyenPaymentName($orderId, $orderData, $paymentName): void
     {
         $orderMock = $this->getMockBuilder(Order::class)
             ->onlyMethods(['isAdyenOrder'])
             ->getMock();
+
         $orderMock->method('isAdyenOrder')
             ->willReturn(true);
 
         $orderMock->load($orderId);
-
         $this->assertSame($paymentName, $orderMock->getAdyenPaymentName());
+    }
+
+    public function testIsAdyenManualCapture(): void
+    {
+        $result = false;
+        if ($this->isAdyenOrder()) {
+            /** @var Payment $payment */
+            $payment = oxNew(EshopModelPayment::class);
+            $payment->load($this->getAdyenStringData('oxpaymenttype'));
+            $result = $payment->isAdyenManualCapture();
+        }
     }
 
     public function providerTestOrderData(): array
@@ -90,7 +116,9 @@ class OrderTest extends UnitTestCase
             [
                 '456',
                 [
-                    'oxorder__oxpaymenttype' => 'dummy'
+                    'oxorder__oxpaymenttype' => 'dummy',
+                    'oxorder__transstatus' => 'OK',
+                    'oxorder__paid' => '2023-01-01 00:00:00'
                 ],
                 self::PAYMENT_DESC_DUMMY
             ]
