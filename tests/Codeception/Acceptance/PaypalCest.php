@@ -7,6 +7,7 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\_support\Traits\OrderHistory;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 /**
+ * @group PayPal
  * @group osc_adyen
  */
 final class PaypalCest extends BaseCest
