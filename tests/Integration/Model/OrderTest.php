@@ -9,20 +9,27 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Model;
 
-use OxidEsales\Eshop\Application\Model\Payment;
+use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Tests\Integration\Traits\Setting;
 
 class OrderTest extends UnitTestCase
 {
+    use Setting;
+
     private const PAYMENT_DESC_DUMMY = 'TestDummy';
+    private const PAYMENT_ID_DUMMY = 'TestId';
 
     public function setup(): void
     {
         parent::setUp();
         foreach ($this->providerTestOrderData() as $dataSet) {
-            [$orderId, $orderData, ] = $dataSet;
+            [$orderId, $orderData, , , ] = $dataSet;
             $order = oxNew(Order::class);
             $order->setId($orderId);
             $order->assign($orderData);
@@ -41,9 +48,11 @@ class OrderTest extends UnitTestCase
     {
         parent::tearDown();
         foreach ($this->providerTestOrderData() as $dataSet) {
-            [$orderId, , ] = $dataSet;
+            [$orderId, , , , ] = $dataSet;
             $order = oxNew(Order::class);
             $order->load($orderId);
+            $order->assign(['oxorder__oxpaymenttype' => 'pleaseDelete']);
+            $order->save();
             $order->delete();
         }
         foreach ($this->providerTestPaymentData() as $dataSet) {
@@ -57,7 +66,7 @@ class OrderTest extends UnitTestCase
     /**
      * @dataProvider providerTestOrderData
      */
-    public function testIsAdyenOrder($orderId, $orderData, $paymentName): void
+    public function testIsAdyenOrder($orderId, $orderData): void
     {
         $order = oxNew(Order::class);
         $order->load($orderId);
@@ -86,7 +95,7 @@ class OrderTest extends UnitTestCase
     /**
      * @dataProvider providerTestOrderData
      */
-    public function testGetAdyenPaymentName($orderId, $orderData, $paymentName): void
+    public function testGetAdyenPaymentName($orderId, $orderData, $paymentId, $paymentName): void
     {
         $orderMock = $this->getMockBuilder(Order::class)
             ->onlyMethods(['isAdyenOrder'])
@@ -96,18 +105,40 @@ class OrderTest extends UnitTestCase
             ->willReturn(true);
 
         $orderMock->load($orderId);
+
         $this->assertSame($paymentName, $orderMock->getAdyenPaymentName());
     }
 
-    public function testIsAdyenManualCapture(): void
+    /**
+     * @dataProvider providerTestOrderData
+     */
+    public function testIsAdyenManualCapture($orderId, $orderData, $paymentId, $paymentName, $paymentCapture): void
     {
-        $result = false;
-        if ($this->isAdyenOrder()) {
-            /** @var Payment $payment */
-            $payment = oxNew(EshopModelPayment::class);
-            $payment->load($this->getAdyenStringData('oxpaymenttype'));
-            $result = $payment->isAdyenManualCapture();
+        $config = Registry::getConfig();
+        $orderMock = $this->getMockBuilder(Order::class)
+            ->onlyMethods(['isAdyenOrder'])
+            ->getMock();
+
+        $orderMock->method('isAdyenOrder')
+            ->willReturn(true);
+
+        $orderMock->load($orderId);
+        if ('isNotExists' !== $config->getConfigParam(
+            ModuleSettings::CAPTURE_DELAY . $paymentId,
+            'isNotExists'
+        )) {
+            $this->updateModuleSetting(ModuleSettings::CAPTURE_DELAY . $paymentId, $paymentCapture);
         }
+
+        /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
+        $payment = oxNew(EshopModelPayment::class);
+        $payment->load($orderMock->getAdyenStringData('oxpaymenttype'));
+
+        $isAdyenManualCapture = $paymentCapture === $config->getConfigParam(
+            ModuleSettings::CAPTURE_DELAY . $paymentId,
+            'dummy'
+        );
+        $this->assertSame($isAdyenManualCapture, $payment->isAdyenManualCapture());
     }
 
     public function providerTestOrderData(): array
@@ -120,7 +151,9 @@ class OrderTest extends UnitTestCase
                     'oxorder__transstatus' => 'OK',
                     'oxorder__paid' => '2023-01-01 00:00:00'
                 ],
-                self::PAYMENT_DESC_DUMMY
+                self::PAYMENT_ID_DUMMY,
+                self::PAYMENT_DESC_DUMMY,
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
             ]
         ];
         $count = 123;
@@ -132,7 +165,9 @@ class OrderTest extends UnitTestCase
                     'oxorder__oxpaymenttype' => $paymentId,
                     'oxorder__adyenpspreference' => 'test' . $count
                 ],
-                $paymentDef['descriptions']['de']['desc']
+                $paymentId,
+                $paymentDef['descriptions']['de']['desc'],
+                Module::ADYEN_CAPTURE_DELAY_MANUAL
             ];
         }
 
