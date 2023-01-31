@@ -130,15 +130,11 @@ class OrderTest extends UnitTestCase
             $this->updateModuleSetting(ModuleSettings::CAPTURE_DELAY . $paymentId, $paymentCapture);
         }
 
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
-        $payment = oxNew(EshopModelPayment::class);
-        $payment->load($orderMock->getAdyenStringData('oxpaymenttype'));
-
         $isAdyenManualCapture = $paymentCapture === $config->getConfigParam(
             ModuleSettings::CAPTURE_DELAY . $paymentId,
             'dummy'
         );
-        $this->assertSame($isAdyenManualCapture, $payment->isAdyenManualCapture());
+        $this->assertSame($isAdyenManualCapture, $orderMock->isAdyenManualCapture());
     }
 
     public function providerTestOrderData(): array
