@@ -27,6 +27,7 @@ class ModuleSettings
     public const SANDBOX_PAYPAL_MERCHANT_ID = 'osc_adyen_SandboxPayPalMerchantId';
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
+    public const LIVE_ENDPOINT_PREFIX = 'osc_adyen_LiveEndpointPrefix';
     public const LIVE_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
@@ -74,6 +75,15 @@ class ModuleSettings
         return (!empty($value) && in_array($value, self::OPERATION_MODE_VALUES)) ?
             $value :
             self::OPERATION_MODE_SANDBOX;
+    }
+
+    public function getEndPointUrlPrefix(): string
+    {
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue(self::LIVE_ENDPOINT_PREFIX);
+        $value = (string)$settingValue;
+
+        return !$this->isSandBoxMode() ? $value : '';
     }
 
     public function isLoggingActive(): bool
