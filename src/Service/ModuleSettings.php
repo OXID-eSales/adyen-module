@@ -79,9 +79,11 @@ class ModuleSettings
 
     public function getEndPointUrlPrefix(): string
     {
-        return !$this->isSandBoxMode() ?
-            $this->getSettingValue(self::LIVE_ENDPOINT_PREFIX) :
-            '';
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue(self::LIVE_ENDPOINT_PREFIX);
+        $value = (string)$settingValue;
+
+        return !$this->isSandBoxMode() ? $value : '';
     }
 
     public function isLoggingActive(): bool
