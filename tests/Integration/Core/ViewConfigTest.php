@@ -17,9 +17,12 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidEsales\Eshop\Core\ViewConfig as eShopViewConfig;
+use OxidSolutionCatalysts\Adyen\Tests\Integration\Traits\Setting;
 
 final class ViewConfigTest extends UnitTestCase
 {
+    use Setting;
+
     public function testcheckAdyenConfigHealth(): void
     {
         $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_SANDBOX);

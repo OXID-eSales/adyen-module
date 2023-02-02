@@ -41,6 +41,8 @@ final class AdminOrderControllerTest extends UnitTestCase
             [$orderId, ] = $dataSet;
             $order = oxNew(Order::class);
             $order->load($orderId);
+            $order->assign(['oxorder__oxpaymenttype' => 'pleaseDelete']);
+            $order->save();
             $order->delete();
         }
     }
