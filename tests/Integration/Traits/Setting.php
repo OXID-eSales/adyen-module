@@ -2,7 +2,6 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Traits;
 
-
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Core\Module;
