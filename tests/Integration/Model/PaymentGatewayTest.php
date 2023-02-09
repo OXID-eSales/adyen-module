@@ -62,7 +62,7 @@ class PaymentGatewayTest extends UnitTestCase
             $this->resultCode
         );
 
-        $paymentGateway = new PaymentGateway();
+        $paymentGateway = oxNew(PaymentGateway::class);
         $this->assertTrue($paymentGateway->executePayment($this->amount, $order));
 
         $this->assertEquals('', $sessionSettings->getPspReference());
@@ -107,7 +107,7 @@ class PaymentGatewayTest extends UnitTestCase
             0
         );
 
-        $paymentGateway = new PaymentGateway();
+        $paymentGateway = oxNew(PaymentGateway::class);
         $this->assertTrue($paymentGateway->executePayment($this->amount, $order));
 
         $this->assertEquals('', $sessionSettings->getPspReference());
@@ -138,7 +138,7 @@ class PaymentGatewayTest extends UnitTestCase
             ->method('save')
             ->willReturn($this->orderId);
 
-        $paymentGateway = new PaymentGateway();
+        $paymentGateway = oxNew(PaymentGateway::class);
         $this->assertTrue($paymentGateway->executePayment($this->amount, $order));
     }
 
@@ -196,7 +196,7 @@ class PaymentGatewayTest extends UnitTestCase
             0
         );
 
-        $paymentGateway = new PaymentGateway();
+        $paymentGateway = oxNew(PaymentGateway::class);
         $this->assertTrue($paymentGateway->executePayment($this->amount, $order));
 
         $this->assertEquals($this->pspReference, $sessionSettings->getPspReference());
