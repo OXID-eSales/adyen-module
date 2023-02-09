@@ -1,11 +1,11 @@
 <?php
 
-namespace OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension;
+namespace OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtensions;
 
 use Dotenv\Dotenv;
 use PHPUnit\Runner\BeforeFirstTestHook;
 
-class PhpUnitEnvExtension implements BeforeFirstTestHook
+class PHPUnitDotEnv implements BeforeFirstTestHook
 {
     public function executeBeforeFirstTest(): void
     {
