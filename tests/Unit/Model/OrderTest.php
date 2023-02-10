@@ -12,8 +12,6 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 
-//use OxidEsales\Eshop\Application\Model\Order;
-
 class OrderTest extends UnitTestCase
 {
     public function testSetGetPSPReference(): void

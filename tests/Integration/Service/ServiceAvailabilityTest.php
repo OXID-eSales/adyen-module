@@ -17,12 +17,15 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseRefunds;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
+use OxidSolutionCatalysts\Adyen\Service\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
+use OxidSolutionCatalysts\Adyen\Service\PaymentGateway;
+use OxidSolutionCatalysts\Adyen\Service\PaymentGatewayOrderSavable;
 use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
@@ -55,11 +58,14 @@ class ServiceAvailabilityTest extends TestCase
             [AdyenSDKLoader::class],
             [Context::class],
             [CountryRepository::class],
+            [Module::class],
             [ModuleSettings::class],
             [Payment::class],
             [PaymentCancel::class],
             [PaymentCapture::class],
             [PaymentDetails::class],
+            [PaymentGateway::class],
+            [PaymentGatewayOrderSavable::class],
             [PaymentMethods::class],
             [PaymentRefund::class],
             [ResponseHandler::class],
