@@ -18,28 +18,4 @@ use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 class OrderController extends OrderController_parent
 {
     use UserAddress;
-
-    //use ServiceContainer;
-    /**
-     * @inheritDoc
-     *
-     * @param integer $success status code
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return  string  $sNextStep  partial parameter url for next step
-     */
-    /*
-    protected function _getNextStep($success) // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-    {
-        $session = $this->getServiceFromContainer(SessionSettings::class);
-        $redirectLink = $session->getRedirctLink();
-        if (
-            (Order::ORDER_STATE_ADYENPAYMENTNEEDSREDICRET == $success) &&
-            $redirectLink
-        ) {
-            $session->deleteRedirctLink();
-            throw new Redirect($redirectLink);
-        }
-        return parent::_getNextStep($success);
-    }
-    */
 }
