@@ -18,6 +18,7 @@ use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 
 class PaymentController extends PaymentController_parent
@@ -129,6 +130,7 @@ class PaymentController extends PaymentController_parent
     public function validatePayment()
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
+        $moduleService = $this->getServiceFromContainer(ModuleService::class);
         $actualPaymentId = $session->getPaymentId();
         $newPaymentId = $this->getStringRequestData('paymentid');
         $pspReference = $session->getPspReference();
@@ -137,7 +139,7 @@ class PaymentController extends PaymentController_parent
         if (
             $actualPaymentId &&
             $actualPaymentId !== $newPaymentId &&
-            Module::isAdyenPayment($actualPaymentId)
+            $moduleService->isAdyenPayment($actualPaymentId)
         ) {
             $this->removeAdyenPaymentFromSession();
         }
@@ -149,7 +151,7 @@ class PaymentController extends PaymentController_parent
         if (
             $actualPaymentId &&
             !$pspReference &&
-            Module::isAdyenPayment($actualPaymentId)
+            $moduleService->isAdyenPayment($actualPaymentId)
         ) {
             $this->saveAdyenPaymentInSession();
         }

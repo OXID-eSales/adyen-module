@@ -13,6 +13,7 @@ use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 
 /*
  * Here we have tests for a what we call 'chain extended' shop class.
@@ -74,9 +75,11 @@ final class AdminOrderControllerTest extends UnitTestCase
 
         $controller->expects($this->any())->method('getEditObject')->willReturn($order);
 
+        $moduleService = oxNew(ModuleService::class);
+
         $this->assertSame(
             $controller->isAdyenOrder(),
-            Module::isAdyenPayment($orderData['oxorder__oxpaymenttype'])
+            $moduleService->isAdyenPayment($orderData['oxorder__oxpaymenttype'])
         );
     }
 
