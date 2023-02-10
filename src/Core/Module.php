@@ -61,7 +61,7 @@ final class Module
     public const ADYEN_HTMLPARAM_AMOUNTVALUE_NAME = 'adyenAmountValue';
     public const ADYEN_ERROR_INVALIDSESSION_NAME = 'invalidAdyenSession';
 
-    private const PAYMENT_CONSTRAINTS = [
+    public const PAYMENT_CONSTRAINTS = [
         'oxfromamount' => 0.01,
         'oxtoamount' => 60000,
         'oxaddsumtype' => 'abs'
@@ -109,21 +109,4 @@ final class Module
             'paymentCtrl' => false
         ]
     ];
-
-    public static function isAdyenPayment(string $paymentId): bool
-    {
-        return (isset(self::PAYMENT_DEFINTIONS[$paymentId]));
-    }
-
-    public static function showInPaymentCtrl(string $paymentId): bool
-    {
-        return (self::isAdyenPayment($paymentId) &&
-            self::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
-    }
-
-    public static function isCaptureDelay(string $paymentId): bool
-    {
-        return (self::isAdyenPayment($paymentId) &&
-            self::PAYMENT_DEFINTIONS[$paymentId]['capturedelay']); /* @phpstan-ignore-line */
-    }
 }

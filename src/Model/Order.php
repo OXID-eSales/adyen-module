@@ -18,6 +18,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -61,8 +62,10 @@ class Order extends Order_parent
      */
     public function isAdyenOrder(): bool
     {
+        $moduleService = $this->getServiceFromContainer(ModuleService::class);
+
         return (
-            Module::isAdyenPayment($this->getAdyenStringData('oxpaymenttype')) &&
+            $moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype')) &&
             $this->getAdyenPSPReference()
         );
     }
