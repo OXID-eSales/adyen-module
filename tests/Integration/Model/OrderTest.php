@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Tests\Integration\Traits\Setting;
 
@@ -68,10 +69,11 @@ class OrderTest extends UnitTestCase
      */
     public function testIsAdyenOrder($orderId, $orderData): void
     {
+        $moduleService = oxNew(ModuleService::class);
         $order = oxNew(Order::class);
         $order->load($orderId);
         $isAdyenOrder = (
-            Module::isAdyenPayment($orderData['oxorder__oxpaymenttype']) &&
+            $moduleService->isAdyenPayment($orderData['oxorder__oxpaymenttype']) &&
             $orderData['oxorder__adyenpspreference'] !== ''
         );
         $this->assertSame($isAdyenOrder, $order->isAdyenOrder());
