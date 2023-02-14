@@ -37,12 +37,14 @@ class PaymentGatewayTest extends UnitTestCase
         $paymentGatewayServiceMock = $this->createPaymentGatewayServiceMock(
             $this->amount,
             $orderMock,
-            0,
+            1,
             1
         );
         $moduleServiceMock = $this->createModuleServiceMock(
             $paymentId,
-            1
+            1,
+            true,
+            false
         );
 
         $paymentGatewayMock = $this->createPaymentGatewayMock(
