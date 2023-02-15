@@ -123,10 +123,12 @@ class OrderTest extends UnitTestCase
             ->willReturn(true);
 
         $orderMock->load($orderId);
-        if ('isNotExists' !== $config->getConfigParam(
-            ModuleSettings::CAPTURE_DELAY . $paymentId,
-            'isNotExists'
-        )) {
+        if (
+            'isNotExists' !== $config->getConfigParam(
+                ModuleSettings::CAPTURE_DELAY . $paymentId,
+                'isNotExists'
+            )
+        ) {
             $this->updateModuleSetting(ModuleSettings::CAPTURE_DELAY . $paymentId, $paymentCapture);
         }
 
