@@ -169,6 +169,10 @@ abstract class WebhookHandlerBase
 
     abstract protected function getAdyenAction(): string;
 
+    /**
+     * make functions mockable which uses the logger
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
     private function getLogger(): LoggerInterface
     {
         return Registry::getLogger();
