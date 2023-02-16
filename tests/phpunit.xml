@@ -18,6 +18,9 @@
             <directory>Integration/</directory>
         </testsuite>
     </testsuites>
+    <extensions>
+        <extension class="OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension\PhpUnitByPassFinalExtension"/>
+    </extensions>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../src</directory>
