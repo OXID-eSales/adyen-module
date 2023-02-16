@@ -12,14 +12,13 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class WebhookHandlerBaseTest extends UnitTestCase
+class WebhookHandlerBaseHandleTest extends UnitTestCase
 {
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
@@ -36,6 +35,7 @@ class WebhookHandlerBaseTest extends UnitTestCase
         /** @var WebhookHandlerBase $webHookHandlerBaseMock */
         $webHookHandlerBaseMock->handle($eventMock);
     }
+
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
      */
@@ -47,6 +47,52 @@ class WebhookHandlerBaseTest extends UnitTestCase
             0,
             true,
             0,
+            false
+        );
+        $webHookHandlerBaseMock = $this->createWebHookHandlerBaseMock(
+            $eventMock,
+            0,
+            0
+        );
+
+        /** @var WebhookHandlerBase $webHookHandlerBaseMock */
+        $webHookHandlerBaseMock->handle($eventMock);
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
+     */
+    public function testHandleFailureBecauseOfMerchant()
+    {
+        $eventMock = $this->createEventMock(
+            1,
+            true,
+            1,
+            false,
+            0,
+            false
+        );
+        $webHookHandlerBaseMock = $this->createWebHookHandlerBaseMock(
+            $eventMock,
+            0,
+            0
+        );
+
+        /** @var WebhookHandlerBase $webHookHandlerBaseMock */
+        $webHookHandlerBaseMock->handle($eventMock);
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
+     */
+    public function testHandleFailureBecauseOfEventNotSuccess()
+    {
+        $eventMock = $this->createEventMock(
+            1,
+            true,
+            1,
+            true,
+            1,
             false
         );
         $webHookHandlerBaseMock = $this->createWebHookHandlerBaseMock(
