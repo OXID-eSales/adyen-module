@@ -4,16 +4,16 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook\Handler;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler;
 
-class CancelRefundHandlerTest extends UnitTestCase
+class RefundHandlerTest extends UnitTestCase
 {
     use HandlerTestMockFactoryTrait;
 
     /**
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::additionalUpdates
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::getAdyenAction
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::getAdyenStatus
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler::additionalUpdates
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler::getAdyenAction
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler::getAdyenStatus
      */
     public function testAdditionalUpdates()
     {
@@ -25,7 +25,11 @@ class CancelRefundHandlerTest extends UnitTestCase
         $pspReference = 'pspReference';
         $parentPspReference = 'parentPspReference';
 
-        $orderMock = $this->createOrderMock($orderId);
+        $orderMock = $this->createOrderMock(
+            $orderId,
+            1,
+            'OK'
+        );
 
         $eventMock = $this->createEventMock(
             $amountValue,
@@ -35,9 +39,9 @@ class CancelRefundHandlerTest extends UnitTestCase
             $parentPspReference
         );
 
-        /** @var CancelRefundHandler $handlerMock */
+        /** @var RefundHandler $handlerMock */
         $handlerMock = $this->createHandlerMock(
-            CancelRefundHandler::class,
+            RefundHandler::class,
             $orderMock,
             $shopId,
             $orderId,
@@ -46,10 +50,9 @@ class CancelRefundHandlerTest extends UnitTestCase
             $eventDate,
             $pspReference,
             $parentPspReference,
-            Module::ADYEN_STATUS_CANCELLED,
-            Module::ADYEN_ACTION_CANCEL
+            Module::ADYEN_STATUS_REFUNDED,
+            Module::ADYEN_ACTION_REFUND
         );
-
         $handlerMock->setData($eventMock);
         $handlerMock->updateStatus($eventMock);
     }

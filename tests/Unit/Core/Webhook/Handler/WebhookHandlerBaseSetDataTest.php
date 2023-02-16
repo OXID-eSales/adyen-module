@@ -7,8 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Core\Webhook;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook\Handler;
 
+use Exception;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
@@ -17,7 +18,6 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use PHPUnit\Framework\MockObject\MockObject;
-use Exception;
 
 class WebhookHandlerBaseSetDataTest extends UnitTestCase
 {
