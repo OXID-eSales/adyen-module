@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook;
 
-use Adyen\Util\HmacSignature;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
@@ -24,162 +24,116 @@ class WebhookHandlerBaseTest extends UnitTestCase
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
      */
-    public function testHandle()
+    public function testHandleSuccess()
     {
-        $event = $this->createEvent();
+        $eventMock = $this->createEventMock();
         $webHookHandlerBaseMock = $this->createWebHookHandlerBaseMock(
+            $eventMock,
             1,
-            'paymentId',
             1,
-            $event->getPspReference()
         );
 
         /** @var WebhookHandlerBase $webHookHandlerBaseMock */
-        $webHookHandlerBaseMock->handle($event);
+        $webHookHandlerBaseMock->handle($eventMock);
+    }
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\WebhookHandlerBase::handle
+     */
+    public function testHandleFailureBecauseOfHmac()
+    {
+        $eventMock = $this->createEventMock(
+            1,
+            false,
+            0,
+            true,
+            0,
+            false
+        );
+        $webHookHandlerBaseMock = $this->createWebHookHandlerBaseMock(
+            $eventMock,
+            0,
+            0
+        );
+
+        /** @var WebhookHandlerBase $webHookHandlerBaseMock */
+        $webHookHandlerBaseMock->handle($eventMock);
     }
 
     private function createWebHookHandlerBaseMock(
-        int $paymentLoadInvokeAmount = 1,
-        string $paymentId = 'paymentId',
-        int $getOxidOrderIdByPSPReferenceInvokeAmount = 1,
-        string $pspReference = 'pspReference',
-        string $orderId = 'orderId',
-        int $loadInvokeAmount = 1,
-        int $getAdyenStringDataInvokeAmount = 1,
-        int $getShopInvokeAmount = 1,
-        int $shopId = 1,
-        int $getOrderIdInvokeAmount = 1
+        MockObject $eventMock,
+        int $setDataInvokeAmount = 1,
+        int $updateStatusInvokeAmount = 1
     ): MockObject {
-        $orderMock = $this->createOrderMock(
-            $loadInvokeAmount,
-            $orderId,
-            $getAdyenStringDataInvokeAmount,
-            $paymentId,
-            $getOrderIdInvokeAmount
-        );
+        $orderMock = $this->createOrderMock();
         $mockBuilder = $this->getMockBuilder(WebhookHandlerBase::class);
         $mockBuilder->enableOriginalConstructor()
             ->setConstructorArgs(
                 [
-                    $this->createPaymentMock($paymentLoadInvokeAmount, $paymentId),
+                    $this->createPaymentMock(),
                     $orderMock,
-                    $this->createAdyenHistoryListMock(
-                        $getOxidOrderIdByPSPReferenceInvokeAmount,
-                        $pspReference,
-                        $orderId
-                    ),
-                    $this->createContextMock($getShopInvokeAmount, $shopId)
+                    $this->createAdyenHistoryListMock(),
+                    $this->createContextMock()
                 ]
-            );
+            )->onlyMethods(['setData', 'updateStatus']);
         $webHookHandlerBaseMock = $mockBuilder->getMockForAbstractClass();
+
+        $webHookHandlerBaseMock->expects($this->exactly($setDataInvokeAmount))
+            ->method('setData')
+            ->with($eventMock);
+        $webHookHandlerBaseMock->expects($this->exactly($updateStatusInvokeAmount))
+            ->method('updateStatus')
+            ->with($eventMock);
 
         return $webHookHandlerBaseMock;
     }
 
-    private function createContextMock(
-        int $getShopInvokeAmount,
-        int $shopId
-    ): MockObject {
+    private function createContextMock(): MockObject
+    {
         $contextMock = $this->createMock(Context::class);
-        $contextMock->expects($this->exactly($getShopInvokeAmount))
-            ->method('getCurrentShopId')
-            ->willReturn($shopId);
 
         return $contextMock;
     }
 
-    private function createPaymentMock(
-        int $paymentLoadInvokeAmount = 1,
-        string $paymentId = 'paymentId'
-    ): MockObject {
+    private function createPaymentMock(): MockObject
+    {
         $paymentMock = $this->createMock(Payment::class);
-        $paymentMock->expects($this->exactly($paymentLoadInvokeAmount))
-            ->method('load')
-            ->with($paymentId);
 
         return $paymentMock;
     }
 
-    private function createEvent()
-    {
-        return \oxNew(Event::class, $this->createEventRawData());
+    private function createEventMock(
+        int $isHMACVerifiedInvokeAmount = 1,
+        bool $isHMACVerified = true,
+        int $isMerchantVerifiedInvokeAmount = 1,
+        bool $isMerchantVerified = true,
+        int $isSuccessInvokeAmount = 1,
+        bool $isSuccess = true
+    ) {
+        $eventMock = $this->createMock(Event::class);
+        $eventMock->expects($this->exactly($isHMACVerifiedInvokeAmount))
+            ->method('isHMACVerified')
+            ->willReturn($isHMACVerified);
+        $eventMock->expects($this->exactly($isMerchantVerifiedInvokeAmount))
+            ->method('isMerchantVerified')
+            ->willReturn($isMerchantVerified);
+        $eventMock->expects($this->exactly($isSuccessInvokeAmount))
+            ->method('isSuccess')
+            ->willReturn($isSuccess);
+
+        return $eventMock;
     }
 
-    private function createOrderMock(
-        int $loadInvokeAmount,
-        string $orderId,
-        int $getAdyenStringDataInvokeAmount,
-        string $paymentId,
-        int $getIdInvokeAmount
-    ): MockObject {
+    private function createOrderMock(): MockObject
+    {
         $orderMock = $this->createMock(Order::class);
-
-        $orderMock->expects($this->exactly($loadInvokeAmount))
-            ->method('load')
-            ->with($orderId)
-            ->willReturn($orderMock);
-
-        $orderMock->expects($this->exactly($loadInvokeAmount))
-            ->method('getAdyenStringData')
-            ->willReturn($paymentId);
-
-        $orderMock->expects($this->exactly($getIdInvokeAmount))
-            ->method('getId')
-            ->willReturn($orderId);
 
         return $orderMock;
     }
 
-    private function createAdyenHistoryListMock(
-        int $getOxidOrderIdByPSPReferenceInvokeAmount,
-        string $pspReference,
-        string $orderId
-    ): MockObject {
+    private function createAdyenHistoryListMock(): MockObject
+    {
         $adyenHistoryListMock = $this->createMock(AdyenHistoryList::class);
-        $adyenHistoryListMock->expects($this->exactly($getOxidOrderIdByPSPReferenceInvokeAmount))
-            ->method('getOxidOrderIdByPSPReference')
-            ->with($pspReference)
-            ->willReturn($orderId);
 
         return $adyenHistoryListMock;
-    }
-
-    private function createEventRawData(
-        bool $isValidHmac = true,
-        string $merchantAccountCode = 'SandboxMerchantAccount',
-        bool $success = true
-    ): array {
-        return [
-            "live" => "false",
-            "notificationItems" => [
-                [
-                    "NotificationRequestItem" => [
-                        "additionalData" => [
-                            "hmacSignature" => 'dummyHmac',
-                        ],
-                        "amount" => [
-                            "currency" => "EUR",
-                            "value" => 1000
-                        ],
-                        "eventDate" => "2021-01-01T01:00:00+01:00",
-                        "pspReference" => "9313547924770610",
-                        "originalReference" => "1233547924770610",
-                        "eventCode" => "AUTHORIZATION",
-                        "merchantReference" => "TestMerchantReference",
-                        "success" => "true"
-                    ]
-                ]
-            ],
-            'hmacSignatureUtil' => $this->createHmacSignatureUtilMock($isValidHmac),
-            'merchantAccountCode' => $merchantAccountCode,
-            'success' => $success,
-        ];
-    }
-
-    private function createHmacSignatureUtilMock(bool $isValidHmac = true): MockObject
-    {
-        $hmacSignatureMock = $this->createMock(HmacSignature::class);
-
-        return $hmacSignatureMock;
     }
 }
