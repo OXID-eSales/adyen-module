@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook\Handler;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\TestingLibrary\UnitTestCase;

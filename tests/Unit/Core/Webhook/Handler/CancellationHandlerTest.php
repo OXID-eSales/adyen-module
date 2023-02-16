@@ -4,16 +4,16 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Core\Webhook\Handler;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler;
 
-class CancelRefundHandlerTest extends UnitTestCase
+class CancellationHandlerTest extends UnitTestCase
 {
     use HandlerTestMockFactoryTrait;
 
     /**
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::additionalUpdates
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::getAdyenAction
-     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler::getAdyenStatus
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler::additionalUpdates
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler::getAdyenAction
+     * @covers \OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler::getAdyenStatus
      */
     public function testAdditionalUpdates()
     {
@@ -35,9 +35,9 @@ class CancelRefundHandlerTest extends UnitTestCase
             $parentPspReference
         );
 
-        /** @var CancelRefundHandler $handlerMock */
+        /** @var CancellationHandler $handlerMock */
         $handlerMock = $this->createHandlerMock(
-            CancelRefundHandler::class,
+            CancellationHandler::class,
             $orderMock,
             $shopId,
             $orderId,
@@ -49,7 +49,6 @@ class CancelRefundHandlerTest extends UnitTestCase
             Module::ADYEN_STATUS_CANCELLED,
             Module::ADYEN_ACTION_CANCEL
         );
-
         $handlerMock->setData($eventMock);
         $handlerMock->updateStatus($eventMock);
     }
