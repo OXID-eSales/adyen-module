@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
+use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
-
-//use OxidEsales\Eshop\Application\Model\Order;
 
 class OrderTest extends UnitTestCase
 {
@@ -60,5 +60,64 @@ class OrderTest extends UnitTestCase
         $mock->method('isAdyenOrder')->willReturn(true);
         // test getPossibleRefundAmount, isAdyenRefundPossible
         $this->assertTrue($mock->isAdyenRefundPossible());
+    }
+
+    /**
+     * @covers OxidSolutionCatalysts\Adyen\Model\Order::finalizeOrder
+     */
+    public function testFinalizeOrderIsAdyenOrder()
+    {
+        $builder = $this->getMockBuilder(Order::class)
+            ->onlyMethods(
+                [
+                    'isAdyenOrder',
+                    'setAdyenOrderStatus'
+                ]
+            );
+        $orderMock = $builder->getMock();
+        $orderMock->expects($this->once())
+            ->method('isAdyenOrder')
+            ->willReturn(true);
+        $orderMock->expects($this->once())
+            ->method('setAdyenOrderStatus')
+            ->with('NOT_FINISHED');
+
+        $basket = oxNew(Basket::class);
+        $user = oxNew(User::class);
+
+        /** @var Order $orderMock */
+        $this->assertEquals(
+            Order::ORDER_STATE_INVALIDPAYMENT,
+            $orderMock->finalizeOrder($basket, $user)
+        );
+    }
+
+    /**
+     * @covers OxidSolutionCatalysts\Adyen\Model\Order::finalizeOrder
+     */
+    public function testFinalizeOrderIsNoAdyenOrder()
+    {
+        $builder = $this->getMockBuilder(Order::class)
+            ->onlyMethods(
+                [
+                    'isAdyenOrder',
+                    'setAdyenOrderStatus'
+                ]
+            );
+        $orderMock = $builder->getMock();
+        $orderMock->expects($this->once())
+            ->method('isAdyenOrder')
+            ->willReturn(false);
+        $orderMock->expects($this->never())
+            ->method('setAdyenOrderStatus');
+
+        $basket = oxNew(Basket::class);
+        $user = oxNew(User::class);
+
+        /** @var Order $orderMock */
+        $this->assertEquals(
+            Order::ORDER_STATE_INVALIDPAYMENT,
+            $orderMock->finalizeOrder($basket, $user)
+        );
     }
 }
