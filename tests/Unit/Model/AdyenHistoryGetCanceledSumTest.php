@@ -18,7 +18,7 @@ class AdyenHistoryGetCanceledSumTest extends UnitTestCase
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Model\AdyenHistory::getCanceledSum
      */
-    public function testLoadByPSPReference()
+    public function testGetCanceledSum()
     {
         $pspReference = 'pspReference';
         $returnValue = 1.2;

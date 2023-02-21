@@ -11,10 +11,13 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class AdyenHistoryGetterTest extends UnitTestCase
 {
+    use ServiceContainer;
+
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Model\AdyenHistory::getOrderId
      */
@@ -136,6 +139,30 @@ class AdyenHistoryGetterTest extends UnitTestCase
     }
 
     /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\AdyenHistory::getFormatedPrice
+     */
+    public function testGetFormatedPrice()
+    {
+        $price = 1234.56;
+        $priceFormatted = '1.234,56';
+
+        /** @var AdyenHistory $adyenHistoryMock */
+        $builder = $this->getMockBuilder(AdyenHistory::class)
+            ->disableOriginalConstructor();
+        $builder->onlyMethods(['getPrice']);
+        $adyenHistoryMock = $builder->getMock();
+        $adyenHistoryMock->expects($this->once())
+            ->method('getPrice')
+            ->with()
+            ->willReturn($price);
+
+        $this->assertEquals(
+            $priceFormatted,
+            $adyenHistoryMock->getFormatedPrice()
+        );
+    }
+
+    /**
      * @covers \OxidSolutionCatalysts\Adyen\Model\AdyenHistory::getPrice
      */
     public function testGetPrice()
@@ -161,11 +188,7 @@ class AdyenHistoryGetterTest extends UnitTestCase
     ): MockObject {
         $builder = $this->getMockBuilder(AdyenHistory::class)
             ->disableOriginalConstructor();
-        $builder->onlyMethods(
-            [
-                'getAdyenStringData',
-            ]
-        );
+        $builder->onlyMethods(['getAdyenStringData']);
         $adyenHistoryMock = $builder->getMock();
         $adyenHistoryMock->expects($this->once())
             ->method('getAdyenStringData')
