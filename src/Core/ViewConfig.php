@@ -25,6 +25,7 @@ use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 
 class ViewConfig extends ViewConfig_parent
 {
@@ -57,10 +58,18 @@ class ViewConfig extends ViewConfig_parent
      */
     public function checkAdyenHealth(): bool
     {
-        return (
-            $this->moduleSettings->checkConfigHealth() &&
-            $this->existsAdyenPaymentMethods()
-        );
+        $isHealthy = false;
+
+        try {
+            $isHealthy = $this->moduleSettings->checkConfigHealth() && $this->existsAdyenPaymentMethods();
+        } catch (AdyenException $exception) {
+            $this->getServiceFromContainer(LoggerInterface::class)->error(
+                'ViewConfig::checkAdyenHealth could not prove existsAdyenPaymentMethods because of exception',
+                ['exception' => $exception]
+            );
+        }
+
+        return $isHealthy;
     }
 
     public function checkAdyenConfigHealth(): bool

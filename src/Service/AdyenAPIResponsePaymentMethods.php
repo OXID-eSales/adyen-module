@@ -26,7 +26,7 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
     {
         $adyenPaymentMethods = $this->session->getPaymentMethods();
         if (!count($adyenPaymentMethods)) {
-            throw new Exception('Load the paymentMethods before getting the paymentMethods');
+            throw new AdyenException('Load the paymentMethods before getting the paymentMethods');
         }
         return $adyenPaymentMethods;
     }
