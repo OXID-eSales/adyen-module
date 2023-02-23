@@ -13,7 +13,7 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
-use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
+use OxidSolutionCatalysts\Adyen\Core\Module as CoreModule;
 
 /**
  *
@@ -77,5 +77,17 @@ class Payment extends Payment_parent
     public function isAdyenImmediateCapture(): bool
     {
         return $this->paymentConfigService->isAdyenImmediateCapture($this->getId());
+    }
+
+    /**
+     * for some payments the id and the template id used in frontend/tpl/payment/adyen_order_submit.tpl:2 differs
+     */
+    public function getTemplateId(): string
+    {
+        if ($this->getId() === CoreModule::PAYMENT_GOOGLE_PAY_ID) {
+            return 'googlepay';
+        }
+
+        return $this->getId();
     }
 }
