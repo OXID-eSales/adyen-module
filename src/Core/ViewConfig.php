@@ -9,8 +9,11 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 use Adyen\AdyenException;
 use Exception;
+use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateConfiguration;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
@@ -90,6 +93,11 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->getPayPalMerchantId();
     }
 
+    public function getAdyenMerchantAccount(): string
+    {
+        return $this->moduleSettings->getMerchantAccount();
+    }
+
     public function getAdyenSDKVersion(): string
     {
         return Module::ADYEN_SDK_VERSION;
@@ -135,6 +143,11 @@ class ViewConfig extends ViewConfig_parent
         return Module::PAYMENT_PAYPAL_ID;
     }
 
+    public function getAdyenPaymentGooglePayId(): string
+    {
+        return Module::PAYMENT_GOOGLE_PAY_ID;
+    }
+
     public function getAdyenErrorInvalidSession(): string
     {
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
@@ -146,13 +159,12 @@ class ViewConfig extends ViewConfig_parent
     }
 
     /**
-     * return a JSON-String with PaymentMethods (array)
      * @throws AdyenException
      * @throws Exception
      */
-    public function getAdyenPaymentMethods(): string
+    public function getAdyenPaymentMethods(): array
     {
-        return $this->arrayToJson($this->adyenPaymentMethods->getAdyenPaymentMethods());
+        return $this->adyenPaymentMethods->getAdyenPaymentMethods();
     }
 
     /**
@@ -191,5 +203,13 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenAmountCurrency(): string
     {
         return $this->context->getActiveCurrencyName();
+    }
+
+    public function getTemplateConfiguration(
+        FrontendController $oView,
+        ?Payment $payment
+    ): string {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->getConfiguration($this, $oView, $payment);
     }
 }

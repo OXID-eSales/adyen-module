@@ -26,6 +26,7 @@ final class Module
 
     public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
+    public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
@@ -107,6 +108,25 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false
+        ],
+        self::PAYMENT_GOOGLE_PAY_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Google Pay',
+                    'longdesc' => 'Google Pay',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Google Pay.'
+                ],
+                'en' => [
+                    'desc' => 'Google Pay',
+                    'longdesc' => 'Google Pay',
+                    'longdesc_beta' => 'Pay conveniently with Google Pay.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => true
         ]
     ];
 }

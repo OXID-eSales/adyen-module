@@ -19,7 +19,7 @@
         </testsuite>
     </testsuites>
     <extensions>
-        <extension class="OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension\PhpUnitEnvExtension"/>
+        <extension class="OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtensions\PHPUnitDotEnv"/>
     </extensions>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">

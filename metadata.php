@@ -15,7 +15,6 @@ use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
@@ -88,6 +87,10 @@ $aModule = [
         // frontend - mails
         'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_html.tpl',
         'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
+        // adyen js api
+        'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
+        // google pay checkout template
+        'modules/osc/adyen/payment/googlepay/checkout.tpl' => 'osc/adyen/views/frontend/tpl/payment/googlepay/checkout.tpl',
     ],
     'blocks' => [
         [
