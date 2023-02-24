@@ -75,7 +75,7 @@
                 [{if $orderPaymentPayPal}]
                     checkout.create('paypal').mount('#[{$paymentID}]-container');
                 [{elseif $orderPaymentGooglePay}]
-                    checkout.create('googlepay').mount('#[{$payment->getTemplateId()}]-container');
+                    checkout.create('googlepay').mount('#[{$paymentID}]-container');
                 [{/if}]
             [{/if}]
 
