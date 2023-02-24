@@ -7,6 +7,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
+use OxidEsales\Eshop\Application\Model\Payment;
 
 class PaymentGateway
 {
@@ -56,7 +57,7 @@ class PaymentGateway
             $order->save();
 
             // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
-            if ($this->moduleService->showInPaymentCtrl($paymentId)) {
+            if ($this->getPayment($paymentId)->isAdyenImmediateCapture()) {
                 $order->captureAdyenOrder($amount);
             }
 
@@ -77,5 +78,13 @@ class PaymentGateway
         $this->sessionSettings->setPspReference($pspReference);
         $this->sessionSettings->setResultCode($resultCode);
         $this->sessionSettings->setAmountCurrency($amountCurrency);
+    }
+
+    private function getPayment(string $paymentId): Payment
+    {
+        $payment = oxNew(\OxidSolutionCatalysts\Adyen\Model\Payment::class);
+        $payment->setId($paymentId);
+
+        return $payment;
     }
 }
