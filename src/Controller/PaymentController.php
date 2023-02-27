@@ -165,8 +165,10 @@ class PaymentController extends PaymentController_parent
 
     public function isAvailablePayment(string $paymentIdToProve): bool
     {
+        /** @var array $paymentList */
         $paymentList = $this->getPaymentList();
         foreach ($paymentList as $paymentId => $payment) {
+            /** @var Payment $payment */
             if ($payment->showInPaymentCtrl() && $paymentId === $paymentIdToProve) {
                 return true;
             }

@@ -2,13 +2,12 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\EshopCommunity\Application\Model\Article;
 use Psr\Log\LoggerInterface;
 
-class JSAPITemplateConfigurationLineItems
+class AdyenAPILineItemsService
 {
     private Session $session;
     private LoggerInterface $logger;
@@ -21,29 +20,42 @@ class JSAPITemplateConfigurationLineItems
         $this->logger = $logger;
     }
 
-    public function getLineItems(
-    ): array {
+    public function getLineItems(): array
+    {
         $lineItems = [];
         $basketItems = $this->session->getBasket()->getContents();
 
         foreach ($basketItems as $basketItem) {
             $article = $this->getArticle($basketItem);
 
-            $lineItems[] = [
+            $lineItem = [
                 'quantity' => $basketItem->getAmount(),
                 'description' => $basketItem->getTitle(),
-                'amountIncludingTax' => $this->getPriceInMinorUnits($article),
-                'taxPercentage' => $this->getVatInMinorUnits($article),
-                'id' => $article->getId(),
             ];
+
+            if ($article) {
+                $lineItem = array_merge(
+                    $lineItem,
+                    [
+                        'amountIncludingTax' => $this->getPriceInMinorUnits($article),
+                        'taxPercentage' => $this->getVatInMinorUnits($article),
+                        'id' => $article->getId(),
+                    ]
+                );
+            }
+
+            $lineItems[] = $lineItem;
         }
 
         return $lineItems;
     }
 
-    private function getArticle(BasketItem $basketItem): Article
+    private function getArticle(BasketItem $basketItem): ?Article
     {
+        $article = null;
+
         try {
+            /** @var Article $article */
             $article = $basketItem->getArticle();
         } catch (\Exception $exception) {
             $this->logger->error(
@@ -60,7 +72,7 @@ class JSAPITemplateConfigurationLineItems
      */
     private function getPriceInMinorUnits(Article $article): string
     {
-        return (string) $article->getPrice()->getBruttoPrice() * 100;
+        return '' . $article->getPrice()->getBruttoPrice() * 100;
     }
 
     /**
@@ -68,6 +80,6 @@ class JSAPITemplateConfigurationLineItems
      */
     private function getVatInMinorUnits(Article $article): string
     {
-        return (string) $article->getPrice()->getVat() * 100;
+        return '' . $article->getPrice()->getVat() * 100;
     }
 }

@@ -187,13 +187,12 @@ class PaymentGatewayTest extends UnitTestCase
         string $orderId,
         string $orderReference,
         string $pspReference,
-        float  $amount,
+        float $amount,
         string $amountCurrency,
         string $resultCode,
-        int    $captureAdyenOrderInvokedCount = 1,
-        int    $saveInvokedCount = 1
-    ): MockObject
-    {
+        int $captureAdyenOrderInvokedCount = 1,
+        int $saveInvokedCount = 1
+    ): MockObject {
         $order = $this->createMock(Order::class);
 
         $order->expects($this->exactly($saveInvokedCount))
@@ -230,14 +229,13 @@ class PaymentGatewayTest extends UnitTestCase
     }
 
     private function createSessionSettingsMock(
-        int    $deleteInvokeCount = 0,
+        int $deleteInvokeCount = 0,
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
         string $pspReference = 'pspReference',
         string $resultCode = 'resultCode',
         string $amountCurrency = 'amountCurrency',
         string $orderReference = 'orderReference'
-    ): MockObject
-    {
+    ): MockObject {
         $sessionSettingsMock = $this->createMock(SessionSettings::class);
 
         $sessionSettingsMock->expects($this->exactly($deleteInvokeCount))
@@ -267,13 +265,12 @@ class PaymentGatewayTest extends UnitTestCase
     }
 
     private function createPaymentGatewayOrderSavableMock(
-        bool   $isSavable = true,
+        bool $isSavable = true,
         string $pspReference = 'pspReference',
         string $resultCode = 'resultCode',
         string $orderReference = 'orderReference',
-        int    $proveInvokeCount = 1
-    ): MockObject
-    {
+        int $proveInvokeCount = 1
+    ): MockObject {
         $sessionSettingsMock = $this->createMock(PaymentGatewayOrderSavable::class);
         $sessionSettingsMock->expects($this->exactly($proveInvokeCount))
             ->method('prove')
@@ -285,10 +282,9 @@ class PaymentGatewayTest extends UnitTestCase
 
     private function createPaymentConfigServiceMock(
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
-        int    $isAdyenImmediateCaptureInvokeCount = 1,
-        bool   $isAdyenImmediateCapture = true
-    ): MockObject
-    {
+        int $isAdyenImmediateCaptureInvokeCount = 1,
+        bool $isAdyenImmediateCapture = true
+    ): MockObject {
         $paymentConfigServiceMock = $this->createMock(PaymentConfigService::class);
 
         $paymentConfigServiceMock->expects($this->exactly($isAdyenImmediateCaptureInvokeCount))

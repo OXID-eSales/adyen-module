@@ -26,6 +26,9 @@ class AdyenAPIPayments
     protected string $origin;
     protected string $shopperEmail;
     protected string $shopperIP;
+    protected string $shopperReference;
+    protected string $shopperCountryCode;
+    protected array $lineItems;
 
     public function setReference(string $reference): void
     {
@@ -103,6 +106,21 @@ class AdyenAPIPayments
         $this->shopperIP = $shopperIP;
     }
 
+    public function setShopperReference(string $shopperReference): void
+    {
+        $this->shopperReference = $shopperReference;
+    }
+
+    public function setShopperCountryCode(string $shopperCountryCode): void
+    {
+        $this->shopperCountryCode = $shopperCountryCode;
+    }
+
+    public function setLineItems(array $lineItems): void
+    {
+        $this->lineItems = $lineItems;
+    }
+
     public function getAdyenPaymentsParams(): array
     {
         return [
@@ -128,13 +146,16 @@ class AdyenAPIPayments
             ],
             'shopperEmail' => $this->shopperEmail,
             'shopperIP' => $this->shopperIP,
+            'shopperReference' => $this->shopperReference,
+            'countryCode' => $this->shopperCountryCode,
             'authenticationData' => [
                 'threeDSRequestData' => [
                     'nativeThreeDS' => 'preferred'
                 ]
             ],
             'channel' => 'Web',
-            'origin' => $this->origin
+            'origin' => $this->origin,
+            'lineItems' => $this->lineItems
         ];
     }
 }

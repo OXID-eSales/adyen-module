@@ -7,22 +7,23 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterf
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
-use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use Psr\Log\LoggerInterface;
 
 class JSAPITemplateConfiguration
 {
     private TemplateEngineInterface $templateEngine;
-    private JSAPITemplateConfigurationLineItems $lineItemsService;
+    private LoggerInterface $logger;
+    private JSAPIConfigurationService $configurationService;
 
     public function __construct(
         TemplateEngineInterface $templateEngine,
-        JSAPITemplateConfigurationLineItems $lineItemsService
+        JSAPIConfigurationService $configurationService,
+        LoggerInterface $logger
     ) {
         $this->templateEngine = $templateEngine;
-        $this->lineItemsService = $lineItemsService;
+        $this->logger = $logger;
+        $this->configurationService = $configurationService;
     }
 
     public function getConfiguration(
@@ -42,7 +43,7 @@ class JSAPITemplateConfiguration
         ?Payment $payment
     ): array {
         return [
-            'configFields' => $this->getDefaultConfigFieldsJsonFormatted(
+            'configFields' => $this->getConfigFieldsJsonFormatted(
                 $viewConfig,
                 $controller,
                 $payment
@@ -58,44 +59,32 @@ class JSAPITemplateConfiguration
         ];
     }
 
-    private function getDefaultConfigFieldsJsonFormatted(
+    private function getConfigFieldsJsonFormatted(
         ViewConfig $viewConfig,
         FrontendController $controller,
         ?Payment $payment
     ): string {
-        $configFieldsArray = [
-            'environment' => $viewConfig->getAdyenOperationMode(),
-            'clientKey' => $viewConfig->getAdyenClientKey(),
-            'analytics' => [
-                'enabled' => $viewConfig->isAdyenLoggingActive(),
-            ],
-            'locale' => $viewConfig->getAdyenShopperLocale(),
-            'deliveryAddress' => $this->getAdyenDeliveryAddress($controller),
-            'shopperName' => $this->getAdyenShopperName($controller),
-            'shopperEmail' => $this->getAdyenShopperEmail($controller),
-            'shopperReference' => $this->getAdyenShopperReference($controller),
-            'shopperIP' => $viewConfig->getRemoteAddress(),
-        ];
-
-        $configFieldsArray = array_merge(
-            $configFieldsArray,
-            $this->getPaymentPageConfigFields(
-                $viewConfig
-            ),
-            $this->getOrderPageConfigFields(
-                $viewConfig,
-                $payment
-            )
-        );
+        $configFieldsArray = $this->configurationService->getConfigFieldsAsArray($viewConfig, $controller, $payment);
 
         $configFieldsJson = json_encode($configFieldsArray);
+        if (false === $configFieldsJson) {
+            $this->logger->error(
+                sprintf(
+                    '%s::getDefaultConfigFieldsJsonFormatted error during json_encode `%s`',
+                    self::class,
+                    var_export($configFieldsArray, true)
+                )
+            );
+
+            return '';
+        }
 
         // replace leading and ending curly bracket, because, we need to join
         // js function in the resulting js object in adyen_assets_configuration.tpl
-        return preg_replace(
+        $configFieldsJsonResult = preg_replace(
             [
-                '/^\{/',
-                '/\}$/',
+                '/^{/',
+                '/}$/',
                 '/"([^"]+)":/'
             ],
             [
@@ -105,80 +94,20 @@ class JSAPITemplateConfiguration
             ],
             $configFieldsJson
         );
-    }
 
-    private function getPaymentPageConfigFields(
-        ViewConfig $viewConfig
-    ): array {
-        return ($viewConfig->getTopActiveClassName() === 'payment') ?
-            [
-                'paymentMethodsResponse' => $viewConfig->getAdyenPaymentMethods(),
-            ] :
-            [];
-    }
+        if (is_null($configFieldsJsonResult)) {
+            $this->logger->error(
+                sprintf(
+                    '%s::getDefaultConfigFieldsJsonFormatted error during preg_replace `%s`',
+                    self::class,
+                    $configFieldsJson
+                )
+            );
 
-    private function getOrderPageConfigFields(
-        ViewConfig $viewConfig,
-        ?Payment $payment
-    ): array {
-        if ($viewConfig->getTopActiveClassName() === 'order') {
-            $configFields = [
-                'countryCode' => $viewConfig->getAdyenCountryIso(),
-                'amount' => [
-                    'currency' => $viewConfig->getAdyenAmountCurrency(),
-                    'value' => $viewConfig->getAdyenAmountValue(),
-                ],
-                'lineItems' => $this->lineItemsService->getLineItems(),
-            ];
-
-            if ($payment && $payment->getId() === $viewConfig->getAdyenPaymentPayPalId()) {
-                $configFields['merchantId'] = $viewConfig->getAdyenPayPalMerchantId();
-            }
-
-            return $configFields;
+            return '';
         }
 
-        return [];
-    }
-
-    private function getAdyenShopperName(FrontendController $controller): array
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-        /** @var Address|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
-        $dataObj = $address ?: $user;
-
-        return [
-            'firstName' => $dataObj->getAdyenStringData('oxfname'),
-            'lastName' => $dataObj->getAdyenStringData('oxlname')
-        ];
-    }
-
-    private function getAdyenDeliveryAddress(FrontendController $controller): array
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-        /** @var Address|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
-        $dataObj = $address ?: $user;
-
-        /** @var Country $country */
-        $country = oxNew(Country::class);
-        $country->load($dataObj->getAdyenStringData('oxcountryid'));
-        /** @var null|string $countryIso */
-        $countryIso = $country->getAdyenStringData('oxisoalpha2');
-
-        return [
-            'city' => $dataObj->getAdyenStringData('oxcity'),
-            'country' => $countryIso,
-            'houseNumberOrName' => $dataObj->getAdyenStringData('oxstreetnr'),
-            'postalCode' => $dataObj->getAdyenStringData('oxzip'),
-            'stateOrProvince' => $dataObj->getAdyenStringData('oxstateid'),
-            'street' => $dataObj->getAdyenStringData('oxstreet')
-        ];
+        return $configFieldsJsonResult;
     }
 
     private function paymentMethodsConfigurationNeedsCardField(
@@ -190,21 +119,5 @@ class JSAPITemplateConfiguration
             && $payment instanceof Payment
             && $payment->showInPaymentCtrl()
             && $payment->getId() === $viewConfig->getAdyenPaymentCreditCardId();
-    }
-
-    private function getAdyenShopperEmail(FrontendController $controller): string
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-
-        return $user->getAdyenStringData('oxusername');
-    }
-
-    private function getAdyenShopperReference(FrontendController $controller): string
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-
-        return $user->getId();
     }
 }

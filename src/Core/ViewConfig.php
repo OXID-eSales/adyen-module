@@ -223,7 +223,8 @@ class ViewConfig extends ViewConfig_parent
             ->getConfiguration($this, $oView, $payment);
     }
 
-    public function getTemplateCheckoutCreateId(string $paymentId): string {
+    public function getTemplateCheckoutCreateId(string $paymentId): string
+    {
         return $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
             ->getCreateId($paymentId);
     }

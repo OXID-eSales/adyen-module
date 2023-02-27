@@ -13,7 +13,9 @@ use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
+use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
+use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Model\Payment as PaymentModel;
 
@@ -31,15 +33,21 @@ class Payment extends PaymentBase
     private ModuleSettings $moduleSettings;
 
     private AdyenAPIResponsePayments $APIPayments;
+    private CountryRepository $countryRepository;
+    private AdyenAPILineItemsService $adyenAPILineItemsService;
 
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
-        AdyenAPIResponsePayments $APIPayments
+        AdyenAPIResponsePayments $APIPayments,
+        CountryRepository $countryRepository,
+        AdyenAPILineItemsService $adyenAPILineItemsService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
+        $this->countryRepository = $countryRepository;
+        $this->adyenAPILineItemsService = $adyenAPILineItemsService;
     }
 
     public function setPaymentResult(array $paymentResult): void
@@ -57,8 +65,13 @@ class Payment extends PaymentBase
      * @param string $reference Unique Order-Reference
      * @param array $paymentState
      */
-    public function collectPayments(float $amount, string $reference, array $paymentState): bool
-    {
+    public function collectPayments(
+        float $amount,
+        string $reference,
+        array $paymentState,
+        User $user,
+        ViewConfig $viewConfig
+    ): bool {
         $result = false;
 
         $payments = oxNew(AdyenAPIPayments::class);
@@ -67,8 +80,11 @@ class Payment extends PaymentBase
         $payments->setPaymentMethod($paymentState['paymentMethod'] ?? []);
         $payments->setOrigin($paymentState['origin'] ?? '');
         $payments->setBrowserInfo($paymentState['browserInfo'] ?? []);
-        $payments->setShopperEmail($paymentState['shopperEmail'] ?? '');
-        $payments->setShopperIP($paymentState['shopperIP'] ?? '');
+        $payments->setShopperEmail($paymentState['shopperEmail'] ?? $user->getAdyenStringData('oxusername'));
+        $payments->setShopperIP($paymentState['shopperIP'] ?? $viewConfig->getRemoteAddress());
+        $payments->setShopperReference($user->getId());
+        $payments->setShopperCountryCode($this->countryRepository->getCountryIso());
+        $payments->setLineItems($this->adyenAPILineItemsService->getLineItems());
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

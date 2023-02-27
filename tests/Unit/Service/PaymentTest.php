@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 class PaymentTest extends TestCase
 {
     use ServiceContainer;
+
     public function testSupportsCurrency()
     {
         $paymentService = $this->getServiceFromContainer(Payment::class);

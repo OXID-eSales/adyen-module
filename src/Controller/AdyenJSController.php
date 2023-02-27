@@ -5,6 +5,8 @@ namespace OxidSolutionCatalysts\Adyen\Controller;
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
@@ -56,7 +58,11 @@ class AdyenJSController extends FrontendController
 
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentService->collectPayments($amount, $orderReference, $postData);
+        /** @var User $user */
+        $user = $this->getUser();
+        /** @var ViewConfig $viewConfig */
+        $viewConfig = $this->getViewConfig();
+        $paymentService->collectPayments($amount, $orderReference, $postData, $user, $viewConfig);
         $payments = $paymentService->getPaymentResult();
 
         $response->setData(

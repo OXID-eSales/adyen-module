@@ -31,38 +31,47 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setBrowserInfo(['browserInfo']);
         $model->setShopperEmail('test@test.de');
         $model->setShopperIP('1.2.3.4');
+        $model->setShopperReference('123456');
+        $model->setShopperCountryCode('DE');
+        $model->setLineItems(['lineItem' => 'test']);
         $model->setOrigin('https://origin.test.de');
 
-        $this->assertSame([
-            'paymentMethod' => ['TestPaymentMethods'],
-            'browserInfo' => ['browserInfo'],
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => '1000',
-            ],
-            'reference' => 'TestReference',
-            'returnUrl' => 'ReturnUrl',
-            'merchantAccount' => 'TestMerchant',
-            'applicationInfo' => [
-                'merchantApplication' => [
-                    'name' => 'TestMerchantApplicationName',
-                    'version' => 'Testv1.0.0'
+        $this->assertSame(
+            [
+                'paymentMethod' => ['TestPaymentMethods'],
+                'browserInfo' => ['browserInfo'],
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => '1000',
                 ],
-                'externalPlatform' => [
-                    'name' => 'TestPlatformName',
-                    'version' => 'TestPlatformVersion',
-                    'integrator' => 'TestPlatformVersion'
-                ]
+                'reference' => 'TestReference',
+                'returnUrl' => 'ReturnUrl',
+                'merchantAccount' => 'TestMerchant',
+                'applicationInfo' => [
+                    'merchantApplication' => [
+                        'name' => 'TestMerchantApplicationName',
+                        'version' => 'Testv1.0.0'
+                    ],
+                    'externalPlatform' => [
+                        'name' => 'TestPlatformName',
+                        'version' => 'TestPlatformVersion',
+                        'integrator' => 'TestPlatformVersion'
+                    ]
+                ],
+                'shopperEmail' => 'test@test.de',
+                'shopperIP' => '1.2.3.4',
+                'shopperReference' => '123456',
+                'countryCode' => 'DE',
+                'authenticationData' => [
+                    'threeDSRequestData' => [
+                        'nativeThreeDS' => 'preferred'
+                    ]
+                ],
+                'channel' => 'Web',
+                'origin' => 'https://origin.test.de',
+                'lineItems' => ['lineItem' => 'test'],
             ],
-            'shopperEmail' => 'test@test.de',
-            'shopperIP' => '1.2.3.4',
-            'authenticationData' => [
-                'threeDSRequestData' => [
-                    'nativeThreeDS' => 'preferred'
-                ]
-            ],
-            'channel' => 'Web',
-            'origin' => 'https://origin.test.de'
-        ], $model->getAdyenPaymentsParams());
+            $model->getAdyenPaymentsParams()
+        );
     }
 }
