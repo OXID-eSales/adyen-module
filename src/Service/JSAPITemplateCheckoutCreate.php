@@ -12,6 +12,7 @@ class JSAPITemplateCheckoutCreate
         Module::PAYMENT_PAYPAL_ID => 'paypal',
         Module::PAYMENT_GOOGLE_PAY_ID => 'googlepay',
         Module::PAYMENT_KLARNA_ID => 'klarna',
+        Module::PAYMENT_TWINT_ID => 'twint',
     ];
 
     public function getCreateId(string $paymentId): string

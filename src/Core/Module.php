@@ -30,6 +30,8 @@ final class Module
 
     public const PAYMENT_KLARNA_ID = 'oscklarna';
 
+    public const PAYMENT_TWINT_ID = 'osctwint';
+
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
     public const ADYEN_CAPTURE_DELAY_MANUAL = 'manual';
@@ -148,6 +150,26 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false
-        ]
+        ],
+        self::PAYMENT_TWINT_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Twint',
+                    'longdesc' => 'Twint',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Twint.'
+                ],
+                'en' => [
+                    'desc' => 'Twint',
+                    'longdesc' => 'Twint',
+                    'longdesc_beta' => 'Pay conveniently with Twint.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+            'supported_currencies' => ['CHF'],
+        ],
     ];
 }

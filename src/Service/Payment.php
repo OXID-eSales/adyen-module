@@ -12,8 +12,10 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
+use OxidSolutionCatalysts\Adyen\Model\Payment as PaymentModel;
 
 /**
  * @extendable-class
@@ -90,5 +92,25 @@ class Payment extends PaymentBase
             $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }
         return $result;
+    }
+
+    public function supportsCurrency(string $currency, string $paymentId): bool
+    {
+        // no supported_currencies field means all currency are supported
+        if (!isset(ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['supported_currencies'])) {
+            return true;
+        }
+
+        return in_array($currency, ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['supported_currencies']);
+    }
+
+    public function filterNonSupportedCurrencies(array &$payments, string $actualCurrency): array
+    {
+        return array_filter(
+            $payments,
+            function (PaymentModel $payment) use ($actualCurrency) {
+                return $this->supportsCurrency($actualCurrency, $payment->getId());
+            }
+        );
     }
 }

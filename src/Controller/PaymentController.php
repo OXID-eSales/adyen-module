@@ -20,6 +20,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
+use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
 
 class PaymentController extends PaymentController_parent
 {
@@ -44,6 +45,9 @@ class PaymentController extends PaymentController_parent
         $userCountryIso = $countryRepository->getCountryIso();
 
         $paymentList = [];
+
+        $paymentService = $this->getServiceFromContainer(PaymentService::class);
+        $paymentListRaw = $paymentService->filterNonSupportedCurrencies($paymentListRaw, $actShopCurrency->name);
 
         $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkConfigHealth();
 
