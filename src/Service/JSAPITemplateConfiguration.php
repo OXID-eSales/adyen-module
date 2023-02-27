@@ -15,10 +15,14 @@ use OxidSolutionCatalysts\Adyen\Model\Payment;
 class JSAPITemplateConfiguration
 {
     private TemplateEngineInterface $templateEngine;
+    private JSAPITemplateConfigurationLineItems $lineItemsService;
 
-    public function __construct(TemplateEngineInterface $templateEngine)
-    {
+    public function __construct(
+        TemplateEngineInterface $templateEngine,
+        JSAPITemplateConfigurationLineItems $lineItemsService
+    ) {
         $this->templateEngine = $templateEngine;
+        $this->lineItemsService = $lineItemsService;
     }
 
     public function getConfiguration(
@@ -69,6 +73,7 @@ class JSAPITemplateConfiguration
             'deliveryAddress' => $this->getAdyenDeliveryAddress($controller),
             'shopperName' => $this->getAdyenShopperName($controller),
             'shopperEmail' => $this->getAdyenShopperEmail($controller),
+            'shopperReference' => $this->getAdyenShopperReference($controller),
             'shopperIP' => $viewConfig->getRemoteAddress(),
         ];
 
@@ -123,6 +128,7 @@ class JSAPITemplateConfiguration
                     'currency' => $viewConfig->getAdyenAmountCurrency(),
                     'value' => $viewConfig->getAdyenAmountValue(),
                 ],
+                'lineItems' => $this->lineItemsService->getLineItems(),
             ];
 
             if ($payment && $payment->getId() === $viewConfig->getAdyenPaymentPayPalId()) {
@@ -190,6 +196,15 @@ class JSAPITemplateConfiguration
     {
         /** @var User $user */
         $user = $controller->getUser();
+
         return $user->getAdyenStringData('oxusername');
+    }
+
+    private function getAdyenShopperReference(FrontendController $controller): string
+    {
+        /** @var User $user */
+        $user = $controller->getUser();
+
+        return $user->getId();
     }
 }

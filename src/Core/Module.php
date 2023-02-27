@@ -28,6 +28,8 @@ final class Module
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
     public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
 
+    public const PAYMENT_KLARNA_ID = 'oscklarna';
+
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
     public const ADYEN_CAPTURE_DELAY_MANUAL = 'manual';
@@ -120,6 +122,25 @@ final class Module
                     'desc' => 'Google Pay',
                     'longdesc' => 'Google Pay',
                     'longdesc_beta' => 'Pay conveniently with Google Pay.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false
+        ],
+        self::PAYMENT_KLARNA_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna',
+                    'longdesc' => 'Klarna',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Klarna.'
+                ],
+                'en' => [
+                    'desc' => 'Klarna',
+                    'longdesc' => 'Klarna',
+                    'longdesc_beta' => 'Pay conveniently with Klarna.'
                 ]
             ],
             'countries' => [],

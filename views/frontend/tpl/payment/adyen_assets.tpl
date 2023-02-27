@@ -64,19 +64,11 @@
             [{if $isLog}]
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
-            [{if $isPaymentPage}]
-                [{foreach key=paymentID from=$oView->getPaymentList() item=paymentObj}]
-                    [{if $paymentObj->showInPaymentCtrl() && $paymentID === $adyenCreditCard}]
-                        const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
-                        cardComponent.paymentIdViewEl = undefined;
-                    [{/if}]
-                [{/foreach}]
+            [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
+                const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
+                cardComponent.paymentIdViewEl = undefined;
             [{elseif $isOrderPage}]
-                [{if $orderPaymentPayPal}]
-                    checkout.create('paypal').mount('#[{$paymentID}]-container');
-                [{elseif $orderPaymentGooglePay}]
-                    checkout.create('googlepay').mount('#[{$paymentID}]-container');
-                [{/if}]
+                checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]').mount('#[{$paymentID}]-container');
             [{/if}]
 
             const makePayment = (paymentRequest = {}) => {

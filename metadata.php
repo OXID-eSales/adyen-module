@@ -259,6 +259,24 @@ $aModule = [
                 Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
         ],
         [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_GOOGLE_PAY_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
             'group' => 'osc_adyen_Languages',
             'name' => 'osc_adyen_Languages',
             'type' => 'aarr',

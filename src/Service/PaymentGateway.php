@@ -5,7 +5,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
-use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidEsales\Eshop\Application\Model\Payment;
 
@@ -15,16 +14,16 @@ class PaymentGateway
 
     private SessionSettings $sessionSettings;
     private PaymentGatewayOrderSavable $gatewayOrderSavable;
-    private ModuleService $moduleService;
+    private PaymentConfigService $paymentConfigService;
 
     public function __construct(
         SessionSettings $sessionSettings,
         PaymentGatewayOrderSavable $gatewayOrderSavable,
-        ModuleService $moduleService
+        PaymentConfigService $paymentConfigService
     ) {
         $this->sessionSettings = $sessionSettings;
         $this->gatewayOrderSavable = $gatewayOrderSavable;
-        $this->moduleService = $moduleService;
+        $this->paymentConfigService = $paymentConfigService;
     }
 
     public function doFinishAdyenPayment(float $amount, eShopOrder $order): bool
@@ -57,7 +56,7 @@ class PaymentGateway
             $order->save();
 
             // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
-            if ($this->getPayment($paymentId)->isAdyenImmediateCapture()) {
+            if ($this->paymentConfigService->isAdyenImmediateCapture($paymentId)) {
                 $order->captureAdyenOrder($amount);
             }
 
@@ -80,7 +79,7 @@ class PaymentGateway
         $this->sessionSettings->setAmountCurrency($amountCurrency);
     }
 
-    private function getPayment(string $paymentId): Payment
+    protected function getPayment(string $paymentId): Payment
     {
         $payment = oxNew(\OxidSolutionCatalysts\Adyen\Model\Payment::class);
         $payment->setId($paymentId);

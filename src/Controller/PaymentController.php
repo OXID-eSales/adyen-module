@@ -159,6 +159,18 @@ class PaymentController extends PaymentController_parent
         return $result;
     }
 
+    public function isAvailablePayment(string $paymentIdToProve): bool
+    {
+        $paymentList = $this->getPaymentList();
+        foreach ($paymentList as $paymentId => $payment) {
+            if ($payment->showInPaymentCtrl() && $paymentId === $paymentIdToProve) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function saveAdyenPaymentInSession(): void
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
