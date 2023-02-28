@@ -241,6 +241,15 @@ $aModule = [
             'value' => ''
         ],
         [
+            'group' => 'osc_adyen_KLARNA',
+            'name' => 'osc_adyen_KlarnaPaymentType',
+            'type' => 'select',
+            'value' => Module::PAYMENT_KLARNA_PAYMENT_TYPE_LATER,
+            'constraints' => Module::PAYMENT_KLARNA_PAYMENT_TYPE_LATER. '|' .
+                Module::PAYMENT_KLARNA_PAYMENT_TYPE_IMMEDIATE . '|' .
+                Module::PAYMENT_KLARNA_PAYMENT_TYPE_OVER_TIME
+        ],
+        [
             'group' => 'osc_adyen_CaptureDelay',
             'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',

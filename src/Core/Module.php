@@ -29,6 +29,9 @@ final class Module
     public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
 
     public const PAYMENT_KLARNA_ID = 'oscklarna';
+    public const PAYMENT_KLARNA_PAYMENT_TYPE_IMMEDIATE = 'klarna_paynow';
+    public const PAYMENT_KLARNA_PAYMENT_TYPE_LATER = 'klarna';
+    public const PAYMENT_KLARNA_PAYMENT_TYPE_OVER_TIME = 'klarna_account';
 
     public const PAYMENT_TWINT_ID = 'osctwint';
 

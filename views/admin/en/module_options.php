@@ -8,11 +8,18 @@
 declare(strict_types=1);
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Model\ModuleOptionsCaptureDelay;
 
 $keyDelayCreditCard = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID;
 $descCreditCard = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['en']['desc'];
 $keyDelayPayPal = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID;
 $descPayPal = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['en']['desc'];
+$keyDelayGooglePay = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_GOOGLE_PAY_ID;
+$descGooglePay = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_GOOGLE_PAY_ID]['descriptions']['de']['desc'];
+$keyDelayKlarna = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_ID;
+$descKlarna = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_KLARNA_ID]['descriptions']['de']['desc'];
+$keyDelayTwint = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_TWINT_ID;
+$descTwint = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_TWINT_ID]['descriptions']['de']['desc'];
 
 $aLang = [
     'charset' => 'UTF-8',
@@ -22,6 +29,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_CaptureDelay' => 'Capture delay for selected Payments',
     'SHOP_MODULE_GROUP_osc_adyen_Languages' => 'Language-Configuration',
     'SHOP_MODULE_GROUP_osc_adyen_Backend' => 'Backend-Options',
+    'SHOP_MODULE_GROUP_osc_adyen_KLARNA' => 'Klarna Settings',
 
     'SHOP_MODULE_osc_adyen_OperationMode' => 'Operation Mode',
     'SHOP_MODULE_osc_adyen_OperationMode_sandbox' => 'Sandbox',
@@ -35,6 +43,11 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
     'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'The Live-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 
+    'SHOP_MODULE_osc_adyen_KlarnaPaymentType' => 'Payment Type',
+    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna' => ' Klarna — Pay later',
+    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna_paynow' => ' Klarna — Pay Now',
+    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna_account' => ' Klarna — Pay Over Time',
+
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'API Key',
     'SHOP_MODULE_osc_adyen_LiveClientKey' => 'Client Key',
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
@@ -43,26 +56,30 @@ $aLang = [
     'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'The Sandbox-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
     'SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Live Endpoint Prefix',
     'HELP_SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'In the live system, a prefix is needed for each merchant. The prefix is defined in Adyen. (check: https://docs.adyen.com/development-resources/live-endpoints)',
-
-    $keyDelayCreditCard => $descCreditCard,
-    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',
-    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Days',
-    $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Immediate',
-    'HELP_' . $keyDelayCreditCard =>
-        'In Adyen you can define the delay of the capture for ' . $descCreditCard . ': "Immediate", "after n days" or "Manual".
-         The Adyen setting must correspond to that of the shop. In the "Manual" case, under Manage Orders > Orders > Tab Adyen,
-         the capture can be initiated.',
-    $keyDelayPayPal => $descPayPal,
-    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manual',
-    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_DAYS => 'n Days',
-    $keyDelayPayPal . '_' . Module::ADYEN_CAPTURE_DELAY_IMMEDIATE => 'Immediate',
-    'HELP_' . $keyDelayPayPal =>
-        'In Adyen you can define the delay of the capture for ' . $descPayPal . ': "Immediate", "after n days" or "Manual".
-         The Adyen setting must correspond to that of the shop. In the "Manual" case, under Manage Orders > Orders > Tab Adyen,
-         the capture can be initiated.',
-
     'SHOP_MODULE_osc_adyen_Languages' => 'Language localizations matching the OXID language',
     'HELP_SHOP_MODULE_osc_adyen_Languages' =>
         'Enter a suitable language and region localization (ISO 639-1 alpha-2 / ISO 3166-1 alpha-2) for each OXID language
         (Master Settings > Languages > Language > Language abbreviation). One line for each setting (e.g. en => en_US)',
 ];
+$moduleOptionsCaptureDelay = new ModuleOptionsCaptureDelay();
+
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayCreditCard, $descCreditCard),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayPayPal, $descPayPal),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayGooglePay, $descGooglePay),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayKlarna, $descKlarna),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayTwint, $descTwint),
+);
