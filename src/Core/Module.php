@@ -49,7 +49,7 @@ final class Module
     public const ADYEN_STATUS_AUTHORISED = 'authorised';
     public const ADYEN_STATUS_CANCELLED = 'cancelled';
     public const ADYEN_STATUS_CAPTURED = 'captured';
-    public const ADYEN_STATUS_CAPTUREFAILED = 'capturefailed';
+    public const ADYEN_STATUS_CAPTURE_FAILED = 'capturefailed';
     public const ADYEN_STATUS_ERROR = 'error';
     public const ADYEN_STATUS_EXPIRED = 'expired';
     public const ADYEN_STATUS_RECEIVED = 'received';
@@ -63,6 +63,11 @@ final class Module
     public const ADYEN_STATUS_REFUNDEDREVERSED = 'refundedreversed';
     public const ADYEN_STATUS_REFUNDSCHEDULED = 'refundscheduled';
     public const ADYEN_STATUS_SENTFORREFUND = 'sentforrefund';
+    public const ADYEN_RETURN_RESULT_CODE_AUTHORISED = 'Authorised';
+    public const ADYEN_RETURN_RESULT_CODE_RECEIVED = 'Received';
+    public const ADYEN_RETURN_RESULT_CODE_CANCELLED = 'Cancelled';
+    public const ADYEN_RETURN_RESULT_CODE_REFUSED = 'Refused';
+    public const ADYEN_RETURN_RESULT_CODE_ERROR = 'Error';
     public const ADYEN_HTMLPARAM_PSPREFERENCE_NAME = 'adyenPspReference';
     public const ADYEN_HTMLPARAM_RESULTCODE_NAME = 'adyenResultCode';
     public const ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME = 'adyenAmountCurrency';

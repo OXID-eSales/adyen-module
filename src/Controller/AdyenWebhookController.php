@@ -51,7 +51,7 @@ class AdyenWebhookController extends WidgetController
                 throw WebhookEventException::hmacValidationFailed();
             }
 
-            $this->sendAccceptedResponse();
+            $this->sendAcceptedResponse();
         } catch (WebhookEventTypeException | \Exception $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
             $this->sendErrorResponse();
@@ -75,7 +75,7 @@ class AdyenWebhookController extends WidgetController
         Registry::getUtils()->showMessageAndExit('');
     }
 
-    private function sendAccceptedResponse(): void
+    private function sendAcceptedResponse(): void
     {
         $response = oxNew(Response::class);
         $response->setData([

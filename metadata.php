@@ -153,6 +153,11 @@ $aModule = [
             'block' => 'email_plain_ordershipped_oxordernr',
             'file' => 'views/frontend/blocks/email/plain/email_plain_ordershipped_oxordernr.tpl'
         ],
+        [
+            'template' => 'page/checkout/order.tpl',
+            'block' => 'checkout_order_address',
+            'file' => 'views/frontend/blocks/page/checkout/order_checkout_order_address.tpl'
+        ],
         //admin
         [
             'template' => 'module_config.tpl',

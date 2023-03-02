@@ -18,6 +18,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Model\Payment as PaymentModel;
+use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 
 /**
  * @extendable-class
@@ -35,19 +36,22 @@ class Payment extends PaymentBase
     private AdyenAPIResponsePayments $APIPayments;
     private CountryRepository $countryRepository;
     private AdyenAPILineItemsService $adyenAPILineItemsService;
+    private SessionSettings $sessionSettings;
 
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments,
         CountryRepository $countryRepository,
-        AdyenAPILineItemsService $adyenAPILineItemsService
+        AdyenAPILineItemsService $adyenAPILineItemsService,
+        SessionSettings $sessionSettings
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
         $this->countryRepository = $countryRepository;
         $this->adyenAPILineItemsService = $adyenAPILineItemsService;
+        $this->sessionSettings = $sessionSettings;
     }
 
     public function setPaymentResult(array $paymentResult): void
@@ -90,7 +94,15 @@ class Payment extends PaymentBase
             $this->context->getActiveCurrencyDecimals()
         ));
         $payments->setMerchantAccount($this->moduleSettings->getMerchantAccount());
-        $payments->setReturnUrl($this->context->getPaymentReturnUrl());
+        $payments->setReturnUrl(
+            $this->context->getPaymentReturnUrl(
+                $viewConfig->getSessionChallengeToken(),
+                oxNew(OrderController::class)->getDeliveryAddressMD5(),
+                $this->sessionSettings->getPspReference(),
+                $this->sessionSettings->getResultCode(),
+                $this->sessionSettings->getAmountCurrency()
+            )
+        );
         $payments->setMerchantApplicationName(Module::MODULE_NAME_EN);
         $payments->setMerchantApplicationVersion(Module::MODULE_VERSION_FULL);
         $payments->setPlatformName(Module::MODULE_PLATFORM_NAME);
