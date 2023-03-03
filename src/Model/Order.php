@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
@@ -109,10 +110,13 @@ class Order extends Order_parent
 
     public function isAdyenCapturePossible(): bool
     {
-        return (
-            $this->isAdyenOrder() &&
-            $this->getPossibleCaptureAmount() > 0.0
+        $capturePossibleService = $this->getServiceFromContainer(
+            OrderIsAdyenCapturePossibleService::class
         );
+
+        return $this->isAdyenOrder()
+            && $this->getPossibleCaptureAmount() > 0.0
+            && $capturePossibleService->isAdyenCapturePossible($this->getId());
     }
 
     public function isAdyenManualCapture(): bool
@@ -124,6 +128,7 @@ class Order extends Order_parent
             $payment->load($this->getAdyenStringData('oxpaymenttype'));
             $result = $payment->isAdyenManualCapture();
         }
+
         return $result;
     }
 

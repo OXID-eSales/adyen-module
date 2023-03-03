@@ -5,6 +5,7 @@ namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\OrderReturnService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGatewayOrderSavable;
@@ -48,7 +49,6 @@ class PaymentGatewayTest extends UnitTestCase
             $paymentId,
             $this->pspReference,
             $this->resultCode,
-            $this->amountCurrency,
             $this->orderReference
         );
 
@@ -79,7 +79,8 @@ class PaymentGatewayTest extends UnitTestCase
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $paymentConfigServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class)
         );
 
         /** @var Order $orderMock */
@@ -97,7 +98,6 @@ class PaymentGatewayTest extends UnitTestCase
             $paymentId,
             $this->pspReference,
             $this->resultCode,
-            $this->amountCurrency,
             $this->orderReference
         );
 
@@ -129,7 +129,8 @@ class PaymentGatewayTest extends UnitTestCase
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $paymentConfigServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class)
         );
 
         /** @var Order $orderMock */
@@ -176,7 +177,8 @@ class PaymentGatewayTest extends UnitTestCase
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $paymentConfigServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class)
         );
 
         /** @var Order $orderMock */
@@ -207,6 +209,13 @@ class PaymentGatewayTest extends UnitTestCase
             ->method('setAdyenPSPReference')
             ->with($pspReference);
 
+        $orderCurrency = new \stdClass();
+        $orderCurrency->name = 'EUR';
+
+        $order->expects($this->once())
+            ->method('getOrderCurrency')
+            ->willReturn($orderCurrency);
+
         $order->expects($this->exactly($saveInvokedCount))
             ->method('setAdyenHistoryEntry')
             ->with(
@@ -233,7 +242,6 @@ class PaymentGatewayTest extends UnitTestCase
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
         string $pspReference = 'pspReference',
         string $resultCode = 'resultCode',
-        string $amountCurrency = 'amountCurrency',
         string $orderReference = 'orderReference'
     ): MockObject {
         $sessionSettingsMock = $this->createMock(SessionSettings::class);
@@ -252,10 +260,6 @@ class PaymentGatewayTest extends UnitTestCase
         $sessionSettingsMock->expects($this->once())
             ->method('getResultCode')
             ->willReturn($resultCode);
-
-        $sessionSettingsMock->expects($this->once())
-            ->method('getAmountCurrency')
-            ->willReturn($amountCurrency);
 
         $sessionSettingsMock->expects($this->once())
             ->method('getOrderReference')
