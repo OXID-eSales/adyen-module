@@ -40,15 +40,7 @@
             });
         [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
             [{assign var="isOrderPage" value=true}]
-            [{assign var="orderPaymentPayPal" value=false}]
-            [{assign var="orderPaymentGooglePay" value=false}]
             [{assign var="paymentID" value=$payment->getId()}]
-            [{if $paymentID === $adyenPayPal}]
-                [{assign var="orderPaymentPayPal" value=true}]
-            [{/if}]
-            [{if $paymentID === $adyenGooglePay}]
-                [{assign var="orderPaymentGooglePay" value=true}]
-            [{/if}]
             submitForm = document.getElementById('orderConfirmAgbBottom');
         [{/if}]
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');

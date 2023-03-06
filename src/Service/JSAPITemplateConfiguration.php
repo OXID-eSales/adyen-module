@@ -7,6 +7,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterf
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use Psr\Log\LoggerInterface;
 
@@ -17,19 +18,20 @@ class JSAPITemplateConfiguration
     private JSAPIConfigurationService $configurationService;
 
     public function __construct(
-        TemplateEngineInterface $templateEngine,
+        TemplateEngineInterface   $templateEngine,
         JSAPIConfigurationService $configurationService,
-        LoggerInterface $logger
-    ) {
+        LoggerInterface           $logger
+    )
+    {
         $this->templateEngine = $templateEngine;
         $this->logger = $logger;
         $this->configurationService = $configurationService;
     }
 
     public function getConfiguration(
-        ViewConfig $viewConfig,
+        ViewConfig         $viewConfig,
         FrontendController $controller,
-        ?Payment $payment
+        ?Payment           $payment
     ): string {
         return $this->templateEngine->render(
             'modules/osc/adyen/payment/adyen_assets_configuration.tpl',
@@ -38,31 +40,41 @@ class JSAPITemplateConfiguration
     }
 
     private function getViewData(
-        ViewConfig $viewConfig,
+        ViewConfig         $viewConfig,
         FrontendController $controller,
-        ?Payment $payment
+        ?Payment           $payment
     ): array {
         return [
-            'configFields' => $this->getConfigFieldsJsonFormatted(
-                $viewConfig,
-                $controller,
-                $payment
-            ),
+            'configFields' => $this->getConfigFieldsJsonFormatted($viewConfig, $controller, $payment),
             'isLog' => $viewConfig->isAdyenLoggingActive(),
             'isPaymentPage' => $controller instanceof PaymentController,
             'isOrderPage' => $controller instanceof OrderController,
+            'orderPaymentPayPal' => $controller instanceof OrderController
+                && $payment->getId() === Module::PAYMENT_PAYPAL_ID,
+            'orderPaymentGooglePay' => $controller instanceof OrderController
+                && $payment->getId() === Module::PAYMENT_GOOGLE_PAY_ID,
             'paymentConfigNeedsCard' => $this->paymentMethodsConfigurationNeedsCardField(
                 $controller,
                 $viewConfig,
                 $payment
             ),
+            'googlePayConfigurationJson' => json_encode(
+                [
+                    'amount' => [
+                        'currency' => $viewConfig->getAdyenAmountCurrency(),
+                        'value' => $viewConfig->getAdyenAmountValue(),
+                    ],
+                    'countryCode' => $viewConfig->getAdyenCountryIso(),
+                    'environment' => $viewConfig->getAdyenOperationMode(),
+                ],
+            ),
         ];
     }
 
     private function getConfigFieldsJsonFormatted(
-        ViewConfig $viewConfig,
+        ViewConfig         $viewConfig,
         FrontendController $controller,
-        ?Payment $payment
+        ?Payment           $payment
     ): string {
         $configFieldsArray = $this->configurationService->getConfigFieldsAsArray($viewConfig, $controller, $payment);
 
@@ -112,8 +124,8 @@ class JSAPITemplateConfiguration
 
     private function paymentMethodsConfigurationNeedsCardField(
         FrontendController $controller,
-        ViewConfig $viewConfig,
-        ?Payment $payment
+        ViewConfig         $viewConfig,
+        ?Payment           $payment
     ): bool {
         return $controller instanceof PaymentController
             && $payment instanceof Payment

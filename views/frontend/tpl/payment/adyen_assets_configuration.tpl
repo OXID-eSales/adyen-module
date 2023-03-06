@@ -78,7 +78,7 @@ const configuration = {
                 hasHolderName: true,
                 holderNameRequired: true,
                 hideCVC: false
-            }
+            },
         [{elseif $isOrderPage && $orderPaymentPayPal}]
             paypal: {
                 intent: "authorize",
@@ -94,6 +94,8 @@ const configuration = {
                 blockPayPalCreditButton: true,
                 blockPayPalPayLaterButton: true
             }
+        [{elseif $isOrderPage && $orderPaymentGooglePay}]
+            googlepay: [{$googlePayConfigurationJson}],
         [{/if}]
     }
 };

@@ -35,8 +35,13 @@ class ModuleSettings
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
+    public const KLARNA_PAYMENT_TYPE = 'osc_adyen_KlarnaPaymentType';
+
     public const OPERATION_MODE_SANDBOX = 'test';
     public const OPERATION_MODE_LIVE = 'live';
+
+    public const OPERATION_MODE_GOOGLE_PAY_SANDBOX = 'TEST';
+    public const OPERATION_MODE_GOOGLE_PAY_PRODUCTION = 'PRODUCTION';
 
     public const OPERATION_MODE_VALUES = [
         self::OPERATION_MODE_SANDBOX,
@@ -75,6 +80,12 @@ class ModuleSettings
         return (!empty($value) && in_array($value, self::OPERATION_MODE_VALUES)) ?
             $value :
             self::OPERATION_MODE_SANDBOX;
+    }
+
+    public function getGooglePayOperationMode(): string
+    {
+        return $this->getOperationMode() === self::OPERATION_MODE_LIVE ?
+            self::OPERATION_MODE_GOOGLE_PAY_PRODUCTION : self::OPERATION_MODE_GOOGLE_PAY_SANDBOX;
     }
 
     public function getEndPointUrlPrefix(): string
@@ -161,6 +172,11 @@ class ModuleSettings
     public function getActivePayments(): array
     {
         return (array)$this->getSettingValue(self::ACTIVE_PAYMENTS);
+    }
+
+    public function getKlarnaPaymentType(): string
+    {
+        return $this->getSettingValue(self::KLARNA_PAYMENT_TYPE);
     }
 
     private function getCaptureDelay(string $paymentId): string

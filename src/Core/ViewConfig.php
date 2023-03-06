@@ -12,6 +12,7 @@ use Exception;
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPITransactionInfoService;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateCheckoutCreate;
 use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateConfiguration;
@@ -81,6 +82,11 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenOperationMode(): string
     {
         return $this->moduleSettings->getOperationMode();
+    }
+
+    public function getGooglePayOperationMode(): string
+    {
+        return $this->moduleSettings->getGooglePayOperationMode();
     }
 
     public function isAdyenLoggingActive(): bool
@@ -227,5 +233,11 @@ class ViewConfig extends ViewConfig_parent
     {
         return $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
             ->getCreateId($paymentId);
+    }
+
+    public function getGooglePayTransactionInfo(): string
+    {
+        return $this->getServiceFromContainer(AdyenAPITransactionInfoService::class)
+            ->getTransactionJson();
     }
 }
