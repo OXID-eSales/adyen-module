@@ -6,7 +6,7 @@
       integrity="[{$oViewConf->getAdyenIntegrityCSS()}]"
       crossorigin="anonymous">
 [{if $payment->oxpayments__oxid->value == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_GOOGLE_PAY_ID')}]
-    [{include file="modules/osc/adyen/payment/googlepay/checkout.tpl"}]
+    <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 [{/if}]
 [{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
 [{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]

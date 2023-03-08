@@ -59,8 +59,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
 
     private function createLoggerMock(
         int $errorInvokeAmount
-    ): LoggerInterface
-    {
+    ): LoggerInterface {
         $loggerMock = $this->createMock(LoggerInterface::class);
         $loggerMock->expects($this->exactly($errorInvokeAmount))
             ->method('error');
@@ -70,8 +69,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
     private function createSessionMock(
         float $grossTotalPrice,
         string $currencyIso
-    ): Session
-    {
+    ): Session {
         $priceMock = $this->createMock(Price::class);
         $priceMock->expects($this->once())
             ->method('getBruttoPrice')

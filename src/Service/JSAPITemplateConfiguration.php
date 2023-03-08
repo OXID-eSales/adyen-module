@@ -16,22 +16,24 @@ class JSAPITemplateConfiguration
     private TemplateEngineInterface $templateEngine;
     private LoggerInterface $logger;
     private JSAPIConfigurationService $configurationService;
+    private AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService;
 
     public function __construct(
-        TemplateEngineInterface   $templateEngine,
+        TemplateEngineInterface $templateEngine,
         JSAPIConfigurationService $configurationService,
-        LoggerInterface           $logger
-    )
-    {
+        AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService,
+        LoggerInterface $logger
+    ) {
         $this->templateEngine = $templateEngine;
         $this->logger = $logger;
         $this->configurationService = $configurationService;
+        $this->adyenAPIResponsePaymentMethodsService = $adyenAPIResponsePaymentMethodsService;
     }
 
     public function getConfiguration(
-        ViewConfig         $viewConfig,
+        ViewConfig $viewConfig,
         FrontendController $controller,
-        ?Payment           $payment
+        ?Payment $payment
     ): string {
         return $this->templateEngine->render(
             'modules/osc/adyen/payment/adyen_assets_configuration.tpl',
@@ -40,19 +42,22 @@ class JSAPITemplateConfiguration
     }
 
     private function getViewData(
-        ViewConfig         $viewConfig,
+        ViewConfig $viewConfig,
         FrontendController $controller,
-        ?Payment           $payment
+        ?Payment $payment
     ): array {
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
         return [
             'configFields' => $this->getConfigFieldsJsonFormatted($viewConfig, $controller, $payment),
             'isLog' => $viewConfig->isAdyenLoggingActive(),
             'isPaymentPage' => $controller instanceof PaymentController,
             'isOrderPage' => $controller instanceof OrderController,
             'orderPaymentPayPal' => $controller instanceof OrderController
-                && $payment->getId() === Module::PAYMENT_PAYPAL_ID,
+                && $paymentId === Module::PAYMENT_PAYPAL_ID,
             'orderPaymentGooglePay' => $controller instanceof OrderController
-                && $payment->getId() === Module::PAYMENT_GOOGLE_PAY_ID,
+                && $paymentId === Module::PAYMENT_GOOGLE_PAY_ID,
+            'orderPaymentApplePay' => $controller instanceof OrderController
+                && $paymentId === Module::PAYMENT_APPLE_PAY_ID,
             'paymentConfigNeedsCard' => $this->paymentMethodsConfigurationNeedsCardField(
                 $controller,
                 $viewConfig,
@@ -66,15 +71,26 @@ class JSAPITemplateConfiguration
                     ],
                     'countryCode' => $viewConfig->getAdyenCountryIso(),
                     'environment' => $viewConfig->getAdyenOperationMode(),
+                    'configuration' => $this->adyenAPIResponsePaymentMethodsService->getGooglePayConfiguration()
+                ],
+            ),
+            'applePayConfigurationJson' => json_encode(
+                [
+                    'amount' => [
+                        'currency' => $viewConfig->getAdyenAmountCurrency(),
+                        'value' => $viewConfig->getAdyenAmountValue(),
+                    ],
+                    'countryCode' => $viewConfig->getAdyenCountryIso(),
+                    'configuration' => $this->adyenAPIResponsePaymentMethodsService->getApplePayConfiguration(),
                 ],
             ),
         ];
     }
 
     private function getConfigFieldsJsonFormatted(
-        ViewConfig         $viewConfig,
+        ViewConfig $viewConfig,
         FrontendController $controller,
-        ?Payment           $payment
+        ?Payment $payment
     ): string {
         $configFieldsArray = $this->configurationService->getConfigFieldsAsArray($viewConfig, $controller, $payment);
 
@@ -124,8 +140,8 @@ class JSAPITemplateConfiguration
 
     private function paymentMethodsConfigurationNeedsCardField(
         FrontendController $controller,
-        ViewConfig         $viewConfig,
-        ?Payment           $payment
+        ViewConfig $viewConfig,
+        ?Payment $payment
     ): bool {
         return $controller instanceof PaymentController
             && $payment instanceof Payment

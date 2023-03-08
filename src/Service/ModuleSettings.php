@@ -25,12 +25,14 @@ class ModuleSettings
     public const SANDBOX_HMAC_SIGNATURE = 'osc_adyen_SandboxHmacSignature';
     public const SANDBOX_MERCHANT_ACCOUNT = 'osc_adyen_SandboxMerchantAccount';
     public const SANDBOX_PAYPAL_MERCHANT_ID = 'osc_adyen_SandboxPayPalMerchantId';
+    public const SANDBOX_GOOGLE_PAY_MERCHANT_ID = 'osc_adyen_SandboxGooglePayMerchantId';
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
     public const LIVE_ENDPOINT_PREFIX = 'osc_adyen_LiveEndpointPrefix';
     public const LIVE_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
+    public const LIVE_GOOGLE_PAY_MERCHANT_ID = 'osc_adyen_LiveGooglePayMerchantId';
     public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
@@ -142,6 +144,14 @@ class ModuleSettings
         return (string)$settingValue;
     }
 
+    public function getGooglePayMerchantId(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_GOOGLE_PAY_MERCHANT_ID : self::LIVE_GOOGLE_PAY_MERCHANT_ID);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
+    }
+
     public function isManualCapture(string $paymentId): bool
     {
         return $this->getCaptureDelay($paymentId) === Module::ADYEN_CAPTURE_DELAY_MANUAL;
@@ -176,7 +186,9 @@ class ModuleSettings
 
     public function getKlarnaPaymentType(): string
     {
-        return $this->getSettingValue(self::KLARNA_PAYMENT_TYPE);
+        /** @var null|string $klarnaPaymentType */
+        $klarnaPaymentType = $this->getSettingValue(self::KLARNA_PAYMENT_TYPE);
+        return $klarnaPaymentType ?? '';
     }
 
     private function getCaptureDelay(string $paymentId): string

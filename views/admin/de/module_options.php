@@ -41,6 +41,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxHmacSignature' => 'HMAC Code (Schlüssel-Hash-Nachrichtenauthentifizierungscode)',
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
+    'SHOP_MODULE_osc_adyen_SandboxGooglePayMerchantId' => 'Google Pay Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_SandboxGooglePayMerchantId' => 'Die Live-"Google Pay Merchant Id" wird nur benötigt, wenn Sie Google Pay über Adyen nutzen wollen',
     'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'Die Live-"PayPal Merchant Id" wird nur benötigt, wenn Sie PayPal über Adyen nutzen wollen',
 
     'SHOP_MODULE_osc_adyen_LiveAPIKey' => 'API Schlüssel',
@@ -48,6 +50,7 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (Schlüssel-Hash-Nachrichtenauthentifizierungscode)',
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
+    'SHOP_MODULE_osc_adyen_LiveGooglePayMerchantId' => 'Google Pay Merchant Id',
 
     'SHOP_MODULE_osc_adyen_KlarnaPaymentType' => 'Payment Typ',
     'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna' => ' Klarna — Pay later',

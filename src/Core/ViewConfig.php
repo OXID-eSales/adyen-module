@@ -29,6 +29,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) is too high, hard to refactor
+ */
 class ViewConfig extends ViewConfig_parent
 {
     use Json;

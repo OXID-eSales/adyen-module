@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyFields) is too high, hard to refactor
+ */
 class AdyenAPIPayments
 {
     protected string $reference;

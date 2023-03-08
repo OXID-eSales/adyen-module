@@ -12,6 +12,7 @@ class JSAPITemplateCheckoutCreate
         Module::PAYMENT_PAYPAL_ID => 'paypal',
         Module::PAYMENT_GOOGLE_PAY_ID => 'googlepay',
         Module::PAYMENT_TWINT_ID => 'twint',
+        Module::PAYMENT_APPLE_PAY_ID => 'applepay',
     ];
 
     private ModuleSettings $moduleSettings;

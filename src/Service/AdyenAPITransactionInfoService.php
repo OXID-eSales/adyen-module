@@ -35,7 +35,7 @@ class AdyenAPITransactionInfoService
             'totalPrice' => $grossTotalPrice,
         ];
 
-        $json = json_encode($transactionItem, true);
+        $json = json_encode($transactionItem);
 
         if ($json === false) {
             $this->logger->error(

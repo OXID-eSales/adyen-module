@@ -35,6 +35,8 @@ final class Module
 
     public const PAYMENT_TWINT_ID = 'osctwint';
 
+    public const PAYMENT_APPLE_PAY_ID = 'oscapplepay';
+
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
     public const ADYEN_CAPTURE_DELAY_MANUAL = 'manual';
@@ -178,6 +180,25 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'supported_currencies' => ['CHF'],
+        ],
+        self::PAYMENT_APPLE_PAY_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Apple Pay',
+                    'longdesc' => 'Apple Pay',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Apple Pay.'
+                ],
+                'en' => [
+                    'desc' => 'Apple Pay',
+                    'longdesc' => 'Apple Pay',
+                    'longdesc_beta' => 'Pay conveniently with Apple Pay.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
         ],
     ];
 }

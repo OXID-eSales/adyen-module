@@ -89,8 +89,6 @@ $aModule = [
         'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
         // adyen js api
         'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
-        // google pay checkout template
-        'modules/osc/adyen/payment/googlepay/checkout.tpl' => 'osc/adyen/views/frontend/tpl/payment/googlepay/checkout.tpl',
     ],
     'blocks' => [
         [
@@ -210,6 +208,12 @@ $aModule = [
             'value' => ''
         ],
         [
+            'group' => 'osc_adyen_SANDBOX',
+            'name' => 'osc_adyen_SandboxGooglePayMerchantId',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
             'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveAPIKey',
             'type' => 'str',
@@ -242,6 +246,12 @@ $aModule = [
         [
             'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LivePayPalMerchantId',
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LIVEGooglePayMerchantId',
             'type' => 'str',
             'value' => ''
         ],
@@ -293,6 +303,15 @@ $aModule = [
         [
             'group' => 'osc_adyen_CaptureDelay',
             'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_TWINT_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_APPLE_PAY_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .

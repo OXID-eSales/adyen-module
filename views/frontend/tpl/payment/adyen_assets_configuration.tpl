@@ -96,6 +96,8 @@ const configuration = {
             }
         [{elseif $isOrderPage && $orderPaymentGooglePay}]
             googlepay: [{$googlePayConfigurationJson}],
+        [{elseif $isOrderPage && $orderPaymentApplePay}]
+            applepay: [{$applePayConfigurationJson}],
         [{/if}]
     }
 };

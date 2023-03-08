@@ -22,6 +22,7 @@ use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 
 /**
  * @extendable-class
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) is too high, hard to refactor
  */
 class Payment extends PaymentBase
 {

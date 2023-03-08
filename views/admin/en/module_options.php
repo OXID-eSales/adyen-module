@@ -41,6 +41,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_SandboxHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_SandboxMerchantAccount' => 'Merchant Account',
     'SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'PayPal Merchant Id',
+    'SHOP_MODULE_osc_adyen_SandboxGooglePayMerchantId' => 'Google Pay Merchant Id',
+    'HELP_SHOP_MODULE_osc_adyen_SandboxGooglePayMerchantId' => 'The Live-"Google Pay Merchant Id" is only required if you want to use Google Pay via Adyen',
     'HELP_SHOP_MODULE_osc_adyen_SandboxPayPalMerchantId' => 'The Live-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
 
     'SHOP_MODULE_osc_adyen_KlarnaPaymentType' => 'Payment Type',
@@ -53,6 +55,7 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveHmacSignature' => 'HMAC Code (keyed-hash message authentication code)',
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Merchant Account',
     'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
+    'SHOP_MODULE_osc_adyen_LiveGooglePayMerchantId' => 'Google Pay Merchant Id',
     'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'The Sandbox-"PayPal Merchant Id" is only required if you want to use PayPal via Adyen',
     'SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Live Endpoint Prefix',
     'HELP_SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'In the live system, a prefix is needed for each merchant. The prefix is defined in Adyen. (check: https://docs.adyen.com/development-resources/live-endpoints)',

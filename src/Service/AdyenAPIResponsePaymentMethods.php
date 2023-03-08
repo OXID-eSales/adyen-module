@@ -13,12 +13,16 @@ use Exception;
 use Adyen\AdyenException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPaymentMethods;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * @extendable-class
  */
 class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
 {
+    use ServiceContainer;
+
+    public const PAYMENT_TYPE_APPLE = 'applepay';
     /**
      * @throws Exception
      */
@@ -69,5 +73,43 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
     public function deleteAdyenPaymentMethods(): void
     {
         $this->session->deletePaymentMethods();
+    }
+
+    public function getGooglePayConfiguration(): array
+    {
+        $moduleSettingsService = $this->getServiceFromContainer(ModuleSettings::class);
+
+        return [
+            'gatewayMerchantId' => $moduleSettingsService->getMerchantAccount(),
+            'merchantId' => $moduleSettingsService->getGooglePayMerchantId(),
+        ];
+    }
+
+    public function getApplePayConfiguration(): ?array
+    {
+        $paymentMethods = $this->getAdyenPaymentMethods();
+        $applePayPaymentMethod = $this->getPaymentMethodByType(
+            $paymentMethods['paymentMethods'] ?? [],
+            self::PAYMENT_TYPE_APPLE
+        );
+        if (is_array($applePayPaymentMethod)) {
+            return $applePayPaymentMethod['configuration'] ?? null;
+        }
+
+        return null;
+    }
+
+    public function getPaymentMethodByType(array $paymentMethods, string $paymentTypeToFind): ?array
+    {
+        $foundPaymentMethod = current(
+            array_filter(
+                $paymentMethods,
+                function ($paymentMethod) use ($paymentTypeToFind) {
+                    return ($paymentMethod['type'] ?? '') === $paymentTypeToFind;
+                }
+            )
+        );
+
+        return $foundPaymentMethod === false ? null : $foundPaymentMethod;
     }
 }
