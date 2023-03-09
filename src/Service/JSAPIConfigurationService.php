@@ -8,15 +8,19 @@ use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class JSAPIConfigurationService
 {
     private AdyenAPILineItemsService $lineItemsService;
+    private ModuleSettings $moduleSettings;
 
     public function __construct(
-        AdyenAPILineItemsService $lineItemsService
+        AdyenAPILineItemsService $lineItemsService,
+        ModuleSettings $moduleSettings
     ) {
         $this->lineItemsService = $lineItemsService;
+        $this->moduleSettings = $moduleSettings;
     }
 
     public function getConfigFieldsAsArray(
@@ -28,7 +32,7 @@ class JSAPIConfigurationService
             'environment' => $viewConfig->getAdyenOperationMode(),
             'clientKey' => $viewConfig->getAdyenClientKey(),
             'analytics' => [
-                'enabled' => $viewConfig->isAdyenLoggingActive(),
+                'enabled' => $viewConfig->isAdyenAnalyticsActive(),
             ],
             'locale' => $viewConfig->getAdyenShopperLocale(),
             'deliveryAddress' => $this->getAdyenDeliveryAddress($controller),
@@ -67,6 +71,7 @@ class JSAPIConfigurationService
         ViewConfig $viewConfig,
         ?Payment $payment
     ): array {
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
         if ($viewConfig->getTopActiveClassName() === 'order') {
             $configFields = [
                 'countryCode' => $viewConfig->getAdyenCountryIso(),
@@ -74,10 +79,10 @@ class JSAPIConfigurationService
                     'currency' => $viewConfig->getAdyenAmountCurrency(),
                     'value' => $viewConfig->getAdyenAmountValue(),
                 ],
-                'lineItems' => $this->lineItemsService->getLineItems(),
+                'lineItems' => $this->lineItemsService->getLineItems($paymentId),
             ];
 
-            if ($payment && $payment->getId() === $viewConfig->getAdyenPaymentPayPalId()) {
+            if ($paymentId === $viewConfig->getAdyenPaymentPayPalId()) {
                 $configFields['merchantId'] = $viewConfig->getAdyenPayPalMerchantId();
             }
 

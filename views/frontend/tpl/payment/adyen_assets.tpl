@@ -60,7 +60,24 @@
                 const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
                 cardComponent.paymentIdViewEl = undefined;
             [{elseif $isOrderPage}]
-                checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]').mount('#[{$paymentID}]-container');
+                [{if $orderPaymentApplePay}]
+                    const applePayComponent = checkout.create('applepay', configuration);
+                        applePayComponent.isAvailable()
+                            .then(() => {
+                                [{if $isLog}]
+                                    console.log('mount checkout component')
+                                [{/if}]
+                                applePayComponent.mount('#[{$paymentID}]-container');
+                            })
+                            .catch(e => {
+                                [{if $isLog}]
+                                    console.error('Apple Pay not available')
+                                    console.error(e)
+                                [{/if}]
+                            });
+                    [{else}]
+                        checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]', configuration).mount('#[{$paymentID}]-container');
+                [{/if}]
             [{/if}]
 
             const makePayment = (paymentRequest = {}) => {

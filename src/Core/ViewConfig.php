@@ -97,6 +97,11 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->isLoggingActive();
     }
 
+    public function isAdyenAnalyticsActive(): bool
+    {
+        return $this->moduleSettings->isAnalyticsActive();
+    }
+
     public function isAdyenSandboxMode(): bool
     {
         return $this->moduleSettings->isSandBoxMode();

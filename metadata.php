@@ -20,6 +20,7 @@ use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
 use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 /**
  * Metadata version
@@ -166,14 +167,20 @@ $aModule = [
     'settings' => [
         [
             'group'       => 'osc_adyen_API',
-            'name'        => 'osc_adyen_OperationMode',
+            'name'        => ModuleSettings::OPERATION_MODE,
             'type'        => 'select',
             'constraints' => 'sandbox|live',
             'value'       => 'sandbox'
         ],
         [
             'group' => 'osc_adyen_API',
-            'name' => 'osc_adyen_LoggingActive',
+            'name' => ModuleSettings::LOGGING_ACTIVE,
+            'type' => 'bool',
+            'value' => false
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => ModuleSettings::ANALYTICS_ACTIVE,
             'type' => 'bool',
             'value' => false
         ],

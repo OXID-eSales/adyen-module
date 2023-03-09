@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 class JSAPITemplateCheckoutCreateTest extends TestCase
 {
     use ServiceContainer;
+
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPITemplateCheckoutCreate::getCreateId
      */

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\ModuleOptionsCaptureDelay;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 $keyDelayCreditCard = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID;
 $descCreditCard = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_CREDITCARD_ID]['descriptions']['de']['desc'];
@@ -31,10 +32,11 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_Backend' => 'Adminbereich-Einstellungen',
     'SHOP_MODULE_GROUP_osc_adyen_KLARNA' => 'Klarna Einstellungen',
 
-    'SHOP_MODULE_osc_adyen_OperationMode' => 'Betriebsmodus',
+    'SHOP_MODULE_' . ModuleSettings::OPERATION_MODE => 'Betriebsmodus',
     'SHOP_MODULE_osc_adyen_OperationMode_sandbox' => 'Sandbox',
     'SHOP_MODULE_osc_adyen_OperationMode_live' => 'Live',
-    'SHOP_MODULE_osc_adyen_LoggingActive' => 'Protokollierung aktiv?',
+    'SHOP_MODULE_' . ModuleSettings::LOGGING_ACTIVE => 'Protokollierung aktiv?',
+    'SHOP_MODULE_' . ModuleSettings::ANALYTICS_ACTIVE => 'Analytics aktiv?',
 
     'SHOP_MODULE_osc_adyen_SandboxAPIKey' => 'API Schlüssel',
     'SHOP_MODULE_osc_adyen_SandboxClientKey' => 'Client Schlüssel',

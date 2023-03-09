@@ -6,6 +6,7 @@ use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\EshopCommunity\Application\Model\Article;
 use Psr\Log\LoggerInterface;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class AdyenAPILineItemsService
 {
@@ -20,7 +21,7 @@ class AdyenAPILineItemsService
         $this->logger = $logger;
     }
 
-    public function getLineItems(): array
+    public function getLineItems(string $paymentId = Module::PAYMENT_GOOGLE_PAY_ID): array
     {
         $lineItems = [];
         $basketItems = $this->session->getBasket()->getContents();
@@ -28,26 +29,52 @@ class AdyenAPILineItemsService
         foreach ($basketItems as $basketItem) {
             $article = $this->getArticle($basketItem);
 
-            $lineItem = [
-                'quantity' => $basketItem->getAmount(),
-                'description' => $basketItem->getTitle(),
-            ];
-
-            if ($article) {
-                $lineItem = array_merge(
-                    $lineItem,
-                    [
-                        'amountIncludingTax' => $this->getPriceInMinorUnits($article),
-                        'taxPercentage' => $this->getVatInMinorUnits($article),
-                        'id' => $article->getId(),
-                    ]
-                );
-            }
-
-            $lineItems[] = $lineItem;
+            $lineItems[] = $paymentId == Module::PAYMENT_GOOGLE_PAY_ID ?
+                $this->getGooglePayLineItem($article, $basketItem) :
+                $this->getApplePayLineItem($article, $basketItem);
         }
 
         return $lineItems;
+    }
+
+    private function getApplePayLineItem(?Article $article, BasketItem $basketItem): array
+    {
+        $lineItem = [
+            'label' => $basketItem->getTitle(),
+            'type' => 'final',
+        ];
+
+        if ($article) {
+            $lineItem = array_merge(
+                $lineItem,
+                [
+                    'amount' => $article->getPrice($basketItem->getAmount())->getBruttoPrice(),
+                ]
+            );
+        }
+
+        return $lineItem;
+    }
+
+    private function getGooglePayLineItem(?Article $article, BasketItem $basketItem): array
+    {
+        $lineItem = [
+            'quantity' => $basketItem->getAmount(),
+            'description' => $basketItem->getTitle(),
+        ];
+
+        if ($article) {
+            $lineItem = array_merge(
+                $lineItem,
+                [
+                    'amountIncludingTax' => $this->getPriceInMinorUnits($article),
+                    'taxPercentage' => $this->getVatInMinorUnits($article),
+                    'id' => $article->getId(),
+                ]
+            );
+        }
+
+        return $lineItem;
     }
 
     private function getArticle(BasketItem $basketItem): ?Article

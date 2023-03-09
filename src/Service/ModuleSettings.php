@@ -19,6 +19,7 @@ class ModuleSettings
 {
     public const OPERATION_MODE = 'osc_adyen_OperationMode';
     public const LOGGING_ACTIVE = 'osc_adyen_LoggingActive';
+    public const ANALYTICS_ACTIVE = 'osc_adyen_AnalyticsActive';
 
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
@@ -102,6 +103,11 @@ class ModuleSettings
     public function isLoggingActive(): bool
     {
         return (bool) $this->getSettingValue(self::LOGGING_ACTIVE);
+    }
+
+    public function isAnalyticsActive(): bool
+    {
+        return (bool) $this->getSettingValue(self::ANALYTICS_ACTIVE);
     }
 
     public function getAPIKey(): string

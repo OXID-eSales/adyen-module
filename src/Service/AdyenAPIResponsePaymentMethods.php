@@ -54,6 +54,7 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
         } catch (AdyenException | Exception $exception) {
             Registry::getLogger()->error($exception->getMessage());
         }
+
         return $result;
     }
 
@@ -92,6 +93,7 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
             $paymentMethods['paymentMethods'] ?? [],
             self::PAYMENT_TYPE_APPLE
         );
+
         if (is_array($applePayPaymentMethod)) {
             return $applePayPaymentMethod['configuration'] ?? null;
         }
