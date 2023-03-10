@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
-use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 
 /**
  *
@@ -31,7 +31,7 @@ class Payment extends Payment_parent
      */
     public function isAdyenPayment(): bool
     {
-        return Module::isAdyenPayment($this->getId());
+        return $this->getServiceFromContainer(ModuleService::class)->isAdyenPayment($this->getId());
     }
 
     /**
@@ -43,7 +43,7 @@ class Payment extends Payment_parent
     public function showInPaymentCtrl(): bool
     {
         return ($this->isAdyenPayment() &&
-            Module::showInPaymentCtrl($this->getId()) &&
+            $this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
             $this->getAdyenBoolData('oxactive') === true
         );
     }
@@ -57,7 +57,7 @@ class Payment extends Payment_parent
     public function showInOrderCtrl(): bool
     {
         return ($this->isAdyenPayment() &&
-            !Module::showInPaymentCtrl($this->getId()) &&
+            !$this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
             $this->getAdyenBoolData('oxactive') === true
         );
     }
@@ -70,7 +70,7 @@ class Payment extends Payment_parent
      */
     public function isAdyenManualCapture(): bool
     {
-        return (Module::isCaptureDelay($this->getId()) &&
+        return ($this->getServiceFromContainer(ModuleService::class)->isCaptureDelay($this->getId()) &&
             $this->getServiceFromContainer(ModuleSettings::class)
                 ->isManualCapture($this->getId())
         );
@@ -84,7 +84,7 @@ class Payment extends Payment_parent
      */
     public function isAdyenImmediateCapture(): bool
     {
-        return (Module::isCaptureDelay($this->getId()) &&
+        return ($this->getServiceFromContainer(ModuleService::class)->isCaptureDelay($this->getId()) &&
             $this->getServiceFromContainer(ModuleSettings::class)
                 ->isImmediateCapture($this->getId())
         );

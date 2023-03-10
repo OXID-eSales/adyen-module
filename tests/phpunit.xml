@@ -19,6 +19,9 @@
         </testsuite>
     </testsuites>
     <extensions>
+        <extension class="OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension\PhpUnitEnvExtension"/>
+    </extensions>
+    <extensions>
         <extension class="OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension\PhpUnitByPassFinalExtension"/>
     </extensions>
     <filter>

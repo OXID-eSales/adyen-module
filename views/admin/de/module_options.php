@@ -41,6 +41,8 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LiveMerchantAccount' => 'Shopbetreiber Konto',
     'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
     'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'Die Sandbox-"PayPal Merchant Id" wird nur benötigt, wenn Sie PayPal über Adyen nutzen wollen',
+    'SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Live Endpoint Prefix',
+    'HELP_SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Im Live-System wir für jeden Merchant ein Prefix gebraucht. Der Prefix wird in Adyen definiert. (siehe: https://docs.adyen.com/development-resources/live-endpoints)',
 
     $keyDelayCreditCard => $descCreditCard,
     $keyDelayCreditCard . '_' . Module::ADYEN_CAPTURE_DELAY_MANUAL => 'Manuell',

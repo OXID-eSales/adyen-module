@@ -14,11 +14,19 @@
         [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
         [{assign var="isPaymentPage" value=false}]
         [{assign var="isOrderPage" value=false}]
-        let submitForm;
+        let submitForm, submitLink;
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{assign var="isPaymentPage" value=true}]
             submitForm = document.getElementById('payment');
+            submitLink = document.getElementById('orderStep');
             const nextStepEl = document.getElementById('paymentNextStepBottom');
+
+            // prevent submit by clicking 'orderStep'-Link -> remove javascript-href from original template and add own click event
+            submitLink.href = "#";
+            submitLink.addEventListener('click', function () {
+                nextStepEl.click();
+            });
+
             [{* reset the disabled-status of paymentNextStepBottom if payment is changed *}]
             document.getElementsByName('paymentid').forEach(function (e) {
                 e.addEventListener('change', function () {
