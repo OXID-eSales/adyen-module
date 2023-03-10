@@ -171,9 +171,10 @@ final class Event
         }
 
         try {
-            if ($this->hmacSignatureUtil->isValidNotificationHMAC($hmacKey, $this->item)) {
-                $this->isHMACVerified = true;
-            }
+            $this->isHMACVerified = $this->hmacSignatureUtil->isValidNotificationHMAC(
+                $hmacKey,
+                $this->item
+            );
         } catch (AdyenException $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
         }
