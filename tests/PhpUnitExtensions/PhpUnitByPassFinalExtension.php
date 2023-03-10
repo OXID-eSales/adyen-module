@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtension;
+namespace OxidSolutionCatalysts\Adyen\Tests\PhpUnitExtensions;
 
 use DG\BypassFinals;
 use PHPUnit\Runner\BeforeFirstTestHook;
