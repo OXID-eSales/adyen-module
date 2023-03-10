@@ -55,7 +55,7 @@ class PaymentGateway
             );
             $order->save();
 
-            // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
+            // trigger Capture for all Payments with Capture-Delay "immediate"
             if ($this->moduleService->showInPaymentCtrl($paymentId)) {
                 $order->captureAdyenOrder($amount);
             }
