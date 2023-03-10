@@ -215,6 +215,12 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_LIVE',
+            'name' => 'osc_adyen_LiveEndpointPrefix',
+            'type' => 'str',
+            'value' => '[yourprefix]'
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
             'name' => 'osc_adyen_LiveHmacSignature',
             'type' => 'str',
             'value' => ''

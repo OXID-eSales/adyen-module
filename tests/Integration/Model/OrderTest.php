@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Tests\Integration\Traits\Setting;
 
@@ -68,10 +69,11 @@ class OrderTest extends UnitTestCase
      */
     public function testIsAdyenOrder($orderId, $orderData): void
     {
+        $moduleService = oxNew(ModuleService::class);
         $order = oxNew(Order::class);
         $order->load($orderId);
         $isAdyenOrder = (
-            Module::isAdyenPayment($orderData['oxorder__oxpaymenttype']) &&
+            $moduleService->isAdyenPayment($orderData['oxorder__oxpaymenttype']) &&
             $orderData['oxorder__adyenpspreference'] !== ''
         );
         $this->assertSame($isAdyenOrder, $order->isAdyenOrder());
@@ -132,15 +134,11 @@ class OrderTest extends UnitTestCase
             $this->updateModuleSetting(ModuleSettings::CAPTURE_DELAY . $paymentId, $paymentCapture);
         }
 
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Payment $payment */
-        $payment = oxNew(EshopModelPayment::class);
-        $payment->load($orderMock->getAdyenStringData('oxpaymenttype'));
-
         $isAdyenManualCapture = $paymentCapture === $config->getConfigParam(
             ModuleSettings::CAPTURE_DELAY . $paymentId,
             'dummy'
         );
-        $this->assertSame($isAdyenManualCapture, $payment->isAdyenManualCapture());
+        $this->assertSame($isAdyenManualCapture, $orderMock->isAdyenManualCapture());
     }
 
     public function providerTestOrderData(): array

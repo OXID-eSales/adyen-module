@@ -7,6 +7,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
+use Adyen\AdyenException;
 use Adyen\Client;
 use Adyen\Config;
 use Adyen\Environment;
@@ -34,17 +35,21 @@ class AdyenSDKLoader
 
     /**
      * @return Client
+     * @throws AdyenException
      */
     public function getAdyenSDK(): Client
     {
         $adyenConfig = oxNew(Config::class);
         $adyenConfig->set('x-api-key', $this->moduleSettings->getAPIKey());
 
+        $environment = $this->moduleSettings->isSandBoxMode() ?
+            Environment::TEST :
+            Environment::LIVE;
+
         $sdk = oxNew(Client::class, $adyenConfig);
         $sdk->setEnvironment(
-            $this->moduleSettings->isSandBoxMode() ?
-                Environment::TEST :
-                Environment::LIVE
+            $environment,
+            $this->moduleSettings->getEndPointUrlPrefix()
         );
         if ($this->moduleSettings->isLoggingActive()) {
             $sdk->setLogger($this->moduleLogger);
