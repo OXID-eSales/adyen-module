@@ -8,18 +8,18 @@
     "keywords": [],
     "author": "Oxid Soulution Catalysts",
     "devDependencies": {
-        "autoprefixer": "^10.4.12",
-        "grunt": "^1.5.3",
+        "autoprefixer": "^10.4.14",
+        "grunt": "^1.6.1",
         "grunt-contrib-cssmin": "^4.0.0",
         "grunt-contrib-sass": "^2.0.0",
         "grunt-contrib-jshint": "^3.2.0",
-        "grunt-contrib-uglify": "^5.2.1",
+        "grunt-contrib-uglify": "^5.2.2",
         "grunt-contrib-concat": "^2.1.0",
         "@lodder/grunt-postcss": "^3.1.1",
-        "postcss": "^8.4.17",
+        "postcss": "^8.4.21",
         "grunt-sass": "^3.1.0",
         "load-grunt-config": "^4.0.1",
-        "node-sass": "^7.0.3",
+        "node-sass": "^8.0.0",
         "time-grunt": "^2.0.0"
     }
 }
