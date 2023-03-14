@@ -14,8 +14,9 @@ use OxidEsales\Codeception\Page\Checkout\ThankYou;
 use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Dependency\AdyenModuleSettings;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
-use PHPUnit\Util\Xml\Exception;
+use Exception;
 
 abstract class BaseCest
 {
@@ -25,6 +26,8 @@ abstract class BaseCest
 
     public function _before(AcceptanceTester $I): void
     {
+        $adyenModuleSettings = new AdyenModuleSettings();
+        $adyenModuleSettings->saveSettingsFromEnv();
         foreach ($this->_getOXID() as $payment) {
             $I->updateInDatabase(
                 'oxpayments',
@@ -119,15 +122,12 @@ abstract class BaseCest
     }
 
     /**
-     * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function _checkSuccessfulPayment()
+    protected function _checkSuccessfulPayment(): ThankYou
     {
         $this->I->waitForPageLoad();
-        $thankYouPage = new ThankYou($this->I);
-        $orderNumber = $thankYouPage->grabOrderNumber();
-        return $orderNumber;
+        return new ThankYou($this->I);
     }
 
     /**

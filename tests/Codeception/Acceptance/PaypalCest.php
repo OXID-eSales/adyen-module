@@ -14,7 +14,6 @@ final class PaypalCest extends BaseCest
 {
     use OrderHistory;
 
-    protected $orderNumber;
     protected $placeholderPaymentId;
 
     protected AcceptanceTester $user;
@@ -127,6 +126,7 @@ final class PaypalCest extends BaseCest
         $I->switchToPreviousTab();
 
         // Check for the "Thank you" page
-        $this->orderNumber = $this->_checkSuccessfulPayment();
+        $thankYouPage = $this->_checkSuccessfulPayment();
+        $this->orderNumber = $thankYouPage->grabOrderNumber();
     }
 }

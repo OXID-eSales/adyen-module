@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
 use OxidSolutionCatalysts\Adyen\Service\Payment;

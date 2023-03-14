@@ -46,6 +46,7 @@ class OrderController extends OrderController_parent
                 'paymentReturnReason',
                 $translationMapper->mapReturnResultCode($paymentDetail['resultCode'])
             );
+            $this->addTplParam('paymentResultCode', $paymentDetail['resultCode']);
         }
 
         return null;

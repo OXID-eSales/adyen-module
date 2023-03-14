@@ -11,7 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
 use Adyen\AdyenException;
-use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
 
 /**
@@ -20,8 +19,6 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
 class AdyenAPIResponseCancels extends AdyenAPIResponse
 {
     /**
-     * @param AdyenAPICancels $cancelParams
-     * @throws AdyenException
      * @return mixed
      */
     public function setCancel(AdyenAPICancels $cancelParams)
@@ -32,10 +29,10 @@ class AdyenAPIResponseCancels extends AdyenAPIResponse
             $params = $cancelParams->getAdyenCancelParams();
             $result = $service->cancels($params);
             if (!$result) {
-                throw new Exception('payments not found in Adyen-Response');
+                throw $this->getPaymentsNotFoundException();
             }
         } catch (AdyenException | Exception $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
         return $result;
     }

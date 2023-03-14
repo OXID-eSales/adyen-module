@@ -18,7 +18,6 @@ final class UserHistoryCest extends BaseCest
 
 
     protected UserOrderHistory $orderHistoryPage;
-    protected $orderNumber;
     protected $placeholderPaymentId;
 
     protected $placeholder = [

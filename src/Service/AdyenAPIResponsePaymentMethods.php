@@ -52,7 +52,7 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
                 throw new Exception('paymentMethodsData not found in Adyen-Response');
             }
         } catch (AdyenException | Exception $exception) {
-            Registry::getLogger()->error($exception->getMessage());
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
 
         return $result;
