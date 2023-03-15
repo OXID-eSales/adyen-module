@@ -9,12 +9,14 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception;
 
+use Facebook\WebDriver\Remote\RemoteWebElement;
 use OxidEsales\EshopCommunity\Core\FileCache;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\Facts\Facts;
-use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use Codeception\Lib\Actor\Shared\Retry;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use Codeception\Actor;
 
 /**
  * Inherited Methods
@@ -32,11 +34,11 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
  *
  * @SuppressWarnings(PHPMD)
  */
-final class AcceptanceTester extends \Codeception\Actor
+final class AcceptanceTester extends Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    use \Codeception\Lib\Actor\Shared\Retry;
+    use Retry;
 
     use ServiceContainer;
 
@@ -82,4 +84,16 @@ final class AcceptanceTester extends \Codeception\Actor
 
         return $facts->getShopUrl();
     }
+
+    public function waitUntilDisabled(string $elementSelector, int $timeout = 30): void
+    {
+        $this->waitForElementChange(
+            $elementSelector,
+            function (RemoteWebElement $element) {
+                return $element->getAttribute('disabled') === null;
+            },
+            $timeout
+        );
+    }
+
 }

@@ -45,7 +45,7 @@ abstract class BaseCest
             );
         }
 
-        $this->I = $I;
+        $this->_setAcceptance($I);
     }
 
     public function _after(AcceptanceTester $I): void
