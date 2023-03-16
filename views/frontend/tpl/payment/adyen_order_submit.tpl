@@ -1,8 +1,8 @@
 [{assign var="sPaymentID" value=$payment->getId()}]
-[{assign var="templateId" value=$payment->getTemplateId()}]
+[{assign var="containerId" value=$payment->getTemplatePayButtonContainerId()}]
 <div class="pull-right submitButton nextStep">
     [{oxmultilang ident="OSC_ADYEN_BUY_NOW_PAY_WITH"}]
-    <div id="[{$templateId}]-container"
+    <div id="[{$containerId}]"
          data-paymentid="payment_[{$sPaymentID}]"
     ></div>
 </div>

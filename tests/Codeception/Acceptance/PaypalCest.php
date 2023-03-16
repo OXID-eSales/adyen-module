@@ -31,7 +31,7 @@ final class PaypalCest extends BaseCest
 
     protected function _getPaymentId(): string
     {
-        return "payment_" . Module::PAYMENT_PAYPAL_ID;
+        return Module::PAYMENT_PAYPAL_ID;
     }
 
     private function waitForSpinnerDisappearance(): void

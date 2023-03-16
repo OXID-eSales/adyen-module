@@ -79,15 +79,8 @@ class Payment extends Payment_parent
         return $this->paymentConfigService->isAdyenImmediateCapture($this->getId());
     }
 
-    /**
-     * for some payments the id and the template id used in frontend/tpl/payment/adyen_order_submit.tpl:2 differs
-     */
-    public function getTemplateId(): string
+    public function getTemplatePayButtonContainerId(): string
     {
-        if ($this->getId() === CoreModule::PAYMENT_GOOGLE_PAY_ID) {
-            return 'googlepay';
-        }
-
-        return $this->getId();
+        return $this->getId() . '-container';
     }
 }

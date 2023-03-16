@@ -63,7 +63,7 @@ final class KlarnaCest extends BaseCest
 
     protected function _getPaymentId(): string
     {
-        return "payment_" . Module::PAYMENT_KLARNA_ID;
+        return Module::PAYMENT_KLARNA_ID;
     }
 
     private function prepareTest(): void

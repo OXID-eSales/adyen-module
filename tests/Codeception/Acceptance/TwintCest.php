@@ -86,7 +86,7 @@ final class TwintCest extends BaseCest
 
     protected function _getPaymentId(): string
     {
-        return "payment_" . Module::PAYMENT_TWINT_ID;
+        return Module::PAYMENT_TWINT_ID;
     }
 
     private function selectCurrencyCHF(AcceptanceTester $I): void

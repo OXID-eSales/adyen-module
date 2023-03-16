@@ -82,7 +82,7 @@ class JSAPIConfigurationService
                 'lineItems' => $this->lineItemsService->getLineItems($paymentId),
             ];
 
-            if ($paymentId === $viewConfig->getAdyenPaymentPayPalId()) {
+            if ($paymentId === Module::PAYMENT_PAYPAL_ID) {
                 $configFields['merchantId'] = $viewConfig->getAdyenPayPalMerchantId();
             }
 

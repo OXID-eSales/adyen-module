@@ -77,7 +77,7 @@ abstract class BaseCest
      */
     protected function _choosePayment(): Page
     {
-        $label = "//label[@for='" . $this->_getPaymentId() . "']";
+        $label = "//label[@for='payment_" . $this->_getPaymentId() . "']";
 
         $this->I->waitForElement($label);
         $this->I->click($label);

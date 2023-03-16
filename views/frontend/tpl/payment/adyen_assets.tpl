@@ -57,7 +57,7 @@
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
             [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
-                const cardComponent = checkout.create('card').mount('#[{$paymentID}]-container');
+                const cardComponent = checkout.create('card').mount('#[{$payment->getTemplatePayButtonContainerId()}]');
                 cardComponent.paymentIdViewEl = undefined;
             [{elseif $isOrderPage}]
                 [{if $orderPaymentApplePay}]
@@ -67,7 +67,7 @@
                                 [{if $isLog}]
                                     console.log('mount checkout component')
                                 [{/if}]
-                                applePayComponent.mount('#[{$paymentID}]-container');
+                                applePayComponent.mount('#[{$payment->getTemplatePayButtonContainerId()}]');
                             })
                             .catch(e => {
                                 [{if $isLog}]
@@ -76,7 +76,7 @@
                                 [{/if}]
                             });
                     [{else}]
-                        checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]', configuration).mount('#[{$paymentID}]-container');
+                        checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]', configuration).mount('#[{$payment->getTemplatePayButtonContainerId()}]');
                 [{/if}]
             [{/if}]
 
