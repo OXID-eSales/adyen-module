@@ -78,9 +78,4 @@ class Payment extends Payment_parent
     {
         return $this->paymentConfigService->isAdyenImmediateCapture($this->getId());
     }
-
-    public function getTemplatePayButtonContainerId(): string
-    {
-        return $this->getId() . '-container';
-    }
 }

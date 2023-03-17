@@ -248,4 +248,9 @@ class ViewConfig extends ViewConfig_parent
         return $this->getServiceFromContainer(AdyenAPITransactionInfoService::class)
             ->getTransactionJson();
     }
+
+    public function getTemplatePayButtonContainerId(string $paymentId): string
+    {
+        return $paymentId . '-container';
+    }
 }

@@ -18,6 +18,8 @@
         [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
         [{assign var="isPaymentPage" value=false}]
         [{assign var="isOrderPage" value=false}]
+        [{assign var="templateCheckoutCreateId" value=$oViewConf->getTemplateCheckoutCreateId($payment->getId())}]
+        [{assign var="templatePayButtonContainerId" value=$oViewConf->getTemplatePayButtonContainerId($payment->getId())}]
         let submitForm, submitLink;
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{assign var="isPaymentPage" value=true}]
@@ -57,17 +59,17 @@
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
             [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
-                const cardComponent = checkout.create('card').mount('#[{$payment->getTemplatePayButtonContainerId()}]');
+                const cardComponent = checkout.create('[{$templateCheckoutCreateId}]').mount('#[{$templatePayButtonContainerId}]');
                 cardComponent.paymentIdViewEl = undefined;
             [{elseif $isOrderPage}]
                 [{if $orderPaymentApplePay}]
-                    const applePayComponent = checkout.create('applepay', configuration);
+                    const applePayComponent = checkout.create('[{$templateCheckoutCreateId}]', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
                                 [{if $isLog}]
                                     console.log('mount checkout component')
                                 [{/if}]
-                                applePayComponent.mount('#[{$payment->getTemplatePayButtonContainerId()}]');
+                                applePayComponent.mount('#[{$templatePayButtonContainerId}]');
                             })
                             .catch(e => {
                                 [{if $isLog}]
@@ -76,7 +78,7 @@
                                 [{/if}]
                             });
                     [{else}]
-                        checkout.create('[{$oViewConf->getTemplateCheckoutCreateId($paymentID)}]', configuration).mount('#[{$payment->getTemplatePayButtonContainerId()}]');
+                        checkout.create('[{$templateCheckoutCreateId}]', configuration).mount('#[{$templatePayButtonContainerId}]');
                 [{/if}]
             [{/if}]
 

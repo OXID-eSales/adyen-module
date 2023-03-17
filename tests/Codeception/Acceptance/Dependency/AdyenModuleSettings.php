@@ -3,7 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Dependency;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleConfigurationDaoBridgeInterface;
-use OxidEsales\EshopCommunity\modules\osc\adyen\tests\Codeception\EnvLoader;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\EnvLoader;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ModuleConfiguration;

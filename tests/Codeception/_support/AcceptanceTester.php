@@ -95,5 +95,4 @@ final class AcceptanceTester extends Actor
             $timeout
         );
     }
-
 }
