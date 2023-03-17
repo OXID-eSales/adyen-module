@@ -13,7 +13,7 @@ class OxNewService
      * @param array $constructorArgs
      * @return T returns type of fqcn
      */
-    public function oxNew($fqcn, array $constructorArgs)
+    public function oxNew($fqcn, array $constructorArgs = [])
     {
         return oxNew($fqcn, ...$constructorArgs);
     }
