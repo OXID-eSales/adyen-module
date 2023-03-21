@@ -18,8 +18,8 @@
         [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
         [{assign var="isPaymentPage" value=false}]
         [{assign var="isOrderPage" value=false}]
-        [{assign var="templateCheckoutCreateId" value=$oViewConf->getTemplateCheckoutCreateId($payment->getId())}]
-        [{assign var="templatePayButtonContainerId" value=$oViewConf->getTemplatePayButtonContainerId($payment->getId())}]
+        [{assign var="templateCheckoutCreateId" value=$oViewConf->getTemplateCheckoutCreateId($payment)}]
+        [{assign var="templatePayButtonContainerId" value=$oViewConf->getTemplatePayButtonContainerId($payment)}]
         let submitForm, submitLink;
         [{if $oViewConf->getTopActiveClassName() == 'payment'}]
             [{assign var="isPaymentPage" value=true}]

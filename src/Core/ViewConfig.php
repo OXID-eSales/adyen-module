@@ -237,10 +237,11 @@ class ViewConfig extends ViewConfig_parent
             ->getConfiguration($this, $oView, $payment);
     }
 
-    public function getTemplateCheckoutCreateId(string $paymentId): string
+    public function getTemplateCheckoutCreateId(?Payment $payment): string
     {
-        return $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
-            ->getCreateId($paymentId);
+        return $payment ? $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
+            ->getCreateId($payment->getId())
+            : '';
     }
 
     public function getGooglePayTransactionInfo(): string
@@ -249,8 +250,8 @@ class ViewConfig extends ViewConfig_parent
             ->getTransactionJson();
     }
 
-    public function getTemplatePayButtonContainerId(string $paymentId): string
+    public function getTemplatePayButtonContainerId(?Payment $payment): string
     {
-        return $paymentId . '-container';
+        return $payment ? $payment->getId() . '-container' : '';
     }
 }

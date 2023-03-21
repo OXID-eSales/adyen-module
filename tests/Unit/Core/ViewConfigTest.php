@@ -15,6 +15,7 @@ use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Module as CoreModule;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 
 class ViewConfigTest extends UnitTestCase
 {
@@ -39,10 +40,12 @@ class ViewConfigTest extends UnitTestCase
     public function testGetTemplateIdGeneral()
     {
         $viewConfig = new ViewConfig();
+        $payment = new Payment();
+        $payment->setId(CoreModule::PAYMENT_PAYPAL_ID);
 
         $this->assertEquals(
             CoreModule::PAYMENT_PAYPAL_ID . '-container',
-            $viewConfig->getTemplatePayButtonContainerId(CoreModule::PAYMENT_PAYPAL_ID)
+            $viewConfig->getTemplatePayButtonContainerId($payment)
         );
     }
 }
