@@ -59,7 +59,7 @@
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
             [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
-                const cardComponent = checkout.create('[{$templateCheckoutCreateId}]').mount('#[{$templatePayButtonContainerId}]');
+                const cardComponent = checkout.create('card').mount('#[{$adyenCreditCard}]-container');
                 cardComponent.paymentIdViewEl = undefined;
             [{elseif $isOrderPage}]
                 [{if $orderPaymentApplePay}]
