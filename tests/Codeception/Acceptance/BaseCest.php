@@ -53,10 +53,7 @@ abstract class BaseCest
         $I->clearShopCache();
     }
 
-    /**
-     * @return void
-     */
-    protected function _initializeTest()
+    protected function _initializeTest(): void
     {
         $this->I->openShop();
         $basketItem = Fixtures::get('product');
@@ -71,10 +68,6 @@ abstract class BaseCest
         $this->paymentSelection = $homePage->openCheckout();
     }
 
-    /**
-     * @param string $label
-     * @return Page
-     */
     protected function _choosePayment(): Page
     {
         $label = "//label[@for='payment_" . $this->_getPaymentId() . "']";
@@ -98,9 +91,6 @@ abstract class BaseCest
         $iframeCreditCardCVC = '.adyen-checkout__card__cvc__input iframe';
         $inputCVC = '[data-fieldtype="encryptedSecurityCode"]';
 
-        $inputName = '[name="holderName"]';
-
-
         $this->I->waitForElement($iframeCreditCardNumber, 60);
         $this->I->waitForElementNotVisible($spinner, 90);
 
@@ -116,8 +106,6 @@ abstract class BaseCest
         $this->I->fillField($inputCVC, $_ENV['CREDITCARDCVC']);
         $this->I->switchToIFrame();
 
-
-        $this->I->fillField($inputName, $_ENV['CREDITCARDNAME']);
         return $this->paymentSelection->goToNextStep();
     }
 
