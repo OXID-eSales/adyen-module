@@ -17,17 +17,20 @@ class JSAPITemplateConfiguration
     private LoggerInterface $logger;
     private JSAPIConfigurationService $configurationService;
     private AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService;
+    private ModuleSettings $moduleSettings;
 
     public function __construct(
         TemplateEngineInterface $templateEngine,
         JSAPIConfigurationService $configurationService,
         AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ModuleSettings $moduleSettings
     ) {
         $this->templateEngine = $templateEngine;
         $this->logger = $logger;
         $this->configurationService = $configurationService;
         $this->adyenAPIResponsePaymentMethodsService = $adyenAPIResponsePaymentMethodsService;
+        $this->moduleSettings = $moduleSettings;
     }
 
     public function getConfiguration(
@@ -84,6 +87,7 @@ class JSAPITemplateConfiguration
                     'configuration' => $this->adyenAPIResponsePaymentMethodsService->getApplePayConfiguration(),
                 ],
             ),
+            'payPalMerchantId' => $this->moduleSettings->getPayPalMerchantId(),
         ];
     }
 

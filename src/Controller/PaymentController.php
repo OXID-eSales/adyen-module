@@ -121,7 +121,7 @@ class PaymentController extends PaymentController_parent
         return (
             $this->isActiveAdyenSession() && !$this->isValidAdyenAuthorisation() ?
             Module::ADYEN_ERROR_INVALIDSESSION_NAME :
-            parent::getPaymentError()
+                parent::getPaymentError()
         );
     }
 

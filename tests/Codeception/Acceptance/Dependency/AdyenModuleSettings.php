@@ -21,6 +21,7 @@ class AdyenModuleSettings
         );
         $moduleConfiguration = $moduleConfigurationBridge->get('osc_adyen');
         $settingsToBeSaved = [
+            ModuleSettings::SANDBOX_PAYPAL_MERCHANT_ID => $envLoader->getEnvVar('PAYPAL_MERCHANT_ID'),
             ModuleSettings::SANDBOX_API_KEY => $envLoader->getEnvVar('ADYEN_API_KEY'),
             ModuleSettings::SANDBOX_CLIENT_KEY => $envLoader->getEnvVar('ADYEN_CLIENT_KEY'),
             ModuleSettings::SANDBOX_MERCHANT_ACCOUNT => $envLoader->getEnvVar('ADYEN_MERCHANT_ACCOUNT'),

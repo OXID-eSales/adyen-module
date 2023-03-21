@@ -82,6 +82,7 @@ const configuration = {
         [{elseif $isOrderPage && $orderPaymentPayPal}]
             paypal: {
                 intent: "authorize",
+                merchantId: "[{$payPalMerchantId}]",
                 onShippingChange: function (data, actions) {
                     // Listen to shipping changes.
                     if (isLog) {
