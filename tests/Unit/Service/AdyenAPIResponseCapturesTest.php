@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCaptures;
@@ -19,11 +19,10 @@ class AdyenAPIResponseCapturesTest extends AbstractAdyenAPIResponseTest
         $checkoutService = $this->createCheckoutServiceMock($params, 'captures', $result);
 
         /** @var AdyenAPICaptures $adyenApiCaptures */
-        $adyenApiCaptures = $this->createAdyenAPIMock(
-            $params,
-            AdyenAPICaptures::class,
-            'getAdyenCapturesParams'
-        );
+        $adyenApiCaptures = $this->createMock(AdyenAPICaptures::class);
+        $adyenApiCaptures->expects($this->once())
+            ->method('getAdyenCapturesParams')
+            ->willReturn($params);
 
         $adyenAPIResponseCaptures = $this->createAdyenAPIResponse(
             AdyenAPIResponseCaptures::class,

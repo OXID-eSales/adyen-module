@@ -199,6 +199,11 @@ class SessionSettings
         return $paymentId;
     }
 
+    public function getBasket(): Basket
+    {
+        return $this->session->getBasket();
+    }
+
     public function getAdyenBasketAmount(): float
     {
         /** @var null|Basket $basket */

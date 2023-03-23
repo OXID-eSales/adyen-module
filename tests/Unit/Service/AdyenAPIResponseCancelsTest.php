@@ -2,7 +2,6 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
-use OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service\AbstractAdyenAPIResponseTest;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCancels;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -20,11 +19,10 @@ class AdyenAPIResponseCancelsTest extends AbstractAdyenAPIResponseTest
         $checkoutService = $this->createCheckoutServiceMock($params, 'cancels', $result);
 
         /** @var AdyenAPICancels $adyenApiCancels */
-        $adyenApiCancels = $this->createAdyenAPIMock(
-            $params,
-            AdyenAPICancels::class,
-            'getAdyenCancelParams'
-        );
+        $adyenApiCancels = $this->createMock(AdyenAPICancels::class);
+        $adyenApiCancels->expects($this->once())
+            ->method('getAdyenCancelParams')
+            ->willReturn($params);
 
         $adyenApiResponseCancels = $this->createAdyenAPIResponse(
             AdyenAPIResponseCancels::class,

@@ -2,8 +2,6 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
-use Adyen\Service\Checkout;
-use OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service\AbstractAdyenAPIResponseTest;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIRefunds;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseRefunds;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -21,11 +19,10 @@ class AdyenAPIResponseRefundsTest extends AbstractAdyenAPIResponseTest
         $checkoutService = $this->createCheckoutServiceMock($params, 'refunds', $result);
 
         /** @var AdyenAPIRefunds $adyenApiRefunds */
-        $adyenApiRefunds = $this->createAdyenAPIMock(
-            $params,
-            AdyenAPIRefunds::class,
-            'getAdyenRefundsParams'
-        );
+        $adyenApiRefunds = $this->createMock(AdyenAPIRefunds::class);
+        $adyenApiRefunds->expects($this->once())
+            ->method('getAdyenRefundsParams')
+            ->willReturn($params);
 
         $adyenApiRefundsResponse = $this->createAdyenAPIResponse(
             AdyenAPIResponseRefunds::class,

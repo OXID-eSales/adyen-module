@@ -1,10 +1,8 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
-use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCaptures;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePayments;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -21,11 +19,10 @@ class AdyenAPIResponsePaymentsTest extends AbstractAdyenAPIResponseTest
         $checkoutService = $this->createCheckoutServiceMock($params, 'payments', $result);
 
         /** @var AdyenAPIPayments $adyenApiPayments */
-        $adyenApiPayments = $this->createAdyenAPIMock(
-            $params,
-            AdyenAPIPayments::class,
-            'getAdyenPaymentsParams'
-        );
+        $adyenApiPayments = $this->createMock(AdyenAPIPayments::class);
+        $adyenApiPayments->expects($this->once())
+            ->method('getAdyenPaymentsParams')
+            ->willReturn($params);
 
         $adyenAPIResponsePayments = $this->createAdyenAPIResponse(
             AdyenAPIResponsePayments::class,

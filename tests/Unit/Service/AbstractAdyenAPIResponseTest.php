@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use Adyen\Service\Checkout;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponse;
@@ -64,18 +64,5 @@ abstract class AbstractAdyenAPIResponseTest extends TestCase
             ->willReturn($result);
 
         return $checkoutServiceMock;
-    }
-
-    protected function createAdyenAPIMock(
-        array $params,
-        string $adyenAPIFQCN,
-        string $method
-    ) {
-        $adyenAPIRefundsMock = $this->createMock($adyenAPIFQCN);
-        $adyenAPIRefundsMock->expects($this->once())
-            ->method($method)
-            ->willReturn($params);
-
-        return $adyenAPIRefundsMock;
     }
 }

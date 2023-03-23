@@ -1,10 +1,7 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPICaptures;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
-use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponseCaptures;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentDetails;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 

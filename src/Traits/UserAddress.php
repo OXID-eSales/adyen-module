@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
 use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\Country;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 
 /**
  * Convenience trait to work with JSON-Data
@@ -20,6 +21,7 @@ use OxidSolutionCatalysts\Adyen\Model\Country;
 trait UserAddress
 {
     use Json;
+    use ServiceContainer;
 
     public function getAdyenShopperEmail(): string
     {
@@ -52,8 +54,9 @@ trait UserAddress
         /** @var Address|User $dataObj */
         $dataObj = $address ?: $user;
 
+        $oxNewService = $this->getServiceFromContainer(OxNewService::class);
         /** @var Country $country */
-        $country = oxNew(EshopModelCountry::class);
+        $country = $oxNewService->oxNew(EshopModelCountry::class);
         $country->load($dataObj->getAdyenStringData('oxcountryid'));
         /** @var null|string $countryIso */
         $countryIso = $country->getAdyenStringData('oxisoalpha2');
