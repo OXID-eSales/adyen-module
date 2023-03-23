@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use Codeception\PHPUnit\TestCase;
 use OxidEsales\Eshop\Core\Element2ShopRelations;

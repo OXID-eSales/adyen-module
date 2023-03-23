@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Exception;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Exception;
 
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use PHPUnit\Framework\TestCase;

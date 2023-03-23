@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Model;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;

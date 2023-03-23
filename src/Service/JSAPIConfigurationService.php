@@ -13,14 +13,10 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 class JSAPIConfigurationService
 {
     private AdyenAPILineItemsService $lineItemsService;
-    private ModuleSettings $moduleSettings;
 
-    public function __construct(
-        AdyenAPILineItemsService $lineItemsService,
-        ModuleSettings $moduleSettings
-    ) {
+    public function __construct(AdyenAPILineItemsService $lineItemsService)
+    {
         $this->lineItemsService = $lineItemsService;
-        $this->moduleSettings = $moduleSettings;
     }
 
     public function getConfigFieldsAsArray(

@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Codeception\Acceptance\Page;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Page;
 
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Page\Page;
 

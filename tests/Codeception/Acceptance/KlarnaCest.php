@@ -1,9 +1,8 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Codeception\Acceptance;
+namespace OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance;
 
-use OxidEsales\EshopCommunity\modules\osc\adyen\tests\Codeception\Acceptance\Page\KlarnaSandboxPaymentPage;
-use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\BaseCest;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Page\KlarnaSandboxPaymentPage;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Page\AdyenNotSuccessfulPage;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Page\CheckoutAdyenPage;
 use OxidSolutionCatalysts\Adyen\Core\Module;
