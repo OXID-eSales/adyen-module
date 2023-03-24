@@ -10,9 +10,13 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook;
 
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 class EventDispatcher
 {
+    use ServiceContainer;
+
     /**
      * @param Event $event
      * @throws WebhookEventTypeException
@@ -27,7 +31,7 @@ class EventDispatcher
             throw WebhookEventTypeException::handlerNotFound($eventType);
         }
 
-        $handler = oxNew($handlers[$eventType]);
+        $handler = $this->getServiceFromContainer(OxNewService::class)->oxNew($handlers[$eventType]);
         $handler->handle($event);
     }
 }
