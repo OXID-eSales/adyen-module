@@ -25,6 +25,13 @@ class JSAPIConfigurationServiceTest extends TestCase
 
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getConfigFieldsAsArray
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::__construct
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenDeliveryAddress
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperName
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperEmail
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperReference
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getPaymentPageConfigFields
+     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getOrderPageConfigFields
      */
     public function testGetConfiguration(): void
     {

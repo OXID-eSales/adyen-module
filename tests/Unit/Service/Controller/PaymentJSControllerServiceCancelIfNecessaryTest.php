@@ -11,6 +11,7 @@ class PaymentJSControllerServiceCancelIfNecessaryTest extends TestCase
 {
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\Controller\PaymentJSControllerService::cancelPaymentIfNecessary
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Controller\PaymentJSControllerService::__construct
      * @dataProvider getCancelTestData
      */
     public function testCancelPayment(
