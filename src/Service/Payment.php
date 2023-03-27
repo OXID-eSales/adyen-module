@@ -38,6 +38,7 @@ class Payment extends PaymentBase
     private CountryRepository $countryRepository;
     private AdyenAPILineItemsService $adyenAPILineItemsService;
     private SessionSettings $sessionSettings;
+    private OxNewService $oxNewService;
 
     public function __construct(
         Context $context,
@@ -45,7 +46,8 @@ class Payment extends PaymentBase
         AdyenAPIResponsePayments $APIPayments,
         CountryRepository $countryRepository,
         AdyenAPILineItemsService $adyenAPILineItemsService,
-        SessionSettings $sessionSettings
+        SessionSettings $sessionSettings,
+        OxNewService $oxNewService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
@@ -53,6 +55,7 @@ class Payment extends PaymentBase
         $this->countryRepository = $countryRepository;
         $this->adyenAPILineItemsService = $adyenAPILineItemsService;
         $this->sessionSettings = $sessionSettings;
+        $this->oxNewService = $oxNewService;
     }
 
     public function setPaymentResult(array $paymentResult): void
@@ -79,7 +82,7 @@ class Payment extends PaymentBase
     ): bool {
         $result = false;
 
-        $payments = oxNew(AdyenAPIPayments::class);
+        $payments = $this->oxNewService->oxNew(AdyenAPIPayments::class);
         $payments->setCurrencyName($this->context->getActiveCurrencyName());
         $payments->setReference($reference);
         $payments->setPaymentMethod($paymentState['paymentMethod'] ?? []);
@@ -98,7 +101,7 @@ class Payment extends PaymentBase
         $payments->setReturnUrl(
             $this->context->getPaymentReturnUrl(
                 $viewConfig->getSessionChallengeToken(),
-                oxNew(OrderController::class)->getDeliveryAddressMD5(),
+                $this->oxNewService->oxNew(OrderController::class)->getDeliveryAddressMD5(),
                 $this->sessionSettings->getPspReference(),
                 $this->sessionSettings->getResultCode(),
                 $this->sessionSettings->getAmountCurrency()
