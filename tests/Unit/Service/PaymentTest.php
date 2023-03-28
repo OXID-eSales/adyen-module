@@ -61,6 +61,7 @@ class PaymentTest extends TestCase
 
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\Payment::collectPayments
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Payment::__construct
      */
     public function testCollectPayments()
     {
