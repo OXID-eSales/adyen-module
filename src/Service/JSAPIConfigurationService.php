@@ -2,10 +2,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidEsales\EshopCommunity\Application\Controller\FrontendController;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\User;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -13,15 +10,19 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 class JSAPIConfigurationService
 {
     private AdyenAPILineItemsService $lineItemsService;
+    private UserAddress $userAddressService;
 
-    public function __construct(AdyenAPILineItemsService $lineItemsService)
-    {
+    public function __construct(
+        AdyenAPILineItemsService $lineItemsService,
+        UserAddress $userAddressService
+    ) {
         $this->lineItemsService = $lineItemsService;
+        $this->userAddressService = $userAddressService;
     }
 
     public function getConfigFieldsAsArray(
         ViewConfig $viewConfig,
-        FrontendController $controller,
+        User $user,
         ?Payment $payment
     ): array {
         $configFieldsArray = [
@@ -31,10 +32,10 @@ class JSAPIConfigurationService
                 'enabled' => $viewConfig->isAdyenAnalyticsActive(),
             ],
             'locale' => $viewConfig->getAdyenShopperLocale(),
-            'deliveryAddress' => $this->getAdyenDeliveryAddress($controller),
-            'shopperName' => $this->getAdyenShopperName($controller),
-            'shopperEmail' => $this->getAdyenShopperEmail($controller),
-            'shopperReference' => $this->getAdyenShopperReference($controller),
+            'deliveryAddress' => $this->userAddressService->getAdyenDeliveryAddress($user),
+            'shopperName' => $this->userAddressService->getAdyenShopperName($user),
+            'shopperEmail' => $this->userAddressService->getAdyenShopperEmail($user),
+            'shopperReference' => $user->getId(),
             'shopperIP' => $viewConfig->getRemoteAddress(),
             'showPayButton' => true,
         ];
@@ -86,61 +87,5 @@ class JSAPIConfigurationService
         }
 
         return [];
-    }
-
-    private function getAdyenShopperName(FrontendController $controller): array
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-        /** @var Address|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
-        $dataObj = $address ?: $user;
-
-        return [
-            'firstName' => $dataObj->getAdyenStringData('oxfname'),
-            'lastName' => $dataObj->getAdyenStringData('oxlname')
-        ];
-    }
-
-    private function getAdyenDeliveryAddress(FrontendController $controller): array
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-        /** @var Address|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
-        $dataObj = $address ?: $user;
-
-        /** @var Country $country */
-        $country = oxNew(Country::class);
-        $country->load($dataObj->getAdyenStringData('oxcountryid'));
-        /** @var null|string $countryIso */
-        $countryIso = $country->getAdyenStringData('oxisoalpha2');
-
-        return [
-            'city' => $dataObj->getAdyenStringData('oxcity'),
-            'country' => $countryIso,
-            'houseNumberOrName' => $dataObj->getAdyenStringData('oxstreetnr'),
-            'postalCode' => $dataObj->getAdyenStringData('oxzip'),
-            'stateOrProvince' => $dataObj->getAdyenStringData('oxstateid'),
-            'street' => $dataObj->getAdyenStringData('oxstreet')
-        ];
-    }
-
-    private function getAdyenShopperEmail(FrontendController $controller): string
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-
-        return $user->getAdyenStringData('oxusername');
-    }
-
-    private function getAdyenShopperReference(FrontendController $controller): string
-    {
-        /** @var User $user */
-        $user = $controller->getUser();
-
-        return $user->getId();
     }
 }

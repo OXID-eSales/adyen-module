@@ -1,30 +1,33 @@
 <?php
 
-namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Traits;
+namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
 
 use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Service\UserAddress;
 use PHPUnit\Framework\TestCase;
-use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 
 class UserAddressShopperNameTest extends TestCase
 {
     /**
-     * @covers \OxidSolutionCatalysts\Adyen\Traits\UserAddress::getAdyenShopperName
+     * @covers \OxidSolutionCatalysts\Adyen\Service\UserAddress::getAdyenShopperName
      */
     public function testGetAdyenShopperName()
     {
         $firstName = 'firstName';
         $lastName = 'lastName';
-        $paymentController = $this->createPaymentControllerMock($firstName, $lastName);
+        $user = $this->createUserMock($firstName, $lastName);
+        $userAddressService = new UserAddress(new OxNewService());
+
 
         $this->assertEquals(
-            json_encode($this->getShopperNameArray($firstName, $lastName)),
-            $paymentController->getAdyenShopperName()
+            $this->getShopperNameArray($firstName, $lastName),
+            $userAddressService->getAdyenShopperName($user)
         );
     }
 
-    private function createPaymentControllerMock(string $firstName, string $lastName): PaymentController
+    private function createUserMock(string $firstName, string $lastName): User
     {
         $addressMock = $this->getMockBuilder(Address::class)
             ->onlyMethods(['getAdyenStringData'])
@@ -44,20 +47,7 @@ class UserAddressShopperNameTest extends TestCase
             ->method('getSelectedAddress')
             ->willReturn($addressMock);
 
-        $paymentControllerMock = $this->getMockBuilder(PaymentController::class)
-            ->onlyMethods(['getUser', 'arrayToJson'])
-            ->getMock();
-
-        $paymentControllerMock->expects($this->once())
-            ->method('getUser')
-            ->willReturn($userMock);
-
-        $paymentControllerMock->expects($this->once())
-            ->method('arrayToJson')
-            ->with($this->getShopperNameArray($firstName, $lastName))
-            ->willReturn(json_encode($this->getShopperNameArray($firstName, $lastName)));
-
-        return $paymentControllerMock;
+        return $userMock;
     }
 
     private function getShopperNameArray(string $firstName, string $lastName): array

@@ -22,7 +22,6 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
  */
 class PaymentGateway extends PaymentGateway_parent
 {
-    use ServiceContainer;
     use RequestGetter;
 
     public function executePayment($amount, &$order): bool

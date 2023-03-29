@@ -16,16 +16,12 @@ use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
-use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
 
 class PaymentController extends PaymentController_parent
 {
-    use ServiceContainer;
-    use UserAddress;
     use RequestGetter;
 
     protected ?bool $assetsNecessary = null;

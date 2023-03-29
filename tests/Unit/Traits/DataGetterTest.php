@@ -2,10 +2,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Traits;
 
-use OxidEsales\EshopCommunity\Core\Request;
-use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
-use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use PHPUnit\Framework\TestCase;
 
 class DataGetterTest extends TestCase

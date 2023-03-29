@@ -13,12 +13,10 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\TranslationMapper;
 use OxidSolutionCatalysts\Adyen\Service\OrderReturnService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class OrderController extends OrderController_parent
 {
-    use UserAddress;
     use ServiceContainer;
 
     /**

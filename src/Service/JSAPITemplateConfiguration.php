@@ -6,6 +6,7 @@ use OxidEsales\EshopCommunity\Application\Controller\FrontendController;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterface;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
+use OxidSolutionCatalysts\Adyen\Model\User as UserModel;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
@@ -96,7 +97,13 @@ class JSAPITemplateConfiguration
         FrontendController $controller,
         ?Payment $payment
     ): string {
-        $configFieldsArray = $this->configurationService->getConfigFieldsAsArray($viewConfig, $controller, $payment);
+        /** @var UserModel $user */
+        $user = $controller->getUser();
+        $configFieldsArray = $this->configurationService->getConfigFieldsAsArray(
+            $viewConfig,
+            $user,
+            $payment
+        );
 
         $configFieldsJson = json_encode($configFieldsArray);
         if (false === $configFieldsJson) {

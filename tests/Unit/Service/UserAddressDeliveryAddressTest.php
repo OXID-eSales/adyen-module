@@ -1,19 +1,19 @@
 <?php
 
-namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Traits;
+namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
 
-use OxidSolutionCatalysts\Adyen\Model\Country;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\User;
-use OxidSolutionCatalysts\Adyen\Service\OxNewService;
-use PHPUnit\Framework\TestCase;
-use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
+use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidSolutionCatalysts\Adyen\Model\Address;
+use OxidSolutionCatalysts\Adyen\Model\Country;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Service\UserAddress;
+use PHPUnit\Framework\TestCase;
 
 class UserAddressDeliveryAddressTest extends TestCase
 {
     /**
-     * @covers \OxidSolutionCatalysts\Adyen\Traits\UserAddress::getAdyenDeliveryAddress
+     * @covers \OxidSolutionCatalysts\Adyen\Service\UserAddress::getAdyenDeliveryAddress
      */
     public function testGetAdyenDeliveryAddress()
     {
@@ -25,88 +25,28 @@ class UserAddressDeliveryAddressTest extends TestCase
         $stateOrProvince = 'Berlin';
         $street = 'Unter den Linden';
 
-        $paymentController = $this->createPaymentControllerMock(
+        $user = $this->createUserMock(
             $countryId,
             $city,
-            $country,
             $postalCode,
             $houseNumberOrName,
             $stateOrProvince,
             $street
         );
+        $oxNewService = $this->createOxNewServiceMock($countryId, $country);
+        $userAddressService = new UserAddress($oxNewService);
 
         $this->assertEquals(
-            json_encode(
-                $this->getDeliveryAddressArray(
-                    $city,
-                    $country,
-                    $postalCode,
-                    $houseNumberOrName,
-                    $stateOrProvince,
-                    $street
-                )
+            $this->getDeliveryAddressArray(
+                $city,
+                $country,
+                $postalCode,
+                $houseNumberOrName,
+                $stateOrProvince,
+                $street
             ),
-            $paymentController->getAdyenDeliveryAddress()
+            $userAddressService->getAdyenDeliveryAddress($user)
         );
-    }
-
-    private function createPaymentControllerMock(
-        string $countryId,
-        string $city,
-        string $country,
-        string $postalCode,
-        string $houseNumberOrName,
-        string $stateOrProvince,
-        string $street
-    ): PaymentController {
-        $paymentControllerMock = $this->getMockBuilder(PaymentController::class)
-            ->onlyMethods(['getUser', 'arrayToJson', 'getServiceFromContainer'])
-            ->getMock();
-
-        $paymentControllerMock->expects($this->once())
-            ->method('getUser')
-            ->willReturn(
-                $this->createUserMock(
-                    $countryId,
-                    $city,
-                    $postalCode,
-                    $houseNumberOrName,
-                    $stateOrProvince,
-                    $street
-                )
-            );
-
-        $paymentControllerMock->expects($this->once())
-            ->method('arrayToJson')
-            ->with(
-                $this->getDeliveryAddressArray(
-                    $city,
-                    $country,
-                    $postalCode,
-                    $houseNumberOrName,
-                    $stateOrProvince,
-                    $street
-                )
-            )
-            ->willReturn(
-                json_encode(
-                    $this->getDeliveryAddressArray(
-                        $city,
-                        $country,
-                        $postalCode,
-                        $houseNumberOrName,
-                        $stateOrProvince,
-                        $street
-                    )
-                )
-            );
-
-        $paymentControllerMock->expects($this->once())
-            ->method('getServiceFromContainer')
-            ->with(OxNewService::class)
-            ->willReturn($this->createOxNewServiceMock($countryId, $country));
-
-        return $paymentControllerMock;
     }
 
     private function getDeliveryAddressArray(

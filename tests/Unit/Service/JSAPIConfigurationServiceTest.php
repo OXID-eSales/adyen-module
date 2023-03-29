@@ -26,10 +26,6 @@ class JSAPIConfigurationServiceTest extends TestCase
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getConfigFieldsAsArray
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::__construct
-     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenDeliveryAddress
-     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperName
-     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperEmail
-     * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getAdyenShopperReference
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getPaymentPageConfigFields
      * @covers \OxidSolutionCatalysts\Adyen\Service\JSAPIConfigurationService::getOrderPageConfigFields
      */
@@ -38,10 +34,10 @@ class JSAPIConfigurationServiceTest extends TestCase
         $service = $this->getServiceFromContainer(JSAPIConfigurationService::class);
         /** @var ViewConfig $viewConfig */
         $viewConfig = $this->createViewConfigMock();
-        /** @var PaymentController $paymentController */
-        $paymentController = $this->createControllerMock();
         $payment = new Payment();
         $payment->setId(Module::PAYMENT_PAYPAL_ID);
+        /** @var User $user */
+        $user = $this->createUserMock();
 
         $this->assertEquals(
             [
@@ -68,7 +64,7 @@ class JSAPIConfigurationServiceTest extends TestCase
                 'shopperIP' => '127.0.0.1',
                 'showPayButton' => true,
             ],
-            $service->getConfigFieldsAsArray($viewConfig, $paymentController, $payment)
+            $service->getConfigFieldsAsArray($viewConfig, $user, $payment)
         );
     }
 
@@ -103,7 +99,7 @@ class JSAPIConfigurationServiceTest extends TestCase
         return $mock;
     }
 
-    private function createControllerMock(): MockObject
+    private function createUserMock(): MockObject
     {
         $addressMock = $this->createMock(Address::class);
 
@@ -145,20 +141,6 @@ class JSAPIConfigurationServiceTest extends TestCase
             ->with('oxusername')
             ->willReturn('email');
 
-        $paymentMock = $this->createMock(PaymentController::class);
-
-        $paymentMock->expects($this->any())
-            ->method('getAdyenShopperName')
-            ->willReturn('shopperName');
-
-        $paymentMock->expects($this->any())
-            ->method('getAdyenShopperEmail')
-            ->willReturn('shopperMail');
-
-        $paymentMock->expects($this->any())
-            ->method('getUser')
-            ->willReturn($userMock);
-
-        return $paymentMock;
+        return $userMock;
     }
 }
