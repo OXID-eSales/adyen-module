@@ -44,6 +44,7 @@ class PaymentController extends PaymentController_parent
 
         $paymentService = $this->getServiceFromContainer(PaymentService::class);
         $paymentListRaw = $paymentService->filterNonSupportedCurrencies($paymentListRaw, $actShopCurrency->name);
+        $paymentListRaw = $paymentService->filterNoSpecialMerchantId($paymentListRaw);
 
         $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkConfigHealth();
 

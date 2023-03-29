@@ -145,4 +145,20 @@ class Payment extends PaymentBase
             }
         );
     }
+
+    public function filterNoSpecialMerchantId(array &$payments): array
+    {
+        return array_filter(
+            $payments,
+            function (PaymentModel $payment) {
+                return !$this->isPayPalAndNoMerchantId($payment);
+            }
+        );
+    }
+
+    protected function isPayPalAndNoMerchantId(PaymentModel $payment): bool
+    {
+        return $payment->getId() === Module::PAYMENT_PAYPAL_ID
+            && empty($this->moduleSettings->getPayPalMerchantId());
+    }
 }
