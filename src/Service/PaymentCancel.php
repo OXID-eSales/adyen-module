@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPICancels;
+use Adyen\AdyenException;
 
 /**
  * @extendable-class
@@ -24,13 +25,16 @@ class PaymentCancel extends PaymentBase
 
     /** @var AdyenAPIResponseCancels */
     private AdyenAPIResponseCancels $APICancels;
+    private OxNewService $oxNewService;
 
     public function __construct(
         ModuleSettings $moduleSettings,
-        AdyenAPIResponseCancels $APICancels
+        AdyenAPIResponseCancels $APICancels,
+        OxNewService $oxNewService
     ) {
         $this->moduleSettings = $moduleSettings;
         $this->APICancels = $APICancels;
+        $this->oxNewService = $oxNewService;
     }
 
     public function setCancelResult(array $cancelResult): void
@@ -50,7 +54,7 @@ class PaymentCancel extends PaymentBase
     {
         $result = false;
 
-        $cancels = oxNew(AdyenAPICancels::class);
+        $cancels = $this->oxNewService->oxNew(AdyenAPICancels::class);
         $cancels->setReference($orderNr);
         $cancels->setPspReference($pspReference);
         $cancels->setMerchantAccount($this->moduleSettings->getMerchantAccount());
@@ -61,7 +65,7 @@ class PaymentCancel extends PaymentBase
                 $this->setCancelResult($resultCancel);
                 $result = true;
             }
-        } catch (\Adyen\AdyenException $exception) {
+        } catch (AdyenException $exception) {
             Registry::getLogger()->error("Error on setCancel call.", [$exception]);
             $this->setPaymentExecutionError(self::PAYMENT_ERROR_GENERIC);
         }

@@ -24,23 +24,24 @@ class PaymentCapture extends PaymentBase
 
     private array $captureResult = [];
 
-    /** @var Context */
     private Context $context;
 
-    /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
-    /** @var AdyenAPIResponseCaptures */
     private AdyenAPIResponseCaptures $APICaptures;
+
+    private OxNewService $oxNewService;
 
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
-        AdyenAPIResponseCaptures $APICaptures
+        AdyenAPIResponseCaptures $APICaptures,
+        OxNewService $oxNewService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APICaptures = $APICaptures;
+        $this->oxNewService = $oxNewService;
     }
 
     public function setCaptureResult(array $captureResult): void
@@ -62,7 +63,7 @@ class PaymentCapture extends PaymentBase
     {
         $result = false;
 
-        $captures = oxNew(AdyenAPICaptures::class);
+        $captures = $this->oxNewService->oxNew(AdyenAPICaptures::class);
         $captures->setCurrencyName($this->context->getActiveCurrencyName());
         $captures->setReference($orderNr);
         $captures->setPspReference($pspReference);
