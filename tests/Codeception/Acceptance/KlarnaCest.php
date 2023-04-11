@@ -34,7 +34,7 @@ final class KlarnaCest extends BaseCest
         $I->wantToTest("Klarna authorised (Adyen) on Frontend order");
 
         $this->prepareTest();
-        $this->checkoutPage->clickAdyenPayButton(Module::PAYMENT_KLARNA_ID);
+        $this->checkoutPage->clickAdyenPayButton(Module::PAYMENT_KLARNA_LATER_ID);
 
         $this->klarnaSandboxPaymentPage->clickBuyButtonAndConfirm();
 
@@ -48,7 +48,7 @@ final class KlarnaCest extends BaseCest
         $I->wantToTest("Klarna cancelled (Adyen) on Frontend order");
 
         $this->prepareTest();
-        $this->checkoutPage->clickAdyenPayButton(Module::PAYMENT_KLARNA_ID);
+        $this->checkoutPage->clickAdyenPayButton(Module::PAYMENT_KLARNA_LATER_ID);
 
         $this->klarnaSandboxPaymentPage->clickBuyButtonAndCancel();
 
@@ -57,12 +57,12 @@ final class KlarnaCest extends BaseCest
 
     protected function _getOXID(): array
     {
-        return [Module::PAYMENT_KLARNA_ID];
+        return [Module::PAYMENT_KLARNA_LATER_ID];
     }
 
     protected function _getPaymentId(): string
     {
-        return Module::PAYMENT_KLARNA_ID;
+        return Module::PAYMENT_KLARNA_LATER_ID;
     }
 
     private function prepareTest(): void

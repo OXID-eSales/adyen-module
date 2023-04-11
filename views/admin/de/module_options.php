@@ -17,10 +17,16 @@ $keyDelayPayPal = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL
 $descPayPal = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_PAYPAL_ID]['descriptions']['de']['desc'];
 $keyDelayGooglePay = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_GOOGLE_PAY_ID;
 $descGooglePay = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_GOOGLE_PAY_ID]['descriptions']['de']['desc'];
-$keyDelayKlarna = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_ID;
-$descKlarna = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_KLARNA_ID]['descriptions']['de']['desc'];
+$keyDelayKlarnaImmediate = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_IMMEDIATE_ID;
+$descKlarnaImmediate = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_KLARNA_IMMEDIATE_ID]['descriptions']['de']['desc'];
+$keyDelayKlarnaLater = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_LATER_ID;
+$descKlarnaLater = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_KLARNA_LATER_ID]['descriptions']['de']['desc'];
+$keyDelayKlarnaOverTime = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_OVER_TIME_ID;
+$descKlarnaOverTime = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_KLARNA_OVER_TIME_ID]['descriptions']['de']['desc'];
 $keyDelayTwint = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_TWINT_ID;
 $descTwint = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_TWINT_ID]['descriptions']['de']['desc'];
+$keyDelayApplePay = 'SHOP_MODULE_osc_adyen_CaptureDelay_' . Module::PAYMENT_APPLE_PAY_ID;
+$descApplePay = Module::PAYMENT_DEFINTIONS[Module::PAYMENT_APPLE_PAY_ID]['descriptions']['de']['desc'];
 
 $aLang = [
     'charset' => 'UTF-8',
@@ -54,11 +60,6 @@ $aLang = [
     'SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'PayPal Merchant Id',
     'SHOP_MODULE_osc_adyen_LiveGooglePayMerchantId' => 'Google Pay Merchant Id',
 
-    'SHOP_MODULE_osc_adyen_KlarnaPaymentType' => 'Payment Typ',
-    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna' => ' Klarna — Pay later',
-    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna_paynow' => ' Klarna — Pay Now',
-    'SHOP_MODULE_osc_adyen_KlarnaPaymentType_klarna_account' => ' Klarna — Pay Over Time',
-
     'HELP_SHOP_MODULE_osc_adyen_LivePayPalMerchantId' => 'Die Sandbox-"PayPal Merchant Id" wird nur benötigt, wenn Sie PayPal über Adyen nutzen wollen',
     'SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Live Endpoint Prefix',
     'HELP_SHOP_MODULE_osc_adyen_LiveEndpointPrefix' => 'Im Live-System wir für jeden Merchant ein Prefix gebraucht. Der Prefix wird in Adyen definiert. (siehe: https://docs.adyen.com/development-resources/live-endpoints)',
@@ -83,9 +84,21 @@ $aLang = array_merge(
 );
 $aLang = array_merge(
     $aLang,
-    $moduleOptionsCaptureDelay->getTranslationDEArrayForOption($keyDelayKlarna, $descKlarna),
+    $moduleOptionsCaptureDelay->getTranslationDEArrayForOption($keyDelayKlarnaImmediate, $descKlarnaImmediate),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationDEArrayForOption($keyDelayKlarnaLater, $descKlarnaLater),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationDEArrayForOption($keyDelayKlarnaOverTime, $descKlarnaOverTime),
 );
 $aLang = array_merge(
     $aLang,
     $moduleOptionsCaptureDelay->getTranslationDEArrayForOption($keyDelayTwint, $descTwint),
+);
+$aLang = array_merge(
+    $aLang,
+    $moduleOptionsCaptureDelay->getTranslationENArrayForOption($keyDelayApplePay, $descApplePay),
 );

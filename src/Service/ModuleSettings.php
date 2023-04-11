@@ -38,8 +38,6 @@ class ModuleSettings
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
 
-    public const KLARNA_PAYMENT_TYPE = 'osc_adyen_KlarnaPaymentType';
-
     public const OPERATION_MODE_SANDBOX = 'test';
     public const OPERATION_MODE_LIVE = 'live';
 
@@ -188,13 +186,6 @@ class ModuleSettings
     public function getActivePayments(): array
     {
         return (array)$this->getSettingValue(self::ACTIVE_PAYMENTS);
-    }
-
-    public function getKlarnaPaymentType(): string
-    {
-        /** @var null|string $klarnaPaymentType */
-        $klarnaPaymentType = $this->getSettingValue(self::KLARNA_PAYMENT_TYPE);
-        return $klarnaPaymentType ?? '';
     }
 
     private function getCaptureDelay(string $paymentId): string

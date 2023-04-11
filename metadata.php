@@ -263,15 +263,6 @@ $aModule = [
             'value' => ''
         ],
         [
-            'group' => 'osc_adyen_KLARNA',
-            'name' => 'osc_adyen_KlarnaPaymentType',
-            'type' => 'select',
-            'value' => Module::PAYMENT_KLARNA_PAYMENT_TYPE_LATER,
-            'constraints' => Module::PAYMENT_KLARNA_PAYMENT_TYPE_LATER. '|' .
-                Module::PAYMENT_KLARNA_PAYMENT_TYPE_IMMEDIATE . '|' .
-                Module::PAYMENT_KLARNA_PAYMENT_TYPE_OVER_TIME
-        ],
-        [
             'group' => 'osc_adyen_CaptureDelay',
             'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',
@@ -300,7 +291,25 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_ID,
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_IMMEDIATE_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_LATER_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_OVER_TIME_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .

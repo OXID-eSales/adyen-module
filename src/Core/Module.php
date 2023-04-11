@@ -28,10 +28,9 @@ final class Module
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
     public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
 
-    public const PAYMENT_KLARNA_ID = 'oscklarna';
-    public const PAYMENT_KLARNA_PAYMENT_TYPE_IMMEDIATE = 'klarna_paynow';
-    public const PAYMENT_KLARNA_PAYMENT_TYPE_LATER = 'klarna';
-    public const PAYMENT_KLARNA_PAYMENT_TYPE_OVER_TIME = 'klarna_account';
+    public const PAYMENT_KLARNA_LATER_ID = 'oscklarna';
+    public const PAYMENT_KLARNA_IMMEDIATE_ID = 'oscklarnapaynow';
+    public const PAYMENT_KLARNA_OVER_TIME_ID = 'oscklarnaaccount';
 
     public const PAYMENT_TWINT_ID = 'osctwint';
 
@@ -142,7 +141,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false
         ],
-        self::PAYMENT_KLARNA_ID => [
+        self::PAYMENT_KLARNA_LATER_ID => [
             'descriptions' => [
                 'de' => [
                     'desc' => 'Klarna',
@@ -152,7 +151,45 @@ final class Module
                 'en' => [
                     'desc' => 'Klarna',
                     'longdesc' => 'Klarna',
-                    'longdesc_beta' => 'Pay conveniently with Klarna.'
+                    'longdesc_beta' => 'Pay conveniently with Klarna.',
+                ],
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+        ],
+        self::PAYMENT_KLARNA_OVER_TIME_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna Ratenzahlung',
+                    'longdesc' => 'Klarna Ratenzahlung',
+                    'longdesc_beta' => 'Bezahlen Sie bequem in Raten Klarna.',
+                ],
+                'en' => [
+                    'desc' => 'Klarna Installment',
+                    'longdesc' => 'Klarna Installment',
+                    'longdesc_beta' => 'Pay conveniently in installments with Klarna.',
+                ],
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+        ],
+        self::PAYMENT_KLARNA_IMMEDIATE_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna Sofortbezahlung',
+                    'longdesc' => 'Klarna Sofortbezahlung',
+                    'longdesc_beta' => 'Bezahlen Sie sofort mit Klarna.'
+                ],
+                'en' => [
+                    'desc' => 'Klarna Immediate',
+                    'longdesc' => 'Klarna Immediate',
+                    'longdesc_beta' => 'Pay immediately with Klarna.'
                 ]
             ],
             'countries' => [],

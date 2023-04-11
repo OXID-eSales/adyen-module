@@ -50,7 +50,7 @@ class PaymentFilterNoSpecialMerchantIdTest extends TestCase
                 0
             ],
             [
-                Module::PAYMENT_KLARNA_ID,
+                Module::PAYMENT_KLARNA_LATER_ID,
                 '',
                 1
             ],
