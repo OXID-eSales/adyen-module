@@ -30,7 +30,6 @@ class SessionSettings
     public const ADYEN_SESSION_RESULTCODE_NAME = 'sess_adyen_resultcode';
     public const ADYEN_SESSION_AMOUNTVALUE_NAME = 'sess_adyen_amountvalue';
     public const ADYEN_SESSION_AMOUNTCURRENCY_NAME = 'sess_adyen_amountcurrency';
-    public const ADYEN_SESSION_REDIRECTLINK_NAME = 'sess_adyen_redirectlink';
 
     /** @var Session */
     private Session $session;
@@ -43,23 +42,6 @@ class SessionSettings
     ) {
         $this->session = $session;
         $this->context = $context;
-    }
-
-    public function setRedirctLink(string $redirectLink): void
-    {
-        $this->saveSettingValue(self::ADYEN_SESSION_REDIRECTLINK_NAME, $redirectLink);
-    }
-
-    public function getRedirctLink(): string
-    {
-        /** @var null|string $redirectLink */
-        $redirectLink = $this->getSettingValue(self::ADYEN_SESSION_REDIRECTLINK_NAME);
-        return $redirectLink ?? '';
-    }
-
-    public function deleteRedirctLink(): void
-    {
-        $this->removeSettingValue(self::ADYEN_SESSION_REDIRECTLINK_NAME);
     }
 
     public function createOrderReference(): string
