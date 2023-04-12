@@ -19,6 +19,7 @@ class UserRepositoryTest extends TestCase
 {
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\UserRepository::getUserLocale
+     * @covers \OxidSolutionCatalysts\Adyen\Service\UserRepository::__construct
      */
     public function testGetUserLocaleUnknownLocale()
     {

@@ -40,6 +40,7 @@ class PaymentGatewayTest extends UnitTestCase
 
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::doFinishAdyenPayment
+     * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::getOrderCurrencyName
      */
     public function testDoFinishAdyenPaymentSuccess()
     {

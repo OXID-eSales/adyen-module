@@ -11,6 +11,7 @@ class UserAddressShopperEmailTest extends TestCase
 {
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\UserAddress::getAdyenShopperEmail
+     * @covers \OxidSolutionCatalysts\Adyen\Service\UserAddress::__construct
      */
     public function testGetAdyenShopperEmail()
     {

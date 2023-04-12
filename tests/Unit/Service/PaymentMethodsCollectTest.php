@@ -21,6 +21,7 @@ class PaymentMethodsCollectTest extends TestCase
 {
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentMethods::collectAdyenPaymentMethods
+     * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentMethods::__construct
      */
     public function testCollectAdyenPaymentMethods(): void
     {
