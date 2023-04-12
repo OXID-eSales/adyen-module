@@ -46,6 +46,7 @@ class OrderArticleTest extends TestCase
         );
         $orderArticleController->deleteThisArticle();
     }
+
     public function getStornoTestData(): array
     {
         return [
