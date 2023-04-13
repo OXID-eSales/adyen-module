@@ -61,7 +61,7 @@ final class ModuleEvents
                 && $paymentMethod->getAdyenBoolData('oxactive') === true
             ) {
                 $paymentMethod->assign([
-                    'oxpayments__oxactive' => true
+                    'oxpayments__oxactive' => false
                 ]);
                 $paymentMethod->save();
                 $activePaymentMethods[] = $paymentId;
