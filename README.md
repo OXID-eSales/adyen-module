@@ -68,6 +68,10 @@ since the Apple Pay integration is the most complex one, here are a few hints
 - make sure this tester account is not used on any Apple device
 - login with you sandbox tester account on your test Apple device
 - add a test credit card number to the wallet on that test Apple device
+  - had some trouble adding a working test card, this one worked for me: 
+    - 4123 4000 7332 0224 
+    - Expiration Date: 12/2025 
+    - CVV: 863
 ### Adyen Setup
 - the shops webserver need to serve a domain association file: https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?utm_source=ca_test#going-live
   - Download and unzip the domain association file
