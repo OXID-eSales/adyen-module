@@ -59,3 +59,31 @@ Running codeception tests example with specific host/browser/testgroup:
 ```
 SELENIUM_SERVER_HOST=seleniumchrome BROWSER_NAME=chrome vendor/bin/runtests-codeception --group=examplegroup
 ```
+
+## Apple Pay (Dev) Integration
+since the Apple Pay integration is the most complex one, here are a few hints
+### Sandbox Tester Account and Test Credit Card
+- its mandatory needed to have an Apple developer account
+- create an Apple sandbox tester account: https://developer.apple.com/apple-pay/sandbox-testing/
+- make sure this tester account is not used on any Apple device
+- login with you sandbox tester account on your test Apple device
+- add a test credit card number to the wallet on that test Apple device
+### Adyen Setup
+- the shops webserver need to serve a domain association file: https://docs.adyen.com/payment-methods/apple-pay/web-drop-in?utm_source=ca_test#going-live
+  - Download and unzip the domain association file
+  - put it reachable under /.well-known/apple-developer-merchantid-domain-association on your shops webserver
+  - in my dev setup I experienced problems with Content-Type: text/plain in the header
+    - I used the cloudflare ssh tunnel to make my local webserver publicly reachable
+    - the cloudflare proxy did not set the Content-Type: text/plain header
+    - using a dyndns service to make my local webserver reachable worked for me to solve this
+- under Home => Add Payment Methods click "Add more"
+  - click "Request Payment Method"
+  - search for Apple
+  - click checkbox
+  - click Adyen's Certificate
+  - enter prefered Merchant Name
+  - under Shop websites enter the domain under your shop webserver is reachable including https:// 
+- under Developers => API credentials click ws@Company.[your-adyen-account]
+  - under "Server settings => Authentication" click "Generate API key", copy it and save it
+  - under "Client settings => Authentication" click "Generate client key", copy it and save it
+  - add allowed domains: the domain under your shop webserver is reachable including https://
