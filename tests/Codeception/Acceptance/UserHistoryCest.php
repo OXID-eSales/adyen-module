@@ -124,7 +124,7 @@ final class UserHistoryCest extends BaseCest
         );
     }
 
-    protected function _initializeTest()
+    protected function _initializeTest(): void
     {
         $I = $this->_getAcceptance();
         $homePage = $I->openShop();
