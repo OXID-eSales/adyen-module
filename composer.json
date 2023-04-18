@@ -29,7 +29,7 @@
     "prefer-dist": true,
     "require": {
         "php": "^7.4 | ^8.0",
-        "adyen/php-api-library": "13.*"
+        "adyen/php-api-library": "14.*"
     },
     "require-dev": {
         "codeception/module-rest": "^2.0.2",
