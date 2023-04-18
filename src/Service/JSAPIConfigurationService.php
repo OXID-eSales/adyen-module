@@ -14,7 +14,7 @@ class JSAPIConfigurationService
 
     public function __construct(
         AdyenAPILineItemsService $lineItemsService,
-        UserAddress $userAddressService
+        UserAddress              $userAddressService
     ) {
         $this->lineItemsService = $lineItemsService;
         $this->userAddressService = $userAddressService;
@@ -22,8 +22,8 @@ class JSAPIConfigurationService
 
     public function getConfigFieldsAsArray(
         ViewConfig $viewConfig,
-        User $user,
-        ?Payment $payment
+        User       $user,
+        ?Payment   $payment
     ): array {
         $configFieldsArray = [
             'environment' => $viewConfig->getAdyenOperationMode(),
@@ -37,7 +37,6 @@ class JSAPIConfigurationService
             'shopperEmail' => $this->userAddressService->getAdyenShopperEmail($user),
             'shopperReference' => $user->getId(),
             'shopperIP' => $viewConfig->getRemoteAddress(),
-            'showPayButton' => true,
         ];
 
         $configFieldsArray = array_merge(
@@ -48,10 +47,25 @@ class JSAPIConfigurationService
             $this->getOrderPageConfigFields(
                 $viewConfig,
                 $payment
-            )
+            ),
+            $this->extendPayButtonConfigFields($payment)
         );
 
         return $configFieldsArray;
+    }
+
+    /**
+     * workaround due to https://oxid-esales.atlassian.net/browse/AM-58?focusedCommentId=154815
+     */
+    private function extendPayButtonConfigFields(?Payment $payment): array
+    {
+        $configFields = ['showPayButton' => true];
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+        if ($paymentId === Module::PAYMENT_TWINT_ID) {
+            $configFields['name'] = 'Twint';
+        }
+
+        return $configFields;
     }
 
     private function getPaymentPageConfigFields(
@@ -66,7 +80,7 @@ class JSAPIConfigurationService
 
     private function getOrderPageConfigFields(
         ViewConfig $viewConfig,
-        ?Payment $payment
+        ?Payment   $payment
     ): array {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
         if ($viewConfig->getTopActiveClassName() === 'order') {
