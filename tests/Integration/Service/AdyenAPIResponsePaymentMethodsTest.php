@@ -84,12 +84,12 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
      */
     public function testLoadAdyenPaymentMethods(): void
     {
-        $adyenAPIPaymentMethods = new AdyenAPIPaymentMethods();
-        $adyenAPIPaymentMethods->setCountryCode('DE');
-        $adyenAPIPaymentMethods->setShopperLocale('de_DE');
-        $adyenAPIPaymentMethods->setCurrencyFilterAmount('1000');
-        $adyenAPIPaymentMethods->setCurrencyName('EUR');
-        $adyenAPIPaymentMethods->setMerchantAccount('TestMerchant');
+        $ApiPaymentMethods = new AdyenAPIPaymentMethods();
+        $ApiPaymentMethods->setCountryCode('DE');
+        $ApiPaymentMethods->setShopperLocale('de_DE');
+        $ApiPaymentMethods->setCurrencyFilterAmount('1000');
+        $ApiPaymentMethods->setCurrencyName('EUR');
+        $ApiPaymentMethods->setMerchantAccount('TestMerchant');
 
         $adyenSDKLoader = $this->createTestAdyenSDKLoader();
         $session = $this->createSession();
@@ -115,7 +115,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
         $paymentMock->method('createCheckout')
             ->willReturn($checkoutMock);
 
-        $result = $paymentMock->loadAdyenPaymentMethods($adyenAPIPaymentMethods);
+        $result = $paymentMock->loadAdyenPaymentMethods($ApiPaymentMethods);
 
         $this->assertTrue($result);
     }
@@ -126,12 +126,12 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
      */
     public function testExceptionLoadAdyenPaymentMethods(): void
     {
-        $adyenAPIPaymentMethods = new AdyenAPIPaymentMethods();
-        $adyenAPIPaymentMethods->setCountryCode('DE');
-        $adyenAPIPaymentMethods->setShopperLocale('de_DE');
-        $adyenAPIPaymentMethods->setCurrencyFilterAmount('1000');
-        $adyenAPIPaymentMethods->setCurrencyName('EUR');
-        $adyenAPIPaymentMethods->setMerchantAccount('TestMerchant');
+        $ApiPaymentMethods = new AdyenAPIPaymentMethods();
+        $ApiPaymentMethods->setCountryCode('DE');
+        $ApiPaymentMethods->setShopperLocale('de_DE');
+        $ApiPaymentMethods->setCurrencyFilterAmount('1000');
+        $ApiPaymentMethods->setCurrencyName('EUR');
+        $ApiPaymentMethods->setMerchantAccount('TestMerchant');
 
         $adyenSDKLoaderMock = $this->createTestAdyenSDKLoader();
 
@@ -163,7 +163,7 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
             ->onlyMethods(['createCheckout'])->getMock();
         $paymentMock->method('createCheckout')
             ->willReturn($checkoutMock);
-        $paymentMock->loadAdyenPaymentMethods($adyenAPIPaymentMethods);
+        $paymentMock->loadAdyenPaymentMethods($ApiPaymentMethods);
     }
 
     /**

@@ -36,7 +36,7 @@ class Payment extends PaymentBase
 
     private AdyenAPIResponsePayments $APIPayments;
     private CountryRepository $countryRepository;
-    private AdyenAPILineItemsService $adyenAPILineItemsService;
+    private AdyenAPILineItemsService $ApiLineItemsService;
     private SessionSettings $sessionSettings;
     private OxNewService $oxNewService;
 
@@ -45,7 +45,7 @@ class Payment extends PaymentBase
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePayments $APIPayments,
         CountryRepository $countryRepository,
-        AdyenAPILineItemsService $adyenAPILineItemsService,
+        AdyenAPILineItemsService $ApiLineItemsService,
         SessionSettings $sessionSettings,
         OxNewService $oxNewService
     ) {
@@ -53,7 +53,7 @@ class Payment extends PaymentBase
         $this->moduleSettings = $moduleSettings;
         $this->APIPayments = $APIPayments;
         $this->countryRepository = $countryRepository;
-        $this->adyenAPILineItemsService = $adyenAPILineItemsService;
+        $this->ApiLineItemsService = $ApiLineItemsService;
         $this->sessionSettings = $sessionSettings;
         $this->oxNewService = $oxNewService;
     }
@@ -92,7 +92,7 @@ class Payment extends PaymentBase
         $payments->setShopperIP($paymentState['shopperIP'] ?? $viewConfig->getRemoteAddress());
         $payments->setShopperReference($user->getId());
         $payments->setShopperCountryCode($this->countryRepository->getCountryIso());
-        $payments->setLineItems($this->adyenAPILineItemsService->getLineItems());
+        $payments->setLineItems($this->ApiLineItemsService->getLineItems());
         $payments->setCurrencyAmount($this->getAdyenAmount(
             $amount,
             $this->context->getActiveCurrencyDecimals()

@@ -79,7 +79,7 @@ class PaymentCancelTest extends UnitTestCase
         return $mock;
     }
 
-    private function createOxNewServiceMock(AdyenAPICancels $adyenAPICancels): OxNewService
+    private function createOxNewServiceMock(AdyenAPICancels $ApiCancels): OxNewService
     {
         $mock = $this->getMockBuilder(OxNewService::class)
             ->disableOriginalConstructor()
@@ -88,7 +88,7 @@ class PaymentCancelTest extends UnitTestCase
         $mock->expects($this->once())
             ->method('oxNew')
             ->with(AdyenAPICancels::class)
-            ->willReturn($adyenAPICancels);
+            ->willReturn($ApiCancels);
 
         return $mock;
     }

@@ -23,7 +23,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
             'EUR'
         );
         $countryRepo = $this->createCountryRepoMock('DE');
-        $adyenAPITransactionInfoService = new AdyenAPITransactionInfoService(
+        $ApiTransactionInfoService = new AdyenAPITransactionInfoService(
             $session,
             $countryRepo,
             $logger
@@ -31,7 +31,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
 
         $this->assertSame(
             '{"currencyCode":"EUR","countryCode":"DE","totalPriceStatus":"FINAL","totalPrice":12.34}',
-            $adyenAPITransactionInfoService->getTransactionJson()
+            $ApiTransactionInfoService->getTransactionJson()
         );
     }
     /**
@@ -45,7 +45,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
             "\xB1\x31" // malformed country code causes json encode error
         );
         $countryRepo = $this->createCountryRepoMock('DE');
-        $adyenAPITransactionInfoService = new AdyenAPITransactionInfoService(
+        $ApiTransactionInfoService = new AdyenAPITransactionInfoService(
             $session,
             $countryRepo,
             $logger
@@ -53,7 +53,7 @@ class AdyenAPITransactionInfoServiceTest extends TestCase
 
         $this->assertSame(
             '',
-            $adyenAPITransactionInfoService->getTransactionJson()
+            $ApiTransactionInfoService->getTransactionJson()
         );
     }
 

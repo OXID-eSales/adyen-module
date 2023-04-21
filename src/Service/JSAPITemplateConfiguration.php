@@ -17,20 +17,20 @@ class JSAPITemplateConfiguration
     private TemplateEngineInterface $templateEngine;
     private LoggerInterface $logger;
     private JSAPIConfigurationService $configurationService;
-    private AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService;
+    private AdyenAPIResponsePaymentMethods $ApiResponsePaymentMethodsService;
     private ModuleSettings $moduleSettings;
 
     public function __construct(
         TemplateEngineInterface $templateEngine,
         JSAPIConfigurationService $configurationService,
-        AdyenAPIResponsePaymentMethods $adyenAPIResponsePaymentMethodsService,
+        AdyenAPIResponsePaymentMethods $ApiResponsePaymentMethodsService,
         LoggerInterface $logger,
         ModuleSettings $moduleSettings
     ) {
         $this->templateEngine = $templateEngine;
         $this->logger = $logger;
         $this->configurationService = $configurationService;
-        $this->adyenAPIResponsePaymentMethodsService = $adyenAPIResponsePaymentMethodsService;
+        $this->ApiResponsePaymentMethodsService = $ApiResponsePaymentMethodsService;
         $this->moduleSettings = $moduleSettings;
     }
 
@@ -75,7 +75,7 @@ class JSAPITemplateConfiguration
                     ],
                     'countryCode' => $viewConfig->getAdyenCountryIso(),
                     'environment' => $viewConfig->getAdyenOperationMode(),
-                    'configuration' => $this->adyenAPIResponsePaymentMethodsService->getGooglePayConfiguration()
+                    'configuration' => $this->ApiResponsePaymentMethodsService->getGooglePayConfiguration()
                 ],
             ),
             'applePayConfigurationJson' => json_encode(
@@ -85,7 +85,7 @@ class JSAPITemplateConfiguration
                         'value' => $viewConfig->getAdyenAmountValue(),
                     ],
                     'countryCode' => $viewConfig->getAdyenCountryIso(),
-                    'configuration' => $this->adyenAPIResponsePaymentMethodsService->getApplePayConfiguration(),
+                    'configuration' => $this->ApiResponsePaymentMethodsService->getApplePayConfiguration(),
                 ],
             ),
             'payPalMerchantId' => $this->moduleSettings->getPayPalMerchantId(),

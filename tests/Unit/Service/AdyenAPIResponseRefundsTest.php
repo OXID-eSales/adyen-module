@@ -18,13 +18,13 @@ class AdyenAPIResponseRefundsTest extends AbstractAdyenAPIResponseTest
     {
         $checkoutService = $this->createCheckoutServiceMock($params, 'refunds', $result);
 
-        /** @var AdyenAPIRefunds $adyenApiRefunds */
-        $adyenApiRefunds = $this->createMock(AdyenAPIRefunds::class);
-        $adyenApiRefunds->expects($this->once())
+        /** @var AdyenAPIRefunds $ApiRefunds */
+        $ApiRefunds = $this->createMock(AdyenAPIRefunds::class);
+        $ApiRefunds->expects($this->once())
             ->method('getAdyenRefundsParams')
             ->willReturn($params);
 
-        $adyenApiRefundsResponse = $this->createAdyenAPIResponse(
+        $ApiRefundsResponse = $this->createAdyenAPIResponse(
             AdyenAPIResponseRefunds::class,
             $checkoutService,
             $errorInvokeAmount,
@@ -32,7 +32,7 @@ class AdyenAPIResponseRefundsTest extends AbstractAdyenAPIResponseTest
             'payments not found in Adyen-Response',
         );
 
-        $this->assertEquals($result, $adyenApiRefundsResponse->setRefund($adyenApiRefunds));
+        $this->assertEquals($result, $ApiRefundsResponse->setRefund($ApiRefunds));
     }
 
     public function getTestData(): array

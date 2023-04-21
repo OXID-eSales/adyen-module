@@ -18,13 +18,13 @@ class AdyenAPIResponseCapturesTest extends AbstractAdyenAPIResponseTest
     {
         $checkoutService = $this->createCheckoutServiceMock($params, 'captures', $result);
 
-        /** @var AdyenAPICaptures $adyenApiCaptures */
-        $adyenApiCaptures = $this->createMock(AdyenAPICaptures::class);
-        $adyenApiCaptures->expects($this->once())
+        /** @var AdyenAPICaptures $ApiCaptures */
+        $ApiCaptures = $this->createMock(AdyenAPICaptures::class);
+        $ApiCaptures->expects($this->once())
             ->method('getAdyenCapturesParams')
             ->willReturn($params);
 
-        $adyenAPIResponseCaptures = $this->createAdyenAPIResponse(
+        $ApiResponseCaptures = $this->createAdyenAPIResponse(
             AdyenAPIResponseCaptures::class,
             $checkoutService,
             $errorInvokeAmount,
@@ -32,7 +32,7 @@ class AdyenAPIResponseCapturesTest extends AbstractAdyenAPIResponseTest
             'payments not found in Adyen-Response'
         );
 
-        $this->assertEquals($result, $adyenAPIResponseCaptures->setCapture($adyenApiCaptures));
+        $this->assertEquals($result, $ApiResponseCaptures->setCapture($ApiCaptures));
     }
 
     public function getTestData(): array

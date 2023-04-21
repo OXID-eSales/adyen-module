@@ -70,7 +70,7 @@ class PaymentCaptureTest extends UnitTestCase
         string $reference,
         string $pspReference
     ): PaymentCapture {
-        $adyenAPICapturesMock = $this->createAdyenAPICapturesMock(
+        $ApiCapturesMock = $this->createAdyenAPICapturesMock(
             $currencyName,
             $reference,
             $pspReference,
@@ -82,8 +82,8 @@ class PaymentCaptureTest extends UnitTestCase
                 [
                     $this->createContextMock($currencyName, $decimals),
                     $this->createModuleSettingsMock($merchantAccount),
-                    $this->createAdyenAPIResponseCapturesMock($adyenAPICapturesMock, $resultCapture),
-                    $this->createOxNewServiceMock($adyenAPICapturesMock),
+                    $this->createAdyenAPIResponseCapturesMock($ApiCapturesMock, $resultCapture),
+                    $this->createOxNewServiceMock($ApiCapturesMock),
                 ]
             )
             ->onlyMethods(['getAdyenAmount', 'setCaptureResult', 'setPaymentExecutionError'])
@@ -134,7 +134,7 @@ class PaymentCaptureTest extends UnitTestCase
     }
 
     private function createAdyenAPIResponseCapturesMock(
-        AdyenAPICaptures $adyenAPICaptures,
+        AdyenAPICaptures $ApiCaptures,
         array $resultCapture
     ): AdyenAPIResponseCaptures {
         $mock = $this->getMockBuilder(AdyenAPIResponseCaptures::class)
@@ -143,13 +143,13 @@ class PaymentCaptureTest extends UnitTestCase
             ->getMock();
         $mock->expects($this->once())
             ->method('setCapture')
-            ->with($adyenAPICaptures)
+            ->with($ApiCaptures)
             ->willReturn($resultCapture);
 
         return $mock;
     }
 
-    private function createOxNewServiceMock(AdyenAPICaptures $adyenAPICaptures): OxNewService
+    private function createOxNewServiceMock(AdyenAPICaptures $ApiCaptures): OxNewService
     {
         $mock = $this->getMockBuilder(OxNewService::class)
             ->disableOriginalConstructor()
@@ -158,7 +158,7 @@ class PaymentCaptureTest extends UnitTestCase
         $mock->expects($this->once())
             ->method('oxNew')
             ->with(AdyenAPICaptures::class)
-            ->willReturn($adyenAPICaptures);
+            ->willReturn($ApiCaptures);
 
         return $mock;
     }
