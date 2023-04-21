@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -56,11 +57,9 @@ class AdminOrderController extends AdminDetailsController
      */
     public function isAdyenOrder(): bool
     {
+        /** @var AdyenOrder $order */
         $order = $this->getEditObject();
-        return (
-            $order &&
-            $order->isAdyenOrder()
-        );
+        return $order->isAdyenOrder();
     }
 
     /**
@@ -73,8 +72,8 @@ class AdminOrderController extends AdminDetailsController
         $amount = $request->getRequestParameter('capture_amount');
         $amount = (float)($amount ?? '');
 
-        /** @var Order $order */
         $order = $this->getEditObject();
+        /** @var AdyenOrder $order */
         $order->captureAdyenOrder($amount);
     }
 
@@ -88,8 +87,8 @@ class AdminOrderController extends AdminDetailsController
         $amount = $request->getRequestParameter('refund_amount');
         $amount = (float)($amount ?? '');
 
-        /** @var Order $order */
         $order = $this->getEditObject();
+        /** @var AdyenOrder $order */
         $order->refundAdyenOrder($amount);
     }
 

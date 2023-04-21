@@ -18,6 +18,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidEsales\Eshop\Application\Model\Payment as PaymentModel;
+use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 
 /**
@@ -88,6 +89,7 @@ class Payment extends PaymentBase
         $payments->setPaymentMethod($paymentState['paymentMethod'] ?? []);
         $payments->setOrigin($paymentState['origin'] ?? '');
         $payments->setBrowserInfo($paymentState['browserInfo'] ?? []);
+        /** @var AdyenUser $user */
         $payments->setShopperEmail($paymentState['shopperEmail'] ?? $user->getAdyenStringData('oxusername'));
         $payments->setShopperIP($paymentState['shopperIP'] ?? $viewConfig->getRemoteAddress());
         $payments->setShopperReference($user->getId());

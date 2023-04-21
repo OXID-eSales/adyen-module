@@ -3,6 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Core\ViewConfig as AdyenViewConfig;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -25,6 +26,7 @@ class JSAPIConfigurationService
         User $user,
         ?Payment $payment
     ): array {
+        /** @var AdyenViewConfig $viewConfig */
         $configFieldsArray = [
             'environment' => $viewConfig->getAdyenOperationMode(),
             'clientKey' => $viewConfig->getAdyenClientKey(),
@@ -71,6 +73,7 @@ class JSAPIConfigurationService
     private function getPaymentPageConfigFields(
         ViewConfig $viewConfig
     ): array {
+        /** @var AdyenViewConfig $viewConfig */
         return ($viewConfig->getTopActiveClassName() === 'payment') ?
             [
                 'paymentMethodsResponse' => $viewConfig->getAdyenPaymentMethods(),
@@ -83,6 +86,7 @@ class JSAPIConfigurationService
         ?Payment $payment
     ): array {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+        /** @var AdyenViewConfig $viewConfig */
         if ($viewConfig->getTopActiveClassName() === 'order') {
             $configFields = [
                 'countryCode' => $viewConfig->getAdyenCountryIso(),

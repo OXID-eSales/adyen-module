@@ -8,8 +8,10 @@ use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Core\ViewConfig as AdyenViewConfig;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
 use Psr\Log\LoggerInterface;
 
 class JSAPITemplateConfiguration
@@ -51,6 +53,7 @@ class JSAPITemplateConfiguration
         ?Payment $payment
     ): array {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+        /** @var AdyenViewConfig $viewConfig */
         return [
             'configFields' => $this->getConfigFieldsJsonFormatted($viewConfig, $controller, $payment),
             'isLog' => $viewConfig->isAdyenLoggingActive(),
@@ -154,6 +157,8 @@ class JSAPITemplateConfiguration
         ViewConfig $viewConfig,
         ?Payment $payment
     ): bool {
+        /** @var AdyenPayment $payment */
+        /** @var AdyenViewConfig $viewConfig */
         return $controller instanceof PaymentController
             && $payment instanceof Payment
             && $payment->showInPaymentCtrl()

@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
+
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\Eshop\Application\Model\Address;
+use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
+use OxidSolutionCatalysts\Adyen\Model\Address as AdyenAddress;
 use OxidEsales\Eshop\Application\Model\Country;
+use OxidSolutionCatalysts\Adyen\Model\Country as AdyenCountry;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -33,14 +35,15 @@ class UserAddress
 
     public function getAdyenShopperEmail(User $user): string
     {
+        /** @var AdyenUser $user */
         return $user->getAdyenStringData('oxusername');
     }
 
     public function getAdyenShopperName(User $user): array
     {
-        /** @var Address|null $address */
+        /** @var AdyenUser|null $address */
         $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
+        /** @var AdyenAddress|AdyenUser $dataObj */
         $dataObj = $address ?: $user;
 
         return [
@@ -51,13 +54,13 @@ class UserAddress
 
     public function getAdyenDeliveryAddress(User $user): array
     {
-        /** @var Address|null $address */
+        /** @var AdyenAddress|null $address */
         $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
+        /** @var AdyenAddress|AdyenUser $dataObj */
         $dataObj = $address ?: $user;
 
-        /** @var Country $country */
-        $country = $this->oxNewService->oxNew(EshopModelCountry::class);
+        /** @var AdyenCountry $country */
+        $country = $this->oxNewService->oxNew(Country::class);
         $country->load($dataObj->getAdyenStringData('oxcountryid'));
         /** @var null|string $countryIso */
         $countryIso = $country->getAdyenStringData('oxisoalpha2');
