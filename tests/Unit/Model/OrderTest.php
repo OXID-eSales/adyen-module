@@ -13,9 +13,13 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
 
 class OrderTest extends UnitTestCase
 {
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\Order::getAdyenPSPReference
+     */
     public function testSetGetPSPReference(): void
     {
         $model = $this->createPartialMock(Order::class, []);
@@ -24,6 +28,9 @@ class OrderTest extends UnitTestCase
         $this->assertSame('testPSPReference', $model->getAdyenPSPReference());
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\Order::getAdyenOrderReference
+     */
     public function testSetGetAdyenOrderReference(): void
     {
         $model = $this->createPartialMock(Order::class, []);
@@ -32,17 +39,41 @@ class OrderTest extends UnitTestCase
         $this->assertSame('testORDERReference', $model->getAdyenOrderReference());
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\Order::isAdyenCapturePossible
+     */
     public function testAdyenCapturePossible(): void
     {
-        $mock = $this->createPartialMock(Order::class, ['getTotalOrderSum', 'getCapturedAmount', 'isAdyenOrder']);
+        $orderId = '456';
 
-        $mock->method('getCapturedAmount')->willReturn(0.0);
-        $mock->method('getTotalOrderSum')->willReturn(120.0);
-        $mock->method('isAdyenOrder')->willReturn(true);
+        $capturePossibleServiceMock = $this->createPartialMock(
+            OrderIsAdyenCapturePossibleService::class,
+            ['isAdyenCapturePossible']
+        );
+        $capturePossibleServiceMock->expects($this->once())
+            ->method('isAdyenCapturePossible')
+            ->with($orderId)
+            ->willReturn(true);
+
+        $orderMock = $this->createPartialMock(
+            Order::class,
+            ['getTotalOrderSum', 'getCapturedAmount', 'isAdyenOrder', 'getServiceFromContainer', 'getId']
+        );
+
+        $orderMock->method('getCapturedAmount')->willReturn(0.0);
+        $orderMock->method('getTotalOrderSum')->willReturn(120.0);
+        $orderMock->method('isAdyenOrder')->willReturn(true);
+        $orderMock->method('getServiceFromContainer')->willReturn($capturePossibleServiceMock);
+        $orderMock->method('getId')->willReturn($orderId);
+
+
         // test getPossibleCaptureAmount, isAdyenCapturePossible
-        $this->assertTrue($mock->isAdyenCapturePossible());
+        $this->assertTrue($orderMock->isAdyenCapturePossible());
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\Order::isAdyenCapturePossible
+     */
     public function testAdyenCancelPossible(): void
     {
         $mock = $this->createPartialMock(Order::class, ['getCapturedAmount']);
@@ -51,6 +82,9 @@ class OrderTest extends UnitTestCase
         $this->assertTrue($mock->isAdyenCancelPossible());
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Model\Order::isAdyenRefundPossible
+     */
     public function testAdyenRefundPossible(): void
     {
         $mock = $this->createPartialMock(Order::class, ['getCapturedAmount', 'getRefundedAmount', 'isAdyenOrder']);

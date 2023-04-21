@@ -12,8 +12,7 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
 
 /**
@@ -22,7 +21,6 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
  */
 class PaymentGateway extends PaymentGateway_parent
 {
-    use ServiceContainer;
     use RequestGetter;
 
     public function executePayment($amount, &$order): bool
@@ -36,7 +34,7 @@ class PaymentGateway extends PaymentGateway_parent
             if (!$moduleService->showInPaymentCtrl($paymentId)) {
                 $payGatewayService->doCollectAdyenRequestData();
             }
-            /** @var eShopOrder $order */
+            /** @var Order $order */
             $payGatewayService->doFinishAdyenPayment($amount, $order);
         }
 

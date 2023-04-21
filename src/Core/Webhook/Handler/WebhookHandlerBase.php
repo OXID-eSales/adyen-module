@@ -11,13 +11,13 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Application\Model\Order as EshopModelOrder;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
-use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenModel;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use Psr\Log\LoggerInterface;
@@ -29,20 +29,20 @@ abstract class WebhookHandlerBase
     protected int $shopId;
     protected string $pspReference;
     protected string $parentPspReference;
-    protected EshopModelOrder $order;
+    protected Order $order;
     protected Payment $payment;
     protected AdyenHistoryList $adyenHistoryList;
     protected Context $context;
 
     public function __construct(
         ?Payment $payment = null,
-        ?EshopModelOrder $order = null,
+        ?Order $order = null,
         ?AdyenHistoryList $adyenHistoryList = null,
         ?Context $context = null
     ) {
         // whether getting mock objects from unit test or new objects for production
         $this->payment = $payment ?? oxNew(Payment::class);
-        $this->order = $order ?? oxNew(EshopModelOrder::class);
+        $this->order = $order ?? oxNew(Order::class);
         $this->adyenHistoryList = $adyenHistoryList ?? oxNew(AdyenHistoryList::class);
         $this->context = $context ?? $this->getServiceFromContainer(Context::class);
     }
@@ -69,7 +69,7 @@ abstract class WebhookHandlerBase
         }
     }
 
-    protected function getOrderByAdyenPSPReference(string $pspReference): ?EshopModelOrder
+    protected function getOrderByAdyenPSPReference(string $pspReference): ?Order
     {
         $result = null;
 
@@ -96,7 +96,7 @@ abstract class WebhookHandlerBase
         $this->parentPspReference = $event->getParentPspReference() !== '' ?
             $event->getParentPspReference() :
             $this->pspReference;
-        /** @var Order $order */
+        /** @var AdyenModel $order */
         $order = $this->getOrderByAdyenPSPReference($this->pspReference);
         if (!is_object($order)) {
             throw new Exception("order not found by psp reference " . $this->pspReference);

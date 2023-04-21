@@ -32,10 +32,10 @@ class AdyenAPIResponseRefunds extends AdyenAPIResponse
             $params = $refundParams->getAdyenRefundsParams();
             $result = $service->refunds($params);
             if (!$result) {
-                throw new Exception('payments not found in Adyen-Response');
+                throw $this->getPaymentsNotFoundException();
             }
         } catch (AdyenException | Exception $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
         return $result;
     }

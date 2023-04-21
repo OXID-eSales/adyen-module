@@ -15,6 +15,8 @@ use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
 
 trait OrderHistory
 {
+    protected string $orderNumber;
+
     /**
      * use this trait to check the appearance of the order in the history
      * Class using this trait mus provide the following properties

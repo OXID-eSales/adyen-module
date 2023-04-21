@@ -24,23 +24,24 @@ class PaymentRefund extends PaymentBase
 
     private array $refundResult = [];
 
-    /** @var Context */
     private Context $context;
 
-    /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
 
-    /** @var AdyenAPIResponseRefunds */
     private AdyenAPIResponseRefunds $APIRefunds;
+
+    private OxNewService $oxNewService;
 
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
-        AdyenAPIResponseRefunds $APIRefunds
+        AdyenAPIResponseRefunds $APIRefunds,
+        OxNewService $oxNewsService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APIRefunds = $APIRefunds;
+        $this->oxNewService = $oxNewsService;
     }
 
     public function setRefundResult(array $refundResult): void
@@ -62,7 +63,7 @@ class PaymentRefund extends PaymentBase
     {
         $result = false;
 
-        $refunds = oxNew(AdyenAPIRefunds::class);
+        $refunds = $this->oxNewService->oxNew(AdyenAPIRefunds::class);
         $refunds->setCurrencyName($this->context->getActiveCurrencyName());
         $refunds->setReference($orderNr);
         $refunds->setPspReference($pspReference);

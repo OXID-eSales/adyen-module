@@ -9,8 +9,13 @@ namespace OxidSolutionCatalysts\Adyen\Core;
 
 use Adyen\AdyenException;
 use Exception;
+use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Service\AdyenAPITransactionInfoService;
+use OxidEsales\Eshop\Application\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateCheckoutCreate;
+use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateConfiguration;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
@@ -22,7 +27,11 @@ use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) is too high, hard to refactor
+ */
 class ViewConfig extends ViewConfig_parent
 {
     use Json;
@@ -54,10 +63,18 @@ class ViewConfig extends ViewConfig_parent
      */
     public function checkAdyenHealth(): bool
     {
-        return (
-            $this->moduleSettings->checkConfigHealth() &&
-            $this->existsAdyenPaymentMethods()
-        );
+        $isHealthy = false;
+
+        try {
+            $isHealthy = $this->moduleSettings->checkConfigHealth() && $this->existsAdyenPaymentMethods();
+        } catch (AdyenException $exception) {
+            $this->getServiceFromContainer(LoggerInterface::class)->error(
+                'ViewConfig::checkAdyenHealth could not prove existsAdyenPaymentMethods because of exception',
+                ['exception' => $exception]
+            );
+        }
+
+        return $isHealthy;
     }
 
     public function checkAdyenConfigHealth(): bool
@@ -70,9 +87,19 @@ class ViewConfig extends ViewConfig_parent
         return $this->moduleSettings->getOperationMode();
     }
 
+    public function getGooglePayOperationMode(): string
+    {
+        return $this->moduleSettings->getGooglePayOperationMode();
+    }
+
     public function isAdyenLoggingActive(): bool
     {
         return $this->moduleSettings->isLoggingActive();
+    }
+
+    public function isAdyenAnalyticsActive(): bool
+    {
+        return $this->moduleSettings->isAnalyticsActive();
     }
 
     public function isAdyenSandboxMode(): bool
@@ -88,6 +115,11 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenPayPalMerchantId(): string
     {
         return $this->moduleSettings->getPayPalMerchantId();
+    }
+
+    public function getAdyenMerchantAccount(): string
+    {
+        return $this->moduleSettings->getMerchantAccount();
     }
 
     public function getAdyenSDKVersion(): string
@@ -135,6 +167,11 @@ class ViewConfig extends ViewConfig_parent
         return Module::PAYMENT_PAYPAL_ID;
     }
 
+    public function getAdyenPaymentGooglePayId(): string
+    {
+        return Module::PAYMENT_GOOGLE_PAY_ID;
+    }
+
     public function getAdyenErrorInvalidSession(): string
     {
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
@@ -146,13 +183,12 @@ class ViewConfig extends ViewConfig_parent
     }
 
     /**
-     * return a JSON-String with PaymentMethods (array)
      * @throws AdyenException
      * @throws Exception
      */
-    public function getAdyenPaymentMethods(): string
+    public function getAdyenPaymentMethods(): array
     {
-        return $this->arrayToJson($this->adyenPaymentMethods->getAdyenPaymentMethods());
+        return $this->adyenPaymentMethods->getAdyenPaymentMethods();
     }
 
     /**
@@ -191,5 +227,31 @@ class ViewConfig extends ViewConfig_parent
     public function getAdyenAmountCurrency(): string
     {
         return $this->context->getActiveCurrencyName();
+    }
+
+    public function getTemplateConfiguration(
+        FrontendController $oView,
+        ?Payment $payment
+    ): string {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->getConfiguration($this, $oView, $payment);
+    }
+
+    public function getTemplateCheckoutCreateId(?Payment $payment): string
+    {
+        return $payment ? $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
+            ->getCreateId($payment->getId())
+            : '';
+    }
+
+    public function getGooglePayTransactionInfo(): string
+    {
+        return $this->getServiceFromContainer(AdyenAPITransactionInfoService::class)
+            ->getTransactionJson();
+    }
+
+    public function getTemplatePayButtonContainerId(?Payment $payment): string
+    {
+        return $payment ? $payment->getId() . '-container' : '';
     }
 }

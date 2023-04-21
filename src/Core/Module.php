@@ -26,6 +26,15 @@ final class Module
 
     public const PAYMENT_CREDITCARD_ID = 'oscadyencreditcard';
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
+    public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
+
+    public const PAYMENT_KLARNA_LATER_ID = 'oscklarna';
+    public const PAYMENT_KLARNA_IMMEDIATE_ID = 'oscklarnapaynow';
+    public const PAYMENT_KLARNA_OVER_TIME_ID = 'oscklarnaaccount';
+
+    public const PAYMENT_TWINT_ID = 'osctwint';
+
+    public const PAYMENT_APPLE_PAY_ID = 'oscapplepay';
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
@@ -41,7 +50,7 @@ final class Module
     public const ADYEN_STATUS_AUTHORISED = 'authorised';
     public const ADYEN_STATUS_CANCELLED = 'cancelled';
     public const ADYEN_STATUS_CAPTURED = 'captured';
-    public const ADYEN_STATUS_CAPTUREFAILED = 'capturefailed';
+    public const ADYEN_STATUS_CAPTURE_FAILED = 'capturefailed';
     public const ADYEN_STATUS_ERROR = 'error';
     public const ADYEN_STATUS_EXPIRED = 'expired';
     public const ADYEN_STATUS_RECEIVED = 'received';
@@ -55,6 +64,11 @@ final class Module
     public const ADYEN_STATUS_REFUNDEDREVERSED = 'refundedreversed';
     public const ADYEN_STATUS_REFUNDSCHEDULED = 'refundscheduled';
     public const ADYEN_STATUS_SENTFORREFUND = 'sentforrefund';
+    public const ADYEN_RETURN_RESULT_CODE_AUTHORISED = 'Authorised';
+    public const ADYEN_RETURN_RESULT_CODE_RECEIVED = 'Received';
+    public const ADYEN_RETURN_RESULT_CODE_CANCELLED = 'Cancelled';
+    public const ADYEN_RETURN_RESULT_CODE_REFUSED = 'Refused';
+    public const ADYEN_RETURN_RESULT_CODE_ERROR = 'Error';
     public const ADYEN_HTMLPARAM_PSPREFERENCE_NAME = 'adyenPspReference';
     public const ADYEN_HTMLPARAM_RESULTCODE_NAME = 'adyenResultCode';
     public const ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME = 'adyenAmountCurrency';
@@ -107,6 +121,121 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false
-        ]
+        ],
+        self::PAYMENT_GOOGLE_PAY_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Google Pay',
+                    'longdesc' => 'Google Pay',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Google Pay.'
+                ],
+                'en' => [
+                    'desc' => 'Google Pay',
+                    'longdesc' => 'Google Pay',
+                    'longdesc_beta' => 'Pay conveniently with Google Pay.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false
+        ],
+        self::PAYMENT_KLARNA_LATER_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna',
+                    'longdesc' => 'Klarna',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Klarna.'
+                ],
+                'en' => [
+                    'desc' => 'Klarna',
+                    'longdesc' => 'Klarna',
+                    'longdesc_beta' => 'Pay conveniently with Klarna.',
+                ],
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+        ],
+        self::PAYMENT_KLARNA_OVER_TIME_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna Ratenzahlung',
+                    'longdesc' => 'Klarna Ratenzahlung',
+                    'longdesc_beta' => 'Bezahlen Sie bequem in Raten Klarna.',
+                ],
+                'en' => [
+                    'desc' => 'Klarna Installment',
+                    'longdesc' => 'Klarna Installment',
+                    'longdesc_beta' => 'Pay conveniently in installments with Klarna.',
+                ],
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+        ],
+        self::PAYMENT_KLARNA_IMMEDIATE_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Klarna Sofortbezahlung',
+                    'longdesc' => 'Klarna Sofortbezahlung',
+                    'longdesc_beta' => 'Bezahlen Sie sofort mit Klarna.'
+                ],
+                'en' => [
+                    'desc' => 'Klarna Immediate',
+                    'longdesc' => 'Klarna Immediate',
+                    'longdesc_beta' => 'Pay immediately with Klarna.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false
+        ],
+        self::PAYMENT_TWINT_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Twint',
+                    'longdesc' => 'Twint',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Twint.'
+                ],
+                'en' => [
+                    'desc' => 'Twint',
+                    'longdesc' => 'Twint',
+                    'longdesc_beta' => 'Pay conveniently with Twint.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+            'supported_currencies' => ['CHF'],
+        ],
+        self::PAYMENT_APPLE_PAY_ID => [
+            'descriptions' => [
+                'de' => [
+                    'desc' => 'Apple Pay',
+                    'longdesc' => 'Apple Pay',
+                    'longdesc_beta' => 'Bezahlen Sie bequem mit Apple Pay.'
+                ],
+                'en' => [
+                    'desc' => 'Apple Pay',
+                    'longdesc' => 'Apple Pay',
+                    'longdesc_beta' => 'Pay conveniently with Apple Pay.'
+                ]
+            ],
+            'countries' => [],
+            'currencies' => [],
+            'constraints' => self::PAYMENT_CONSTRAINTS,
+            'capturedelay' => true,
+            'paymentCtrl' => false,
+        ],
     ];
 }

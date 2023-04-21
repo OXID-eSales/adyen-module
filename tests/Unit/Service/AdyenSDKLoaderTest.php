@@ -11,11 +11,15 @@ use Monolog\Logger;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 use Adyen\Client;
 
 class AdyenSDKLoaderTest extends TestCase
 {
+    use ServiceContainer;
+
     /**
      * @dataProvider providerSDKLoadingData
      */
@@ -33,9 +37,10 @@ class AdyenSDKLoaderTest extends TestCase
     {
         $moduleSettings = $this->createConfiguredMock(ModuleSettings::class, $moduleSettingValues);
         $loggingHandler = $this->createPartialMock(Logger::class, ['getName']);
+        $oxNewService = $this->getServiceFromContainer(OxNewService::class);
         $loggingHandler->method('getName')->willReturn('Adyen Payment Logger');
 
-        return new AdyenSDKLoader($moduleSettings, $loggingHandler);
+        return new AdyenSDKLoader($moduleSettings, $loggingHandler, $oxNewService);
     }
 
     public function providerSDKLoadingData(): array

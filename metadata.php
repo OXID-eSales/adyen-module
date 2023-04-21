@@ -15,12 +15,12 @@ use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Basket;
 use OxidSolutionCatalysts\Adyen\Model\Country;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Model\PaymentGateway;
 use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 /**
  * Metadata version
@@ -88,6 +88,8 @@ $aModule = [
         // frontend - mails
         'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_html.tpl',
         'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
+        // adyen js api
+        'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
     ],
     'blocks' => [
         [
@@ -150,6 +152,11 @@ $aModule = [
             'block' => 'email_plain_ordershipped_oxordernr',
             'file' => 'views/frontend/blocks/email/plain/email_plain_ordershipped_oxordernr.tpl'
         ],
+        [
+            'template' => 'page/checkout/order.tpl',
+            'block' => 'checkout_order_address',
+            'file' => 'views/frontend/blocks/page/checkout/order_checkout_order_address.tpl'
+        ],
         //admin
         [
             'template' => 'module_config.tpl',
@@ -160,86 +167,104 @@ $aModule = [
     'settings' => [
         [
             'group'       => 'osc_adyen_API',
-            'name'        => 'osc_adyen_OperationMode',
+            'name'        => ModuleSettings::OPERATION_MODE,
             'type'        => 'select',
             'constraints' => 'sandbox|live',
             'value'       => 'sandbox'
         ],
         [
             'group' => 'osc_adyen_API',
-            'name' => 'osc_adyen_LoggingActive',
+            'name' => ModuleSettings::LOGGING_ACTIVE,
+            'type' => 'bool',
+            'value' => false
+        ],
+        [
+            'group' => 'osc_adyen_API',
+            'name' => ModuleSettings::ANALYTICS_ACTIVE,
             'type' => 'bool',
             'value' => false
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxAPIKey',
+            'name' => ModuleSettings::SANDBOX_API_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxClientKey',
+            'name' => ModuleSettings::SANDBOX_CLIENT_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxHmacSignature',
+            'name' => ModuleSettings::SANDBOX_HMAC_SIGNATURE,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxMerchantAccount',
+            'name' => ModuleSettings::SANDBOX_MERCHANT_ACCOUNT,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxPayPalMerchantId',
+            'name' => ModuleSettings::SANDBOX_PAYPAL_MERCHANT_ID,
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_SANDBOX',
+            'name' => ModuleSettings::SANDBOX_GOOGLE_PAY_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveAPIKey',
+            'name' => ModuleSettings::LIVE_API_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveClientKey',
+            'name' => ModuleSettings::LIVE_CLIENT_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveEndpointPrefix',
+            'name' => ModuleSettings::LIVE_ENDPOINT_PREFIX,
             'type' => 'str',
             'value' => '[yourprefix]'
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveHmacSignature',
+            'name' => ModuleSettings::LIVE_HMAC_SIGNATURE,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveMerchantAccount',
+            'name' => ModuleSettings::LIVE_MERCHANT_ACCOUNT,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LivePayPalMerchantId',
+            'name' => ModuleSettings::LIVE_PAYPAL_MERCHANT_ID,
+            'type' => 'str',
+            'value' => ''
+        ],
+        [
+            'group' => 'osc_adyen_LIVE',
+            'name' => ModuleSettings::LIVE_GOOGLE_PAY_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -248,7 +273,61 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_PAYPAL_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_GOOGLE_PAY_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_IMMEDIATE_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_LATER_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_OVER_TIME_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_TWINT_ID,
+            'type' => 'select',
+            'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
+            'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
+                Module::ADYEN_CAPTURE_DELAY_DAYS . '|' .
+                Module::ADYEN_CAPTURE_DELAY_IMMEDIATE
+        ],
+        [
+            'group' => 'osc_adyen_CaptureDelay',
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_APPLE_PAY_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -257,7 +336,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_Languages',
-            'name' => 'osc_adyen_Languages',
+            'name' => ModuleSettings::LANGUAGES,
             'type' => 'aarr',
             'value' => [
                 'de' => 'de_DE',
@@ -266,7 +345,7 @@ $aModule = [
         ],
         [
             'group' => null,
-            'name' => 'osc_adyen_activePayments',
+            'name' => ModuleSettings::ACTIVE_PAYMENTS,
             'type' => 'arr',
             'value' => []
         ],

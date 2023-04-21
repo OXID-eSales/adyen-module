@@ -1,11 +1,13 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
+use OxidSolutionCatalysts\Adyen\Service\OrderReturnService;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGatewayOrderSavable;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
@@ -39,16 +41,16 @@ class PaymentGatewayTest extends UnitTestCase
 
     /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::doFinishAdyenPayment
+     * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::getOrderCurrencyName
      */
     public function testDoFinishAdyenPaymentSuccess()
     {
-        $paymentId = Module::PAYMENT_CREDITCARD_ID;
+        $paymentId = Module::PAYMENT_PAYPAL_ID;
         $sessionSettingsMock = $this->createSessionSettingsMock(
             1,
             $paymentId,
             $this->pspReference,
             $this->resultCode,
-            $this->amountCurrency,
             $this->orderReference
         );
 
@@ -71,17 +73,17 @@ class PaymentGatewayTest extends UnitTestCase
             1
         );
 
-        $moduleServiceMock = $this->createModuleServiceMock(
-            $paymentId,
-            1,
-            true
+        $paymentConfigServiceMock = $this->createPaymentConfigServiceMock(
+            $paymentId
         );
 
         $paymentGateway = oxNew(
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $moduleServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */
@@ -99,7 +101,6 @@ class PaymentGatewayTest extends UnitTestCase
             $paymentId,
             $this->pspReference,
             $this->resultCode,
-            $this->amountCurrency,
             $this->orderReference
         );
 
@@ -122,15 +123,18 @@ class PaymentGatewayTest extends UnitTestCase
             0
         );
 
-        $moduleServiceMock = $this->createModuleServiceMock(
-            $paymentId
+        $paymentConfigServiceMock = $this->createPaymentConfigServiceMock(
+            $paymentId,
+            0
         );
 
         $paymentGateway = oxNew(
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $moduleServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */
@@ -168,13 +172,18 @@ class PaymentGatewayTest extends UnitTestCase
             0
         );
 
-        $moduleServiceMock = $this->createModuleServiceMock();
+        $paymentConfigServiceMock = $this->createPaymentConfigServiceMock(
+            '',
+            0
+        );
 
         $paymentGateway = oxNew(
             PaymentGatewayService::class,
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
-            $moduleServiceMock
+            $paymentConfigServiceMock,
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */
@@ -205,6 +214,13 @@ class PaymentGatewayTest extends UnitTestCase
             ->method('setAdyenPSPReference')
             ->with($pspReference);
 
+        $orderCurrency = new \stdClass();
+        $orderCurrency->name = 'EUR';
+
+        $order->expects($this->once())
+            ->method('getOrderCurrency')
+            ->willReturn($orderCurrency);
+
         $order->expects($this->exactly($saveInvokedCount))
             ->method('setAdyenHistoryEntry')
             ->with(
@@ -231,7 +247,6 @@ class PaymentGatewayTest extends UnitTestCase
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
         string $pspReference = 'pspReference',
         string $resultCode = 'resultCode',
-        string $amountCurrency = 'amountCurrency',
         string $orderReference = 'orderReference'
     ): MockObject {
         $sessionSettingsMock = $this->createMock(SessionSettings::class);
@@ -250,10 +265,6 @@ class PaymentGatewayTest extends UnitTestCase
         $sessionSettingsMock->expects($this->once())
             ->method('getResultCode')
             ->willReturn($resultCode);
-
-        $sessionSettingsMock->expects($this->once())
-            ->method('getAmountCurrency')
-            ->willReturn($amountCurrency);
 
         $sessionSettingsMock->expects($this->once())
             ->method('getOrderReference')
@@ -278,18 +289,18 @@ class PaymentGatewayTest extends UnitTestCase
         return $sessionSettingsMock;
     }
 
-    private function createModuleServiceMock(
+    private function createPaymentConfigServiceMock(
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
-        int $showInCtrlInvokeCount = 0,
-        bool $showInPaymentCtrl = true
+        int $isAdyenImmediateCaptureInvokeCount = 1,
+        bool $isAdyenImmediateCapture = true
     ): MockObject {
-        $moduleServiceMock = $this->createMock(ModuleService::class);
+        $paymentConfigServiceMock = $this->createMock(PaymentConfigService::class);
 
-        $moduleServiceMock->expects($this->exactly($showInCtrlInvokeCount))
-            ->method('showInPaymentCtrl')
+        $paymentConfigServiceMock->expects($this->exactly($isAdyenImmediateCaptureInvokeCount))
+            ->method('isAdyenImmediateCapture')
             ->with($paymentId)
-            ->willReturn($showInPaymentCtrl);
+            ->willReturn($isAdyenImmediateCapture);
 
-        return $moduleServiceMock;
+        return $paymentConfigServiceMock;
     }
 }

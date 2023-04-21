@@ -9,32 +9,33 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidEsales\Eshop\Application\Model\Address as EshopModelAddress;
-use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
+use OxidSolutionCatalysts\Adyen\Model\Address as AdyenAddress;
+use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
+use OxidSolutionCatalysts\Adyen\Model\Country as AdyenCountry;
 use OxidEsales\Eshop\Core\Config;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
-use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Country;
+use OxidEsales\Eshop\Application\Model\User;
 
 /**
  * @extendable-class
  */
 class CountryRepository
 {
-    /** @var Config */
     private Config $config;
-
-    /** @var SessionSettings */
     private SessionSettings $session;
+    private OxNewService $oxNewService;
 
     protected array $countryIso = [];
 
     public function __construct(
         Config $config,
-        SessionSettings $session
+        SessionSettings $session,
+        OxNewService $oxNewService
     ) {
         $this->config = $config;
         $this->session = $session;
+        $this->oxNewService = $oxNewService;
     }
 
     public function getCountryIso(): string
@@ -42,13 +43,12 @@ class CountryRepository
         $countryId = $this->getCountryId();
         if (!isset($this->countryIso[$countryId])) {
             /** @var Country $country */
-            $country = oxNew(EshopModelCountry::class);
+            $country = $this->oxNewService->oxNew(Country::class);
             $country->load($countryId);
             /** @var null|string $countryIso */
+            /** @var AdyenCountry $country */
             $countryIso = $country->getAdyenStringData('oxisoalpha2');
-            if (!is_null($countryIso)) {
-                $this->countryIso[$countryId] = $countryIso;
-            }
+            $this->countryIso[$countryId] = $countryIso;
         }
         return $this->countryIso[$countryId];
     }
@@ -65,8 +65,8 @@ class CountryRepository
         // try from Session Delivery-Address
         if (!$countryId) {
             $addressId = $this->session->getDeliveryId();
-            /** @var Address $deliveryAddress */
-            $deliveryAddress = oxNew(EshopModelAddress::class);
+            /** @var AdyenAddress $deliveryAddress */
+            $deliveryAddress = $this->oxNewService->oxNew(Address::class);
             $countryId = $deliveryAddress->load($addressId) ?
                 $deliveryAddress->getAdyenStringData('oxcountryid') :
                 '';
@@ -76,6 +76,7 @@ class CountryRepository
         if (!$countryId) {
             /** @var User $user */
             $user = $this->session->getUser();
+            /** @var AdyenUser $user */
             $countryId = $user->getAdyenStringData('oxcountryid');
         }
 

@@ -55,7 +55,7 @@
                 </table>
                 <!-- Show AdyenHistory END -->
                 [{oxhasrights ident="ADYENSTORNO"}]
-                    [{if $edit->isAdyenManualCapture()}]
+                    [{if $edit->isAdyenManualCapture() && $edit->isAdyenCapturePossible()}]
                         <!-- Adyen Capture -->
                         <div style="margin-top: 20px;">
                             <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_CAPTUREMONEY"}]</h3>

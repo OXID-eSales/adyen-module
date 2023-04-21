@@ -1,15 +1,10 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\tests\Unit\Service;
+namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\Order;
-use OxidSolutionCatalysts\Adyen\Service\PaymentGateway;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGatewayOrderSavable;
-use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class PaymentGatewayOrderSavableTest extends UnitTestCase
 {

@@ -22,25 +22,27 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 //NOTE: later we will do this on module installation, for now on first activation
 class StaticContents
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
+    private QueryBuilderFactoryInterface $queryBuilderFactory;
 
-    /** @var ModuleSettings */
-    private $moduleSettings;
+    private ModuleSettings $moduleSettings;
+
+    private OxNewService $oxNewService;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
-        ModuleSettings $moduleSettings
+        ModuleSettings $moduleSettings,
+        OxNewService $oxNewService
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->moduleSettings = $moduleSettings;
+        $this->oxNewService = $oxNewService;
     }
 
     public function ensurePaymentMethods(): void
     {
         $activePayments = $this->moduleSettings->getActivePayments();
         foreach (Module::PAYMENT_DEFINTIONS as $paymentId => $paymentDefinitions) {
-            $paymentMethod = oxNew(EshopModelPayment::class);
+            $paymentMethod = $this->oxNewService->oxNew(EshopModelPayment::class);
             if ($paymentMethod->load($paymentId) && in_array($paymentId, $activePayments)) {
                 $paymentMethod->assign([
                     'oxpayments__oxactive' => true
@@ -63,7 +65,7 @@ class StaticContents
 
     protected function assignPaymentToDelivery(string $paymentId, string $deliverySetId): void
     {
-        $object2Paymentent = oxNew(EshopBaseModel::class);
+        $object2Paymentent = $this->oxNewService->oxNew(EshopBaseModel::class);
         $object2Paymentent->init('oxobject2payment');
         $object2Paymentent->assign(
             [
@@ -78,7 +80,7 @@ class StaticContents
     protected function createPaymentMethod(string $paymentId, array $definitions): void
     {
         /** @var EshopModelPayment $paymentModel */
-        $paymentModel = oxNew(EshopModelPayment::class);
+        $paymentModel = $this->oxNewService->oxNew(EshopModelPayment::class);
         $paymentModel->setId($paymentId);
 
         $iso2LanguageId = array_flip($this->getLanguageIds());

@@ -57,7 +57,7 @@ class AdyenHistoryList extends ListModel
     /**
      * @return void
      */
-    public function getAdyenHistoryList(string $orderId): void
+    public function getAdyenHistoryList(string $orderId, string $orderDirection = 'asc'): void
     {
         /** @var QueryBuilder $queryBuilder */
 
@@ -68,7 +68,7 @@ class AdyenHistoryList extends ListModel
         $queryBuilder->select($listObject->getSelectFields())
             ->from(Module::ADYEN_HISTORY_TABLE)
             ->where('oxorderid = :orderid')
-            ->orderBy('oxtimestamp', 'asc');
+            ->orderBy('oxtimestamp', $orderDirection);
 
         $parameters = [
             'orderid' => $orderId

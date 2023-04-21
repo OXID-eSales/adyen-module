@@ -10,7 +10,11 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\Controller\Admin\OrderArticleControllerService;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
+use OxidSolutionCatalysts\Adyen\Traits\ParentMethodStubableTrait;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 
 /**
  *
@@ -19,6 +23,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 class OrderArticle extends OrderArticle_parent
 {
     use ServiceContainer;
+    use ParentMethodStubableTrait;
 
     /**
      * @inheritDoc
@@ -27,7 +32,7 @@ class OrderArticle extends OrderArticle_parent
     {
         $amountBefore = $this->collectAmountForAdyenRefund();
 
-        parent::storno();
+        $this->parentCall('storno');
 
         $this->runAdyenRefund($amountBefore);
     }
@@ -39,14 +44,14 @@ class OrderArticle extends OrderArticle_parent
     {
         $amountBefore = $this->collectAmountForAdyenRefund();
 
-        parent::deleteThisArticle();
+        $this->parentCall('deleteThisArticle');
 
         $this->runAdyenRefund($amountBefore);
     }
 
     protected function collectAmountForAdyenRefund(): float
     {
-        $order = oxNew(Order::class);
+        $order = $this->getServiceFromContainer(OxNewService::class)->oxNew(Order::class);
         $orderLoaded = $order->load($this->getEditObjectId());
         $amount = 0.0;
 
@@ -59,17 +64,14 @@ class OrderArticle extends OrderArticle_parent
     protected function runAdyenRefund(float $amountBefore): void
     {
         $amountAfter = $this->collectAmountForAdyenRefund();
-        $order = oxNew(Order::class);
+        $order = $this->getServiceFromContainer(OxNewService::class)->oxNew(Order::class);
         $orderLoaded = $order->load($this->getEditObjectId());
         $amount = $amountBefore - $amountAfter;
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
-        if (
-            $orderLoaded &&
-            $amount > 0 &&
-            $order->isAdyenOrder() &&
-            $order->isAdyenRefundPossible()
-        ) {
-            $order->refundAdyenOrder($amount);
-        }
+        /** @var AdyenOrder $order */
+        $this->getServiceFromContainer(OrderArticleControllerService::class)->refundOrderIfNeeded(
+            $orderLoaded,
+            $amount,
+            $order
+        );
     }
 }

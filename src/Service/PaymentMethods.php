@@ -33,24 +33,27 @@ class PaymentMethods extends PaymentBase
     private CountryRepository $countryRepository;
 
     private ?array $paymentMethods = null;
+    private OxNewService $oxNewService;
 
     public function __construct(
         Context $context,
         ModuleSettings $moduleSettings,
         AdyenAPIResponsePaymentMethods $APIPaymentMethods,
         UserRepository $userRepository,
-        CountryRepository $countryRepository
+        CountryRepository $countryRepository,
+        OxNewService $oxNewService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
         $this->APIPaymentMethods = $APIPaymentMethods;
         $this->userRepository = $userRepository;
         $this->countryRepository = $countryRepository;
+        $this->oxNewService = $oxNewService;
     }
 
     public function collectAdyenPaymentMethods(): AdyenAPIResponsePaymentMethods
     {
-        $paymentMethods = oxNew(AdyenAPIPaymentMethods::class);
+        $paymentMethods = $this->oxNewService->oxNew(AdyenAPIPaymentMethods::class);
         $paymentMethods->setCurrencyName($this->context->getActiveCurrencyName());
 
         $currencyDecimals = $this->context->getActiveCurrencyDecimals();

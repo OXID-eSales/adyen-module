@@ -11,8 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
 use Adyen\AdyenException;
-use OxidEsales\Eshop\Core\Registry;
-use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
 
 /**
  * @extendable-class
@@ -34,7 +32,7 @@ class AdyenAPIResponsePaymentDetails extends AdyenAPIResponse
                 throw new Exception('paymentdetails not found in Adyen-Response');
             }
         } catch (AdyenException | Exception $exception) {
-            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
         return $result;
     }

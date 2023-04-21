@@ -19,18 +19,21 @@ class ModuleSettings
 {
     public const OPERATION_MODE = 'osc_adyen_OperationMode';
     public const LOGGING_ACTIVE = 'osc_adyen_LoggingActive';
-
+    public const ANALYTICS_ACTIVE = 'osc_adyen_AnalyticsActive';
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
     public const SANDBOX_HMAC_SIGNATURE = 'osc_adyen_SandboxHmacSignature';
     public const SANDBOX_MERCHANT_ACCOUNT = 'osc_adyen_SandboxMerchantAccount';
     public const SANDBOX_PAYPAL_MERCHANT_ID = 'osc_adyen_SandboxPayPalMerchantId';
+    public const SANDBOX_GOOGLE_PAY_MERCHANT_ID = 'osc_adyen_SandboxGooglePayMerchantId';
     public const LIVE_API_KEY = 'osc_adyen_LiveAPIKey';
     public const LIVE_CLIENT_KEY = 'osc_adyen_LiveClientKey';
     public const LIVE_ENDPOINT_PREFIX = 'osc_adyen_LiveEndpointPrefix';
     public const LIVE_HMAC_SIGNATURE = 'osc_adyen_LiveHmacSignature';
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
+    public const LIVE_GOOGLE_PAY_MERCHANT_ID = 'osc_adyen_LiveGooglePayMerchantId';
+    public const LANGUAGES = 'osc_adyen_Languages';
     public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
@@ -38,13 +41,16 @@ class ModuleSettings
     public const OPERATION_MODE_SANDBOX = 'test';
     public const OPERATION_MODE_LIVE = 'live';
 
+    public const OPERATION_MODE_GOOGLE_PAY_SANDBOX = 'TEST';
+    public const OPERATION_MODE_GOOGLE_PAY_PRODUCTION = 'PRODUCTION';
+
     public const OPERATION_MODE_VALUES = [
         self::OPERATION_MODE_SANDBOX,
         self::OPERATION_MODE_LIVE,
     ];
 
     /** @var ModuleSettingBridgeInterface */
-    private $moduleSettingBridge;
+    private ModuleSettingBridgeInterface $moduleSettingBridge;
 
     public function __construct(
         ModuleSettingBridgeInterface $moduleSettingBridge
@@ -77,6 +83,12 @@ class ModuleSettings
             self::OPERATION_MODE_SANDBOX;
     }
 
+    public function getGooglePayOperationMode(): string
+    {
+        return $this->getOperationMode() === self::OPERATION_MODE_LIVE ?
+            self::OPERATION_MODE_GOOGLE_PAY_PRODUCTION : self::OPERATION_MODE_GOOGLE_PAY_SANDBOX;
+    }
+
     public function getEndPointUrlPrefix(): string
     {
         /** @var null|string $settingValue */
@@ -89,6 +101,11 @@ class ModuleSettings
     public function isLoggingActive(): bool
     {
         return (bool) $this->getSettingValue(self::LOGGING_ACTIVE);
+    }
+
+    public function isAnalyticsActive(): bool
+    {
+        return (bool) $this->getSettingValue(self::ANALYTICS_ACTIVE);
     }
 
     public function getAPIKey(): string
@@ -131,6 +148,14 @@ class ModuleSettings
         return (string)$settingValue;
     }
 
+    public function getGooglePayMerchantId(): string
+    {
+        $key = ($this->isSandBoxMode() ? self::SANDBOX_GOOGLE_PAY_MERCHANT_ID : self::LIVE_GOOGLE_PAY_MERCHANT_ID);
+        /** @var null|string $settingValue */
+        $settingValue = $this->getSettingValue($key);
+        return (string)$settingValue;
+    }
+
     public function isManualCapture(string $paymentId): bool
     {
         return $this->getCaptureDelay($paymentId) === Module::ADYEN_CAPTURE_DELAY_MANUAL;
@@ -147,7 +172,7 @@ class ModuleSettings
         $countryIso = strtolower($countryIso);
 
         /** @var null|array $languageSettings */
-        $languageSettings = $this->getSettingValue('osc_adyen_Languages');
+        $languageSettings = $this->getSettingValue(self::LANGUAGES);
         $languageSettings = $languageSettings ?? [];
         $languages = array_change_key_case($languageSettings, CASE_LOWER);
         return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';

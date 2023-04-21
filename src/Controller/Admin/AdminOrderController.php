@@ -10,7 +10,9 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
-use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -21,7 +23,6 @@ class AdminOrderController extends AdminDetailsController
     use ServiceContainer;
 
     protected ?Order $editObject = null;
-
     protected ?AdyenHistoryList $adyenHistoryList = null;
 
     /**
@@ -56,11 +57,9 @@ class AdminOrderController extends AdminDetailsController
      */
     public function isAdyenOrder(): bool
     {
+        /** @var AdyenOrder $order */
         $order = $this->getEditObject();
-        return (
-            $order &&
-            $order->isAdyenOrder()
-        );
+        return $order->isAdyenOrder();
     }
 
     /**
@@ -73,8 +72,8 @@ class AdminOrderController extends AdminDetailsController
         $amount = $request->getRequestParameter('capture_amount');
         $amount = (float)($amount ?? '');
 
-        /** @var Order $order */
         $order = $this->getEditObject();
+        /** @var AdyenOrder $order */
         $order->captureAdyenOrder($amount);
     }
 
@@ -88,8 +87,8 @@ class AdminOrderController extends AdminDetailsController
         $amount = $request->getRequestParameter('refund_amount');
         $amount = (float)($amount ?? '');
 
-        /** @var Order $order */
         $order = $this->getEditObject();
+        /** @var AdyenOrder $order */
         $order->refundAdyenOrder($amount);
     }
 
@@ -111,8 +110,8 @@ class AdminOrderController extends AdminDetailsController
     public function getEditObject(): ?Order
     {
         $oxid = $this->getEditObjectId();
-        if ($this->editObject === null && $oxid != '-1') {
-            $this->editObject = oxNew(Order::class);
+        if ($this->editObject === null && $oxid !== '-1') {
+            $this->editObject = $this->getServiceFromContainer(OxNewService::class)->oxNew(Order::class);
             $this->editObject->load($oxid);
         }
         return $this->editObject;
@@ -127,7 +126,7 @@ class AdminOrderController extends AdminDetailsController
     {
         $oxId = $this->getEditObjectId();
         if (is_null($this->adyenHistoryList)) {
-            $adyenHistoryList = oxNew(AdyenHistoryList::class);
+            $adyenHistoryList = $this->getServiceFromContainer(OxNewService::class)->oxNew(AdyenHistoryList::class);
             $adyenHistoryList->getAdyenHistoryList($oxId);
             if ($adyenHistoryList->count()) {
                 $this->adyenHistoryList = $adyenHistoryList;

@@ -11,20 +11,17 @@ namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
-use OxidSolutionCatalysts\Adyen\Traits\UserAddress;
+use OxidSolutionCatalysts\Adyen\Service\Payment as PaymentService;
 
 class PaymentController extends PaymentController_parent
 {
-    use ServiceContainer;
-    use UserAddress;
     use RequestGetter;
 
     protected ?bool $assetsNecessary = null;
@@ -44,6 +41,10 @@ class PaymentController extends PaymentController_parent
         $userCountryIso = $countryRepository->getCountryIso();
 
         $paymentList = [];
+
+        $paymentService = $this->getServiceFromContainer(PaymentService::class);
+        $paymentListRaw = $paymentService->filterNonSupportedCurrencies($paymentListRaw, $actShopCurrency->name);
+        $paymentListRaw = $paymentService->filterNoSpecialMerchantId($paymentListRaw);
 
         $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkConfigHealth();
 
@@ -81,8 +82,8 @@ class PaymentController extends PaymentController_parent
             $this->assetsNecessary = false;
             $paymentList = $this->getPaymentList();
             if (is_array($paymentList)) {
-                /** @var Payment $paymentObj */
                 foreach ($paymentList as $paymentObj) {
+                    /** @var AdyenPayment $paymentObj */
                     if ($paymentObj->showInPaymentCtrl()) {
                         $this->assetsNecessary = true;
                         break;
@@ -117,7 +118,7 @@ class PaymentController extends PaymentController_parent
         return (
             $this->isActiveAdyenSession() && !$this->isValidAdyenAuthorisation() ?
             Module::ADYEN_ERROR_INVALIDSESSION_NAME :
-            parent::getPaymentError()
+                parent::getPaymentError()
         );
     }
 
@@ -157,6 +158,20 @@ class PaymentController extends PaymentController_parent
         }
 
         return $result;
+    }
+
+    public function isAvailablePayment(string $paymentIdToProve): bool
+    {
+        /** @var array $paymentList */
+        $paymentList = $this->getPaymentList();
+        foreach ($paymentList as $paymentId => $payment) {
+            /** @var AdyenPayment $payment */
+            if ($payment->showInPaymentCtrl() && $paymentId === $paymentIdToProve) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function saveAdyenPaymentInSession(): void

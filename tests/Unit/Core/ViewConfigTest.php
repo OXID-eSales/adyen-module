@@ -13,10 +13,15 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig as eShopViewConfig;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Core\Module as CoreModule;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 
 class ViewConfigTest extends UnitTestCase
 {
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Core\ViewConfig::getWebhookControllerUrl
+     */
     public function testForwardedModuleConstants(): void
     {
         $viewConfig = Registry::get(eShopViewConfig::class);
@@ -26,6 +31,21 @@ class ViewConfigTest extends UnitTestCase
         $this->assertStringContainsString(
             'index.php?cl=AdyenWebhookController',
             $viewConfig->getWebhookControllerUrl()
+        );
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Core\ViewConfig::getTemplatePayButtonContainerId
+     */
+    public function testGetTemplateIdGeneral()
+    {
+        $viewConfig = new ViewConfig();
+        $payment = new Payment();
+        $payment->setId(CoreModule::PAYMENT_PAYPAL_ID);
+
+        $this->assertEquals(
+            CoreModule::PAYMENT_PAYPAL_ID . '-container',
+            $viewConfig->getTemplatePayButtonContainerId($payment)
         );
     }
 }
