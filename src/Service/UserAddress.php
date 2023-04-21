@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-
 use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
 use OxidSolutionCatalysts\Adyen\Model\Address as AdyenAddress;

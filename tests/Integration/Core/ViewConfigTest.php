@@ -60,7 +60,10 @@ final class ViewConfigTest extends UnitTestCase
     {
         $viewConfig = $this->getViewConfig();
 
-        $this->assertSame($viewConfig->getAdyenClientKey(), $this->getModuleSetting(ModuleSettings::SANDBOX_CLIENT_KEY));
+        $this->assertSame(
+            $viewConfig->getAdyenClientKey(),
+            $this->getModuleSetting(ModuleSettings::SANDBOX_CLIENT_KEY)
+        );
     }
 
     private function getViewConfig(): ViewConfig
