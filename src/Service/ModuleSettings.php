@@ -20,7 +20,6 @@ class ModuleSettings
     public const OPERATION_MODE = 'osc_adyen_OperationMode';
     public const LOGGING_ACTIVE = 'osc_adyen_LoggingActive';
     public const ANALYTICS_ACTIVE = 'osc_adyen_AnalyticsActive';
-
     public const SANDBOX_API_KEY = 'osc_adyen_SandboxAPIKey';
     public const SANDBOX_CLIENT_KEY = 'osc_adyen_SandboxClientKey';
     public const SANDBOX_HMAC_SIGNATURE = 'osc_adyen_SandboxHmacSignature';
@@ -34,6 +33,7 @@ class ModuleSettings
     public const LIVE_MERCHANT_ACCOUNT = 'osc_adyen_LiveMerchantAccount';
     public const LIVE_PAYPAL_MERCHANT_ID = 'osc_adyen_LivePayPalMerchantId';
     public const LIVE_GOOGLE_PAY_MERCHANT_ID = 'osc_adyen_LiveGooglePayMerchantId';
+    public const LANGUAGES = 'osc_adyen_Languages';
     public const CAPTURE_DELAY = 'osc_adyen_CaptureDelay_';
 
     public const ACTIVE_PAYMENTS = 'osc_adyen_activePayments';
@@ -50,7 +50,7 @@ class ModuleSettings
     ];
 
     /** @var ModuleSettingBridgeInterface */
-    private $moduleSettingBridge;
+    private ModuleSettingBridgeInterface $moduleSettingBridge;
 
     public function __construct(
         ModuleSettingBridgeInterface $moduleSettingBridge
@@ -172,7 +172,7 @@ class ModuleSettings
         $countryIso = strtolower($countryIso);
 
         /** @var null|array $languageSettings */
-        $languageSettings = $this->getSettingValue('osc_adyen_Languages');
+        $languageSettings = $this->getSettingValue(self::LANGUAGES);
         $languageSettings = $languageSettings ?? [];
         $languages = array_change_key_case($languageSettings, CASE_LOWER);
         return isset($languages[$countryIso]) ? (string)$languages[$countryIso] : '';

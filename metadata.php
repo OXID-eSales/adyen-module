@@ -336,7 +336,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_Languages',
-            'name' => 'osc_adyen_Languages',
+            'name' => ModuleSettings::LANGUAGES,
             'type' => 'aarr',
             'value' => [
                 'de' => 'de_DE',
@@ -345,7 +345,7 @@ $aModule = [
         ],
         [
             'group' => null,
-            'name' => 'osc_adyen_activePayments',
+            'name' => ModuleSettings::ACTIVE_PAYMENTS,
             'type' => 'arr',
             'value' => []
         ],
