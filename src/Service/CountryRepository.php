@@ -21,20 +21,20 @@ use OxidEsales\Eshop\Application\Model\User;
  */
 class CountryRepository
 {
-    /** @var Config */
     private Config $config;
-
-    /** @var SessionSettings */
     private SessionSettings $session;
+    private OxNewService $oxNewService;
 
     protected array $countryIso = [];
 
     public function __construct(
         Config $config,
-        SessionSettings $session
+        SessionSettings $session,
+        OxNewService $oxNewService
     ) {
         $this->config = $config;
         $this->session = $session;
+        $this->oxNewService = $oxNewService;
     }
 
     public function getCountryIso(): string
@@ -42,7 +42,7 @@ class CountryRepository
         $countryId = $this->getCountryId();
         if (!isset($this->countryIso[$countryId])) {
             /** @var Country $country */
-            $country = oxNew(EshopModelCountry::class);
+            $country = $this->oxNewService->oxNew(EshopModelCountry::class);
             $country->load($countryId);
             /** @var null|string $countryIso */
             $countryIso = $country->getAdyenStringData('oxisoalpha2');
@@ -66,7 +66,7 @@ class CountryRepository
         if (!$countryId) {
             $addressId = $this->session->getDeliveryId();
             /** @var Address $deliveryAddress */
-            $deliveryAddress = oxNew(EshopModelAddress::class);
+            $deliveryAddress = $this->oxNewService->oxNew(EshopModelAddress::class);
             $countryId = $deliveryAddress->load($addressId) ?
                 $deliveryAddress->getAdyenStringData('oxcountryid') :
                 '';

@@ -15,11 +15,9 @@ use Monolog\Logger;
 
 class AdyenSDKLoader
 {
-    /** @var ModuleSettings */
     private ModuleSettings $moduleSettings;
-
-    /** @var Logger */
     private Logger $moduleLogger;
+    private OxNewService $oxNewService;
 
     /**
      * @param ModuleSettings $moduleSettings
@@ -27,10 +25,12 @@ class AdyenSDKLoader
      */
     public function __construct(
         ModuleSettings $moduleSettings,
-        Logger $moduleLogger
+        Logger $moduleLogger,
+        OxNewService $oxNewService
     ) {
         $this->moduleSettings = $moduleSettings;
         $this->moduleLogger = $moduleLogger;
+        $this->oxNewService = $oxNewService;
     }
 
     /**
@@ -39,14 +39,14 @@ class AdyenSDKLoader
      */
     public function getAdyenSDK(): Client
     {
-        $adyenConfig = oxNew(Config::class);
+        $adyenConfig = $this->oxNewService->oxNew(Config::class);
         $adyenConfig->set('x-api-key', $this->moduleSettings->getAPIKey());
 
         $environment = $this->moduleSettings->isSandBoxMode() ?
             Environment::TEST :
             Environment::LIVE;
 
-        $sdk = oxNew(Client::class, $adyenConfig);
+        $sdk = $this->oxNewService->oxNew(Client::class, [$adyenConfig]);
         $sdk->setEnvironment(
             $environment,
             $this->moduleSettings->getEndPointUrlPrefix()

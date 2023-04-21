@@ -16,6 +16,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
@@ -47,6 +48,7 @@ class Order extends Order_parent
     protected string $adyenPaymentName = '';
 
     private QueryBuilderFactoryInterface $queryBuilderFactory;
+    private OxNewService $oxNewService;
 
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -56,6 +58,7 @@ class Order extends Order_parent
     {
         parent::init($tableName, $forceAllFields);
         $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
+        $this->oxNewService = $this->getServiceFromContainer(OxNewService::class);
     }
 
     /**
@@ -124,7 +127,7 @@ class Order extends Order_parent
         $result = false;
         if ($this->isAdyenOrder()) {
             /** @var Payment $payment */
-            $payment = oxNew(EshopModelPayment::class);
+            $payment = $this->oxNewService->oxNew(EshopModelPayment::class);
             $payment->load($this->getAdyenStringData('oxpaymenttype'));
             $result = $payment->isAdyenManualCapture();
         }
@@ -207,7 +210,7 @@ class Order extends Order_parent
 
             // everything is fine, we can save the references
             if (isset($cancelResult['paymentPspReference'])) {
-                $adyenHistory = oxNew(AdyenHistory::class);
+                $adyenHistory = $this->oxNewService->oxNew(AdyenHistory::class);
                 $adyenHistory->setParentPSPReference($cancelResult['paymentPspReference']);
                 $adyenHistory->setPSPReference($cancelResult['pspReference']);
                 $adyenHistory->setOrderId($this->getId());
@@ -269,7 +272,7 @@ class Order extends Order_parent
         $result = 0.0;
         if ($this->isAdyenOrder()) {
             $pspReference = $this->getAdyenPspReference();
-            $adyenHistory = oxNew(AdyenHistory::class);
+            $adyenHistory = $this->oxNewService->oxNew(AdyenHistory::class);
             $result = $adyenHistory->getCapturedSum($pspReference);
         }
         return $result;
@@ -289,7 +292,7 @@ class Order extends Order_parent
         $result = 0.0;
         if ($this->isAdyenOrder()) {
             $pspReference = $this->getAdyenPspReference();
-            $adyenHistory = oxNew(AdyenHistory::class);
+            $adyenHistory = $this->oxNewService->oxNew(AdyenHistory::class);
             $result = $adyenHistory->getRefundedSum($pspReference);
         }
         return $result;
@@ -308,7 +311,7 @@ class Order extends Order_parent
         if (!$this->adyenPaymentName && $this->isAdyenOrder()) {
             $paymentId = $this->getAdyenStringData('oxpaymenttype');
             /** @var Payment $payment */
-            $payment = oxNew(EshopModelPayment::class);
+            $payment = $this->oxNewService->oxNew(EshopModelPayment::class);
             $payment->load($paymentId);
             /** @var null|string $desc */
             $desc = $payment->getAdyenStringData('oxdesc');
@@ -424,7 +427,7 @@ class Order extends Order_parent
             $this->cancelAdyenOrder();
             // delete AdyenHistory
             $pspReference = $this->getAdyenPSPReference();
-            $adyenHistory = oxNew(AdyenHistory::class);
+            $adyenHistory = $this->oxNewService->oxNew(AdyenHistory::class);
             if ($adyenHistory->loadByPSPReference($pspReference)) {
                 $adyenHistory->delete();
             }
@@ -441,7 +444,7 @@ class Order extends Order_parent
         string $status,
         string $action
     ): bool {
-        $adyenHistory = oxNew(AdyenHistory::class);
+        $adyenHistory = $this->oxNewService->oxNew(AdyenHistory::class);
         $adyenHistory->setPSPReference($pspReference);
         $adyenHistory->setParentPSPReference($parentPspReference);
         $adyenHistory->setOrderId($orderId);

@@ -16,6 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
 use OxidEsales\Eshop\Application\Model\Payment;
 use Psr\Container\ContainerInterface;
@@ -52,8 +53,9 @@ final class ModuleEvents
         $activePaymentMethods = [];
         $paymentIds = array_keys(Module::PAYMENT_DEFINTIONS);
         foreach ($paymentIds as $paymentId) {
+            $oxNewService = self::getOxNewService();
             /** @var AdyenPayment $paymentMethod */
-            $paymentMethod = oxNew(Payment::class);
+            $paymentMethod = $oxNewService->oxNew(Payment::class);
             if (
                 $paymentMethod->load($paymentId)
                 && $paymentMethod->getAdyenBoolData('oxactive') === true
@@ -119,10 +121,12 @@ final class ModuleEvents
         $queryBuilderFactory = $container->get(QueryBuilderFactoryInterface::class);
 
         $moduleSettings = self::getModuleSettingsService();
+        $oxNewService = self::getOxNewService();
 
         return new StaticContents(
             $queryBuilderFactory,
-            $moduleSettings
+            $moduleSettings,
+            $oxNewService
         );
     }
 
@@ -148,5 +152,10 @@ final class ModuleEvents
         return new ModuleSettings(
             $moduleSettingBridge
         );
+    }
+
+    private static function getOxNewService(): OxNewService
+    {
+        return new OxNewService();
     }
 }

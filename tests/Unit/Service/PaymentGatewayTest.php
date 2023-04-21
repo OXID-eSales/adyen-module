@@ -6,6 +6,7 @@ use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\OrderReturnService;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGateway as PaymentGatewayService;
 use OxidSolutionCatalysts\Adyen\Service\PaymentGatewayOrderSavable;
@@ -81,7 +82,8 @@ class PaymentGatewayTest extends UnitTestCase
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
             $paymentConfigServiceMock,
-            $this->getServiceFromContainer(OrderReturnService::class)
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */
@@ -131,7 +133,8 @@ class PaymentGatewayTest extends UnitTestCase
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
             $paymentConfigServiceMock,
-            $this->getServiceFromContainer(OrderReturnService::class)
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */
@@ -179,7 +182,8 @@ class PaymentGatewayTest extends UnitTestCase
             $sessionSettingsMock,
             $paymentGatewayOrderSavableMock,
             $paymentConfigServiceMock,
-            $this->getServiceFromContainer(OrderReturnService::class)
+            $this->getServiceFromContainer(OrderReturnService::class),
+            $this->getServiceFromContainer(OxNewService::class)
         );
 
         /** @var Order $orderMock */

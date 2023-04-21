@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -21,7 +22,6 @@ class AdminOrderController extends AdminDetailsController
     use ServiceContainer;
 
     protected ?Order $editObject = null;
-
     protected ?AdyenHistoryList $adyenHistoryList = null;
 
     /**
@@ -111,8 +111,8 @@ class AdminOrderController extends AdminDetailsController
     public function getEditObject(): ?Order
     {
         $oxid = $this->getEditObjectId();
-        if ($this->editObject === null && $oxid != '-1') {
-            $this->editObject = oxNew(Order::class);
+        if ($this->editObject === null && $oxid !== '-1') {
+            $this->editObject = $this->getServiceFromContainer(OxNewService::class)->oxNew(Order::class);
             $this->editObject->load($oxid);
         }
         return $this->editObject;
@@ -127,7 +127,7 @@ class AdminOrderController extends AdminDetailsController
     {
         $oxId = $this->getEditObjectId();
         if (is_null($this->adyenHistoryList)) {
-            $adyenHistoryList = oxNew(AdyenHistoryList::class);
+            $adyenHistoryList = $this->getServiceFromContainer(OxNewService::class)->oxNew(AdyenHistoryList::class);
             $adyenHistoryList->getAdyenHistoryList($oxId);
             if ($adyenHistoryList->count()) {
                 $this->adyenHistoryList = $adyenHistoryList;

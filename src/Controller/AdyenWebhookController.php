@@ -15,6 +15,7 @@ use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\EventDispatcher;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventException;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 
 /**
@@ -24,6 +25,8 @@ class AdyenWebhookController extends WidgetController
 {
     use Json;
 
+    private OxNewService $oxNewService;
+
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -31,6 +34,8 @@ class AdyenWebhookController extends WidgetController
     public function init(): void
     {
         parent::init();
+
+        $this->oxNewService = $this->getServiceFromContainer(OxNewService::class);
 
         try {
             $request = $this->getJsonPostData();
@@ -44,7 +49,7 @@ class AdyenWebhookController extends WidgetController
 
             $event = new Event($data);
 
-            $eventDispatcher = oxNew(EventDispatcher::class);
+            $eventDispatcher = $this->oxNewService->oxNew(EventDispatcher::class);
             $eventDispatcher->dispatch($event);
 
             if (!$event->isHMACVerified()) {
@@ -77,7 +82,7 @@ class AdyenWebhookController extends WidgetController
 
     private function sendAcceptedResponse(): void
     {
-        $response = oxNew(Response::class);
+        $response = $this->oxNewService->oxNew(Response::class);
         $response->setData([
             "notificationResponse" => "[accepted]"
         ]);

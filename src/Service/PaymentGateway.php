@@ -17,17 +17,20 @@ class PaymentGateway
     private PaymentGatewayOrderSavable $gatewayOrderSavable;
     private PaymentConfigService $paymentConfigService;
     private OrderReturnService $orderRedirectService;
+    private OxNewService $oxNewService;
 
     public function __construct(
         SessionSettings $sessionSettings,
         PaymentGatewayOrderSavable $gatewayOrderSavable,
         PaymentConfigService $paymentConfigService,
-        OrderReturnService $orderRedirectService
+        OrderReturnService $orderRedirectService,
+        OxNewService $oxNewService
     ) {
         $this->sessionSettings = $sessionSettings;
         $this->gatewayOrderSavable = $gatewayOrderSavable;
         $this->paymentConfigService = $paymentConfigService;
         $this->orderRedirectService = $orderRedirectService;
+        $this->oxNewService = $oxNewService;
     }
 
     public function doFinishAdyenPayment(float $amount, Order $order): bool
@@ -97,7 +100,7 @@ class PaymentGateway
 
     protected function getPayment(string $paymentId): Payment
     {
-        $payment = oxNew(Payment::class);
+        $payment = $this->oxNewService->oxNew(Payment::class);
         $payment->setId($paymentId);
 
         return $payment;

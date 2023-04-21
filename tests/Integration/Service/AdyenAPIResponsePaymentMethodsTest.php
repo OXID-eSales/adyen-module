@@ -13,13 +13,17 @@ use OxidSolutionCatalysts\Adyen\Service\AdyenAPIResponsePaymentMethods;
 use OxidSolutionCatalysts\Adyen\Service\AdyenSDKLoader;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
 class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
 {
-    private $testModuleSettingValues = [
+    use ServiceContainer;
+
+    private array $testModuleSettingValues = [
         'getAPIKey' => 'dummyKey',
         'isLoggingActive' => true,
         'isSandboxMode' => true
@@ -30,8 +34,9 @@ class AdyenAPIResponsePaymentMethodsTest extends UnitTestCase
         $moduleSettings = $this->createConfiguredMock(ModuleSettings::class, $this->testModuleSettingValues);
         $loggingHandler = $this->createPartialMock(Logger::class, ['getName']);
         $loggingHandler->method('getName')->willReturn('Adyen AdyenAPIResponsePaymentMethods Logger');
+        $oxNewService = $this->getServiceFromContainer(OxNewService::class);
 
-        return new AdyenSDKLoader($moduleSettings, $loggingHandler);
+        return new AdyenSDKLoader($moduleSettings, $loggingHandler, $oxNewService);
     }
 
     protected function createSession(bool $setPayment = true): SessionSettings
