@@ -2,7 +2,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service\Controller\Admin;
 
-use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidEsales\Eshop\Application\Model\Order;
 
 class OrderArticleControllerService
 {

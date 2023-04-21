@@ -15,9 +15,9 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\AdyenAPIPayments;
-use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidEsales\Eshop\Core\User;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
-use OxidSolutionCatalysts\Adyen\Model\Payment as PaymentModel;
+use OxidEsales\Eshop\Application\Model\Payment as PaymentModel;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 
 /**

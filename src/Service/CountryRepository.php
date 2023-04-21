@@ -12,9 +12,9 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use OxidEsales\Eshop\Application\Model\Address as EshopModelAddress;
 use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
 use OxidEsales\Eshop\Core\Config;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
-use OxidSolutionCatalysts\Adyen\Model\User;
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Country;
+use OxidEsales\Eshop\Application\Model\User;
 
 /**
  * @extendable-class

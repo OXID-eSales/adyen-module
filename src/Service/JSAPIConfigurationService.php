@@ -3,8 +3,8 @@
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
-use OxidSolutionCatalysts\Adyen\Model\User;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class JSAPIConfigurationService
@@ -14,7 +14,7 @@ class JSAPIConfigurationService
 
     public function __construct(
         AdyenAPILineItemsService $lineItemsService,
-        UserAddress              $userAddressService
+        UserAddress $userAddressService
     ) {
         $this->lineItemsService = $lineItemsService;
         $this->userAddressService = $userAddressService;
@@ -22,8 +22,8 @@ class JSAPIConfigurationService
 
     public function getConfigFieldsAsArray(
         ViewConfig $viewConfig,
-        User       $user,
-        ?Payment   $payment
+        User $user,
+        ?Payment $payment
     ): array {
         $configFieldsArray = [
             'environment' => $viewConfig->getAdyenOperationMode(),
@@ -80,7 +80,7 @@ class JSAPIConfigurationService
 
     private function getOrderPageConfigFields(
         ViewConfig $viewConfig,
-        ?Payment   $payment
+        ?Payment $payment
     ): array {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
         if ($viewConfig->getTopActiveClassName() === 'order') {

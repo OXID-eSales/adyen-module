@@ -11,6 +11,8 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
+use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 
 final class AuthorisationHandler extends WebhookHandlerBase
 {
@@ -23,10 +25,10 @@ final class AuthorisationHandler extends WebhookHandlerBase
      */
     public function additionalUpdates(Event $event): void
     {
-        /** @var null|\OxidSolutionCatalysts\Adyen\Model\Payment $payment */
+        /** @var null|AdyenPayment $payment */
         $payment = $this->payment;
         if (!is_null($payment) && $payment->isAdyenImmediateCapture()) {
-            /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+            /** @var AdyenOrder $order */
             $order = $this->order;
             $order->markAdyenOrderAsPaid();
 

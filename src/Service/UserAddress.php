@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
-use OxidSolutionCatalysts\Adyen\Model\User;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Application\Model\Address;
+use OxidEsales\Eshop\Application\Model\Country;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 

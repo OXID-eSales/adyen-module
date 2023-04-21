@@ -13,7 +13,7 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Service\AdyenAPITransactionInfoService;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateCheckoutCreate;
 use OxidSolutionCatalysts\Adyen\Service\JSAPITemplateConfiguration;
 use OxidSolutionCatalysts\Adyen\Service\Context;

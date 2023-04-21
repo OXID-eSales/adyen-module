@@ -4,7 +4,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidEsales\Eshop\Application\Model\Payment;
 use stdClass;
@@ -30,7 +30,7 @@ class PaymentGateway
         $this->orderRedirectService = $orderRedirectService;
     }
 
-    public function doFinishAdyenPayment(float $amount, eShopOrder $order): bool
+    public function doFinishAdyenPayment(float $amount, Order $order): bool
     {
         $success = false;
 
@@ -97,13 +97,13 @@ class PaymentGateway
 
     protected function getPayment(string $paymentId): Payment
     {
-        $payment = oxNew(\OxidSolutionCatalysts\Adyen\Model\Payment::class);
+        $payment = oxNew(Payment::class);
         $payment->setId($paymentId);
 
         return $payment;
     }
 
-    private function getOrderCurrencyName(eShopOrder $order): string
+    private function getOrderCurrencyName(Order $order): string
     {
         /** @var stdClass $currency */
         $currency = $order->getOrderCurrency();

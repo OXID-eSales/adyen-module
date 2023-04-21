@@ -14,6 +14,7 @@ use OxidSolutionCatalysts\Adyen\Service\Controller\Admin\OrderArticleControllerS
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ParentMethodStubableTrait;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 
 /**
  *
@@ -66,7 +67,7 @@ class OrderArticle extends OrderArticle_parent
         $order = $this->getServiceFromContainer(OxNewService::class)->oxNew(Order::class);
         $orderLoaded = $order->load($this->getEditObjectId());
         $amount = $amountBefore - $amountAfter;
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+        /** @var AdyenOrder $order */
         $this->getServiceFromContainer(OrderArticleControllerService::class)->refundOrderIfNeeded(
             $orderLoaded,
             $amount,

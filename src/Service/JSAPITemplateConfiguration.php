@@ -6,10 +6,10 @@ use OxidEsales\EshopCommunity\Application\Controller\FrontendController;
 use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterface;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
-use OxidSolutionCatalysts\Adyen\Model\User as UserModel;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidEsales\Eshop\Application\Model\Payment;
 use Psr\Log\LoggerInterface;
 
 class JSAPITemplateConfiguration
@@ -97,7 +97,7 @@ class JSAPITemplateConfiguration
         FrontendController $controller,
         ?Payment $payment
     ): string {
-        /** @var UserModel $user */
+        /** @var User $user */
         $user = $controller->getUser();
         $configFieldsArray = $this->configurationService->getConfigFieldsAsArray(
             $viewConfig,
