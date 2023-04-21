@@ -3,7 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Service\Controller\PaymentJSControllerService;
 use OxidSolutionCatalysts\Adyen\Service\Payment;

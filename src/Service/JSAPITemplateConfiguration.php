@@ -7,7 +7,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateEngineInterf
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidEsales\Eshop\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Payment;
 use Psr\Log\LoggerInterface;

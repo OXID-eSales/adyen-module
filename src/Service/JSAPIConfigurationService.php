@@ -2,7 +2,7 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
+use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Module;
