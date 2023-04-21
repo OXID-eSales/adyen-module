@@ -57,7 +57,7 @@ final class AuthorisationHandlerTest extends UnitTestCase
             ->getContainer()
             ->get(ModuleSettingBridgeInterface::class);
         $moduleSettingsBridge->save(
-            'osc_adyen_SandboxHmacSignature',
+            ModuleSettings::SANDBOX_HMAC_SIGNATURE,
             '5d1e6516f4f21ef0d2d12b163ce5f7c6f6f731da99567afbc83af10c160d8c2d',
             Module::MODULE_ID
         );

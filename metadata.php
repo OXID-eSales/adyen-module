@@ -186,85 +186,85 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxAPIKey',
+            'name' => ModuleSettings::SANDBOX_API_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxClientKey',
+            'name' => ModuleSettings::SANDBOX_CLIENT_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxHmacSignature',
+            'name' => ModuleSettings::SANDBOX_HMAC_SIGNATURE,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxMerchantAccount',
+            'name' => ModuleSettings::SANDBOX_MERCHANT_ACCOUNT,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxPayPalMerchantId',
+            'name' => ModuleSettings::SANDBOX_PAYPAL_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_SANDBOX',
-            'name' => 'osc_adyen_SandboxGooglePayMerchantId',
+            'name' => ModuleSettings::SANDBOX_GOOGLE_PAY_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveAPIKey',
+            'name' => ModuleSettings::LIVE_API_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveClientKey',
+            'name' => ModuleSettings::LIVE_CLIENT_KEY,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveEndpointPrefix',
+            'name' => ModuleSettings::LIVE_ENDPOINT_PREFIX,
             'type' => 'str',
             'value' => '[yourprefix]'
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveHmacSignature',
+            'name' => ModuleSettings::LIVE_HMAC_SIGNATURE,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LiveMerchantAccount',
+            'name' => ModuleSettings::LIVE_MERCHANT_ACCOUNT,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LivePayPalMerchantId',
+            'name' => ModuleSettings::LIVE_PAYPAL_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_LIVE',
-            'name' => 'osc_adyen_LIVEGooglePayMerchantId',
+            'name' => ModuleSettings::LIVE_GOOGLE_PAY_MERCHANT_ID,
             'type' => 'str',
             'value' => ''
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_CREDITCARD_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_CREDITCARD_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -273,7 +273,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_PAYPAL_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_PAYPAL_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -282,7 +282,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_GOOGLE_PAY_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_GOOGLE_PAY_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -291,7 +291,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_IMMEDIATE_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_IMMEDIATE_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -300,7 +300,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_LATER_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_LATER_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -309,7 +309,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_KLARNA_OVER_TIME_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_KLARNA_OVER_TIME_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -318,7 +318,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_TWINT_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_TWINT_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .
@@ -327,7 +327,7 @@ $aModule = [
         ],
         [
             'group' => 'osc_adyen_CaptureDelay',
-            'name' => 'osc_adyen_CaptureDelay_' . Module::PAYMENT_APPLE_PAY_ID,
+            'name' => ModuleSettings::CAPTURE_DELAY . Module::PAYMENT_APPLE_PAY_ID,
             'type' => 'select',
             'value' => Module::ADYEN_CAPTURE_DELAY_MANUAL,
             'constraints' => Module::ADYEN_CAPTURE_DELAY_MANUAL . '|' .

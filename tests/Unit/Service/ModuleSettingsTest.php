@@ -83,152 +83,152 @@ final class ModuleSettingsTest extends UnitTestCase
         return [
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
-                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
-                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_API_KEY, Module::MODULE_ID, 'sandboxAPIKey'],
+                    [ModuleSettings::SANDBOX_CLIENT_KEY, Module::MODULE_ID, 'sandboxClientKey'],
+                    [ModuleSettings::SANDBOX_MERCHANT_ACCOUNT, Module::MODULE_ID, 'sandboxMerchantAccount'],
                 ],
                 'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
-                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
-                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::LIVE_API_KEY, Module::MODULE_ID, 'liveAPIKey'],
+                    [ModuleSettings::LIVE_CLIENT_KEY, Module::MODULE_ID, 'liveClientKey'],
+                    [ModuleSettings::LIVE_MERCHANT_ACCOUNT, Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
                 'gettingMethod' => 'checkConfigHealth',
                 'gettingValue' => true
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                 ],
                 'gettingMethod' => 'isSandBoxMode',
                 'gettingValue' => true
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
                 'gettingMethod' => 'isSandBoxMode',
                 'gettingValue' => false
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
                 ],
                 'gettingMethod' => 'getOperationMode',
                 'gettingValue' => ModuleSettings::OPERATION_MODE_SANDBOX
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
                 ],
                 'gettingMethod' => 'getOperationMode',
                 'gettingValue' => ModuleSettings::OPERATION_MODE_LIVE
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
-                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_API_KEY, Module::MODULE_ID, 'sandboxAPIKey'],
+                    [ModuleSettings::LIVE_API_KEY, Module::MODULE_ID, 'liveAPIKey'],
                 ],
                 'gettingMethod' => 'getAPIKey',
                 'gettingValue' => 'sandboxAPIKey'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxAPIKey', Module::MODULE_ID, 'sandboxAPIKey'],
-                    ['osc_adyen_LiveAPIKey', Module::MODULE_ID, 'liveAPIKey'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::SANDBOX_API_KEY, Module::MODULE_ID, 'sandboxAPIKey'],
+                    [ModuleSettings::LIVE_API_KEY, Module::MODULE_ID, 'liveAPIKey'],
                 ],
                 'gettingMethod' => 'getAPIKey',
                 'gettingValue' => 'liveAPIKey'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
-                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_CLIENT_KEY, Module::MODULE_ID, 'sandboxClientKey'],
+                    [ModuleSettings::LIVE_CLIENT_KEY, Module::MODULE_ID, 'liveClientKey'],
                 ],
                 'gettingMethod' => 'getClientKey',
                 'gettingValue' => 'sandboxClientKey'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxClientKey', Module::MODULE_ID, 'sandboxClientKey'],
-                    ['osc_adyen_LiveClientKey', Module::MODULE_ID, 'liveClientKey'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::SANDBOX_CLIENT_KEY, Module::MODULE_ID, 'sandboxClientKey'],
+                    [ModuleSettings::LIVE_CLIENT_KEY, Module::MODULE_ID, 'liveClientKey'],
                 ],
                 'gettingMethod' => 'getClientKey',
                 'gettingValue' => 'liveClientKey'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
-                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_HMAC_SIGNATURE, Module::MODULE_ID, 'sandboxHmacSignature'],
+                    [ModuleSettings::LIVE_HMAC_SIGNATURE, Module::MODULE_ID, 'liveHmacSignature'],
                 ],
                 'gettingMethod' => 'getHmacSignature',
                 'gettingValue' => 'sandboxHmacSignature'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxHmacSignature', Module::MODULE_ID, 'sandboxHmacSignature'],
-                    ['osc_adyen_LiveHmacSignature', Module::MODULE_ID, 'liveHmacSignature'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::SANDBOX_HMAC_SIGNATURE, Module::MODULE_ID, 'sandboxHmacSignature'],
+                    [ModuleSettings::LIVE_HMAC_SIGNATURE, Module::MODULE_ID, 'liveHmacSignature'],
                 ],
                 'gettingMethod' => 'getHmacSignature',
                 'gettingValue' => 'liveHmacSignature'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
-                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_MERCHANT_ACCOUNT, Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    [ModuleSettings::LIVE_MERCHANT_ACCOUNT, Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
                 'gettingMethod' => 'getMerchantAccount',
                 'gettingValue' => 'sandboxMerchantAccount'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxMerchantAccount', Module::MODULE_ID, 'sandboxMerchantAccount'],
-                    ['osc_adyen_LiveMerchantAccount', Module::MODULE_ID, 'liveMerchantAccount'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::SANDBOX_MERCHANT_ACCOUNT, Module::MODULE_ID, 'sandboxMerchantAccount'],
+                    [ModuleSettings::LIVE_MERCHANT_ACCOUNT, Module::MODULE_ID, 'liveMerchantAccount'],
                 ],
                 'gettingMethod' => 'getMerchantAccount',
                 'gettingValue' => 'liveMerchantAccount'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
-                    ['osc_adyen_SandboxPayPalMerchantId', Module::MODULE_ID, 'sandboxPayPalMerchantId'],
-                    ['osc_adyen_LivePayPalMerchantId', Module::MODULE_ID, 'livePayPalMerchantId'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_SANDBOX],
+                    [ModuleSettings::SANDBOX_PAYPAL_MERCHANT_ID, Module::MODULE_ID, 'sandboxPayPalMerchantId'],
+                    [ModuleSettings::LIVE_PAYPAL_MERCHANT_ID, Module::MODULE_ID, 'livePayPalMerchantId'],
                 ],
                 'gettingMethod' => 'getPayPalMerchantId',
                 'gettingValue' => 'sandboxPayPalMerchantId'
             ],
             [
                 'values' => [
-                    ['osc_adyen_OperationMode', Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
-                    ['osc_adyen_SandboxPayPalMerchantId', Module::MODULE_ID, 'sandboxPayPalMerchantId'],
-                    ['osc_adyen_LivePayPalMerchantId', Module::MODULE_ID, 'livePayPalMerchantId'],
+                    [ModuleSettings::OPERATION_MODE, Module::MODULE_ID, ModuleSettings::OPERATION_MODE_LIVE],
+                    [ModuleSettings::SANDBOX_PAYPAL_MERCHANT_ID, Module::MODULE_ID, 'sandboxPayPalMerchantId'],
+                    [ModuleSettings::LIVE_PAYPAL_MERCHANT_ID, Module::MODULE_ID, 'livePayPalMerchantId'],
                 ],
                 'gettingMethod' => 'getPayPalMerchantId',
                 'gettingValue' => 'livePayPalMerchantId'
             ],
             [
                 'values' => [
-                    ['osc_adyen_LoggingActive', Module::MODULE_ID, true],
+                    [ModuleSettings::LOGGING_ACTIVE, Module::MODULE_ID, true],
                 ],
                 'gettingMethod' => 'isLoggingActive',
                 'gettingValue' => true
             ],
             [
                 'values' => [
-                    ['osc_adyen_LoggingActive', Module::MODULE_ID, false],
+                    [ModuleSettings::LOGGING_ACTIVE, Module::MODULE_ID, false],
                 ],
                 'gettingMethod' => 'isLoggingActive',
                 'gettingValue' => false

@@ -25,10 +25,10 @@ final class ViewConfigTest extends UnitTestCase
 
     public function testcheckAdyenConfigHealth(): void
     {
-        $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_SANDBOX);
-        $this->updateModuleSetting('osc_adyen_SandboxAPIKey', 'SandboxAPIKey');
-        $this->updateModuleSetting('osc_adyen_SandboxClientKey', 'SandboxClientKey');
-        $this->updateModuleSetting('osc_adyen_SandboxMerchantAccount', 'SandboxMerchantAccount');
+        $this->updateModuleSetting(ModuleSettings::OPERATION_MODE, ModuleSettings::OPERATION_MODE_SANDBOX);
+        $this->updateModuleSetting(ModuleSettings::SANDBOX_API_KEY, 'SandboxAPIKey');
+        $this->updateModuleSetting(ModuleSettings::SANDBOX_CLIENT_KEY, 'SandboxClientKey');
+        $this->updateModuleSetting(ModuleSettings::SANDBOX_MERCHANT_ACCOUNT, 'SandboxMerchantAccount');
         $viewConfig = $this->getViewConfig();
         $this->assertTrue($viewConfig->checkAdyenConfigHealth());
     }
@@ -37,11 +37,11 @@ final class ViewConfigTest extends UnitTestCase
     {
         $viewConfig = $this->getViewConfig();
 
-        $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_SANDBOX);
+        $this->updateModuleSetting(ModuleSettings::OPERATION_MODE, ModuleSettings::OPERATION_MODE_SANDBOX);
         $this->assertSame($viewConfig->getAdyenOperationMode(), ModuleSettings::OPERATION_MODE_SANDBOX);
 
         // todo: This test does not work if the credentials are set via var/configuration/environment/1.yaml
-        //      $this->updateModuleSetting('osc_adyen_OperationMode', ModuleSettings::OPERATION_MODE_LIVE);
+        //      $this->updateModuleSetting(ModuleSettings::OPERATION_MODE, ModuleSettings::OPERATION_MODE_LIVE);
         //      $this->assertSame($viewConfig->getAdyenOperationMode(), ModuleSettings::OPERATION_MODE_LIVE);
     }
 
@@ -49,10 +49,10 @@ final class ViewConfigTest extends UnitTestCase
     {
         $viewConfig = $this->getViewConfig();
 
-        $this->updateModuleSetting('osc_adyen_LoggingActive', true);
+        $this->updateModuleSetting(ModuleSettings::LOGGING_ACTIVE, true);
         $this->assertSame($viewConfig->isAdyenLoggingActive(), true);
         // todo: This test does not work if the credentials are set via var/configuration/environment/1.yaml
-        //      $this->updateModuleSetting('osc_adyen_LoggingActive', false);
+        //      $this->updateModuleSetting(ModuleSettings::LOGGING_ACTIVE, false);
         //      $this->assertSame($viewConfig->isAdyenLoggingActive(), false);
     }
 
@@ -60,7 +60,7 @@ final class ViewConfigTest extends UnitTestCase
     {
         $viewConfig = $this->getViewConfig();
 
-        $this->assertSame($viewConfig->getAdyenClientKey(), $this->getModuleSetting('osc_adyen_SandboxClientKey'));
+        $this->assertSame($viewConfig->getAdyenClientKey(), $this->getModuleSetting(ModuleSettings::SANDBOX_CLIENT_KEY));
     }
 
     private function getViewConfig(): ViewConfig
