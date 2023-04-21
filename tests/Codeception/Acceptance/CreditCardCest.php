@@ -21,7 +21,6 @@ final class CreditCardCest extends BaseCest
 {
     use OrderHistory;
 
-    protected $orderNumber;
     protected $placeholderPaymentId;
 
     protected function _getOXID(): array
@@ -58,6 +57,7 @@ final class CreditCardCest extends BaseCest
     {
         $this->_initializeTest();
         $this->_submitCreditCardPayment($I);
-        $this->orderNumber = $this->_checkSuccessfulPayment();
+        $thankYouPage = $this->_checkSuccessfulPayment();
+        $this->orderNumber = $thankYouPage->grabOrderNumber();
     }
 }

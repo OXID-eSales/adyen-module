@@ -8,7 +8,9 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Facts\Facts;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ContextTest extends TestCase
@@ -100,5 +102,49 @@ class ContextTest extends TestCase
 
         $sut = new Context($configStub);
         $this->assertSame($currencySign, $sut->getActiveCurrencySign());
+    }
+
+    /**
+     * @cavers \OxidSolutionCatalysts\Adyen\Service\Context::getWebhookControllerUrl
+     */
+    public function testGetWebhookControllerUrl()
+    {
+        $contextService = new Context($this->createConfigMock());
+        $actualUrl = $contextService->getWebhookControllerUrl();
+        $expectedUrl = (new Facts())->getShopUrl() . 'index.php?cl=AdyenWebhookController&shp=1';
+
+        $this->assertEquals($expectedUrl, $actualUrl);
+    }
+
+    public function testGetPaymentReturnUrl()
+    {
+        $sessionChallengeToken = 'sct';
+        $sDeliveryAddressMD5 = 'da';
+        $pspReference = 'pspR';
+        $resultCode = 'rc';
+        $amountCurrency = 'ac';
+
+        $actualUrl = (new Context($this->createConfigMock(0)))->getPaymentReturnUrl(
+            $sessionChallengeToken,
+            $sDeliveryAddressMD5,
+            $pspReference,
+            $resultCode,
+            $amountCurrency
+        );
+        $expectedUrl = (new Facts())->getShopUrl() . "index.php?cl=order&fnc=return&stoken={$sessionChallengeToken}"
+            . "&sDeliveryAddressMD5={$sDeliveryAddressMD5}&adyenPspReference={$pspReference}"
+            . "&adyenResultCode={$resultCode}&adyenAmountCurrency={$amountCurrency}";
+
+        $this->assertEquals($expectedUrl, $actualUrl);
+    }
+
+    private function createConfigMock($getChopIdInvokeAmount = 1): Config
+    {
+        $shopConfigMock = $this->createMock(Config::class);
+        $shopConfigMock->expects($this->exactly($getChopIdInvokeAmount))
+            ->method('getShopId')
+            ->willReturn(1);
+
+        return $shopConfigMock;
     }
 }

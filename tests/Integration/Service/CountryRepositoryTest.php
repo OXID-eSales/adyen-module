@@ -73,6 +73,9 @@ final class CountryRepositoryTest extends TestCase
         $this->assertSame($country->oxcountry__oxisoalpha2->value, $service->getCountryIso());
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\CountryRepository::__construct
+     */
     public function testGetCountryId(): void
     {
         $config = Registry::getConfig();

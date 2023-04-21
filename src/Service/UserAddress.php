@@ -7,58 +7,64 @@
 
 declare(strict_types=1);
 
-namespace OxidSolutionCatalysts\Adyen\Traits;
+namespace OxidSolutionCatalysts\Adyen\Service;
 
-use OxidEsales\Eshop\Application\Model\Country as EshopModelCountry;
-use OxidSolutionCatalysts\Adyen\Model\User;
-use OxidSolutionCatalysts\Adyen\Model\Address;
-use OxidSolutionCatalysts\Adyen\Model\Country;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
+use OxidSolutionCatalysts\Adyen\Model\Address as AdyenAddress;
+use OxidEsales\Eshop\Application\Model\Country;
+use OxidSolutionCatalysts\Adyen\Model\Country as AdyenCountry;
+use OxidSolutionCatalysts\Adyen\Traits\Json;
+use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * Convenience trait to work with JSON-Data
  */
-trait UserAddress
+class UserAddress
 {
     use Json;
+    use ServiceContainer;
 
-    public function getAdyenShopperEmail(): string
+    private OxNewService $oxNewService;
+
+    public function __construct(OxNewService $oxNewService)
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $this->oxNewService = $oxNewService;
+    }
+
+    public function getAdyenShopperEmail(User $user): string
+    {
+        /** @var AdyenUser $user */
         return $user->getAdyenStringData('oxusername');
     }
 
-    public function getAdyenShopperName(): string
+    public function getAdyenShopperName(User $user): array
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        /** @var Address|null $address */
+        /** @var AdyenUser|null $address */
         $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
+        /** @var AdyenAddress|AdyenUser $dataObj */
         $dataObj = $address ?: $user;
-        $result = [
+
+        return [
             'firstName' => $dataObj->getAdyenStringData('oxfname'),
             'lastName' => $dataObj->getAdyenStringData('oxlname')
         ];
-        return $this->arrayToJson($result);
     }
 
-    public function getAdyenDeliveryAddress(): string
+    public function getAdyenDeliveryAddress(User $user): array
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        /** @var Address|null $address */
+        /** @var AdyenAddress|null $address */
         $address = $user->getSelectedAddress();
-        /** @var Address|User $dataObj */
+        /** @var AdyenAddress|AdyenUser $dataObj */
         $dataObj = $address ?: $user;
 
-        /** @var Country $country */
-        $country = oxNew(EshopModelCountry::class);
+        /** @var AdyenCountry $country */
+        $country = $this->oxNewService->oxNew(Country::class);
         $country->load($dataObj->getAdyenStringData('oxcountryid'));
         /** @var null|string $countryIso */
         $countryIso = $country->getAdyenStringData('oxisoalpha2');
 
-        $result = [
+        return [
             'city' => $dataObj->getAdyenStringData('oxcity'),
             'country' => $countryIso,
             'houseNumberOrName' => $dataObj->getAdyenStringData('oxstreetnr'),
@@ -66,6 +72,5 @@ trait UserAddress
             'stateOrProvince' => $dataObj->getAdyenStringData('oxstateid'),
             'street' => $dataObj->getAdyenStringData('oxstreet')
         ];
-        return $this->arrayToJson($result);
     }
 }

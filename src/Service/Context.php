@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use OxidEsales\Facts\Facts;
 use Webmozart\PathUtil\Path;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class Context extends BasicContext
 {
@@ -73,9 +74,24 @@ class Context extends BasicContext
         return $this->getControllerUrl($controller);
     }
 
-    public function getPaymentReturnUrl(): string
-    {
-        return $this->getControllerUrl('thankyou');
+    public function getPaymentReturnUrl(
+        string $sessionChallengeToken,
+        string $sDeliveryAddressMD5,
+        string $pspReference,
+        string $resultCode,
+        string $amountCurrency
+    ): string {
+        return $this->getControllerUrl(
+            'order',
+            [
+                'fnc' => 'return',
+                'stoken' => $sessionChallengeToken,
+                'sDeliveryAddressMD5' => $sDeliveryAddressMD5,
+                Module::ADYEN_HTMLPARAM_PSPREFERENCE_NAME => $pspReference,
+                Module::ADYEN_HTMLPARAM_RESULTCODE_NAME => $resultCode,
+                Module::ADYEN_HTMLPARAM_AMOUNTCURRENCY_NAME => $amountCurrency,
+            ]
+        );
     }
 
     /**
@@ -83,9 +99,13 @@ class Context extends BasicContext
      *
      * @param string $controller Name of the controller
      */
-    public function getControllerUrl(string $controller): string
+    public function getControllerUrl(string $controller, array $optionalGetParameters = null): string
     {
         $url = $this->getShopUrl() . 'index.php?cl=' . $controller;
+
+        if (is_array($optionalGetParameters) && count($optionalGetParameters) > 0) {
+            $url .= '&' . http_build_query($optionalGetParameters);
+        }
 
         return html_entity_decode(
             $url

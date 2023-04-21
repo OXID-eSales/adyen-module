@@ -13,6 +13,8 @@ use Adyen\AdyenException;
 use Adyen\Client;
 use Adyen\Service\Checkout;
 use Adyen\Service\Modification;
+use Psr\Log\LoggerInterface;
+use Exception;
 
 /**
  * @extendable-class
@@ -24,13 +26,16 @@ class AdyenAPIResponse
 
     /** @var SessionSettings */
     protected SessionSettings $session;
+    protected LoggerInterface $logger;
 
     public function __construct(
         AdyenSDKLoader $adyenSDK,
-        SessionSettings $session
+        SessionSettings $session,
+        LoggerInterface $logger
     ) {
         $this->client = $adyenSDK->getAdyenSDK();
         $this->session = $session;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,5 +50,10 @@ class AdyenAPIResponse
     protected function createModification(): Modification
     {
         return new Modification($this->client);
+    }
+
+    protected function getPaymentsNotFoundException(): Exception
+    {
+        return new Exception('payments not found in Adyen-Response');
     }
 }

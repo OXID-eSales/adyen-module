@@ -65,7 +65,7 @@ class AdyenHistory extends BaseModel
         $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
         $this->context = $this->getServiceFromContainer(ContextInterface::class);
 
-        $this->config = Registry::getConfig();
+        $this->config = $this->getConfigFromRegistry();
     }
 
     public function loadByPSPReference(string $pspReference): bool
@@ -259,7 +259,7 @@ class AdyenHistory extends BaseModel
             Module::ADYEN_STATUS_AUTHORISED,
             Module::ADYEN_STATUS_CANCELLED,
             Module::ADYEN_STATUS_CAPTURED,
-            Module::ADYEN_STATUS_CAPTUREFAILED,
+            Module::ADYEN_STATUS_CAPTURE_FAILED,
             Module::ADYEN_STATUS_ERROR,
             Module::ADYEN_STATUS_EXPIRED,
             Module::ADYEN_STATUS_RECEIVED,
@@ -336,5 +336,13 @@ class AdyenHistory extends BaseModel
             $queryBuilder->setParameters($parameters)
                 ->execute();
         }
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    protected function getConfigFromRegistry(): Config
+    {
+        return Registry::getConfig();
     }
 }

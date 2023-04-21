@@ -14,13 +14,12 @@ use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
-use OxidSolutionCatalysts\Adyen\Model\Payment;
+use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\StaticContents;
-use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
-use Psr\Container\ContainerExceptionInterface;
+use OxidEsales\Eshop\Application\Model\Payment;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
@@ -54,14 +53,15 @@ final class ModuleEvents
         $activePaymentMethods = [];
         $paymentIds = array_keys(Module::PAYMENT_DEFINTIONS);
         foreach ($paymentIds as $paymentId) {
-            /** @var Payment $paymentMethod */
-            $paymentMethod = oxNew(EshopModelPayment::class);
+            $oxNewService = self::getOxNewService();
+            /** @var AdyenPayment $paymentMethod */
+            $paymentMethod = $oxNewService->oxNew(Payment::class);
             if (
                 $paymentMethod->load($paymentId)
                 && $paymentMethod->getAdyenBoolData('oxactive') === true
             ) {
                 $paymentMethod->assign([
-                    'oxpayments__oxactive' => true
+                    'oxpayments__oxactive' => false
                 ]);
                 $paymentMethod->save();
                 $activePaymentMethods[] = $paymentId;
@@ -121,10 +121,12 @@ final class ModuleEvents
         $queryBuilderFactory = $container->get(QueryBuilderFactoryInterface::class);
 
         $moduleSettings = self::getModuleSettingsService();
+        $oxNewService = self::getOxNewService();
 
         return new StaticContents(
             $queryBuilderFactory,
-            $moduleSettings
+            $moduleSettings,
+            $oxNewService
         );
     }
 
@@ -150,5 +152,10 @@ final class ModuleEvents
         return new ModuleSettings(
             $moduleSettingBridge
         );
+    }
+
+    private static function getOxNewService(): OxNewService
+    {
+        return new OxNewService();
     }
 }

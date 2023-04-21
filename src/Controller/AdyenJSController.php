@@ -3,10 +3,10 @@
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidEsales\Eshop\Application\Model\Basket;
-use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\ViewConfig;
+use OxidEsales\Eshop\Application\Model\User;
+use OxidSolutionCatalysts\Adyen\Service\Controller\PaymentJSControllerService;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
-use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentDetails;
 use OxidSolutionCatalysts\Adyen\Service\ResponseHandler;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
@@ -24,39 +24,32 @@ class AdyenJSController extends FrontendController
     public function payments(): void
     {
         $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
-        $session = $this->getServiceFromContainer(SessionSettings::class);
+        $sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
+        $paymentJSControllerService = $this->getServiceFromContainer(PaymentJSControllerService::class);
 
-        /** @var Basket $basket */
-        $basket = Registry::getSession()->getBasket();
+        $basket = $sessionSettings->getBasket();
         $amount = $basket->getPrice()->getBruttoPrice();
-        $orderReference = $session->getOrderReference();
-        $pspReference = $session->getPspReference();
+        $orderReference = $sessionSettings->getOrderReference();
+        $pspReference = $sessionSettings->getPspReference();
 
         $postData = $this->jsonToArray($this->getJsonPostData());
 
         if (!$amount || !isset($postData['paymentMethod'])) {
-            $response->setNotFound()->sendJson();
+            $response->setNotFound()->sendJson(); // core code exits here
+            return; // for unit tests
         }
 
-        // check if a AdyenAuthorisation exists and a cancel is necessary
-        if ($pspReference && $session->getAmountValue() < $amount) {
-            $paymentCancel = $this->getServiceFromContainer(PaymentCancel::class);
-            $paymentCancel->doAdyenCancel(
-                $pspReference,
-                $orderReference
-            );
-        }
+        $paymentJSControllerService->cancelPaymentIfNecessary($pspReference, $amount, $orderReference);
 
-        // no orderReference? create!
-        // and save the amount to the session for AdyenAuthorisation-check
-        if (!$orderReference) {
-            $orderReference = $session->createOrderReference();
-            $session->setAmountValue($amount);
-        }
+        $orderReference = $paymentJSControllerService->createOrderReference($orderReference, $amount);
 
         /** @var Payment $paymentService */
         $paymentService = $this->getServiceFromContainer(Payment::class);
-        $paymentService->collectPayments($amount, $orderReference, $postData);
+        /** @var User $user */
+        $user = $this->getUser();
+        /** @var ViewConfig $viewConfig */
+        $viewConfig = $this->getViewConfig();
+        $paymentService->collectPayments($amount, $orderReference, $postData, $user, $viewConfig);
         $payments = $paymentService->getPaymentResult();
 
         $response->setData(
@@ -71,7 +64,8 @@ class AdyenJSController extends FrontendController
         $postData = $this->jsonToArray($this->getJsonPostData());
 
         if (!isset($postData['details'])) {
-            $response->setNotFound()->sendJson();
+            $response->setNotFound()->sendJson(); // core code exits here
+            return; // for unit tests
         }
 
         /** @var PaymentDetails $paymentService */

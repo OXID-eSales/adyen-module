@@ -11,15 +11,16 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Application\Model\Order as EshopModelOrder;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
-use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenModel;
 use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
+use Psr\Log\LoggerInterface;
 
 abstract class WebhookHandlerBase
 {
@@ -28,18 +29,33 @@ abstract class WebhookHandlerBase
     protected int $shopId;
     protected string $pspReference;
     protected string $parentPspReference;
-    protected EshopModelOrder $order;
-    protected ?Payment $payment;
+    protected Order $order;
+    protected Payment $payment;
+    protected AdyenHistoryList $adyenHistoryList;
+    protected Context $context;
+
+    public function __construct(
+        ?Payment $payment = null,
+        ?Order $order = null,
+        ?AdyenHistoryList $adyenHistoryList = null,
+        ?Context $context = null
+    ) {
+        // whether getting mock objects from unit test or new objects for production
+        $this->payment = $payment ?? oxNew(Payment::class);
+        $this->order = $order ?? oxNew(Order::class);
+        $this->adyenHistoryList = $adyenHistoryList ?? oxNew(AdyenHistoryList::class);
+        $this->context = $context ?? $this->getServiceFromContainer(Context::class);
+    }
 
     public function handle(Event $event): void
     {
         if (!$event->isHMACVerified()) {
-            Registry::getLogger()->debug("Webhook: HMAC could not verified");
+            $this->getLogger()->debug("Webhook: HMAC could not verified");
             return;
         }
 
         if (!$event->isMerchantVerified()) {
-            Registry::getLogger()->debug("Webhook: MerchantCode could not verified");
+            $this->getLogger()->debug("Webhook: MerchantCode could not verified");
             return;
         }
 
@@ -48,22 +64,21 @@ abstract class WebhookHandlerBase
                 $this->setData($event);
                 $this->updateStatus($event);
             } catch (WebhookEventTypeException | Exception $e) {
-                Registry::getLogger()->debug($e->getMessage());
+                $this->getLogger()->debug($e->getMessage());
             }
         }
     }
 
-    protected function getOrderByAdyenPSPReference(string $pspReference): ?EshopModelOrder
+    protected function getOrderByAdyenPSPReference(string $pspReference): ?Order
     {
         $result = null;
-        $adyenHistoryList = oxNew(AdyenHistoryList::class);
 
-        $oxidOrderId = $adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
+        $oxidOrderId = $this->adyenHistoryList->getOxidOrderIdByPSPReference($pspReference);
 
-        $order = oxNew(EshopModelOrder::class);
-        if ($order->load($oxidOrderId)) {
-            $result = $order;
+        if ($this->order->load($oxidOrderId)) {
+            $result = $this->order;
         }
+
         return $result;
     }
 
@@ -75,22 +90,18 @@ abstract class WebhookHandlerBase
      */
     public function setData(Event $event): void
     {
-        /** @var Context $context */
-        $context = $this->getServiceFromContainer(Context::class);
-        $this->shopId = $context->getCurrentShopId();
+        $this->shopId = $this->context->getCurrentShopId();
 
         $this->pspReference = $event->getPspReference();
         $this->parentPspReference = $event->getParentPspReference() !== '' ?
             $event->getParentPspReference() :
             $this->pspReference;
-        /** @var Order $order */
+        /** @var AdyenModel $order */
         $order = $this->getOrderByAdyenPSPReference($this->pspReference);
         if (!is_object($order)) {
             throw new Exception("order not found by psp reference " . $this->pspReference);
         }
         $this->order = $order;
-
-        $this->payment = oxNew(Payment::class);
 
         /** @var null|string $paymentId */
         $paymentId = $this->order->getAdyenStringData('oxpaymenttype');
@@ -144,7 +155,7 @@ abstract class WebhookHandlerBase
             $adyenHistory->setAdyenAction($action);
             $adyenHistory->save();
         } catch (Exception $e) {
-            Registry::getLogger()->info($e->getMessage());
+            $this->getLogger()->info($e->getMessage());
         }
     }
 
@@ -157,4 +168,13 @@ abstract class WebhookHandlerBase
     abstract protected function getAdyenStatus(): string;
 
     abstract protected function getAdyenAction(): string;
+
+    /**
+     * make functions mockable which uses the logger
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    private function getLogger(): LoggerInterface
+    {
+        return Registry::getLogger();
+    }
 }

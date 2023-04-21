@@ -9,10 +9,11 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Model;
 
-use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
+use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
+use OxidSolutionCatalysts\Adyen\Core\Module as CoreModule;
 
 /**
  *
@@ -23,22 +24,25 @@ class Payment extends Payment_parent
     use ServiceContainer;
     use DataGetter;
 
+    private PaymentConfigService $paymentConfigService;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->paymentConfigService = $this->getServiceFromContainer(PaymentConfigService::class);
+    }
+
     /**
      * Checks if the payment method is an Adyen payment method
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return bool
      */
     public function isAdyenPayment(): bool
     {
-        return $this->getServiceFromContainer(ModuleService::class)->isAdyenPayment($this->getId());
+        return $this->paymentConfigService->isAdyenPayment($this->getId());
     }
 
     /**
      * Checks if the payment method is show on Payment Controller
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return bool
      */
     public function showInPaymentCtrl(): bool
     {
@@ -50,9 +54,6 @@ class Payment extends Payment_parent
 
     /**
      * Checks if the payment method is show on Order Controller
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return bool
      */
     public function showInOrderCtrl(): bool
     {
@@ -64,29 +65,17 @@ class Payment extends Payment_parent
 
     /**
      * Checks if the payment allow manual Capture
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return bool
      */
     public function isAdyenManualCapture(): bool
     {
-        return ($this->getServiceFromContainer(ModuleService::class)->isCaptureDelay($this->getId()) &&
-            $this->getServiceFromContainer(ModuleSettings::class)
-                ->isManualCapture($this->getId())
-        );
+        return $this->paymentConfigService->isAdyenManualCapture($this->getId());
     }
 
     /**
      * Checks if the payment allow immediate Capture
-     *
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @return bool
      */
     public function isAdyenImmediateCapture(): bool
     {
-        return ($this->getServiceFromContainer(ModuleService::class)->isCaptureDelay($this->getId()) &&
-            $this->getServiceFromContainer(ModuleSettings::class)
-                ->isImmediateCapture($this->getId())
-        );
+        return $this->paymentConfigService->isAdyenImmediateCapture($this->getId());
     }
 }

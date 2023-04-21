@@ -39,6 +39,8 @@ final class Event
     private float $amountValue;
     private string $amountCurrency;
 
+    private HmacSignature $hmacSignatureUtil;
+
     /**
      * Event constructor.
      *
@@ -152,6 +154,9 @@ final class Event
         /** @var null|string $currencyDecimals */
         $currencyDecimals = $currencyObj->decimal ?? '';
         $this->amountValue = $this->getOxidAmount($rawAmountValue, (int)$currencyDecimals);
+
+        // whether getting HmacSignature mock from unit test or new HmacSignature object for production
+        $this->hmacSignatureUtil = $this->rawData['hmacSignatureUtil'] ?? new HmacSignature();
     }
 
     protected function verifyHMACSignature(): void
@@ -165,12 +170,11 @@ final class Event
             return;
         }
 
-        $hmac = new HmacSignature();
-
         try {
-            if ($hmac->isValidNotificationHMAC($hmacKey, $this->item)) {
-                $this->isHMACVerified = true;
-            }
+            $this->isHMACVerified = $this->hmacSignatureUtil->isValidNotificationHMAC(
+                $hmacKey,
+                $this->item
+            );
         } catch (AdyenException $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
         }

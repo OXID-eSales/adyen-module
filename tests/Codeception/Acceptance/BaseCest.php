@@ -14,8 +14,9 @@ use OxidEsales\Codeception\Page\Checkout\ThankYou;
 use OxidEsales\Codeception\Page\Page;
 use OxidEsales\Codeception\Step\Basket as BasketSteps;
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Tests\Codeception\Acceptance\Dependency\AdyenModuleSettings;
 use OxidSolutionCatalysts\Adyen\Tests\Codeception\AcceptanceTester;
-use PHPUnit\Util\Xml\Exception;
+use Exception;
 
 abstract class BaseCest
 {
@@ -25,6 +26,8 @@ abstract class BaseCest
 
     public function _before(AcceptanceTester $I): void
     {
+        $adyenModuleSettings = new AdyenModuleSettings();
+        $adyenModuleSettings->saveSettingsFromEnv();
         foreach ($this->_getOXID() as $payment) {
             $I->updateInDatabase(
                 'oxpayments',
@@ -42,7 +45,7 @@ abstract class BaseCest
             );
         }
 
-        $this->I = $I;
+        $this->_setAcceptance($I);
     }
 
     public function _after(AcceptanceTester $I): void
@@ -50,10 +53,7 @@ abstract class BaseCest
         $I->clearShopCache();
     }
 
-    /**
-     * @return void
-     */
-    protected function _initializeTest()
+    protected function _initializeTest(): void
     {
         $this->I->openShop();
         $basketItem = Fixtures::get('product');
@@ -68,13 +68,9 @@ abstract class BaseCest
         $this->paymentSelection = $homePage->openCheckout();
     }
 
-    /**
-     * @param string $label
-     * @return Page
-     */
     protected function _choosePayment(): Page
     {
-        $label = "//label[@for='" . $this->_getPaymentId() . "']";
+        $label = "//label[@for='payment_" . $this->_getPaymentId() . "']";
 
         $this->I->waitForElement($label);
         $this->I->click($label);
@@ -95,9 +91,6 @@ abstract class BaseCest
         $iframeCreditCardCVC = '.adyen-checkout__card__cvc__input iframe';
         $inputCVC = '[data-fieldtype="encryptedSecurityCode"]';
 
-        $inputName = '[name="holderName"]';
-
-
         $this->I->waitForElement($iframeCreditCardNumber, 60);
         $this->I->waitForElementNotVisible($spinner, 90);
 
@@ -113,21 +106,16 @@ abstract class BaseCest
         $this->I->fillField($inputCVC, $_ENV['CREDITCARDCVC']);
         $this->I->switchToIFrame();
 
-
-        $this->I->fillField($inputName, $_ENV['CREDITCARDNAME']);
         return $this->paymentSelection->goToNextStep();
     }
 
     /**
-     * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function _checkSuccessfulPayment()
+    protected function _checkSuccessfulPayment(): ThankYou
     {
         $this->I->waitForPageLoad();
-        $thankYouPage = new ThankYou($this->I);
-        $orderNumber = $thankYouPage->grabOrderNumber();
-        return $orderNumber;
+        return new ThankYou($this->I);
     }
 
     /**

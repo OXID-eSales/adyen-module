@@ -4,9 +4,10 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Core\Module;
-use OxidEsales\Eshop\Application\Model\Order as eShopOrder;
-use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
+use OxidEsales\Eshop\Application\Model\Payment;
+use stdClass;
 
 class PaymentGateway
 {
@@ -14,30 +15,48 @@ class PaymentGateway
 
     private SessionSettings $sessionSettings;
     private PaymentGatewayOrderSavable $gatewayOrderSavable;
-    private ModuleService $moduleService;
+    private PaymentConfigService $paymentConfigService;
+    private OrderReturnService $orderRedirectService;
+    private OxNewService $oxNewService;
 
     public function __construct(
         SessionSettings $sessionSettings,
         PaymentGatewayOrderSavable $gatewayOrderSavable,
-        ModuleService $moduleService
+        PaymentConfigService $paymentConfigService,
+        OrderReturnService $orderRedirectService,
+        OxNewService $oxNewService
     ) {
         $this->sessionSettings = $sessionSettings;
         $this->gatewayOrderSavable = $gatewayOrderSavable;
-        $this->moduleService = $moduleService;
+        $this->paymentConfigService = $paymentConfigService;
+        $this->orderRedirectService = $orderRedirectService;
+        $this->oxNewService = $oxNewService;
     }
 
-    public function doFinishAdyenPayment(float $amount, eShopOrder $order): bool
+    public function doFinishAdyenPayment(float $amount, Order $order): bool
     {
         $success = false;
 
         $paymentId = $this->sessionSettings->getPaymentId();
         $pspReference = $this->sessionSettings->getPspReference();
         $resultCode = $this->sessionSettings->getResultCode();
-        $amountCurrency = $this->sessionSettings->getAmountCurrency();
+        $amountCurrency = $this->getOrderCurrencyName($order);
         $orderReference = $this->sessionSettings->getOrderReference();
 
+        $canSave = $this->gatewayOrderSavable->prove($pspReference, $resultCode, $orderReference);
+
+        if (!$canSave && $this->orderRedirectService->isRedirectedFromAdyen()) {
+            $paymentDetails = $this->orderRedirectService->getPaymentDetails();
+            $resultCode = $paymentDetails['resultCode'];
+            $pspReference = $paymentDetails['pspReference'];
+            $orderReference = $paymentDetails['merchantReference'];
+            $amountCurrency = $paymentDetails['amount']['currency'] ?? $amountCurrency;
+
+            $canSave = true;
+        }
+
         // everything is fine, we can save the references
-        if ($this->gatewayOrderSavable->prove($pspReference, $resultCode, $orderReference)) {
+        if ($canSave) {
             // not necessary anymore, so cleanup
             $this->sessionSettings->deletePaymentSession();
 
@@ -56,7 +75,7 @@ class PaymentGateway
             $order->save();
 
             // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
-            if ($this->moduleService->showInPaymentCtrl($paymentId)) {
+            if ($this->paymentConfigService->isAdyenImmediateCapture($paymentId)) {
                 $order->captureAdyenOrder($amount);
             }
 
@@ -77,5 +96,21 @@ class PaymentGateway
         $this->sessionSettings->setPspReference($pspReference);
         $this->sessionSettings->setResultCode($resultCode);
         $this->sessionSettings->setAmountCurrency($amountCurrency);
+    }
+
+    protected function getPayment(string $paymentId): Payment
+    {
+        $payment = $this->oxNewService->oxNew(Payment::class);
+        $payment->setId($paymentId);
+
+        return $payment;
+    }
+
+    private function getOrderCurrencyName(Order $order): string
+    {
+        /** @var stdClass $currency */
+        $currency = $order->getOrderCurrency();
+
+        return $currency->name;
     }
 }

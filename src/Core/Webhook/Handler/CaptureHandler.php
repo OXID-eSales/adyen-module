@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
+use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 
 final class CaptureHandler extends WebhookHandlerBase
 {
@@ -23,7 +24,7 @@ final class CaptureHandler extends WebhookHandlerBase
      */
     protected function additionalUpdates(Event $event): void
     {
-        /** @var \OxidSolutionCatalysts\Adyen\Model\Order $order */
+        /** @var AdyenOrder $order */
         $order = $this->order;
         $order->markAdyenOrderAsPaid();
     }
