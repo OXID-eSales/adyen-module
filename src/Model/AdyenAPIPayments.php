@@ -32,6 +32,8 @@ class AdyenAPIPayments
     protected string $shopperReference;
     protected string $shopperCountryCode;
     protected array $lineItems;
+    protected array $deliveryAddress;
+    protected array $shopperName;
 
     public function setReference(string $reference): void
     {
@@ -124,6 +126,16 @@ class AdyenAPIPayments
         $this->lineItems = $lineItems;
     }
 
+    public function setDelieryAddress(array $deliveryAddress): void
+    {
+        $this->deliveryAddress = $deliveryAddress;
+    }
+
+    public function setShopperName(array $shopperName): void
+    {
+        $this->shopperName = $shopperName;
+    }
+
     public function getAdyenPaymentsParams(): array
     {
         return [
@@ -146,6 +158,19 @@ class AdyenAPIPayments
                     'version' => $this->platformVersion,
                     'integrator' => $this->platformIntegrator
                 ]
+            ],
+            'deliveryAddress' => [
+                'city' => $this->deliveryAddress['city'],
+                'country' => $this->deliveryAddress['country'],
+                'houseNumberOrName' => $this->deliveryAddress['houseNumberOrName'],
+                'postalCode' => $this->deliveryAddress['postalCode'],
+                'stateOrProvince' => $this->deliveryAddress['stateOrProvince'],
+                'street' => $this->deliveryAddress['street'],
+            ],
+            'shopperName' => [
+                'firstName' => $this->shopperName['firstName'],
+                'gender' => 'UNKNOWN',
+                'lastName' => $this->shopperName['lastName'],
             ],
             'shopperEmail' => $this->shopperEmail,
             'shopperIP' => $this->shopperIP,

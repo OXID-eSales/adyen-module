@@ -40,6 +40,7 @@ class Payment extends PaymentBase
     private AdyenAPILineItemsService $ApiLineItemsService;
     private SessionSettings $sessionSettings;
     private OxNewService $oxNewService;
+    private UserAddress $userAddressService;
 
     public function __construct(
         Context $context,
@@ -48,7 +49,8 @@ class Payment extends PaymentBase
         CountryRepository $countryRepository,
         AdyenAPILineItemsService $ApiLineItemsService,
         SessionSettings $sessionSettings,
-        OxNewService $oxNewService
+        OxNewService $oxNewService,
+        UserAddress $userAddressService
     ) {
         $this->context = $context;
         $this->moduleSettings = $moduleSettings;
@@ -57,6 +59,7 @@ class Payment extends PaymentBase
         $this->ApiLineItemsService = $ApiLineItemsService;
         $this->sessionSettings = $sessionSettings;
         $this->oxNewService = $oxNewService;
+        $this->userAddressService = $userAddressService;
     }
 
     public function setPaymentResult(array $paymentResult): void
@@ -114,6 +117,9 @@ class Payment extends PaymentBase
         $payments->setPlatformName(Module::MODULE_PLATFORM_NAME);
         $payments->setPlatformVersion(Module::MODULE_PLATFORM_VERSION);
         $payments->setPlatformIntegrator(Module::MODULE_PLATFORM_INTEGRATOR);
+
+        $payments->setDelieryAddress($this->userAddressService->getAdyenDeliveryAddress($user));
+        $payments->setShopperName($this->userAddressService->getAdyenShopperName($user));
 
         try {
             $resultPayments = $this->APIPayments->getPayments($payments);
