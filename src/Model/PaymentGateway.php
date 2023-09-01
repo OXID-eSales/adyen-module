@@ -26,6 +26,8 @@ class PaymentGateway extends PaymentGateway_parent
     /**
      * OXID-Core
      * @inheritDoc
+     *
+     * @return bool
      */
     public function executePayment($amount, &$order)
     {

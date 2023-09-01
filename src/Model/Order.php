@@ -54,6 +54,7 @@ class Order extends Order_parent
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @phpstan-return void
      */
     public function init($tableName = null, $forceAllFields = false)
     {
@@ -86,6 +87,7 @@ class Order extends Order_parent
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @return int
      */
     public function finalizeOrder(Basket $basket, $user, $recalcOrder = false)
     {
@@ -100,6 +102,7 @@ class Order extends Order_parent
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @phpstan-return void
      */
     public function cancelOrder()
     {

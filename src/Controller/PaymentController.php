@@ -29,6 +29,7 @@ class PaymentController extends PaymentController_parent
     /**
      * OXID-Core
      * @inheritDoc
+     * @return array<array-key, mixed>|object
      */
     public function getPaymentList()
     {
@@ -112,6 +113,7 @@ class PaymentController extends PaymentController_parent
     /**
      * OXID-Core
      * @inheritDoc
+     * @phpstan-return ?string
      */
     public function getPaymentError()
     {

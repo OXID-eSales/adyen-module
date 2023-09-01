@@ -27,6 +27,7 @@ class OrderArticle extends OrderArticle_parent
 
     /**
      * @inheritDoc
+     * @phpstan-return void
      */
     public function storno()
     {
@@ -39,6 +40,7 @@ class OrderArticle extends OrderArticle_parent
 
     /**
      * @inheritDoc
+     * @phpstan-return void
      */
     public function deleteThisArticle()
     {
