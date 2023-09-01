@@ -35,6 +35,18 @@ class AdyenAPIPaymentsTest extends UnitTestCase
         $model->setShopperCountryCode('DE');
         $model->setLineItems(['lineItem' => 'test']);
         $model->setOrigin('https://origin.test.de');
+        $model->setDeliveryAddress([
+            'city' => 'Musterhausen',
+            'country' => 'Germany',
+            'houseNumberOrName' => '12',
+            'postalCode' => '12345',
+            'stateOrProvince' => 'TestProvinz',
+            'street' => 'Testallee'
+        ]);
+        $model->setShopperName([
+            'firstName' => 'Max',
+            'lastName' => 'Muster'
+        ]);
 
         $this->assertSame(
             [
@@ -57,6 +69,19 @@ class AdyenAPIPaymentsTest extends UnitTestCase
                         'version' => 'TestPlatformVersion',
                         'integrator' => 'TestPlatformVersion'
                     ]
+                ],
+                'deliveryAddress' => [
+                    'city' => 'Musterhausen',
+                    'country' => 'Germany',
+                    'houseNumberOrName' => '12',
+                    'postalCode' => '12345',
+                    'stateOrProvince' => 'TestProvinz',
+                    'street' => 'Testallee'
+                ],
+                'shopperName' => [
+                    'firstName' => 'Max',
+                    'gender' => 'UNKNOWN',
+                    'lastName' => 'Muster'
                 ],
                 'shopperEmail' => 'test@test.de',
                 'shopperIP' => '1.2.3.4',
