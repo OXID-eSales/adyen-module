@@ -43,15 +43,10 @@ class OrderList extends OrderList_parent
     }
 
     /**
-     * Builds and returns SQL query string. Adds additional order check.
-     *
-     * @param Order $listObject list main object
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * @phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-     *
-     * @return string
+     * OXID-Core
+     * @inheritDoc
      */
-    protected function _buildSelectString($listObject = null): string
+    protected function _buildSelectString($listObject = null)
     {
         $request = Registry::getRequest();
         /** @var null|string $searchField */

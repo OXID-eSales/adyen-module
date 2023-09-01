@@ -28,7 +28,7 @@ class OrderArticle extends OrderArticle_parent
     /**
      * @inheritDoc
      */
-    public function storno(): void
+    public function storno()
     {
         $amountBefore = $this->collectAmountForAdyenRefund();
 
@@ -40,7 +40,7 @@ class OrderArticle extends OrderArticle_parent
     /**
      * @inheritDoc
      */
-    public function deleteThisArticle(): void
+    public function deleteThisArticle()
     {
         $amountBefore = $this->collectAmountForAdyenRefund();
 

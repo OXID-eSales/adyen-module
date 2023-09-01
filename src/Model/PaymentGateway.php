@@ -23,7 +23,11 @@ class PaymentGateway extends PaymentGateway_parent
 {
     use RequestGetter;
 
-    public function executePayment($amount, &$order): bool
+    /**
+     * OXID-Core
+     * @inheritDoc
+     */
+    public function executePayment($amount, &$order)
     {
         $sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
         $moduleService = $this->getServiceFromContainer(ModuleService::class);
