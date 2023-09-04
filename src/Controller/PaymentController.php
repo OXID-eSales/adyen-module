@@ -27,8 +27,8 @@ class PaymentController extends PaymentController_parent
     protected ?bool $assetsNecessary = null;
 
     /**
-     * Template variable getter. Returns paymentlist
-     *
+     * OXID-Core
+     * @inheritDoc
      * @return array<array-key, mixed>|object
      */
     public function getPaymentList()
@@ -48,7 +48,7 @@ class PaymentController extends PaymentController_parent
 
         $adyenHealth = $this->getServiceFromContainer(ModuleSettings::class)->checkConfigHealth();
 
-        /*
+        /**
          * check & allow:
          * - all none Adyen-Payments
          * - adyenHealth
@@ -111,9 +111,11 @@ class PaymentController extends PaymentController_parent
     }
 
     /**
+     * OXID-Core
      * @inheritDoc
+     * @phpstan-return ?string
      */
-    public function getPaymentError(): ?string
+    public function getPaymentError()
     {
         return (
             $this->isActiveAdyenSession() && !$this->isValidAdyenAuthorisation() ?

@@ -17,6 +17,7 @@ use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\PaymentBase;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use OxidSolutionCatalysts\Adyen\Service\UserAddress;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use PHPUnit\Framework\TestCase;
 
@@ -203,7 +204,8 @@ class PaymentTest extends TestCase
                     $this->createOxNewServiceMock(
                         $payments,
                         $deliveryAddressMD5
-                    )
+                    ),
+                    $this->createMock(UserAddress::class)
                 ]
             )
             ->onlyMethods(['setPaymentResult', 'setPaymentExecutionError'])

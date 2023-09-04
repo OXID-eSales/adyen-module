@@ -118,7 +118,7 @@ class Payment extends PaymentBase
         $payments->setPlatformVersion(Module::MODULE_PLATFORM_VERSION);
         $payments->setPlatformIntegrator(Module::MODULE_PLATFORM_INTEGRATOR);
 
-        $payments->setDelieryAddress($this->userAddressService->getAdyenDeliveryAddress($user));
+        $payments->setDeliveryAddress($this->userAddressService->getAdyenDeliveryAddress($user));
         $payments->setShopperName($this->userAddressService->getAdyenShopperName($user));
 
         try {
