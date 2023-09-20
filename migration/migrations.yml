@@ -1,4 +1,4 @@
 table_storage:
   table_name: oxmigrations_osc_adyen
-migrations_path:
+migrations_paths:
   'OxidSolutionCatalysts\Adyen\Migrations' : data
