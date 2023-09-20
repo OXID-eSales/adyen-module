@@ -1,0 +1,126 @@
+{% include "headitem.html.twig" with {title: "GENERAL_ADMIN_TITLE"|translate} %}
+
+{% if readonly %}
+    {% set readonly = "readonly disabled" %}
+{% else %}
+    {% set readonly = "" %}
+{% endif %}
+
+<form name="transfer" id="transfer" action="{{ oViewConf.getSelfLink() }}" method="post">
+    {{ oViewConf.getHiddenSid() }}
+    <input type="hidden" name="oxid" value="{{ oxid }}">
+    <input type="hidden" name="cl" value="order_main">
+</form>
+
+{% if not oView.isAdyenOrder() %}
+    <div class="errorbox">
+        {{ translate({ ident: "OSC_ADYEN_NO_ADYEN_ORDER" }) }}
+    </div>
+{% else %}
+    {% set adyenCurrency = edit.oxorder__oxcurrency.value %}
+    <table style="width: 98%; border-spacing: 0;">
+        <tr>
+            <!-- left side -->
+            <td style="width:68%; padding:1%; vertical-align: text-top;">
+                <!-- Show AdyenHistory -->
+                <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_HISTORY" }) }}</h3>
+                <table style="width: 98%; border-spacing: 0;">
+                    <tr>
+                        <td class="listheader first">{{ translate({ ident: "OSC_ADYEN_PSPREFERENCE" }) }}</td>
+                        <td class="listheader">{{ translate({ ident: "OSC_ADYEN_PARENTPSPREFERENCE" }) }}</td>
+                        <td class="listheader">{{ translate({ ident: "GENERAL_PRICE" }) }}</td>
+                        <td class="listheader">{{ translate({ ident: "OSC_ADYEN_TIMESTAMP" }) }}</td>
+                        <td class="listheader">{{ translate({ ident: "OSC_ADYEN_ACTION" }) }}</td>
+                        <td class="listheader">{{ translate({ ident: "OSC_ADYEN_STATUS" }) }}</td>
+                    </tr>
+                    {% set blWhite = "" %}
+                    {% for listitem in history %}
+                        {% set actionIdent = "OSC_ADYEN_ACTION"|cat(listitem.getAdyenAction()) %}
+                        {% set statusIdent = "OSC_ADYEN_STATUS"|cat(listitem.getAdyenStatus()) %}
+                        <tr id="art.{{ loop.index }}">
+                            {% set listclass = listitem ~ blWhite %}
+                            <td class="{{ listclass }}">{{ listitem.getPSPReference() }}</td>
+                            <td class="{{ listclass }}">{{ listitem.getParentPSPReference() }}</td>
+                            <td class="{{ listclass }}">{{ listitem.getFormatedPrice() }} {{ listitem.getCurrency() }}</td>
+                            <td class="{{ listclass }}">{{ listitem.getTimeStamp() }}</td>
+                            <td class="{{ listclass }}">{{ translate({ ident: actionIdent }) }}</td>
+                            <td class="{{ listclass }}">{{ translate({ ident: statusIdent }) }} ({{ translate({ ident: "tbclorder_adyen", suffix: "COLON" }) }} {{ listitem.getAdyenStatus() }})</td>
+                        </tr>
+                        {% if blWhite == "2" %}
+                            {% set blWhite = "" %}
+                        {% else %}
+                            {% set blWhite = "2" %}
+                        {% endif %}
+                    {% endfor %}
+                </table>
+                <!-- Show AdyenHistory END -->
+                {% hasrights { ident: "ADYENSTORNO" } %}
+                    {% if edit.isAdyenManualCapture() and edit.isAdyenCapturePossible() %}
+                        <!-- Adyen Capture -->
+                        <div style="margin-top: 20px;">
+                            <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_CAPTUREMONEY" }) }}</h3>
+                            <form action="{{ oViewConf.getSelfLink() }}" method="post">
+                                {{ oViewConf.getHiddenSid() }}
+                                <input type="hidden" name="fnc" value="captureAdyenAmount" />
+                                <input type="hidden" name="oxid" value="{{ oxid }}" />
+                                <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
+                                <input type="text"
+                                       name="capture_amount"
+                                       value="{{ edit.getPossibleCaptureAmount()|escape|string_format(" % .2f") }}" />
+                                <input type="hidden"
+                                       name="capture_currency"
+                                       value="{{ adyenCurrency }}" />
+
+                                <input type="submit" value="{{ translate({ ident: "OSC_ADYEN_CAPTURE" }) }}" />
+                            </form>
+                        </div>
+                        <!-- Adyen Capture END -->
+                    {% endif %}
+                    {% if edit.isAdyenRefundPossible() %}
+                    <!-- Adyen Refund -->
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_REFUNDMONEY" }) }}</h3>
+                        <form action="{{ oViewConf.getSelfLink() }}" method="post">
+                            {{ oViewConf.getHiddenSid() }}
+                            <input type="hidden" name="fnc" value="refundAdyenAmount" />
+                            <input type="hidden" name="oxid" value="{{ oxid }}" />
+                            <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
+                            <input type="text"
+                                   name="refund_amount"
+                                   value="{{ edit.getPossibleRefundAmount()|escape|string_format(" % .2f") }}" />
+                            <input type="hidden"
+                                   name="refund_currency"
+                                   value="{{ adyenCurrency }}" />
+
+                            <input type="submit" value="{{ translate({ ident: "OSC_ADYEN_REFUND" }) }}" />
+                        </form>
+                    </div>
+                    <!-- Adyen Refund END -->
+                    {% endif %}
+                    {% if edit.isAdyenCancelPossible() %}
+                    <!-- Adyen Cancel -->
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_CANCELORDER" }) }}</h3>
+                        <form action="{{ oViewConf.getSelfLink() }}" method="post">
+                            {{ oViewConf.getHiddenSid() }}
+                            <input type="hidden" name="fnc" value="cancelAdyenOrder" />
+                            <input type="hidden" name="oxid" value="{{ oxid }}" />
+                            <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
+                            <input type="submit" value="{{ translate({ ident: "OSC_ADYEN_CANCEL" }) }}" />
+                        </form>
+                    </div>
+                    <!-- Adyen Cancel END -->
+                    {% endif %}
+                {% endhasrights %}
+            </td>
+            <!-- left side END, right side -->
+            <td style="width:28%; padding:1%; vertical-align: text-top;">
+            </td>
+            <!-- right side END -->
+        </tr>
+    </table>
+
+{% endif %}
+
+{% include "bottomnaviitem.html.twig" %}
+{% include "bottomitem.html.twig" %}

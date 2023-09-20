@@ -1,0 +1,10 @@
+{% set sPaymentID = payment.getId() %}
+{% set containerId = oViewConf.getTemplatePayButtonContainerId(payment) %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+<div class="pull-right submitButton nextStep">
+    {{ translate({ ident: "OSC_ADYEN_BUY_NOW_PAY_WITH" }) }}
+    <div id="{{ containerId }}"
+         data-paymentid="payment_{{ sPaymentID }}"
+    ></div>
+</div>
+{% include sModuleId ~ "/payment/adyen_payment_psp.html.twig" %}

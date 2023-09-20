@@ -1,0 +1,10 @@
+{% extends 'email/html/ordershipped.html.twig' %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+
+{% block email_html_ordershipped_oxordernr %}
+    {% if attribute(order, 'isAdyenOrder') is defined and order.isAdyenOrder() %}
+        {# We include it as template, so that it can be modified in custom themes #}
+        {% include sModuleId ~ "/email/order_adyen_html.html.twig" %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

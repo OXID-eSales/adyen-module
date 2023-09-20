@@ -1,0 +1,22 @@
+{% extends "page/checkout/order.html.twig" %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+
+{% block checkout_order_address %}
+    {% if paymentReturnReason %}
+        <div class="alert alert-danger" data-adyen-return-code="{{ paymentResultCode }}">
+            {{ translate({ ident: 'OSC_ADYEN_RETURN_NOT_SUCCESSFUL' }) }} {{ translate({ ident: paymentReturnReason }) }}
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block checkout_order_btn_submit_bottom %}
+    {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() and payment.showInOrderCtrl() %}
+        {# We include it as template, so that it can be modified in custom themes #}
+        {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
+        {{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+

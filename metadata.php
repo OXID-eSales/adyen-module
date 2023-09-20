@@ -40,7 +40,7 @@ $aModule = [
         'de' => 'Nutzung der Online-Bezahldienste von Adyen.',
         'en' => 'Use of the online payment services from Adyen.'
     ],
-    'thumbnail' => 'out/pictures/logo.png',
+    'thumbnail' => 'assets/img/logo.png',
     'version' => Module::MODULE_VERSION_FULL,
     'author' => 'OXID eSales AG',
     'url' => 'https://www.oxid-esales.com',
@@ -72,97 +72,6 @@ $aModule = [
         // frontend
         'AdyenJSController' => AdyenJSController::class,
         'AdyenWebhookController' => AdyenWebhookController::class
-    ],
-    'templates' => [
-        // admin
-        'osc_adyen_order.tpl' => 'osc/adyen/views/admin/tpl/osc_adyen_order.tpl',
-        // frontend - paymentpage
-        'modules/osc/adyen/payment/adyen_assets.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets.tpl',
-        'modules/osc/adyen/payment/adyen_payment.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment.tpl',
-        'modules/osc/adyen/payment/adyen_payment_inauthorisation.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_inauthorisation.tpl',
-        'modules/osc/adyen/payment/adyen_payment_psp.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_payment_psp.tpl',
-        // frontend - orderpage
-        'modules/osc/adyen/payment/adyen_order_submit.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_order_submit.tpl',
-        // frontend - account
-        'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
-        // frontend - mails
-        'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_html.tpl',
-        'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
-        // adyen js api
-        'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
-    ],
-    'blocks' => [
-        [
-            'template' => 'page/checkout/payment.tpl',
-            'block' => 'select_payment',
-            'file' => 'views/frontend/blocks/page/checkout/select_payment.tpl'
-        ],
-        [
-            'template' => 'page/checkout/payment.tpl',
-            'block' => 'checkout_payment_main',
-            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_main.tpl'
-        ],
-        [
-            'template' => 'page/checkout/payment.tpl',
-            'block' => 'checkout_payment_nextstep',
-            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_nextstep.tpl'
-        ],
-        [
-            'template' => 'page/checkout/payment.tpl',
-            'block' => 'checkout_payment_errors',
-            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_errors.tpl'
-        ],
-        [
-            'template' => 'page/checkout/order.tpl',
-            'block' => 'checkout_order_btn_submit_bottom',
-            'file' => 'views/frontend/blocks/page/checkout/checkout_order_btn_submit_bottom.tpl'
-        ],
-        [
-            'template' => 'page/account/order.tpl',
-            'block' => 'account_order_history_cart_items',
-            'file' => 'views/frontend/blocks/page/account/account_order_history_cart_items.tpl'
-        ],
-        [
-            'template' => 'email/html/order_cust.tpl',
-            'block' => 'email_html_order_cust_orderemail',
-            'file' => 'views/frontend/blocks/email/html/email_html_order_cust_orderemail.tpl'
-        ],
-        [
-            'template' => 'email/html/order_owner.tpl',
-            'block' => 'email_html_order_owner_orderemail',
-            'file' => 'views/frontend/blocks/email/html/email_html_order_owner_orderemail.tpl'
-        ],
-        [
-            'template' => 'email/html/ordershipped.tpl',
-            'block' => 'email_html_ordershipped_oxordernr',
-            'file' => 'views/frontend/blocks/email/html/email_html_ordershipped_oxordernr.tpl'
-        ],
-        [
-            'template' => 'email/plain/order_cust.tpl',
-            'block' => 'email_plain_order_cust_orderemail',
-            'file' => 'views/frontend/blocks/email/plain/email_plain_order_cust_orderemail.tpl'
-        ],
-        [
-            'template' => 'email/plain/order_owner.tpl',
-            'block' => 'email_plain_order_owner_orderemail',
-            'file' => 'views/frontend/blocks/email/plain/email_plain_order_owner_orderemail.tpl'
-        ],
-        [
-            'template' => 'email/plain/ordershipped.tpl',
-            'block' => 'email_plain_ordershipped_oxordernr',
-            'file' => 'views/frontend/blocks/email/plain/email_plain_ordershipped_oxordernr.tpl'
-        ],
-        [
-            'template' => 'page/checkout/order.tpl',
-            'block' => 'checkout_order_address',
-            'file' => 'views/frontend/blocks/page/checkout/order_checkout_order_address.tpl'
-        ],
-        //admin
-        [
-            'template' => 'module_config.tpl',
-            'block' => 'admin_module_config_form',
-            'file' => 'views/admin/blocks/admin_module_config_form.tpl'
-        ],
     ],
     'settings' => [
         [

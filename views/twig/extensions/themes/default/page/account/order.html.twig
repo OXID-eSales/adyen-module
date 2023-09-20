@@ -1,0 +1,10 @@
+{% extends "page/account/order.html.twig" %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+
+{% block account_order_history_cart_items %}
+    {% if attribute(oViewConf, 'checkAdyenConfigHealth') is defined and oViewConf.checkAdyenConfigHealth() and attribute(order, 'isAdyenOrder') is defined and order.isAdyenOrder() %}
+        {# We include it as template, so that it can be modified in custom themes #}
+        {% include sModuleId ~ "/account/order_adyen.html.twig" %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

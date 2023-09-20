@@ -1,0 +1,44 @@
+{% extends 'page/checkout/payment.html.twig' %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+
+{% block checkout_payment_nextstep %}
+    {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() %}
+        {# We include it as template, so that it can be modified in custom themes #}
+        {% include sModuleId ~ "/payment/adyen_payment_psp.html.twig" %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block checkout_payment_main %}
+    {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() and oView.isAdyenAssetsNecessary() %}
+        {# We include it as template, so that it can be modified in custom themes #}
+        {% include sModuleId ~  "/payment/adyen_assets.html.twig" %}
+    {% endif %}
+    {{ parent() }}
+
+    {% block checkout_payment_errors %}
+        {% if oView.getPaymentError() is same as (oViewConf.getAdyenErrorInvalidSession()) %}
+            <div class="alert alert-danger" role="alert">
+                {{ translate({ ident: "OSC_ADYEN_REAUTHNECESSARY" }) }}
+            </div>
+        {% else %}
+            {{ parent() }}
+        {% endif %}
+    {% endblock %}
+
+    {% block select_payment %}
+        {% if attribute(paymentmethod, 'isAdyenPayment') is defined and paymentmethod.isAdyenPayment() and paymentmethod.showInPaymentCtrl() %}
+            {# Show Adyen Payments only if Adyen is healthy #}
+            {% if oViewConf.checkAdyenHealth() %}
+                {# We include it as template, so that it can be modified in custom themes #}
+                {% if oView.isValidAdyenAuthorisation() %}
+                    {% include sModuleId ~ "/payment/adyen_payment_inauthorisation.html.twig" %}
+                {% else %}
+                    {% include sModuleId ~ "/payment/adyen_payment.html.twig" %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {{ parent() }}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

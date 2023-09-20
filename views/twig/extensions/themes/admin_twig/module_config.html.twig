@@ -1,0 +1,28 @@
+{% extends 'module_config.html.twig' %}
+{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+
+{% block admin_module_config_form %}
+    {% if oModule.getInfo('id') == constant('\OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+        <h3>{{ translate({ ident: "OSC_ADYEN_CONFIG_HEAD" }) }}</h3>
+        <ol>
+            <li>
+                {{ translate({ ident: "OSC_ADYEN_CONFIG_SDK", suffix: "COLON" }) }}
+                <b>{{ oViewConf.getAdyenSDKVersion() }}</b>
+            </li>
+            <li>
+                {{ translate({ ident: "OSC_ADYEN_CONFIG_WEBHOOKURL", suffix: "COLON" }) }}
+                <b>{{ oViewConf.getWebhookControllerUrl() }}</b>
+            </li>
+            <li>
+                {{ translate({ ident: "OSC_ADYEN_CONFIG_HEALTH_CONFIG", suffix: "COLON" }) }}
+                <b>{% if oViewConf.checkAdyenConfigHealth() %}{{ translate({ ident: "GENERAL_YES" }) }}{% else %}{{ translate({ ident: "GENERAL_NO" }) }}{% endif %}</b>
+            </li>
+            <li>
+                {{ translate({ ident: "OSC_ADYEN_CONFIG_HEALTH_ADYEN", suffix: "COLON" }) }}
+                <b>{% if oViewConf.checkAdyenHealth() %}{{ translate({ ident: "GENERAL_YES" }) }}{% else %}{{ translate({ ident: "GENERAL_NO" }) }}{% endif %}</b>
+            </li>
+        </ol><br />
+        <h3>{{ translate({ ident: "OSC_ADYEN_CONFIG_OPTIONS" }) }}</h3>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
