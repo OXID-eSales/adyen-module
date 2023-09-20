@@ -22,6 +22,13 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
  */
 final class Version20220908162100 extends AbstractMigration
 {
+    public function __construct($connection, $logger)
+    {
+        parent::__construct($connection, $logger);
+
+        $this->platform->registerDoctrineTypeMapping('enum', 'string');
+    }
+
     public function up(Schema $schema): void
     {
         $this->createAdyenHistoryTable($schema);
