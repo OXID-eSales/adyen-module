@@ -1,5 +1,5 @@
 {% extends 'email/html/order_owner.html.twig' %}
-{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+{% set sModuleId = '@' ~ constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
 
 {% block email_html_order_owner_orderemail %}
     {% if attribute(order, 'isAdyenOrder') is defined and order.isAdyenOrder() %}

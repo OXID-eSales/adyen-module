@@ -1,5 +1,5 @@
 {% extends "page/checkout/order.html.twig" %}
-{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+{% set sModuleId = '@' ~ constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
 
 {% block checkout_order_address %}
     {% if paymentReturnReason %}

@@ -1,7 +1,7 @@
 {% extends 'module_config.html.twig' %}
 
 {% block admin_module_config_form %}
-    {% if oModule.getInfo('id') == constant('\OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+    {% if oModule.getInfo('id') == constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
         <h3>{{ translate({ ident: "OSC_ADYEN_CONFIG_HEAD" }) }}</h3>
         <ol>
             <li>

@@ -5,7 +5,7 @@
       href="https://checkoutshopper-{{ oViewConf.getAdyenOperationMode() }}.adyen.com/checkoutshopper/sdk/{{ oViewConf.getAdyenSDKVersion() }}/adyen.css"
       integrity="{{ oViewConf.getAdyenIntegrityCSS() }}"
       crossorigin="anonymous">
-{% if payment.oxpayments__oxid.value == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_GOOGLE_PAY_ID') %}
+{% if payment.oxpayments__oxid.value == constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::PAYMENT_GOOGLE_PAY_ID') %}
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 {% endif %}
 {% set sToken = oViewConf.getSessionChallengeToken() %}

@@ -1,5 +1,5 @@
 {% extends 'page/checkout/payment.html.twig' %}
-{% set sModuleId = '@' ~ constant('OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID') %}
+{% set sModuleId = '@' ~ constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
 
 {% block checkout_payment_nextstep %}
     {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() %}
