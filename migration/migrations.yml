@@ -1,4 +1,4 @@
-name: OxidSolutionCatalysts Adyen migrations (osc_adyen)
-migrations_namespace: OxidSolutionCatalysts\Adyen\Migrations
-table_name: oxmigrations_osc_adyen
-migrations_directory: data
+table_storage:
+  table_name: oxmigrations_osc_adyen
+migrations_path:
+  'OxidSolutionCatalysts\Adyen\Migrations' : data
