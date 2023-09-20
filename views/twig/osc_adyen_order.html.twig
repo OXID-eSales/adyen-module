@@ -7,7 +7,7 @@
 {% endif %}
 
 <form name="transfer" id="transfer" action="{{ oViewConf.getSelfLink() }}" method="post">
-    {{ oViewConf.getHiddenSid() }}
+    {{ oViewConf.getHiddenSid()|raw }}
     <input type="hidden" name="oxid" value="{{ oxid }}">
     <input type="hidden" name="cl" value="order_main">
 </form>
@@ -60,13 +60,13 @@
                         <div style="margin-top: 20px;">
                             <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_CAPTUREMONEY" }) }}</h3>
                             <form action="{{ oViewConf.getSelfLink() }}" method="post">
-                                {{ oViewConf.getHiddenSid() }}
+                                {{ oViewConf.getHiddenSid()|raw }}
                                 <input type="hidden" name="fnc" value="captureAdyenAmount" />
                                 <input type="hidden" name="oxid" value="{{ oxid }}" />
                                 <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
                                 <input type="text"
                                        name="capture_amount"
-                                       value="{{ edit.getPossibleCaptureAmount()|escape|string_format(" % .2f") }}" />
+                                       value="{{ " % .2f"|format(edit.getPossibleCaptureAmount()|escape) }}" />
                                 <input type="hidden"
                                        name="capture_currency"
                                        value="{{ adyenCurrency }}" />
@@ -81,13 +81,13 @@
                     <div style="margin-top: 20px;">
                         <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_REFUNDMONEY" }) }}</h3>
                         <form action="{{ oViewConf.getSelfLink() }}" method="post">
-                            {{ oViewConf.getHiddenSid() }}
+                            {{ oViewConf.getHiddenSid()|raw }}
                             <input type="hidden" name="fnc" value="refundAdyenAmount" />
                             <input type="hidden" name="oxid" value="{{ oxid }}" />
                             <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
                             <input type="text"
                                    name="refund_amount"
-                                   value="{{ edit.getPossibleRefundAmount()|escape|string_format(" % .2f") }}" />
+                                   value="{{ " % .2f"|format(edit.getPossibleRefundAmount()|escape) }}" />
                             <input type="hidden"
                                    name="refund_currency"
                                    value="{{ adyenCurrency }}" />
@@ -102,7 +102,7 @@
                     <div style="margin-top: 20px;">
                         <h3 style="margin-bottom: 20px;">{{ translate({ ident: "OSC_ADYEN_CANCELORDER" }) }}</h3>
                         <form action="{{ oViewConf.getSelfLink() }}" method="post">
-                            {{ oViewConf.getHiddenSid() }}
+                            {{ oViewConf.getHiddenSid()|raw }}
                             <input type="hidden" name="fnc" value="cancelAdyenOrder" />
                             <input type="hidden" name="oxid" value="{{ oxid }}" />
                             <input type="hidden" name="cl" value="{{ oViewConf.getTopActiveClassName() }}" />
