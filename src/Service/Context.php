@@ -29,11 +29,8 @@ class Context extends BasicContext
      */
     public function getAdyenLogFilePath(): string
     {
-        return Path::join([
-            $this->shopConfig->getLogsDir(),
-            'adyen',
-            $this->getAdyenLogFileName()
-        ]);
+
+        return Path::join($this->shopConfig->getLogsDir(), 'adyen', $this->getAdyenLogFileName());
     }
 
     private function getAdyenLogFileName(): string
