@@ -10,7 +10,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use OxidEsales\Facts\Facts;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 
 class Context extends BasicContext
