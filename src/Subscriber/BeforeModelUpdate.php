@@ -18,7 +18,7 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 /**
  * @extendable-class
  */
-class BeforeModelUpdate extends EventSubscriberInterface
+class BeforeModelUpdate implements EventSubscriberInterface
 {
     use ServiceContainer;
 
