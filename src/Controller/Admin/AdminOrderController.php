@@ -29,7 +29,7 @@ class AdminOrderController extends AdminDetailsController
      * Current class template name.
      * @var string
      */
-    protected $_sThisTemplate = '@'. \OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID .'/osc_adyen_order'; //NOSONAR
+    protected $_sThisTemplate = '@' . \OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID . '/osc_adyen_order'; //NOSONAR
 
     /**
      * Executes parent method parent::render()

@@ -40,7 +40,7 @@ $aModule = [
         'de' => 'Nutzung der Online-Bezahldienste von Adyen.',
         'en' => 'Use of the online payment services from Adyen.'
     ],
-    'thumbnail' => 'assets/img/logo.png',
+    'thumbnail' => 'img/logo.png',
     'version' => Module::MODULE_VERSION_FULL,
     'author' => 'OXID eSales AG',
     'url' => 'https://www.oxid-esales.com',
