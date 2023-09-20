@@ -22,13 +22,6 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
  */
 final class Version20221201152300 extends AbstractMigration
 {
-    public function __construct($version)
-    {
-        parent::__construct($version);
-
-        $this->platform->registerDoctrineTypeMapping('enum', 'string');
-    }
-
     public function up(Schema $schema): void
     {
         $this->createAdyenPSPReference($schema);
