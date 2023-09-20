@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Subscriber;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  * @extendable-class
  */
-class BeforeModelUpdate extends AbstractShopAwareEventSubscriber
+class BeforeModelUpdate extends EventSubscriberInterface
 {
     use ServiceContainer;
 
