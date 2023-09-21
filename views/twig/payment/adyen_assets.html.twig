@@ -51,7 +51,7 @@
         const adyenAmountValueEl = document.getElementById('{{ oViewConf.getAdyenHtmlParamAmountValueName() }}');
 
         const adyenAsync = async function () {
-            {{ oViewConf.getTemplateConfiguration(oView, payment) }}
+            {{ oViewConf.getTemplateConfiguration(oView, payment)|raw }}
 
             const checkout = await AdyenCheckout(configuration);
             // Access the available payment methods for the session.

@@ -122,7 +122,7 @@ class JSAPITemplateConfiguration
         }
 
         // replace leading and ending curly bracket, because, we need to join
-        // js function in the resulting js object in adyen_assets_configuration.tpl
+        // js function in the resulting js object in adyen_assets_configuration.html.twig
         $configFieldsJsonResult = preg_replace(
             [
                 '/^{/',

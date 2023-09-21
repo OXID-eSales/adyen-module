@@ -16,7 +16,7 @@ $aLang = [
     'charset' => 'UTF-8',
     'tbclorder_adyen' => 'Adyen',
 
-    // osc_adyen_order.tpl
+    // osc_adyen_order.html.twig
     'OSC_ADYEN_NO_ADYEN_ORDER' => 'Das ist keine Adyen-Bestellung',
     'OSC_ADYEN_PSPREFERENCE' => 'PSP Referenz',
     'OSC_ADYEN_PARENTPSPREFERENCE' => 'Haupt PSP Referenz',
@@ -57,10 +57,10 @@ $aLang = [
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_REFUNDSCHEDULED => 'Rückerstattung geplant',
     'OSC_ADYEN_STATUS' . Module::ADYEN_STATUS_SENTFORREFUND => 'Zur Rückerstattung gesendet',
 
-    // extend order_list.tpl
+    // extend order_list.html.twig
     'ORDER_SEARCH_FIELD_PSPREFERENCE' => 'Adyen PSP Referenz',
 
-    // extend module_config.tpl
+    // extend module_config.html.twig
     'OSC_ADYEN_CONFIG_HEAD' => 'wichtige Modul-Informationen',
     'OSC_ADYEN_CONFIG_OPTIONS' => 'Modul-Einstellungen',
     'OSC_ADYEN_CONFIG_SDK' => 'genutzte SDK-Version',

@@ -3,7 +3,7 @@ const isLog = {% if isLog %}true{% else %}false{% endif %};
 const isPaymentPage = {% if isPaymentPage %}true{% else %}false{% endif %};
 const isOrderPage = {% if isOrderPage %}true{% else %}false{% endif %};
 const configuration = {
-    {{ configFields }},
+    {{ configFields|raw }},
     onError: (error, component) => {
         if (isLog) {
             console.error(error.name, error.message, error.stack, component);

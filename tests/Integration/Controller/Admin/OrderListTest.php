@@ -31,7 +31,7 @@ final class OrderListTest extends UnitTestCase
     public function testRender(): void
     {
         $controller = $this->createPartialMock(OrderList::class, []);
-        $this->assertSame('order_list.tpl', $controller->render());
+        $this->assertSame('order_list.html.twig', $controller->render());
         // call render to fill viewData
         $controller->render();
         $viewData = $controller->getViewData();

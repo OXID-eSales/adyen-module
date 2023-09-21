@@ -26,7 +26,7 @@ class OrderList extends OrderList_parent
 
     /**
      * Executes parent method parent::render() and returns name of template
-     * file "order_list.tpl".
+     * file "order_list.html.twig".
      *
      * @return string
      */

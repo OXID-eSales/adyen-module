@@ -56,7 +56,7 @@ final class AdminOrderControllerTest extends UnitTestCase
         $controller = $this->createPartialMock(AdminOrderController::class, ['getEditObjectId']);
         $controller->expects($this->any())->method('getEditObjectId')->willReturn($orderId);
 
-        $this->assertSame('osc_adyen_order.tpl', $controller->render());
+        $this->assertSame('osc_adyen_order.html.twig', $controller->render());
 
         $viewData = $controller->getViewData();
         $this->assertSame($orderId, $viewData['oxid']);
