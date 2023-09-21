@@ -9,7 +9,7 @@
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 {% endif %}
 {% set sToken = oViewConf.getSessionChallengeToken() %}
-{% set sSelfLink = oViewConf.getSslSelfLink()|replace("&amp;", "&") %}
+{% set sSelfLink = oViewConf.getSslSelfLink()|replace({"&amp;": "&"}) %}
 {% set adyenCreditCard = oViewConf.getAdyenPaymentCreditCardId() %}
 {% set adyenPayPal = oViewConf.getAdyenPaymentPayPalId() %}
 {% set adyenGooglePay = oViewConf.getAdyenPaymentGooglePayId() %}
@@ -51,7 +51,7 @@
         const adyenAmountValueEl = document.getElementById('{{ oViewConf.getAdyenHtmlParamAmountValueName() }}');
 
         const adyenAsync = async function () {
-            {{ oViewConf.getTemplateConfiguration($oView, payment) }}
+            {{ oViewConf.getTemplateConfiguration(oView, payment) }}
 
             const checkout = await AdyenCheckout(configuration);
             // Access the available payment methods for the session.

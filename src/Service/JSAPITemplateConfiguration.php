@@ -42,7 +42,7 @@ class JSAPITemplateConfiguration
         ?Payment $payment
     ): string {
         return $this->templateEngine->render(
-            'modules/osc/adyen/payment/adyen_assets_configuration.tpl',
+            '@'.Module::MODULE_ID.'/payment/adyen_assets_configuration.html.twig',
             $this->getViewData($viewConfig, $controller, $payment)
         );
     }
