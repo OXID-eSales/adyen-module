@@ -20,19 +20,13 @@
         {% set isOrderPage = false %}
         {% set templateCheckoutCreateId = oViewConf.getTemplateCheckoutCreateId(payment) %}
         {% set templatePayButtonContainerId = oViewConf.getTemplatePayButtonContainerId(payment) %}
-        let submitForm, submitLink;
+        let submitForm;
         {% if oViewConf.getTopActiveClassName() == 'payment' %}
             {% set isPaymentPage = true %}
             submitForm = document.getElementById('payment');
-            submitLink = document.getElementById('orderStep');
-            const nextStepEl = document.getElementById('paymentNextStepBottom');
-
-            // prevent submit by clicking 'orderStep'-Link -> remove javascript-href from original template and add own click event
-            submitLink.href = "#";
-            submitLink.addEventListener('click', function () {
-                nextStepEl.click();
-            });
-
+            const nextStepEl = document.getElementById('paymentNextStepBottom') !== null ?
+                document.getElementById('paymentNextStepBottom') :
+                document.getElementsByClassName('btn-highlight')[document.getElementsByClassName('btn-highlight').length -1];
             {# reset the disabled-status of paymentNextStepBottom if payment is changed #}
             document.getElementsByName('paymentid').forEach(function (e) {
                 e.addEventListener('change', function () {
@@ -112,7 +106,7 @@
                     });
 
             const httpPost = (endpoint, data) =>
-                fetch('{{ sSelfLink }}cl=adyenjscontroller&fnc=' + endpoint + '&stoken={{ sToken }}{% if oViewConf.isAdyenSandboxMode() %}&XDEBUG_SESSION_START=1{% endif %}', {
+                fetch('{{ sSelfLink|raw }}cl=adyenjscontroller&fnc=' + endpoint + '&stoken={{ sToken }}{% if oViewConf.isAdyenSandboxMode() %}&XDEBUG_SESSION_START=1{% endif %}', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json, text/plain, */*',
@@ -132,7 +126,7 @@
                     result = true;
                 }
                 else if (response.resultCode !== 'Authorised') {
-                    window.location.replace('{{ sSelfLink }}cl=payment&payerror=2&stoken={{ sToken }}');
+                    window.location.replace('{{ sSelfLink|raw }}cl=payment&payerror=2&stoken={{ sToken }}');
                 }
                 if (result === true) {
 
