@@ -1,0 +1,14 @@
+{% extends "page/checkout/order.html.twig" %}
+{% set sModuleId = '@' ~ constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
+
+{% block checkout_order_address %}
+    {% if paymentReturnReason %}
+        <div class="alert alert-danger" data-adyen-return-code="{{ paymentResultCode }}">
+            {{ translate({ ident: 'OSC_ADYEN_RETURN_NOT_SUCCESSFUL' }) }} {{ translate({ ident: paymentReturnReason }) }}
+        </div>
+    {% endif %}
+    {{ parent() }}
+    <script type="text/javascript">
+        console.log('{{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}')
+    </script>
+{% endblock %}
