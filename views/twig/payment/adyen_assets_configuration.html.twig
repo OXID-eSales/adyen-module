@@ -82,7 +82,7 @@ const configuration = {
         {% elseif isOrderPage and orderPaymentPayPal %}
             paypal: {
                 intent: "authorize",
-                merchantId: "{{ payPalMerchantId }}",
+                merchantId: "{{ payPalMerchantId|raw }}",
                 onShippingChange: function (data, actions) {
                     // Listen to shipping changes.
                     if (isLog) {
@@ -96,9 +96,9 @@ const configuration = {
                 blockPayPalPayLaterButton: true
             }
         {% elseif isOrderPage and orderPaymentGooglePay %}
-            googlepay: {{ googlePayConfigurationJson }},
+            googlepay: {{ googlePayConfigurationJson|raw }},
         {% elseif isOrderPage and orderPaymentApplePay %}
-            applepay: {{ applePayConfigurationJson }},
+            applepay: {{ applePayConfigurationJson|raw }},
         {% endif %}
     }
 };

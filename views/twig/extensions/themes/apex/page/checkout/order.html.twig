@@ -16,14 +16,12 @@
     {{ parent() }}
 
     {% set payment = oView.getPayment() %}
-    {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
     <div id="apexFallBackDiv">
+        {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
         {{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}
     </div>
 
     <script type="text/javascript">
-        console.log('{{ payment|json_encode|raw }}');
-        console.log('{{ oView.getPayment()|json_encode|raw }}');
         document.addEventListener('DOMContentLoaded', function () {
             let test = document.querySelectorAll('button.btn.btn-highlight.btn-lg.w-100');
             test = test[test.length - 1];

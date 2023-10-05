@@ -237,6 +237,14 @@ class ViewConfig extends ViewConfig_parent
             ->getConfiguration($this, $oView, $payment);
     }
 
+    public function isApplePay(
+        FrontendController $oView,
+        ?Payment $payment
+    ): bool {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->isApplePay($oView, $payment);
+    }
+
     public function getTemplateCheckoutCreateId(?Payment $payment): string
     {
         return $payment ? $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)

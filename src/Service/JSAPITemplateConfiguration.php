@@ -47,6 +47,14 @@ class JSAPITemplateConfiguration
         );
     }
 
+    public function isApplePay(
+        FrontendController $controller,
+        ?Payment $payment
+    ): bool {
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+        return $paymentId === Module::PAYMENT_APPLE_PAY_ID;
+    }
+
     private function getViewData(
         ViewConfig $viewConfig,
         FrontendController $controller,
