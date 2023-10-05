@@ -4,7 +4,7 @@
 {% block email_plain_order_cust_orderemail %}
     {% if attribute(order, 'isAdyenOrder') is defined and order.isAdyenOrder() %}
         {# We include it as template, so that it can be modified in custom themes #}
-        {% include  sModuleId ~ "/email/order_adyen_plain.html.twig" %}
+        {% include sModuleId ~ "/email/order_adyen_plain.html.twig" %}
     {% endif %}
     {{ parent() }}
 {% endblock %}

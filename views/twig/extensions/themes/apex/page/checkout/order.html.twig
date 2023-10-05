@@ -16,17 +16,19 @@
     {{ parent() }}
 
     {% set payment = oView.getPayment() %}
-    <div id="apexFallBackDiv">
-        {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
-        {{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}
-    </div>
+    {% if oViewConf.hasTemplateCheckoutCreateId(payment) %}
+        <div id="apexFallBackDiv">
+            {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
+            {{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}
+        </div>
 
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            let test = document.querySelectorAll('button.btn.btn-highlight.btn-lg.w-100');
-            test = test[test.length - 1];
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+                let test = document.querySelectorAll('button.btn.btn-highlight.btn-lg.w-100');
+                test = test[test.length - 1];
 
-            test.replaceWith(document.getElementById('apexFallBackDiv'));
-        });
-    </script>
+                test.replaceWith(document.getElementById('apexFallBackDiv'));
+            });
+        </script>
+    {% endif %}
 {% endblock %}

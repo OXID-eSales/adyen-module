@@ -252,6 +252,18 @@ class ViewConfig extends ViewConfig_parent
             : '';
     }
 
+    /**
+     * added for apex theme to verify whether checkout submit button needs to be overwritten
+     * @param Payment|null $payment
+     * @return bool
+     */
+    public function hasTemplateCheckoutCreateId(?Payment $payment): bool
+    {
+        return $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
+            ->getCreateId($payment->getId())
+            !== 'no_create_id_found';
+    }
+
     public function getGooglePayTransactionInfo(): string
     {
         return $this->getServiceFromContainer(AdyenAPITransactionInfoService::class)
