@@ -13,8 +13,9 @@
 {% block checkout_order_btn_submit_bottom %}
     {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() and payment.showInOrderCtrl() %}
         {# We include it as template, so that it can be modified in custom themes #}
-        {{ include(sModuleId ~ '/payment/adyen_assets.html.twig') }}
-        {{ include(sModuleId ~ '/payment/adyen_order_submit.html.twig') }}
+        {% include sModuleId ~ '/payment/adyen_assets.html.twig' %}
+        {% include sModuleId ~ '/payment/adyen_order_submit.html.twig' %}
+        {% include sModuleId ~ "/payment/adyen_payment_psp.html.twig" %}
     {% else %}
         {{ parent() }}
     {% endif %}
