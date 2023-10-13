@@ -5,13 +5,13 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\ServiceHelper;
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Core\Price;
 use OxidEsales\EshopCommunity\Application\Model\Article;
+use OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\ApplePayLineItemCreator;
 use PHPUnit\Framework\TestCase;
-use OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\ApplePayLineItemCreator;
 
 class ApplePayLineItemCreatorTest extends TestCase
 {
     /**
-     * @covers \OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\ApplePayLineItemCreator::createLineItem
+     * @covers \OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\ApplePayLineItemCreator::createLineItem
      *
      * @dataProvider getTestData
      */

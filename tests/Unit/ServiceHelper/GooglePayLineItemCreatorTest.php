@@ -5,15 +5,15 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\ServiceHelper;
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\Eshop\Core\Price;
 use OxidEsales\EshopCommunity\Application\Model\Article;
-use OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\GooglePayLineItemCreator;
+use OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\GooglePayLineItemCreator;
 use PHPUnit\Framework\TestCase;
 
 class GooglePayLineItemCreatorTest extends TestCase
 {
     /**
-     * @covers \OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\GooglePayLineItemCreator::createLineItem
-     * @covers \OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\AbstractLineItemCreator::getPriceInMinorUnits
-     * @covers \OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems\AbstractLineItemCreator::getVatInMinorUnits
+     * @covers \OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\::createLineItem
+     * @covers \OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\AbstractLineItemCreator::getPriceInMinorUnits
+     * @covers \OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems\AbstractLineItemCreator::getVatInMinorUnits
      *
      * @dataProvider getTestData
      */

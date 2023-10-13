@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\EshopCommunity\modules\osc\adyen\src\ServiceHelper\APILineItems;
+namespace OxidSolutionCatalysts\Adyen\ServiceHelper\APILineItems;
 
 use OxidEsales\Eshop\Application\Model\BasketItem;
 use OxidEsales\EshopCommunity\Application\Model\Article;

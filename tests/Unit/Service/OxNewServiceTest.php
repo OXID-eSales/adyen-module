@@ -3,7 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Service;
 
 use Codeception\PHPUnit\TestCase;
-use OxidEsales\Eshop\Core\Element2ShopRelations;
+use OxidEsales\Eshop\Core\Price;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -22,11 +22,11 @@ class OxNewServiceTest extends TestCase
 
         $this->assertInstanceOf(Order::class, $order);
 
-        $itemType = 'oxobject2category';
-        $relations = $oxNewService->oxNew(Element2ShopRelations::class, [$itemType]);
+        $dPrice = 3.14;
+        $price = $oxNewService->oxNew(Price::class, [$dPrice]);
 
-        $this->assertInstanceOf(Element2ShopRelations::class, $relations);
+        $this->assertInstanceOf(Price::class, $price);
         // prove constructor args correctly passed
-        $this->assertEquals($itemType, $relations->getItemType());
+        $this->assertEquals($dPrice, $price->getPrice());
     }
 }
