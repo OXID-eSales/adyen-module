@@ -47,9 +47,10 @@ class PaymentConfigService
     /**
      * Checks if the payment allow immediate Capture
      */
-    public function isAdyenImmediateCapture(string $paymentId): bool
+    public function isAdyenImmediateCapture(string|null $paymentId): bool
     {
-        return ($this->moduleService->isCaptureDelay($paymentId) &&
+        return (!is_null($paymentId) &&
+            $this->moduleService->isCaptureDelay($paymentId) &&
             $this->moduleSettingsService->isImmediateCapture($paymentId)
         );
     }

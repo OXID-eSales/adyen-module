@@ -70,7 +70,7 @@ final class AuthorisationHandlerTest extends UnitTestCase
     }
 
     /**
-     * @throws WebhookEventTypeException
+     * @throws \TypeError
      * @throws Exception
      * @throws \Doctrine\DBAL\Driver\Exception
      */

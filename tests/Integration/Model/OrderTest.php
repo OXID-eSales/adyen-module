@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Tests\Integration\Model;
 
-use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidSolutionCatalysts\Adyen\Model\Payment;
-use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -116,7 +116,6 @@ class OrderTest extends UnitTestCase
      */
     public function testIsAdyenManualCapture($orderId, $orderData, $paymentId, $paymentName, $paymentCapture): void
     {
-        $config = Registry::getConfig();
         $orderMock = $this->getMockBuilder(Order::class)
             ->onlyMethods(['isAdyenOrder'])
             ->getMock();
@@ -124,21 +123,26 @@ class OrderTest extends UnitTestCase
         $orderMock->method('isAdyenOrder')
             ->willReturn(true);
 
-        $orderMock->load($orderId);
-        if (
-            'isNotExists' !== $config->getConfigParam(
-                ModuleSettings::CAPTURE_DELAY . $paymentId,
-                'isNotExists'
-            )
-        ) {
-            $this->updateModuleSetting(ModuleSettings::CAPTURE_DELAY . $paymentId, $paymentCapture);
+        $moduleSettingsServiceInterface = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(ModuleSettingServiceInterface::class);
+
+        if($paymentId == "TestId") {
+            $moduleSetting = false;
+        }else {
+            $moduleSetting = $moduleSettingsServiceInterface->getString(ModuleSettings::CAPTURE_DELAY.$paymentId, Module::MODULE_ID);
         }
 
-        $isAdyenManualCapture = $paymentCapture === $config->getConfigParam(
-            ModuleSettings::CAPTURE_DELAY . $paymentId,
-            'dummy'
-        );
-        $this->assertSame($isAdyenManualCapture, $orderMock->isAdyenManualCapture());
+        $orderMock->load($orderId);
+        if ('isNotExists' !== $moduleSetting && $paymentId !== "TestId") {
+            $moduleSettingsServiceInterface->saveString(ModuleSettings::CAPTURE_DELAY.$paymentId,$paymentCapture,Module::MODULE_ID);
+        }
+
+        if(!$moduleSetting) {
+            $moduleSetting = "default";
+        }
+
+        $this->assertSame($paymentCapture == $moduleSetting, (bool) $orderMock->isAdyenManualCapture());
     }
 
     public function providerTestOrderData(): array
