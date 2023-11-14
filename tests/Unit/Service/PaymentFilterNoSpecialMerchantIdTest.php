@@ -10,6 +10,7 @@ use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Service\Payment;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
+use OxidSolutionCatalysts\Adyen\Service\UserAddress;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use PHPUnit\Framework\TestCase;
@@ -79,6 +80,7 @@ class PaymentFilterNoSpecialMerchantIdTest extends TestCase
                     $this->createMock(AdyenAPILineItemsService::class),
                     $this->createMock(SessionSettings::class),
                     $this->createMock(OxNewService::class),
+                    $this->createMock(UserAddress::class)
                 ]
             )
             ->onlyMethods(['setPaymentExecutionError'])

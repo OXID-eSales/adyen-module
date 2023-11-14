@@ -11,6 +11,7 @@ namespace OxidSolutionCatalysts\Adyen\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -43,15 +44,11 @@ class OrderList extends OrderList_parent
     }
 
     /**
-     * Builds and returns SQL query string. Adds additional order check.
-     *
-     * @param Order $listObject list main object
+     * OXID-Core
+     * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
-     * @phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-     *
-     * @return string
      */
-    protected function _buildSelectString($listObject = null): string
+    protected function _buildSelectString($listObject = null)
     {
         $request = Registry::getRequest();
         /** @var null|string $searchField */
@@ -66,6 +63,7 @@ class OrderList extends OrderList_parent
             return parent::_buildSelectString($listObject);
         }
 
+        /** @var BaseModel $listObject */
         $query = $listObject->buildSelectString();
         $database = DatabaseProvider::getDb();
 

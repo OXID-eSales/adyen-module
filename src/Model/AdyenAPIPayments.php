@@ -126,7 +126,7 @@ class AdyenAPIPayments
         $this->lineItems = $lineItems;
     }
 
-    public function setDelieryAddress(array $deliveryAddress): void
+    public function setDeliveryAddress(array $deliveryAddress): void
     {
         $this->deliveryAddress = $deliveryAddress;
     }

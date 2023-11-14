@@ -51,10 +51,12 @@ class Order extends Order_parent
     private OxNewService $oxNewService;
 
     /**
+     * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @phpstan-return void
      */
-    public function init($tableName = null, $forceAllFields = false): void
+    public function init($tableName = null, $forceAllFields = false)
     {
         parent::init($tableName, $forceAllFields);
         $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
@@ -85,8 +87,9 @@ class Order extends Order_parent
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @return int
      */
-    public function finalizeOrder(Basket $basket, $user, $recalcOrder = false): int
+    public function finalizeOrder(Basket $basket, $user, $recalcOrder = false)
     {
         $result = parent::finalizeOrder($basket, $user, $recalcOrder);
         // the final OrderStatus is set via Notification
@@ -99,8 +102,9 @@ class Order extends Order_parent
     /**
      * @inheritDoc
      * @SuppressWarnings(PHPMD.ElseExpression)
+     * @phpstan-return void
      */
-    public function cancelOrder(): void
+    public function cancelOrder()
     {
         parent::cancelOrder();
         if ($this->isAdyenRefundPossible()) {
@@ -407,7 +411,11 @@ class Order extends Order_parent
         ]);
     }
 
-    public function delete($oxid = null): bool
+    /**
+     * OXID-Core
+     * @inheritDoc
+     */
+    public function delete($oxid = null)
     {
         if (
             (
