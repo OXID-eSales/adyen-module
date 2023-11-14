@@ -20,7 +20,6 @@ use OxidSolutionCatalysts\Adyen\Service\Context;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Service\PaymentMethods;
-use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Service\UserRepository;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
@@ -38,35 +37,29 @@ class ViewConfig extends ViewConfig_parent
     use ServiceContainer;
     use AdyenPayment;
 
-    protected ModuleSettings $moduleSettings;
-    protected Context $context;
-    protected PaymentMethods $adyenPaymentMethods;
-    protected CountryRepository $countryRepository;
-    protected SessionSettings $sessionSettings;
+    protected ?ModuleSettings $moduleSettings;
+    protected ?Context $context;
+    protected ?PaymentMethods $adyenPaymentMethods;
 
     /**
-     * @inheritDoc
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function __construct()
+    public function getAdyen(): bool
     {
-        parent::__construct();
-
-        $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
-        $this->context = $this->getServiceFromContainer(Context::class);
-        $this->adyenPaymentMethods = $this->getServiceFromContainer(PaymentMethods::class);
-        $this->countryRepository = $this->getServiceFromContainer(CountryRepository::class);
-        $this->sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
+        return $this->getModuleSettingsSrvc()->checkConfigHealth();
     }
 
     /**
-     * @throws AdyenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function checkAdyenHealth(): bool
     {
         $isHealthy = false;
 
         try {
-            $isHealthy = $this->moduleSettings->checkConfigHealth() && $this->existsAdyenPaymentMethods();
+            $isHealthy = $this->getModuleSettingsSrvc()->checkConfigHealth() && $this->existsAdyenPaymentMethods();
         } catch (AdyenException $exception) {
             $this->getServiceFromContainer(LoggerInterface::class)->error(
                 'ViewConfig::checkAdyenHealth could not prove existsAdyenPaymentMethods because of exception',
@@ -77,49 +70,85 @@ class ViewConfig extends ViewConfig_parent
         return $isHealthy;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function checkAdyenConfigHealth(): bool
     {
-        return $this->moduleSettings->checkConfigHealth();
+        return $this->getModuleSettingsSrvc()->checkConfigHealth();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenOperationMode(): string
     {
-        return $this->moduleSettings->getOperationMode();
+        return $this->getModuleSettingsSrvc()->getOperationMode();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getGooglePayOperationMode(): string
     {
-        return $this->moduleSettings->getGooglePayOperationMode();
+        return $this->getModuleSettingsSrvc()->getGooglePayOperationMode();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function isAdyenLoggingActive(): bool
     {
-        return $this->moduleSettings->isLoggingActive();
+        return $this->getModuleSettingsSrvc()->isLoggingActive();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function isAdyenAnalyticsActive(): bool
     {
-        return $this->moduleSettings->isAnalyticsActive();
+        return $this->getModuleSettingsSrvc()->isAnalyticsActive();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function isAdyenSandboxMode(): bool
     {
-        return $this->moduleSettings->isSandBoxMode();
+        return $this->getModuleSettingsSrvc()->isSandBoxMode();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenClientKey(): string
     {
-        return $this->moduleSettings->getClientKey();
+        return $this->getModuleSettingsSrvc()->getClientKey();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenPayPalMerchantId(): string
     {
-        return $this->moduleSettings->getPayPalMerchantId();
+        return $this->getModuleSettingsSrvc()->getPayPalMerchantId();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenMerchantAccount(): string
     {
-        return $this->moduleSettings->getMerchantAccount();
+        return $this->getModuleSettingsSrvc()->getMerchantAccount();
     }
 
     public function getAdyenSDKVersion(): string
@@ -177,26 +206,34 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getWebhookControllerUrl(): string
     {
-        return $this->context->getWebhookControllerUrl();
+        return $this->getContextSrvc()->getWebhookControllerUrl();
     }
 
     /**
      * @throws AdyenException
      * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getAdyenPaymentMethods(): array
     {
-        return $this->adyenPaymentMethods->getAdyenPaymentMethods();
+        return $this->getPaymentMethodsSrvc()->getAdyenPaymentMethods();
     }
 
     /**
      * @throws AdyenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function existsAdyenPaymentMethods(): bool
     {
-        return (bool)count($this->adyenPaymentMethods->getAdyenPaymentMethods());
+        return (bool)count($this->getPaymentMethodsSrvc()->getAdyenPaymentMethods());
     }
 
     /**
@@ -208,11 +245,20 @@ class ViewConfig extends ViewConfig_parent
         return $this->getServiceFromContainer(UserRepository::class)->getUserLocale();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenCountryIso(): string
     {
-        return $this->countryRepository->getCountryIso();
+        return $this->getServiceFromContainer(CountryRepository::class)
+            ->getCountryIso();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenAmountValue(): string
     {
         /** @var Basket $basket */
@@ -220,15 +266,23 @@ class ViewConfig extends ViewConfig_parent
         $amount = $basket->getPrice()->getBruttoPrice();
         return $this->getAdyenAmount(
             $amount,
-            $this->context->getActiveCurrencyDecimals()
+            $this->getContextSrvc()->getActiveCurrencyDecimals()
         );
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getAdyenAmountCurrency(): string
     {
-        return $this->context->getActiveCurrencyName();
+        return $this->getContextSrvc()->getActiveCurrencyName();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getTemplateConfiguration(
         FrontendController $oView,
         ?Payment $payment
@@ -237,6 +291,10 @@ class ViewConfig extends ViewConfig_parent
             ->getConfiguration($this, $oView, $payment);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getTemplateCheckoutCreateId(?Payment $payment): string
     {
         return $payment ? $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
@@ -244,6 +302,10 @@ class ViewConfig extends ViewConfig_parent
             : '';
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function getGooglePayTransactionInfo(): string
     {
         return $this->getServiceFromContainer(AdyenAPITransactionInfoService::class)
@@ -253,5 +315,41 @@ class ViewConfig extends ViewConfig_parent
     public function getTemplatePayButtonContainerId(?Payment $payment): string
     {
         return $payment ? $payment->getId() . '-container' : '';
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function getModuleSettingsSrvc(): ModuleSettings
+    {
+        if (is_null($this->moduleSettings)) {
+            $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+        }
+        return $this->moduleSettings;
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function getContextSrvc(): Context
+    {
+        if (is_null($this->context)) {
+            $this->context = $this->getServiceFromContainer(Context::class);
+        }
+        return $this->context;
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function getPaymentMethodsSrvc(): PaymentMethods
+    {
+        if (is_null($this->adyenPaymentMethods)) {
+            $this->adyenPaymentMethods = $this->getServiceFromContainer(PaymentMethods::class);
+        }
+        return $this->adyenPaymentMethods;
     }
 }
