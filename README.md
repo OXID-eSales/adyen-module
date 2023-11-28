@@ -25,14 +25,12 @@ Warning: Running tests will reset the shop.
 
 #### Requirements:
 * Ensure test_config.yml is configured:
-    * ```
+```
     partial_module_paths: osc/adyen
-    ```
-    * ```
     activate_all_modules: true
     run_tests_for_shop: false
     run_tests_for_modules: true
-    ```
+  ```
 * For codeception tests to be running, selenium server should be available, several options to solve this:
     * Use OXID official [vagrant box environment](https://github.com/OXID-eSales/oxvm_eshop).
     * Use OXID official [docker sdk configuration](https://github.com/OXID-eSales/docker-eshop-sdk).
