@@ -37,8 +37,8 @@ class ViewConfig extends ViewConfig_parent
     use ServiceContainer;
     use AdyenPayment;
 
-    protected ?ModuleSettings $moduleSettings;
-    protected ?Context $context;
+    protected ?ModuleSettings $adyenModuleSettings = null;
+    protected ?Context $adyenContext = null;
     protected ?PaymentMethods $adyenPaymentMethods;
 
     /**
@@ -323,10 +323,10 @@ class ViewConfig extends ViewConfig_parent
      */
     public function getModuleSettingsSrvc(): ModuleSettings
     {
-        if (is_null($this->moduleSettings)) {
-            $this->moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
+        if (is_null($this->adyenModuleSettings)) {
+            $this->adyenModuleSettings = $this->getServiceFromContainer(ModuleSettings::class);
         }
-        return $this->moduleSettings;
+        return $this->adyenModuleSettings;
     }
 
     /**
@@ -335,10 +335,10 @@ class ViewConfig extends ViewConfig_parent
      */
     protected function getContextSrvc(): Context
     {
-        if (is_null($this->context)) {
-            $this->context = $this->getServiceFromContainer(Context::class);
+        if (is_null($this->adyenContext)) {
+            $this->adyenContext = $this->getServiceFromContainer(Context::class);
         }
-        return $this->context;
+        return $this->adyenContext;
     }
 
     /**
