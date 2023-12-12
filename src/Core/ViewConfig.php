@@ -39,7 +39,7 @@ class ViewConfig extends ViewConfig_parent
 
     protected ?ModuleSettings $adyenModuleSettings = null;
     protected ?Context $adyenContext = null;
-    protected ?PaymentMethods $adyenPaymentMethods;
+    protected ?PaymentMethods $adyenPaymentMethods = null;
 
     /**
      * @throws ContainerExceptionInterface
