@@ -47,7 +47,10 @@ class Payment extends Payment_parent
      */
     public function showInOrderCtrl(): bool
     {
-        return $this->showInPaymentCtrl();
+        return ($this->isAdyenPayment() &&
+            !$this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
+            $this->getAdyenBoolData('oxactive') === true
+        );
     }
 
     /**
