@@ -28,13 +28,13 @@ final class Module
     public const PAYMENT_PAYPAL_ID = 'oscadyenpaypal';
     public const PAYMENT_GOOGLE_PAY_ID = 'oscadyengooglepay';
 
-    public const PAYMENT_KLARNA_LATER_ID = 'oscklarna';
-    public const PAYMENT_KLARNA_IMMEDIATE_ID = 'oscklarnapaynow';
-    public const PAYMENT_KLARNA_OVER_TIME_ID = 'oscklarnaaccount';
+    public const PAYMENT_KLARNA_LATER_ID = 'oscadyenklarna';
+    public const PAYMENT_KLARNA_IMMEDIATE_ID = 'oscadyenklarnapaynow';
+    public const PAYMENT_KLARNA_OVER_TIME_ID = 'oscadyenklarnaaccount';
 
-    public const PAYMENT_TWINT_ID = 'osctwint';
+    public const PAYMENT_TWINT_ID = 'oscadyentwint';
 
-    public const PAYMENT_APPLE_PAY_ID = 'oscapplepay';
+    public const PAYMENT_APPLE_PAY_ID = 'oscadyenapplepay';
 
     public const ADYEN_HISTORY_TABLE = 'oscadyenhistory';
 
