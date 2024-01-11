@@ -106,6 +106,14 @@ class ViewConfig extends ViewConfig_parent
         return $this->getModuleSettingsSrvc()->isLoggingActive();
     }
 
+    public function isAdyenPaymentOxChecked(): bool
+    {
+        /** @var Payment $oPayment */
+        $oPayment = oxNew(Payment::class);
+        $oPayment->load('oscadyencreditcard');
+        return $oPayment->oxpayments__oxchecked->value;
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface

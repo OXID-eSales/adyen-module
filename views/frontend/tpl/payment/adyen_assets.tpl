@@ -95,7 +95,7 @@
 
             const setPaymentIdEl = (component, nextStepElDisabled) => {
                 const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
-                paymentIdEl.checked = true;
+                paymentIdEl.checked = [{if $oViewConf->isAdyenPaymentOxChecked()}]true[{else}]false[{/if}];
                 nextStepEl.disabled = nextStepElDisabled;
                 nextStepEl.dataset.adyensubmit = '';
                 return paymentIdEl;
