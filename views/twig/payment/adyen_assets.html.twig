@@ -24,11 +24,8 @@
         {% if oViewConf.getTopActiveClassName() == 'payment' %}
             {% set isPaymentPage = true %}
             submitForm = document.getElementById('payment');
-            {# getting checkout next step button with fallback for apex theme #}
             {# ToDo: create a better way to access 'next step' element #}
-            const nextStepEl = document.getElementById('paymentNextStepBottom') !== null ?
-                document.getElementById('paymentNextStepBottom') :
-                document.getElementsByClassName('btn-highlight')[document.getElementsByClassName('btn-highlight').length -1];
+    const nextStepEl = document.getElementsByClassName('btn-highlight')[0];
             {# reset the disabled-status of paymentNextStepBottom if payment is changed #}
             document.getElementsByName('paymentid').forEach(function (e) {
                 e.addEventListener('change', function () {
