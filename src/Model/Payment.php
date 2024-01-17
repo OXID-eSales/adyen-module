@@ -13,7 +13,6 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
-use OxidSolutionCatalysts\Adyen\Core\Module as CoreModule;
 
 /**
  *
@@ -24,21 +23,12 @@ class Payment extends Payment_parent
     use ServiceContainer;
     use DataGetter;
 
-    private PaymentConfigService $paymentConfigService;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->paymentConfigService = $this->getServiceFromContainer(PaymentConfigService::class);
-    }
-
     /**
      * Checks if the payment method is an Adyen payment method
      */
     public function isAdyenPayment(): bool
     {
-        return $this->paymentConfigService->isAdyenPayment($this->getId());
+        return $this->getAdyenPaymentConfigService()->isAdyenPayment($this->getId());
     }
 
     /**
@@ -68,7 +58,7 @@ class Payment extends Payment_parent
      */
     public function isAdyenManualCapture(): bool
     {
-        return $this->paymentConfigService->isAdyenManualCapture($this->getId());
+        return $this->getAdyenPaymentConfigService()->isAdyenManualCapture($this->getId());
     }
 
     /**
@@ -76,6 +66,16 @@ class Payment extends Payment_parent
      */
     public function isAdyenImmediateCapture(): bool
     {
-        return $this->paymentConfigService->isAdyenImmediateCapture($this->getId());
+        return $this->getAdyenPaymentConfigService()->isAdyenImmediateCapture($this->getId());
+    }
+
+    /**
+     * get the PaymentConfigService.
+     * Normally this could be in the constructor. This model is used when the module is activated
+     * and the services are not yet available at that moment. That's why it's outsourced here.
+     */
+    protected function getAdyenPaymentConfigService(): PaymentConfigService
+    {
+        return $this->getServiceFromContainer(PaymentConfigService::class);
     }
 }
