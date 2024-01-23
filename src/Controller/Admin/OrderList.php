@@ -48,7 +48,7 @@ class OrderList extends OrderList_parent
      * @inheritDoc
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    protected function _buildSelectString($listObject = null)
+    protected function buildSelectString($listObject = null)
     {
         $request = Registry::getRequest();
         /** @var null|string $searchField */
@@ -60,7 +60,7 @@ class OrderList extends OrderList_parent
         $tableName = Module::ADYEN_HISTORY_TABLE;
 
         if ($tableName !== $searchField || is_null($listObject)) {
-            return parent::_buildSelectString($listObject);
+            return parent::buildSelectString($listObject);
         }
 
         /** @var BaseModel $listObject */
