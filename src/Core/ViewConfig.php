@@ -107,17 +107,6 @@ class ViewConfig extends ViewConfig_parent
     }
 
     /**
-     * @return bool
-     */
-    public function isAdyenPaymentOxChecked(): bool
-    {
-        /** @var Payment $oPayment */
-        $oPayment = oxNew(Payment::class);
-        $oPayment->load('oscadyencreditcard');
-        return (bool)$oPayment->oxpayments__oxchecked->value;
-    }
-
-    /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
