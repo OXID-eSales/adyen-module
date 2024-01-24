@@ -127,18 +127,25 @@ class OrderTest extends UnitTestCase
             ->getContainer()
             ->get(ModuleSettingServiceInterface::class);
 
-        if($paymentId == "TestId") {
+        if ($paymentId == "TestId") {
             $moduleSetting = false;
-        }else {
-            $moduleSetting = $moduleSettingsServiceInterface->getString(ModuleSettings::CAPTURE_DELAY.$paymentId, Module::MODULE_ID);
+        } else {
+            $moduleSetting = $moduleSettingsServiceInterface->getString(
+                ModuleSettings::CAPTURE_DELAY . $paymentId,
+                Module::MODULE_ID
+            );
         }
 
         $orderMock->load($orderId);
         if ('isNotExists' !== $moduleSetting && $paymentId !== "TestId") {
-            $moduleSettingsServiceInterface->saveString(ModuleSettings::CAPTURE_DELAY.$paymentId,$paymentCapture,Module::MODULE_ID);
+            $moduleSettingsServiceInterface->saveString(
+                ModuleSettings::CAPTURE_DELAY . $paymentId,
+                $paymentCapture,
+                Module::MODULE_ID
+            );
         }
 
-        if(!$moduleSetting) {
+        if (!$moduleSetting) {
             $moduleSetting = "default";
         }
 

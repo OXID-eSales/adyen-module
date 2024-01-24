@@ -30,6 +30,6 @@ trait DataGetter
     {
         /** @var null|string $value */
         $value = $this->getFieldData($key);
-        return isset($value) && $value === '1' || $value === 1;
+        return (isset($value) && $value === '1');
     }
 }

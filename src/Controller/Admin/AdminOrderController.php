@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -29,7 +30,7 @@ class AdminOrderController extends AdminDetailsController
      * Current class template name.
      * @var string
      */
-    protected $_sThisTemplate = '@' . \OxidSolutionCatalysts\Adyen\Core\Module::MODULE_ID . '/osc_adyen_order'; //NOSONAR
+    protected $_sThisTemplate = '@' . Module::MODULE_ID . '/osc_adyen_order'; //NOSONAR
 
     /**
      * Executes parent method parent::render()
