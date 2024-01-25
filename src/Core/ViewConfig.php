@@ -292,11 +292,10 @@ class ViewConfig extends ViewConfig_parent
     }
 
     public function isApplePay(
-        FrontendController $oView,
         ?Payment $payment
     ): bool {
         return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
-            ->isApplePay($oView, $payment);
+            ->isApplePay($payment);
     }
 
     /**

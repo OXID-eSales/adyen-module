@@ -67,7 +67,7 @@
                 ).mount('#{{adyenCreditCard}}-container');
                 cardComponent.paymentIdViewEl = document.getElementById('payment_{{adyenCreditCard}}').parentElement;
             {% elseif isOrderPage %}
-                {% if oViewConf.isApplePay(oView, payment) %}
+                {% if oViewConf.isApplePay(payment) %}
                     const applePayComponent = checkout.create('{{ templateCheckoutCreateId }}', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
