@@ -28,8 +28,8 @@ trait DataGetter
 
     public function getAdyenBoolData(string $key): bool
     {
-        /** @var null|string $value */
+        /** @var null|string|int $value */
         $value = $this->getFieldData($key);
-        return (isset($value) && $value === '1');
+        return (isset($value) && ($value === '1' || $value === 1));
     }
 }
