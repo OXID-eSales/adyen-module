@@ -11,9 +11,13 @@ const configuration = {
     },
     onChange: (state, component) => {
         if (isPaymentPage) {
-            var paymentIdEl = setPaymentIdEl(component, !state.isValid);
             if (state.isValid) {
+                const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
                 nextStepEl.dataset.adyensubmit = paymentIdEl.value;
+                nextStepEl.disabled = false;
+            }
+            else {
+                nextStepEl.dataset.adyensubmit = '';
             }
         }
         if (isLog) {
@@ -53,7 +57,8 @@ const configuration = {
         makeDetailsCall(state.data)
             .then(response => {
                 if (isPaymentPage) {
-                    setPaymentIdEl(component, true);
+                    nextStepEl.dataset.adyensubmit = '';
+                    nextStepEl.disabled = true;
                 }
                 if (isLog) {
                     console.log('makeDetailsCall:', response);

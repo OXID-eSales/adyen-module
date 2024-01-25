@@ -23,6 +23,7 @@
         let submitForm;
         {% if oViewConf.getTopActiveClassName() == 'payment' %}
             {% set isPaymentPage = true %}
+            {% set paymentID = oView.getCheckedPaymentId() %}
             submitForm = document.getElementById('payment');
             {# getting checkout next step button with fallback for apex theme #}
             {# ToDo: create a better way to access 'next step' element #}
@@ -53,21 +54,32 @@
                 console.log(checkout.paymentMethodsResponse);
             {% endif %}
             {% if isPaymentPage and oView.isAvailablePayment(adyenCreditCard) %}
-                const cardComponent = checkout.create('card').mount('#{{ adyenCreditCard }}-container');
+                const cardComponent = checkout.create(
+                    'card',
+                    {
+                        onFieldValid : function() {
+                            const paymentIdEl = document.getElementById('payment_{{adyenCreditCard}}');
+                            paymentIdEl.checked = true;
+                            nextStepEl.disabled = true;
+                        },
+
+                    }
+                ).mount('#{{adyenCreditCard}}-container');
+                cardComponent.paymentIdViewEl = document.getElementById('payment_{{adyenCreditCard}}').parentElement;
             {% elseif isOrderPage %}
                 {% if oViewConf.isApplePay(oView, payment) %}
                     const applePayComponent = checkout.create('{{ templateCheckoutCreateId }}', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
                                 {% if isLog %}
-                                    console.log('mount checkout component')
+                                    console.log('mount checkout component');
                                 {% endif %}
                                 applePayComponent.mount('#{{ templatePayButtonContainerId }}');
                             })
                             .catch(e => {
                                 {% if isLog %}
-                                    console.error('Apple Pay not available')
-                                    console.error(e)
+                                    console.error('Apple Pay not available');
+                                    console.error(e);
                                 {% endif %}
                             });
                     {% else %}
@@ -84,14 +96,6 @@
                     .catch(error => {
                         throw Error(error);
                     });
-            };
-
-            const setPaymentIdEl = (component, nextStepElDisabled) => {
-                const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
-                paymentIdEl.checked = {% if oViewConf.isAdyenPaymentOxChecked() %}true{% else %}false{% endif %};
-                nextStepEl.disabled = nextStepElDisabled;
-                nextStepEl.dataset.adyensubmit = '';
-                return paymentIdEl;
             };
 
             const makeDetailsCall = data =>
@@ -142,12 +146,13 @@
                         e.preventDefault();
                         this.disabled = true;
                         if (this.dataset.adyensubmit === '{{ adyenCreditCard }}') {
-
-                            cardComponent.paymentIdViewEl = document.getElementById('payment_{{ adyenCreditCard }}').parentElement;
                             cardComponent.submit();
                         }
                     }
                 }, false);
+                {% if paymentID is same as(adyenCreditCard) %}
+                    nextStepEl.disabled = true;
+                {% endif %}
             {% endif %}
         }
         // Call adyenAsync
