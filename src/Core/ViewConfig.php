@@ -291,6 +291,13 @@ class ViewConfig extends ViewConfig_parent
             ->getConfiguration($this, $oView, $payment);
     }
 
+    public function isApplePay(
+        ?Payment $payment
+    ): bool {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->isApplePay($payment);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -300,6 +307,21 @@ class ViewConfig extends ViewConfig_parent
         return $payment ? $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
             ->getCreateId($payment->getId())
             : '';
+    }
+
+    /**
+     * added for apex theme to verify whether checkout submit button needs to be overwritten
+     * @param Payment|null $payment
+     * @return bool
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function hasTemplateCheckoutCreateId(?Payment $payment): bool
+    {
+        return !is_null($payment) &&
+            $this->getServiceFromContainer(JSAPITemplateCheckoutCreate::class)
+                ->getCreateId($payment->getId())
+            !== 'no_create_id_found';
     }
 
     /**

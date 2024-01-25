@@ -48,7 +48,6 @@ class JSAPITemplateConfiguration
     }
 
     public function isApplePay(
-        FrontendController $controller,
         ?Payment $payment
     ): bool {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
