@@ -53,6 +53,23 @@
             {% if isLog %}
                 console.log(checkout.paymentMethodsResponse);
             {% endif %}
+            {% if isPaymentPage %}
+
+            const apple = checkout.create(
+                'applepay',
+                {
+                }
+            );
+            apple.isAvailable()
+                .then(() => {  })
+                .catch(e => {
+                    {% if isLog %}
+                    console.error('Apple Pay not available');
+                    console.error(e);
+                    {% endif %}
+                        hidePaymentOption();
+                });
+            {% endif %}
             {% if isPaymentPage and oView.isAvailablePayment(adyenCreditCard) %}
                 const cardComponent = checkout.create(
                     'card',
@@ -157,7 +174,15 @@
         }
         // Call adyenAsync
         adyenAsync();
-
+    function hidePaymentOption() {
+        var inputElement = document.getElementById('payment_oscadyenapplepay');
+        if (inputElement) {
+            var parentElement = inputElement.closest('.payment-option');
+            if (parentElement) {
+                parentElement.remove(); // remove parent-block
+            }
+        }
+    }
     {% endcapture %}
     {% if phpStorm %}</script>{% endif %}
 {{ script({ add: adyenJS, dynamic: __oxid_include_dynamic }) }}
