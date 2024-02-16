@@ -59,7 +59,23 @@
             [{if $isLog}]
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
-            [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
+            [{if $isPaymentPage}]
+                const apple = checkout.create(
+                    'applepay',
+                    {
+                    }
+                );
+                apple.isAvailable()
+                    .then(() => {  })
+                    .catch(e => {
+                        [{if $isLog}]
+                        console.error('Apple Pay not available');
+                        console.error(e);
+                        [{/if}]
+                        hidePaymentOption();
+                    });
+                    [{/if}]
+                [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
                 const cardComponent = checkout.create(
                     'card',
                     {
@@ -162,6 +178,15 @@
         // Call adyenAsync
         adyenAsync();
 
+    function hidePaymentOption() {
+        var inputElement = document.getElementById('payment_oscadyenapplepay');
+        if (inputElement) {
+            var parentElement = inputElement.closest('.well.well-sm');
+            if (parentElement) {
+                parentElement.remove(); // remove parent-block
+            }
+        }
+    }
     [{/capture}]
     [{if $phpStorm}]</script>[{/if}]
 [{oxscript add=$adyenJS}]
