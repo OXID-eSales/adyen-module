@@ -235,7 +235,7 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => true,
+            'paymentCtrl' => false,
         ],
     ];
 }
