@@ -64,6 +64,43 @@ class ModuleTest extends UnitTestCase
     }
 
     /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
+     */
+    public function testHandleAssetsTrue()
+    {
+        $moduleService = oxNew(ModuleService::class);
+
+        $paymentId = ModuleCore::PAYMENT_CREDITCARD_ID;
+        $this->assertTrue($moduleService->handleAssets($paymentId));
+
+        $paymentId = ModuleCore::PAYMENT_APPLE_PAY_ID;
+        $this->assertTrue($moduleService->handleAssets($paymentId));
+
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
+     */
+    public function testHandleAssetsFalseInvalidPaymentId()
+    {
+        $paymentId = 'invalid';
+        $moduleService = oxNew(ModuleService::class);
+
+        $this->assertFalse($moduleService->handleAssets($paymentId));
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
+     */
+    public function testHandleAssetsFalseNoPaymentCtrl()
+    {
+        $paymentId = ModuleCore::PAYMENT_PAYPAL_ID;
+        $moduleService = oxNew(ModuleService::class);
+
+        $this->assertFalse($moduleService->handleAssets($paymentId));
+    }
+
+    /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\Module::isCaptureDelay
      */
     public function testShowIsCaptureDelayTrue()
