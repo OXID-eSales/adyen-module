@@ -101,7 +101,8 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => true
+            'paymentCtrl' => true,
+            'handleAssets' => true,
         ],
         self::PAYMENT_PAYPAL_ID => [
             'descriptions' => [
@@ -120,7 +121,8 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => false
+            'paymentCtrl' => false,
+            'handleAssets' => false,
         ],
         self::PAYMENT_GOOGLE_PAY_ID => [
             'descriptions' => [
@@ -139,7 +141,8 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => false
+            'paymentCtrl' => false,
+            'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_LATER_ID => [
             'descriptions' => [
@@ -159,6 +162,7 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false,
+            'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_OVER_TIME_ID => [
             'descriptions' => [
@@ -178,6 +182,7 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false,
+            'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_IMMEDIATE_ID => [
             'descriptions' => [
@@ -196,7 +201,8 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => false
+            'paymentCtrl' => false,
+            'handleAssets' => false,
         ],
         self::PAYMENT_TWINT_ID => [
             'descriptions' => [
@@ -216,6 +222,7 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
             'paymentCtrl' => false,
+            'handleAssets' => false,
             'supported_currencies' => ['CHF'],
         ],
         self::PAYMENT_APPLE_PAY_ID => [
@@ -235,7 +242,8 @@ final class Module
             'currencies' => [],
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'capturedelay' => true,
-            'paymentCtrl' => true,
+            'paymentCtrl' => false,
+            'handleAssets' => true,
         ],
     ];
 }

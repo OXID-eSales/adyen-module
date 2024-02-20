@@ -64,7 +64,7 @@
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
             [{if $isPaymentPage}]
-                [{if $oView->isAvailablePayment($adyenApplePay)}]
+                [{if $oView->handleAdyenAssets($adyenApplePay)}]
                     const apple = checkout.create(
                         'applepay',
                         {
@@ -76,13 +76,13 @@
                             [{if $isLog}]
                                 console.error('Apple Pay not available', e);
                             [{/if}]
-                            const parentElement = document.getElementById('payment_[{$adyenApplePay}]').parentElement;
+                            const parentElement = document.getElementById('payment_[{$adyenApplePay}]').closest('.well.well-sm');
                             if (parentElement) {
                                 parentElement.remove(); // remove parent-block
                             }
                         });
                 [{/if}]
-                [{if $oView->isAvailablePayment($adyenCreditCard)}]
+                [{if $oView->handleAdyenAssets($adyenCreditCard)}]
                     const cardComponent = checkout.create(
                         'card',
                         {
