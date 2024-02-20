@@ -5,25 +5,31 @@
       href="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.css"
       integrity="[{$oViewConf->getAdyenIntegrityCSS()}]"
       crossorigin="anonymous">
-[{if $payment->oxpayments__oxid->value == constant('\OxidSolutionCatalysts\Adyen\Core\Module::PAYMENT_GOOGLE_PAY_ID')}]
-    <script src="https://pay.google.com/gp/p/js/pay.js"></script>
-[{/if}]
 [{assign var="sToken" value=$oViewConf->getSessionChallengeToken()}]
 [{assign var="sSelfLink" value=$oViewConf->getSslSelfLink()|replace:"&amp;":"&"}]
 [{assign var="adyenCreditCard" value=$oViewConf->getAdyenPaymentCreditCardId()}]
 [{assign var="adyenPayPal" value=$oViewConf->getAdyenPaymentPayPalId()}]
 [{assign var="adyenGooglePay" value=$oViewConf->getAdyenPaymentGooglePayId()}]
+[{assign var="adyenApplePay" value=$oViewConf->getAdyenPaymentApplePayId()}]
+[{assign var="isPaymentPage" value=false}]
+[{assign var="isOrderPage" value=false}]
+[{if $oViewConf->getTopActiveClassName() == 'payment'}]
+    [{assign var="isPaymentPage" value=true}]
+    [{assign var="paymentID" value=$oView->getCheckedPaymentId()}]
+[{elseif $oViewConf->getTopActiveClassName() == 'order'}]
+    [{assign var="isOrderPage" value=true}]
+    [{assign var="paymentID" value=$payment->getId()}]
+[{/if}]
+[{if $isOrderPage && $paymentID == $adyenGooglePay}]
+    <script src="https://pay.google.com/gp/p/js/pay.js"></script>
+[{/if}]
 [{if $phpStorm}]<script>[{/if}]
     [{capture assign="adyenJS"}]
         [{assign var="isLog" value=$oViewConf->isAdyenLoggingActive()}]
-        [{assign var="isPaymentPage" value=false}]
-        [{assign var="isOrderPage" value=false}]
         [{assign var="templateCheckoutCreateId" value=$oViewConf->getTemplateCheckoutCreateId($payment)}]
         [{assign var="templatePayButtonContainerId" value=$oViewConf->getTemplatePayButtonContainerId($payment)}]
         let submitForm, submitLink;
-        [{if $oViewConf->getTopActiveClassName() == 'payment'}]
-            [{assign var="isPaymentPage" value=true}]
-            [{assign var="paymentID" value=$oView->getCheckedPaymentId()}]
+        [{if $isPaymentPage}]
             submitForm = document.getElementById('payment');
             submitLink = document.getElementById('orderStep');
             const nextStepEl = document.getElementById('paymentNextStepBottom');
@@ -41,9 +47,7 @@
                     nextStepEl.dataset.adyensubmit = '';
                 });
             });
-        [{elseif $oViewConf->getTopActiveClassName() == 'order'}]
-            [{assign var="isOrderPage" value=true}]
-            [{assign var="paymentID" value=$payment->getId()}]
+        [{elseif $isOrderPage}]
             submitForm = document.getElementById('orderConfirmAgbBottom');
         [{/if}]
         const adyenPspReferenceEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamPspReferenceName()}]');
@@ -59,19 +63,39 @@
             [{if $isLog}]
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
-            [{if $isPaymentPage && $oView->isAvailablePayment($adyenCreditCard)}]
-                const cardComponent = checkout.create(
-                    'card',
-                    {
-                        onFieldValid : function() {
-                            const paymentIdEl = document.getElementById('payment_[{$adyenCreditCard}]');
-                            paymentIdEl.checked = true;
-                            nextStepEl.disabled = true;
-                        },
+            [{if $isPaymentPage}]
+                [{if $oView->isAvailablePayment($adyenApplePay)}]
+                    const apple = checkout.create(
+                        'applepay',
+                        {
+                        }
+                    );
+                    apple.isAvailable()
+                        .then(() => {  })
+                        .catch(e => {
+                            [{if $isLog}]
+                                console.error('Apple Pay not available', e);
+                            [{/if}]
+                            const parentElement = document.getElementById('payment_[{$adyenApplePay}]').parentElement;
+                            if (parentElement) {
+                                parentElement.remove(); // remove parent-block
+                            }
+                        });
+                [{/if}]
+                [{if $oView->isAvailablePayment($adyenCreditCard)}]
+                    const cardComponent = checkout.create(
+                        'card',
+                        {
+                            onFieldValid : function() {
+                                const paymentIdEl = document.getElementById('payment_[{$adyenCreditCard}]');
+                                paymentIdEl.checked = true;
+                                nextStepEl.disabled = true;
+                            },
 
-                    }
-                ).mount('#[{$adyenCreditCard}]-container');
-                cardComponent.paymentIdViewEl = document.getElementById('payment_[{$adyenCreditCard}]').parentElement;
+                        }
+                    ).mount('#[{$adyenCreditCard}]-container');
+                    cardComponent.paymentIdViewEl = document.getElementById('payment_[{$adyenCreditCard}]').parentElement;
+                [{/if}]
             [{elseif $isOrderPage}]
                 [{if $orderPaymentApplePay}]
                     const applePayComponent = checkout.create('[{$templateCheckoutCreateId}]', configuration);
@@ -84,8 +108,7 @@
                             })
                             .catch(e => {
                                 [{if $isLog}]
-                                    console.error('Apple Pay not available');
-                                    console.error(e);
+                                    console.error('Apple Pay not available', e);
                                 [{/if}]
                             });
                     [{else}]
