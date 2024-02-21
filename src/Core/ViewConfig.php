@@ -201,6 +201,11 @@ class ViewConfig extends ViewConfig_parent
         return Module::PAYMENT_GOOGLE_PAY_ID;
     }
 
+    public function getAdyenPaymentApplePayId(): string
+    {
+        return Module::PAYMENT_APPLE_PAY_ID;
+    }
+
     public function getAdyenErrorInvalidSession(): string
     {
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;

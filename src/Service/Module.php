@@ -17,6 +17,12 @@ class Module
             ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
     }
 
+    public function handleAssets(string $paymentId): bool
+    {
+        return ($this->isAdyenPayment($paymentId) &&
+            ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['handleAssets']);
+    }
+
     public function isCaptureDelay(string $paymentId): bool
     {
         return ($this->isAdyenPayment($paymentId) &&
