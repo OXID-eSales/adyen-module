@@ -162,13 +162,16 @@ class PaymentController extends PaymentController_parent
         return $result;
     }
 
-    public function isAvailablePayment(string $paymentIdToProve): bool
+    public function handleAdyenAssets(string $paymentIdToProve): bool
     {
         /** @var array $paymentList */
         $paymentList = $this->getPaymentList();
         foreach ($paymentList as $paymentId => $payment) {
             /** @var AdyenPayment $payment */
-            if ($payment->showInPaymentCtrl() && $paymentId === $paymentIdToProve) {
+            if (
+                $paymentId === $paymentIdToProve &&
+                $payment->handleAdyenAssets()
+            ) {
                 return true;
             }
         }
