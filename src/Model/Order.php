@@ -92,9 +92,16 @@ class Order extends Order_parent
     public function finalizeOrder(Basket $basket, $user, $recalcOrder = false)
     {
         $result = parent::finalizeOrder($basket, $user, $recalcOrder);
-        // the final OrderStatus is set via Notification
-        if ($this->isAdyenOrder()) {
-            $this->setAdyenOrderStatus('NOT_FINISHED');
+        $moduleService = $this->getServiceFromContainer(ModuleService::class);
+        if ($moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype'))) {
+            $pspReference =   $this->getAdyenPSPReference();
+            // the final OrderStatus is set via Notification
+            if ($this->isAdyenOrder()) {
+                $this->setAdyenOrderStatus('NOT_FINISHED');
+            }
+            if (empty($pspReference)) {
+                $this->setAdyenOrderStatus('ERROR');
+            }
         }
         return $result;
     }
