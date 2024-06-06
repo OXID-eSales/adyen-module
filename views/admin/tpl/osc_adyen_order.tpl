@@ -24,7 +24,8 @@
             <td style="width:68%; padding:1%; vertical-align: text-top;">
                 <!-- Show AdyenHistory -->
                 <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_HISTORY"}]</h3>
-                <table style="width: 98%; border-spacing: 0;">
+                <div  id="liste">
+                  <table style="width: 98%; border-spacing: 0;">
                     <tr>
                         <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
                         <td class="listheader">[{oxmultilang ident="OSC_ADYEN_PARENTPSPREFERENCE"}]</td>
@@ -39,6 +40,7 @@
                         [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
                         <tr id="art.[{$smarty.foreach.historyList.iteration}]">
                             [{assign var="listclass" value=listitem$blWhite}]
+                            [{if $listitem->getAdyenStatus() == "refundfailed"}][{assign var="listclass" value="listitem4"}][{/if}]
                             <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
                             <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
                             <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
@@ -52,7 +54,8 @@
                             [{assign var="blWhite" value="2"}]
                         [{/if}]
                     [{/foreach}]
-                </table>
+                  </table>
+                </div>
                 <!-- Show AdyenHistory END -->
                 [{oxhasrights ident="ADYENSTORNO"}]
                     [{if $edit->isAdyenManualCapture() && $edit->isAdyenCapturePossible()}]

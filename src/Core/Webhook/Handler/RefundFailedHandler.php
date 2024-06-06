@@ -11,7 +11,6 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
-use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 
 final class RefundFailedHandler extends WebhookHandlerBase
 {
@@ -24,9 +23,6 @@ final class RefundFailedHandler extends WebhookHandlerBase
      */
     protected function additionalUpdates(Event $event): void
     {
-        /** @var AdyenOrder $order */
-        $order = $this->order;
-        $order->setAdyenOrderStatus('NOT_FINISHED');
     }
 
     protected function getAdyenAction(): string
