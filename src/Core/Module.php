@@ -13,7 +13,7 @@ final class Module
 {
     public const MODULE_NAME_DE = 'Adyen Payment für OXID';
     public const MODULE_NAME_EN = 'Adyen Payment for OXID';
-    public const MODULE_VERSION = '1.1.5';
+    public const MODULE_VERSION = '1.1.6-rc.1';
     public const MODULE_VERSION_FULL = self::MODULE_VERSION . ' SDK-Version ' . self::ADYEN_SDK_VERSION;
     public const MODULE_PLATFORM_NAME = 'OXID';
     public const MODULE_PLATFORM_VERSION = '1.0';
@@ -46,6 +46,7 @@ final class Module
     public const ADYEN_ACTION_CAPTURE = 'capture';
     public const ADYEN_ACTION_REFUND = 'refund';
     public const ADYEN_ACTION_CANCEL = 'cancel';
+    public const ADYEN_ACTION_REPORT = 'report';
 
     public const ADYEN_STATUS_AUTHORISED = 'authorised';
     public const ADYEN_STATUS_CANCELLED = 'cancelled';
@@ -61,6 +62,8 @@ final class Module
     public const ADYEN_STATUS_CHARGEBACK = 'chargeback';
     public const ADYEN_STATUS_REFUNDED = 'refunded';
     public const ADYEN_STATUS_REFUNDFAILED = 'refundfailed';
+    public const ADYEN_STATUS_REFUND_FAILED = 'refundfailed';
+    public const ADYEN_STATUS_REPORT_AVAILABLE = 'reportavailable';
     public const ADYEN_STATUS_REFUNDEDREVERSED = 'refundedreversed';
     public const ADYEN_STATUS_REFUNDSCHEDULED = 'refundscheduled';
     public const ADYEN_STATUS_SENTFORREFUND = 'sentforrefund';

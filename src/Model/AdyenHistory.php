@@ -270,6 +270,8 @@ class AdyenHistory extends BaseModel
             Module::ADYEN_STATUS_CHARGEBACK,
             Module::ADYEN_STATUS_REFUNDED,
             Module::ADYEN_STATUS_REFUNDFAILED,
+            Module::ADYEN_STATUS_REFUND_FAILED,
+            Module::ADYEN_STATUS_REPORT_AVAILABLE,
             Module::ADYEN_STATUS_REFUNDEDREVERSED,
             Module::ADYEN_STATUS_REFUNDSCHEDULED,
             Module::ADYEN_STATUS_SENTFORREFUND
