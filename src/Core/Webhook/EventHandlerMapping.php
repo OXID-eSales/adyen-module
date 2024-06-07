@@ -22,7 +22,6 @@ class EventHandlerMapping
         AuthorisationHandler::AUTHORISATION_EVENT_CODE => AuthorisationHandler::class,
         CaptureHandler::CAPTURE_EVENT_CODE => CaptureHandler::class,
         RefundHandler::REFUND_EVENT_CODE => RefundHandler::class,
-        RefundFailedHandler::REFUND_EVENT_CODE => RefundFailedHandler::class,
         CancellationHandler::CANCEL_EVENT_CODE => CancellationHandler::class,
         CancelRefundHandler::CANCELORREFUND_EVENT_CODE => CancelRefundHandler::class
     ];

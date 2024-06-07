@@ -134,7 +134,7 @@ final class Event
 
         $this->item = $this->rawData['notificationItems'][0]['NotificationRequestItem'] ?? [];
         $this->eventType = $this->item['eventCode'] ?? '';
-        $this->isSuccess = isset($this->item['success']) && ($this->item['success'] === 'true' || $this->item['success'] === true);
+        $this->isSuccess = isset($this->item['success']) && $this->item['success'] === 'true';
         $this->pspReference = $this->item['pspReference'] ?? '';
         $this->merchantReference = $this->item['merchantReference'] ?? '';
         $this->merchantAccountCode = $this->item['merchantAccountCode'] ?? '';
