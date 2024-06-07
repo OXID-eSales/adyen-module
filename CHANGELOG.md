@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.6] - 2024-??-??
 
 - add new Webhookhandler "refund failed" & "report available"
+- Fix that Captured is shown two times in order history and therefore refundable amount is wrong
 
 ## [1.1.5] - 2024-03-05
 

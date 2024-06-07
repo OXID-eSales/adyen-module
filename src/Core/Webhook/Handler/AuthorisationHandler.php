@@ -40,8 +40,8 @@ final class AuthorisationHandler extends WebhookHandlerBase
                 $event->getEventDate(),
                 $this->pspReference,
                 $this->parentPspReference,
-                Module::ADYEN_STATUS_CAPTURED,
-                Module::ADYEN_ACTION_CAPTURE
+                Module::ADYEN_STATUS_AUTHORISED,
+                Module::ADYEN_ACTION_AUTHORIZE
             );
         }
     }
