@@ -43,7 +43,11 @@
                     [{foreach from=$history item=listitem name=historyList}]
                         [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
                         [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
-                        [{if $statusIdent == 'OSC_ADYEN_STATUSrefundfailed'}][{assign var="blRed" value="error-refund"}][{/if}]
+                        [{if $statusIdent == 'OSC_ADYEN_STATUSrefundfailed'}]
+                        [{assign var="blRed" value="error-refund"}]
+                        [{else}]
+                        [{assign var="blRed" value=""}]
+                        [{/if}]
                         <tr  id="art.[{$smarty.foreach.historyList.iteration}]">
                             [{assign var="listclass" value=listitem$blWhite}]
                             <td class="[{$listclass}] [{$blRed}]">[{$listitem->getPSPReference()}]</td>
