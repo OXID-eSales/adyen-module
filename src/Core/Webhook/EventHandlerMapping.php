@@ -13,7 +13,6 @@ use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CaptureHandler;
-use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundFailedHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundFailedHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\ReportAvailableHandler;
