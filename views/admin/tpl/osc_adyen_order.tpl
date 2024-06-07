@@ -5,12 +5,6 @@
 [{else}]
     [{assign var="readonly" value=""}]
 [{/if}]
-<style>
-    .error-refund {
-        background-color: #FF0000 !important;
-        color:white;
-    }
-</style>
 <form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="oxid" value="[{$oxid}]">
@@ -40,24 +34,18 @@
                             <td class="listheader">[{oxmultilang ident="OSC_ADYEN_STATUS"}]</td>
                         </tr>
                         [{assign var="blWhite" value=""}]
-                    [{assign var="blRed" value=""}]
                         [{foreach from=$history item=listitem name=historyList}]
                             [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
                             [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
-                        [{if $statusIdent == 'OSC_ADYEN_STATUSrefundfailed'}]
-                        [{assign var="blRed" value="error-refund"}]
-                        [{else}]
-                        [{assign var="blRed" value=""}]
-                        [{/if}]
                             <tr id="art.[{$smarty.foreach.historyList.iteration}]">
                                 [{assign var="listclass" value=listitem$blWhite}]
                                 [{if $listitem->getAdyenStatus() == "refundfailed"}][{assign var="listclass" value="listitem4"}][{/if}]
-                            <td class="[{$listclass}] [{$blRed}]">[{$listitem->getPSPReference()}]</td>
-                            <td class="[{$listclass}] [{$blRed}]">[{$listitem->getParentPSPReference()}]</td>
-                            <td class="[{$listclass}] [{$blRed}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
-                            <td class="[{$listclass}] [{$blRed}]">[{$listitem->getTimeStamp()}]</td>
-                            <td class="[{$listclass}] [{$blRed}]">[{oxmultilang ident=$actionIdent}]</td>
-                            <td class="[{$listclass}] [{$blRed}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
+                            <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
                             </tr>
                             [{if $blWhite == "2"}]
                                 [{assign var="blWhite" value=""}]
