@@ -86,8 +86,8 @@ $aModule = [
         // frontend - account
         'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
         // frontend - mails
-        'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_html.tpl',
-        'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen_plain.tpl',
+        'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/email/order_adyen_html.tpl',
+        'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/email/order_adyen_plain.tpl',
         // adyen js api
         'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
     ],
