@@ -29,41 +29,44 @@
             <td style="width:68%; padding:1%; vertical-align: text-top;">
                 <!-- Show AdyenHistory -->
                 <h3 style="margin-bottom: 20px;">[{oxmultilang ident="OSC_ADYEN_HISTORY"}]</h3>
-                <table style="width: 98%; border-spacing: 0;">
-                    <tr>
-                        <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
-                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_PARENTPSPREFERENCE"}]</td>
-                        <td class="listheader">[{oxmultilang ident="GENERAL_PRICE"}]</td>
-                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_TIMESTAMP"}]</td>
-                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_ACTION"}]</td>
-                        <td class="listheader">[{oxmultilang ident="OSC_ADYEN_STATUS"}]</td>
-                    </tr>
-                    [{assign var="blWhite" value=""}]
+                <div id="liste">
+                    <table style="width: 98%; border-spacing: 0;">
+                        <tr>
+                            <td class="listheader first">[{oxmultilang ident="OSC_ADYEN_PSPREFERENCE"}]</td>
+                            <td class="listheader">[{oxmultilang ident="OSC_ADYEN_PARENTPSPREFERENCE"}]</td>
+                            <td class="listheader">[{oxmultilang ident="GENERAL_PRICE"}]</td>
+                            <td class="listheader">[{oxmultilang ident="OSC_ADYEN_TIMESTAMP"}]</td>
+                            <td class="listheader">[{oxmultilang ident="OSC_ADYEN_ACTION"}]</td>
+                            <td class="listheader">[{oxmultilang ident="OSC_ADYEN_STATUS"}]</td>
+                        </tr>
+                        [{assign var="blWhite" value=""}]
                     [{assign var="blRed" value=""}]
-                    [{foreach from=$history item=listitem name=historyList}]
-                        [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
-                        [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
+                        [{foreach from=$history item=listitem name=historyList}]
+                            [{assign var="actionIdent" value="OSC_ADYEN_ACTION"|cat:$listitem->getAdyenAction()}]
+                            [{assign var="statusIdent" value="OSC_ADYEN_STATUS"|cat:$listitem->getAdyenStatus()}]
                         [{if $statusIdent == 'OSC_ADYEN_STATUSrefundfailed'}]
                         [{assign var="blRed" value="error-refund"}]
                         [{else}]
                         [{assign var="blRed" value=""}]
                         [{/if}]
-                        <tr  id="art.[{$smarty.foreach.historyList.iteration}]">
-                            [{assign var="listclass" value=listitem$blWhite}]
+                            <tr id="art.[{$smarty.foreach.historyList.iteration}]">
+                                [{assign var="listclass" value=listitem$blWhite}]
+                                [{if $listitem->getAdyenStatus() == "refundfailed"}][{assign var="listclass" value="listitem4"}][{/if}]
                             <td class="[{$listclass}] [{$blRed}]">[{$listitem->getPSPReference()}]</td>
                             <td class="[{$listclass}] [{$blRed}]">[{$listitem->getParentPSPReference()}]</td>
                             <td class="[{$listclass}] [{$blRed}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
                             <td class="[{$listclass}] [{$blRed}]">[{$listitem->getTimeStamp()}]</td>
                             <td class="[{$listclass}] [{$blRed}]">[{oxmultilang ident=$actionIdent}]</td>
                             <td class="[{$listclass}] [{$blRed}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
-                        </tr>
-                        [{if $blWhite == "2"}]
-                            [{assign var="blWhite" value=""}]
-                        [{else}]
-                            [{assign var="blWhite" value="2"}]
-                        [{/if}]
-                    [{/foreach}]
-                </table>
+                            </tr>
+                            [{if $blWhite == "2"}]
+                                [{assign var="blWhite" value=""}]
+                            [{else}]
+                                [{assign var="blWhite" value="2"}]
+                            [{/if}]
+                        [{/foreach}]
+                    </table>
+                </div>
                 <!-- Show AdyenHistory END -->
                 [{oxhasrights ident="ADYENSTORNO"}]
                     [{if $edit->isAdyenManualCapture() && $edit->isAdyenCapturePossible()}]

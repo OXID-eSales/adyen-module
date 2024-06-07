@@ -1,5 +1,4 @@
 parameters:
-    checkMissingIterableValueType: false
     bootstrapFiles:
         - phpstan-bootstrap.php
     stubFiles:
@@ -18,3 +17,5 @@ parameters:
     scanFiles:
         - ../../vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
         - ../../vendor/oxid-esales/oxideshop-ce/source/overridablefunctions.php
+    ignoreErrors:
+        - identifier: missingType.iterableValue

@@ -75,7 +75,6 @@ class ModuleTest extends UnitTestCase
 
         $paymentId = ModuleCore::PAYMENT_APPLE_PAY_ID;
         $this->assertTrue($moduleService->handleAssets($paymentId));
-
     }
 
     /**
