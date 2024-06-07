@@ -94,7 +94,7 @@ class Order extends Order_parent
         $result = parent::finalizeOrder($basket, $user, $recalcOrder);
         $moduleService = $this->getServiceFromContainer(ModuleService::class);
         if ($moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype'))) {
-            $pspReference =   $this->getAdyenPSPReference();
+            $pspReference = $this->getAdyenPSPReference();
             // the final OrderStatus is set via Notification
             if ($this->isAdyenOrder()) {
                 $this->setAdyenOrderStatus('NOT_FINISHED');
