@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidSolutionCatalysts\Adyen\Core\Webhook\Handler;
 
+use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
@@ -57,12 +58,12 @@ final class RefundHandler extends WebhookHandlerBase
             try {
                 $this->setData($event);
                 $this->updateStatusFailed($event);
+                return;
             } catch (WebhookEventTypeException | Exception $e) {
                 $this->getLogger()->debug($e->getMessage());
             }
-        } else {
-            parent::handle($event);
         }
+        parent::handle($event);
     }
     /**
      * make functions mockable which uses the logger
@@ -86,5 +87,4 @@ final class RefundHandler extends WebhookHandlerBase
             $this->getAdyenAction()
         );
     }
-
 }
