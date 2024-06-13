@@ -5,7 +5,6 @@
 [{else}]
     [{assign var="readonly" value=""}]
 [{/if}]
-
 <form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="oxid" value="[{$oxid}]">
@@ -41,12 +40,12 @@
                             <tr id="art.[{$smarty.foreach.historyList.iteration}]">
                                 [{assign var="listclass" value=listitem$blWhite}]
                                 [{if $listitem->getAdyenStatus() == "refundfailed"}][{assign var="listclass" value="listitem4"}][{/if}]
-                                <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
-                                <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
-                                <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
-                                <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
-                                <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
-                                <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
+                            <td class="[{$listclass}]">[{$listitem->getPSPReference()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getParentPSPReference()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getFormatedPrice()}] [{$listitem->getCurrency()}]</td>
+                            <td class="[{$listclass}]">[{$listitem->getTimeStamp()}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$actionIdent}]</td>
+                            <td class="[{$listclass}]">[{oxmultilang ident=$statusIdent}] ([{oxmultilang ident="tbclorder_adyen" suffix="COLON"}] [{$listitem->getAdyenStatus()}])</td>
                             </tr>
                             [{if $blWhite == "2"}]
                                 [{assign var="blWhite" value=""}]
