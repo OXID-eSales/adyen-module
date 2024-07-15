@@ -32,7 +32,7 @@
         "adyen/php-api-library": "14.*"
     },
     "require-dev": {
-        "codeception/module-rest": "^2.0.2",
+        "codeception/module-rest": "^3.4.0",
         "codeception/module-phpbrowser": "^2.0.3",
         "codeception/module-db": "^2.0.2",
         "phpstan/phpstan": "^1.9.2",
