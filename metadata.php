@@ -157,6 +157,11 @@ $aModule = [
             'block' => 'checkout_order_address',
             'file' => 'views/frontend/blocks/page/checkout/order_checkout_order_address.tpl'
         ],
+        [
+            'template' => 'page/checkout/order.tpl',
+            'block' => 'shippingAndPayment',
+            'file' => 'views/frontend/blocks/page/checkout/order_checkout_shippingandpayment.tpl'
+        ],
         //admin
         [
             'template' => 'module_config.tpl',

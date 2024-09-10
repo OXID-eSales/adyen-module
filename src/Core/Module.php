@@ -105,7 +105,7 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => -1,
             'capturedelay' => true,
-            'paymentCtrl' => true,
+            'paymentCtrl' => false,
             'handleAssets' => true,
         ],
         self::PAYMENT_PAYPAL_ID => [

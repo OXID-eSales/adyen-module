@@ -65,6 +65,8 @@ class JSAPITemplateConfiguration
                 && $paymentId === Module::PAYMENT_GOOGLE_PAY_ID,
             'orderPaymentApplePay' => $controller instanceof OrderController
                 && $paymentId === Module::PAYMENT_APPLE_PAY_ID,
+            'orderPaymentCreditCard' => $controller instanceof Ordercontroller
+                && $paymentId === Module::PAYMENT_CREDITCARD_ID,
             'paymentConfigNeedsCard' => $this->paymentMethodsConfigurationNeedsCardField(
                 $controller,
                 $viewConfig,
@@ -159,9 +161,8 @@ class JSAPITemplateConfiguration
     ): bool {
         /** @var AdyenPayment $payment */
         /** @var AdyenViewConfig $viewConfig */
-        return $controller instanceof PaymentController
+        return $controller instanceof OrderController
             && $payment instanceof Payment
-            && $payment->showInPaymentCtrl()
             && $payment->getId() === $viewConfig->getAdyenPaymentCreditCardId();
     }
 }
