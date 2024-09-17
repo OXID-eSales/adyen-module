@@ -12,7 +12,6 @@ const configuration = {
     },
     onChange: (state, component) => {
         if (isPaymentPage) {
-            //TODO: find out what this does and whether it's necessary for acdc to work in last step
             if (state.isValid) {
                 const paymentIdEl = document.getElementById(component._node.attributes.getNamedItem('data-paymentid').value);
                 nextStepEl.dataset.adyensubmit = paymentIdEl.value;
