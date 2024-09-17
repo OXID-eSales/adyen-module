@@ -98,8 +98,7 @@
                             }
                         }
                     ).mount('#[{$adyenCreditCard}]-container');
-                [{/if}]
-                [{if $orderPaymentApplePay}]
+                [{elseif $orderPaymentApplePay}]
                     const applePayComponent = checkout.create('[{$templateCheckoutCreateId}]', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
@@ -119,21 +118,13 @@
 
                 [{if $orderPaymentCreditCard}]
                     submitForm.addEventListener('submit', function(event) {
-                        event.preventDefault();  // Prevent the default form submission
-
-                        // Your custom submit behavior here
-                        console.log("Form submission prevented. Custom behavior here.");
+                        event.preventDefault();
+                        this.disabled = true;
+                        [{if $isLog}]
+                            console.log("cardComp:", cardComponent)
+                        [{/if}]
+                        cardComponent.submit();
                     });
-
-                    nextStepEl.addEventListener("click", function(e) {
-                        if (this.dataset.adyensubmit !== '') {
-                            e.preventDefault();
-                            this.disabled = true;
-                            if (this.dataset.adyensubmit === '[{$adyenCreditCard}]') {
-                                cardComponent.submit();
-                            }
-                        }
-                    }, false);
                 [{/if}]
             [{/if}]
 

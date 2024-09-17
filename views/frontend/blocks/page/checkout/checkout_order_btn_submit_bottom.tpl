@@ -4,9 +4,9 @@
 
     [{if $payment->isAdyenCreditCardPayment()}]
         [{$smarty.block.parent}]
-    [{else}]
-        [{include file="modules/osc/adyen/payment/adyen_order_submit.tpl"}]
     [{/if}]
+
+    [{include file="modules/osc/adyen/payment/adyen_order_submit.tpl"}]
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]
