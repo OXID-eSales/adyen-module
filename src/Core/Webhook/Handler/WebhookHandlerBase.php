@@ -19,6 +19,7 @@ use OxidSolutionCatalysts\Adyen\Model\AdyenHistory;
 use OxidSolutionCatalysts\Adyen\Model\AdyenHistoryList;
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenModel;
 use OxidSolutionCatalysts\Adyen\Service\Context;
+use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use Psr\Log\LoggerInterface;
 
@@ -40,10 +41,12 @@ abstract class WebhookHandlerBase
         ?AdyenHistoryList $adyenHistoryList = null,
         ?Context $context = null
     ) {
+        $oxNewService = $this->getServiceFromContainer(OxNewService::class);
+
         // whether getting mock objects from unit test or new objects for production
-        $this->payment = $payment ?? oxNew(Payment::class);
-        $this->order = $order ?? oxNew(Order::class);
-        $this->adyenHistoryList = $adyenHistoryList ?? oxNew(AdyenHistoryList::class);
+        $this->payment = $payment ?? $oxNewService->oxNew(Payment::class);
+        $this->order = $order ?? $oxNewService->oxNew(Order::class);
+        $this->adyenHistoryList = $adyenHistoryList ?? $oxNewService->oxNew(AdyenHistoryList::class);
         $this->context = $context ?? $this->getServiceFromContainer(Context::class);
     }
 
@@ -143,7 +146,8 @@ abstract class WebhookHandlerBase
         string $action
     ): void {
         try {
-            $adyenHistory = oxNew(AdyenHistory::class);
+            $oxNewService = $this->getServiceFromContainer(OxNewService::class);
+            $adyenHistory = $oxNewService->oxNew(AdyenHistory::class);
             $adyenHistory->setOrderId($orderId);
             $adyenHistory->setShopId($shopId);
             $adyenHistory->setPrice($amount);
