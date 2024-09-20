@@ -77,25 +77,6 @@ class PaymentController extends PaymentController_parent
         return $paymentList;
     }
 
-    public function isAdyenAssetsNecessary(): bool
-    {
-        if (is_null($this->assetsNecessary)) {
-            $this->assetsNecessary = false;
-            $paymentList = $this->getPaymentList();
-            if (is_array($paymentList)) {
-                foreach ($paymentList as $paymentObj) {
-                    /** @var AdyenPayment $paymentObj */
-                    if ($paymentObj->showInPaymentCtrl()) {
-                        $this->assetsNecessary = true;
-                        break;
-                    }
-                }
-            }
-            $this->assetsNecessary = $this->assetsNecessary && !$this->isValidAdyenAuthorisation();
-        }
-        return $this->assetsNecessary;
-    }
-
     public function isActiveAdyenSession(): bool
     {
         /** @var SessionSettings $session */

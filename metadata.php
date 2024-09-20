@@ -98,11 +98,6 @@ $aModule = [
         ],
         [
             'template' => 'page/checkout/payment.tpl',
-            'block' => 'checkout_payment_main',
-            'file' => 'views/frontend/blocks/page/checkout/checkout_payment_main.tpl'
-        ],
-        [
-            'template' => 'page/checkout/payment.tpl',
             'block' => 'checkout_payment_nextstep',
             'file' => 'views/frontend/blocks/page/checkout/checkout_payment_nextstep.tpl'
         ],
