@@ -86,7 +86,7 @@
             [{elseif $isOrderPage}]
                 [{if $orderPaymentCreditCard}]
                     orderSubmitButton.disabled = true;
-                    orderSubmitButton.title = '[{$oViewConf->getAdyenCreditCardTooltipText()}]';
+                    orderSubmitButton.title = '[{assign var="template_title" value="OSC_ADYEN_ORDER_TOOLTIP"|oxmultilangassign}]';
                     const cardComponent = checkout.create(
                         'card',
                         {

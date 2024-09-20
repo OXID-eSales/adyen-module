@@ -34,7 +34,7 @@ class Payment extends Payment_parent
     /**
      * Checks if the payment method is an Adyen credit card payment method
      */
-    public function isAdyenCreditCardPayment() :bool
+    public function isAdyenCreditCardPayment(): bool
     {
         return $this->getAdyenPaymentConfigService()->isAdyenCreditCardPayment($this->getId());
     }
