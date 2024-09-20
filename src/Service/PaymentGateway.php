@@ -74,7 +74,7 @@ class PaymentGateway
             );
             $order->save();
 
-            // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
+            // trigger Capture for all Payments with Capture-Delay "immediate"
             if ($this->paymentConfigService->isAdyenImmediateCapture($paymentId)) {
                 $order->captureAdyenOrder($amount);
             }
@@ -86,7 +86,7 @@ class PaymentGateway
     }
 
     /**
-     * put RequestData from OrderCtrl in the session as well as from PaymentCtrl
+     * put RequestData from OrderCtrl in the session
      */
     public function doCollectAdyenRequestData(): void
     {

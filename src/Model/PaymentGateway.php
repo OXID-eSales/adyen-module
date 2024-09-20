@@ -37,9 +37,7 @@ class PaymentGateway extends PaymentGateway_parent
         $paymentId = $sessionSettings->getPaymentId();
 
         if ($moduleService->isAdyenPayment($paymentId)) {
-            if (!$moduleService->showInPaymentCtrl($paymentId)) {
-                $payGatewayService->doCollectAdyenRequestData();
-            }
+            $payGatewayService->doCollectAdyenRequestData();
             /** @var Order $order */
             $payGatewayService->doFinishAdyenPayment($amount, $order);
         }

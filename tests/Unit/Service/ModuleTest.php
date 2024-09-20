@@ -31,39 +31,6 @@ class ModuleTest extends UnitTestCase
     }
 
     /**
-     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::showInPaymentCtrl
-     */
-    public function testShowInPaymentCtrlTrue()
-    {
-        $paymentId = ModuleCore::PAYMENT_CREDITCARD_ID;
-        $moduleService = oxNew(ModuleService::class);
-
-        $this->assertTrue($moduleService->showInPaymentCtrl($paymentId));
-    }
-
-    /**
-     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::showInPaymentCtrl
-     */
-    public function testShowInPaymentCtrlFalseInvalidPaymentId()
-    {
-        $paymentId = 'invalid';
-        $moduleService = oxNew(ModuleService::class);
-
-        $this->assertFalse($moduleService->showInPaymentCtrl($paymentId));
-    }
-
-    /**
-     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::showInPaymentCtrl
-     */
-    public function testShowInPaymentCtrlFalseNoPaymentCtrl()
-    {
-        $paymentId = ModuleCore::PAYMENT_PAYPAL_ID;
-        $moduleService = oxNew(ModuleService::class);
-
-        $this->assertFalse($moduleService->showInPaymentCtrl($paymentId));
-    }
-
-    /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
      */
     public function testHandleAssetsTrue()
@@ -83,17 +50,6 @@ class ModuleTest extends UnitTestCase
     public function testHandleAssetsFalseInvalidPaymentId()
     {
         $paymentId = 'invalid';
-        $moduleService = oxNew(ModuleService::class);
-
-        $this->assertFalse($moduleService->handleAssets($paymentId));
-    }
-
-    /**
-     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
-     */
-    public function testHandleAssetsFalseNoPaymentCtrl()
-    {
-        $paymentId = ModuleCore::PAYMENT_PAYPAL_ID;
         $moduleService = oxNew(ModuleService::class);
 
         $this->assertFalse($moduleService->handleAssets($paymentId));

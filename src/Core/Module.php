@@ -105,7 +105,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => -1,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => true,
         ],
         self::PAYMENT_PAYPAL_ID => [
@@ -126,7 +125,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_GOOGLE_PAY_ID => [
@@ -147,7 +145,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_LATER_ID => [
@@ -168,7 +165,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_OVER_TIME_ID => [
@@ -189,7 +185,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_IMMEDIATE_ID => [
@@ -210,7 +205,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_TWINT_ID => [
@@ -231,7 +225,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
             'supported_currencies' => ['CHF'],
         ],
@@ -253,7 +246,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => true,
         ],
     ];

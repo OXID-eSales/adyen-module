@@ -52,23 +52,11 @@ class PaymentTest extends UnitTestCase
         $payment->load($paymentId);
         $this->assertSame(isset(Module::PAYMENT_DEFINTIONS[$paymentId]), $payment->isAdyenPayment());
 
-        // Check: showInPaymentCtrl
-        $isActive = $payment->getFieldData('oxactive') === '1' ;
-        $this->assertSame(
-            (
-                isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
-                Module::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl'] &&
-                $isActive
-            ),
-            $payment->showInPaymentCtrl()
-        );
-
         // Check: showInOrderCtrl
         $isActive = $payment->getFieldData('oxactive') === '1' ;
         $this->assertSame(
             (
                 isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
-                !Module::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl'] &&
                 $isActive
             ),
             $payment->showInOrderCtrl()

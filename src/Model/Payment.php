@@ -40,23 +40,11 @@ class Payment extends Payment_parent
     }
 
     /**
-     * Checks if the payment method is show on Payment Controller
-     */
-    public function showInPaymentCtrl(): bool
-    {
-        return ($this->isAdyenPayment() &&
-            $this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
-            $this->getAdyenBoolData('oxactive') === true
-        );
-    }
-
-    /**
      * Checks if the payment method is show on Order Controller
      */
     public function showInOrderCtrl(): bool
     {
         return ($this->isAdyenPayment() &&
-            !$this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
             $this->getAdyenBoolData('oxactive') === true
         );
     }
