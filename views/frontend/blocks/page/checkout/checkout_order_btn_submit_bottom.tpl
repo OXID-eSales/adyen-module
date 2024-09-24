@@ -3,7 +3,11 @@
     [{include file="modules/osc/adyen/payment/adyen_assets.tpl"}]
 
     [{if $payment->isAdyenCreditCardPayment()}]
-        [{$smarty.block.parent}]
+        <div class="">
+            <button type="submit" class="adyen-checkout__button adyen-checkout__button--pay btn-lg pull-right largeButton">
+                <i class="fa fa-check"></i> [{oxmultilang ident="SUBMIT_ORDER"}]
+            </button>
+        </div>
     [{/if}]
 
     [{include file="modules/osc/adyen/payment/adyen_order_submit.tpl"}]
