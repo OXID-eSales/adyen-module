@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.7] - 2024-??-??
+
+### NEW
+- Creditcard-Fields move from Payment-Controller to the Order-Controller.
+
+### FIX
+- Fix URLs with real slashes instead of DIRECTORY_SEPERATOR
+
 ## [1.1.6] - 2024-06-21
 
 - add new Webhookhandler "refund failed" & "report available"
