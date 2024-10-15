@@ -32,14 +32,11 @@ class Payment extends Payment_parent
     }
 
     /**
-     * Checks if the payment method is show on Payment Controller
+     * Checks if the payment method is an Adyen credit card payment method
      */
-    public function showInPaymentCtrl(): bool
+    public function isAdyenCreditCardPayment(): bool
     {
-        return ($this->isAdyenPayment() &&
-            $this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
-            $this->getAdyenBoolData('oxactive') === true
-        );
+        return $this->getAdyenPaymentConfigService()->isAdyenCreditCardPayment($this->getId());
     }
 
     /**
@@ -48,7 +45,6 @@ class Payment extends Payment_parent
     public function showInOrderCtrl(): bool
     {
         return ($this->isAdyenPayment() &&
-            !$this->getServiceFromContainer(ModuleService::class)->showInPaymentCtrl($this->getId()) &&
             $this->getAdyenBoolData('oxactive') === true
         );
     }

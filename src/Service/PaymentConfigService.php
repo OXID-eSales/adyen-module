@@ -35,6 +35,14 @@ class PaymentConfigService
     }
 
     /**
+     * Checks if the payment method is an Adyen credit card payment method
+     */
+    public function isAdyenCreditCardPayment(string $paymentId): bool
+    {
+        return $this->moduleService->isAdyenCreditCardPayment($paymentId);
+    }
+
+    /**
      * Checks if the payment allow manual Capture
      */
     public function isAdyenManualCapture(string $paymentId): bool

@@ -54,6 +54,7 @@
         const adyenResultCodeEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamResultCodeName()}]');
         const adyenAmountCurrencyEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountCurrencyName()}]');
         const adyenAmountValueEl = document.getElementById('[{$oViewConf->getAdyenHtmlParamAmountValueName()}]');
+        const orderSubmitButton = document.querySelector("#orderConfirmAgbBottom button");
 
         const adyenAsync = async function () {
             [{$oViewConf->getTemplateConfiguration($oView, $payment)}]
@@ -82,22 +83,22 @@
                             }
                         });
                 [{/if}]
-                [{if $oView->handleAdyenAssets($adyenCreditCard)}]
+            [{elseif $isOrderPage}]
+                [{if $orderPaymentCreditCard}]
+                    orderSubmitButton.disabled = true;
+                    orderSubmitButton.title = '[{assign var="template_title" value="OSC_ADYEN_ORDER_TOOLTIP"|oxmultilangassign}]';
                     const cardComponent = checkout.create(
                         'card',
                         {
                             onFieldValid : function() {
-                                const paymentIdEl = document.getElementById('payment_[{$adyenCreditCard}]');
-                                paymentIdEl.checked = true;
-                                nextStepEl.disabled = true;
+                                orderSubmitButton.disabled = false;
                             },
-
+                            onLoad: function () {
+                                document.querySelector("#oscadyencreditcard-container button").style.display = 'none';
+                            }
                         }
                     ).mount('#[{$adyenCreditCard}]-container');
-                    cardComponent.paymentIdViewEl = document.getElementById('payment_[{$adyenCreditCard}]').parentElement;
-                [{/if}]
-            [{elseif $isOrderPage}]
-                [{if $orderPaymentApplePay}]
+                [{elseif $orderPaymentApplePay}]
                     const applePayComponent = checkout.create('[{$templateCheckoutCreateId}]', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
@@ -113,6 +114,17 @@
                             });
                     [{else}]
                         checkout.create('[{$templateCheckoutCreateId}]', configuration).mount('#[{$templatePayButtonContainerId}]');
+                [{/if}]
+
+                [{if $orderPaymentCreditCard}]
+                    submitForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        this.disabled = true;
+                        [{if $isLog}]
+                            console.log("cardComp:", cardComponent)
+                        [{/if}]
+                        cardComponent.submit();
+                    });
                 [{/if}]
             [{/if}]
 
@@ -166,25 +178,10 @@
                 }
                 return result;
             }
-
-            [{if $isPaymentPage}]
-                nextStepEl.addEventListener("click", function(e) {
-                    if (this.dataset.adyensubmit !== '') {
-                        e.preventDefault();
-                        this.disabled = true;
-                        if (this.dataset.adyensubmit === '[{$adyenCreditCard}]') {
-                            cardComponent.submit();
-                        }
-                    }
-                }, false);
-                [{if $paymentID === $adyenCreditCard}]
-                    nextStepEl.disabled = true;
-                [{/if}]
-            [{/if}]
         }
         // Call adyenAsync
         adyenAsync();
 
     [{/capture}]
-    [{if $phpStorm}]</script>[{/if}]
+[{if $phpStorm}]</script>[{/if}]
 [{oxscript add=$adyenJS}]

@@ -2,6 +2,7 @@
 const isLog = [{if $isLog}]true[{else}]false[{/if}];
 const isPaymentPage = [{if $isPaymentPage}]true[{else}]false[{/if}];
 const isOrderPage = [{if $isOrderPage}]true[{else}]false[{/if}];
+const isCreditCard = [{if $orderPaymentCreditCard}]true[{else}]false[{/if}];
 const configuration = {
     [{$configFields}],
     onError: (error, component) => {
@@ -29,21 +30,17 @@ const configuration = {
             console.log('onSubmit:', state.data);
         }
         component.setStatus('loading');
-        if (isPaymentPage) {
+        if (isPaymentPage || isCreditCard) {
             state.data.deliveryAddress = configuration.deliveryAddress;
             state.data.shopperEmail = configuration.shopperEmail;
             state.data.shopperIP = configuration.shopperIP;
         }
-        makePayment(state.data)
+        makePayment(state.data) //this function is declared in adyen_assets.tpl
             .then(response => {
                 if (isLog) {
                     console.log('onSubmit-response:', response);
                 }
                 if (response.action) {
-                    // Drop-in handles the action object from the /payments response
-                    if ('paymentIdViewEl' in component) {
-                        component.paymentIdViewEl.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-                    }
                     component.handleAction(response.action);
                 } else {
                     setPspReference(response);

@@ -11,10 +11,9 @@ class Module
         return (isset(ModuleCore::PAYMENT_DEFINTIONS[$paymentId]));
     }
 
-    public function showInPaymentCtrl(string $paymentId): bool
+    public function isAdyenCreditCardPayment(string $paymentId): bool
     {
-        return ($this->isAdyenPayment($paymentId) &&
-            ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['paymentCtrl']);
+        return $paymentId === ModuleCore::PAYMENT_CREDITCARD_ID;
     }
 
     public function handleAssets(string $paymentId): bool

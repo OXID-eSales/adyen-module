@@ -13,7 +13,7 @@ final class Module
 {
     public const MODULE_NAME_DE = 'Adyen Payment für OXID';
     public const MODULE_NAME_EN = 'Adyen Payment for OXID';
-    public const MODULE_VERSION = '1.1.6';
+    public const MODULE_VERSION = '1.1.7-rc.1';
     public const MODULE_VERSION_FULL = self::MODULE_VERSION . ' SDK-Version ' . self::ADYEN_SDK_VERSION;
     public const MODULE_PLATFORM_NAME = 'OXID';
     public const MODULE_PLATFORM_VERSION = '1.0';
@@ -105,7 +105,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => -1,
             'capturedelay' => true,
-            'paymentCtrl' => true,
             'handleAssets' => true,
         ],
         self::PAYMENT_PAYPAL_ID => [
@@ -126,7 +125,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_GOOGLE_PAY_ID => [
@@ -147,7 +145,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_LATER_ID => [
@@ -168,7 +165,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_OVER_TIME_ID => [
@@ -189,7 +185,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_KLARNA_IMMEDIATE_ID => [
@@ -210,7 +205,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
         ],
         self::PAYMENT_TWINT_ID => [
@@ -231,7 +225,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => false,
             'supported_currencies' => ['CHF'],
         ],
@@ -253,7 +246,6 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
             'handleAssets' => true,
         ],
     ];

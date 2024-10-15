@@ -42,9 +42,7 @@ class PaymentGatewayTest extends UnitTestCase
         );
         $moduleServiceMock = $this->createModuleServiceMock(
             $paymentId,
-            1,
-            true,
-            false
+            true
         );
 
         $paymentGatewayMock = $this->createPaymentGatewayMock(
@@ -72,7 +70,7 @@ class PaymentGatewayTest extends UnitTestCase
             0,
             1
         );
-        $moduleServiceMock = $this->createModuleServiceMock($paymentId, 1);
+        $moduleServiceMock = $this->createModuleServiceMock($paymentId);
 
         $paymentGatewayMock = $this->createPaymentGatewayMock(
             $sessionSettingsMock,
@@ -101,7 +99,6 @@ class PaymentGatewayTest extends UnitTestCase
         );
         $moduleServiceMock = $this->createModuleServiceMock(
             $paymentId,
-            0,
             false
         );
 
@@ -169,20 +166,13 @@ class PaymentGatewayTest extends UnitTestCase
 
     private function createModuleServiceMock(
         string $paymentId = Module::PAYMENT_CREDITCARD_ID,
-        int $showInCtrlInvokeCount = 0,
-        bool $isAdyenPayment = true,
-        bool $showInPaymentCtrl = true
+        bool $isAdyenPayment = true
     ): MockObject {
         $moduleServiceMock = $this->createMock(ModuleService::class);
         $moduleServiceMock->expects($this->once())
             ->method('isAdyenPayment')
             ->with($paymentId)
             ->willReturn($isAdyenPayment);
-
-        $moduleServiceMock->expects($this->exactly($showInCtrlInvokeCount))
-            ->method('showInPaymentCtrl')
-            ->with($paymentId)
-            ->willReturn($showInPaymentCtrl);
 
         return $moduleServiceMock;
     }

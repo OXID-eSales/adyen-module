@@ -14,6 +14,7 @@ use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Model\Payment as AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Service\CountryRepository;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
+use OxidSolutionCatalysts\Adyen\Service\PaymentConfigService;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
@@ -76,25 +77,6 @@ class PaymentController extends PaymentController_parent
         return $paymentList;
     }
 
-    public function isAdyenAssetsNecessary(): bool
-    {
-        if (is_null($this->assetsNecessary)) {
-            $this->assetsNecessary = false;
-            $paymentList = $this->getPaymentList();
-            if (is_array($paymentList)) {
-                foreach ($paymentList as $paymentObj) {
-                    /** @var AdyenPayment $paymentObj */
-                    if ($paymentObj->showInPaymentCtrl()) {
-                        $this->assetsNecessary = true;
-                        break;
-                    }
-                }
-            }
-            $this->assetsNecessary = $this->assetsNecessary && !$this->isValidAdyenAuthorisation();
-        }
-        return $this->assetsNecessary;
-    }
-
     public function isActiveAdyenSession(): bool
     {
         /** @var SessionSettings $session */
@@ -133,15 +115,20 @@ class PaymentController extends PaymentController_parent
     public function validatePayment()
     {
         $session = $this->getServiceFromContainer(SessionSettings::class);
-        $moduleService = $this->getServiceFromContainer(ModuleService::class);
-        $actualPaymentId = $session->getPaymentId();
-        $newPaymentId = $this->getStringRequestData('paymentid');
-        $pspReference = $session->getPspReference();
+        $moduleService      = $this->getServiceFromContainer(ModuleService::class);
+        $actualPaymentId    = $session->getPaymentId();
+        $newPaymentId       = $this->getStringRequestData('paymentid');
+        $pspReference       = $session->getPspReference();
+
+        // if the payment is adyen credit card, it will be validated
+        // from the order step where a new paymentId is impossible
+        $isAdyenCreditCard  = $this->getAdyenPaymentConfigService()->isAdyenCreditCardPayment($actualPaymentId);
+        $paymentChanged     = !$isAdyenCreditCard && ($actualPaymentId !== $newPaymentId);
 
         // remove a possible old adyen payment if another one was selected
         if (
             $actualPaymentId &&
-            $actualPaymentId !== $newPaymentId &&
+            $paymentChanged &&
             $moduleService->isAdyenPayment($actualPaymentId)
         ) {
             $this->removeAdyenPaymentFromSession();
@@ -207,5 +194,10 @@ class PaymentController extends PaymentController_parent
             );
             $session->deletePaymentSession();
         }
+    }
+
+    protected function getAdyenPaymentConfigService(): PaymentConfigService
+    {
+        return $this->getServiceFromContainer(PaymentConfigService::class);
     }
 }
