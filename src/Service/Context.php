@@ -115,7 +115,6 @@ class Context extends BasicContext
     public function getShopUrl(): string
     {
         $facts = new Facts();
-        return rtrim($facts->getShopUrl(), DIRECTORY_SEPARATOR) .
-            DIRECTORY_SEPARATOR;
+        return rtrim($facts->getShopUrl(), '/') . '/';
     }
 }
