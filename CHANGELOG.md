@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.7] - 2024-??-??
+## [1.1.7] - 2024-10-18
 
 ### NEW
 - Creditcard-Fields move from Payment-Controller to the Order-Controller.
