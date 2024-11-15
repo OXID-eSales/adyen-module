@@ -56,6 +56,13 @@ class PaymentController extends PaymentController_parent
          * - country
          */
         foreach ($paymentListRaw as $key => $payment) {
+            if(
+                $payment->getId() === 'oscadyenapplepay' &&
+                (stripos($_SERVER['HTTP_USER_AGENT'], 'Mac') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Apple') !== false)
+            ){
+                continue;
+            }
+
             if (
                 !isset($adyenDef[$key]) ||
                 (
