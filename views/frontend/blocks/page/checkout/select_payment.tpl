@@ -3,5 +3,7 @@
     [{* We include it as template, so that it can be modified in custom themes *}]
     [{include file="modules/osc/adyen/payment/adyen_payment_inauthorisation.tpl"}]
 [{else}]
+    [{* We include it as template, so that it can be modified in custom themes *}]
+    [{include file="modules/osc/adyen/payment/adyen_assets.tpl"}]
     [{$smarty.block.parent}]
 [{/if}]
