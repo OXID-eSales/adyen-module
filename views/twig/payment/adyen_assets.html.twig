@@ -59,7 +59,7 @@
                 console.log(checkout.paymentMethodsResponse);
             {% endif %}
             {% if isPaymentPage %}
-                {% if oView.handleAdyenAssets(adyenCreditCard) %}
+                {% if oView.handleAdyenAssets(adyenApplePay) %}
                     const apple = checkout.create(
                         'applepay',
                         {

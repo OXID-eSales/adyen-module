@@ -250,7 +250,7 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
+            'paymentCtrl' => true,
             'handleAssets' => true,
         ],
     ];
