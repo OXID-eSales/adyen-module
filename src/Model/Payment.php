@@ -54,7 +54,7 @@ class Payment extends Payment_parent
     }
 
     /**
-     * Checks if the payment method is show on Payment Controller
+     * Checks if the payment method loads Adyen JavaScript on Payment Controller
      */
     public function handleAdyenAssets(): bool
     {
@@ -62,6 +62,16 @@ class Payment extends Payment_parent
             $this->getServiceFromContainer(ModuleService::class)->handleAssets($this->getId()) &&
             $this->getAdyenBoolData('oxactive') === true
         );
+    }
+
+    /**
+     * Checks if the payment method is initially hidden on Payment Controller
+     */
+    public function hideInitially(): bool
+    {
+        return ($this->isAdyenPayment() &&
+            $this->getServiceFromContainer(ModuleService::class)->hideInitially($this->getId()) &&
+            $this->getAdyenBoolData('oxactive') === true);
     }
 
     /**

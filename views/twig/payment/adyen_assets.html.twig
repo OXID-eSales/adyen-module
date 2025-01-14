@@ -66,15 +66,19 @@
                         }
                     );
                     apple.isAvailable()
-                        .then(() => {  })
+                        .then(() => {
+                            {% if isLog %}
+                                console.info('Apple Pay available');
+                            {% endif %}
+                            const input = document.getElementById('payment_{{ adyenApplePay }}')?.closest('.d-none');
+                            if (input) {
+                                input.classList.remove('d-none');
+                            }
+                        })
                         .catch(e => {
                             {% if isLog %}
                                 console.error('Apple Pay not available', e);
                             {% endif %}
-                            const parentElement = document.getElementById('payment_[{$adyenApplePay}]').closest('.payment-option');
-                            if (parentElement) {
-                                parentElement.remove(); // remove parent-block
-                            }
                         });
                 {% endif %}
                 {% if oView.handleAdyenAssets(adyenCreditCard) %}

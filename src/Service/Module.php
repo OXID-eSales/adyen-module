@@ -29,4 +29,10 @@ class Module
             ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['capturedelay']); // @phpstan-ignore-line current payment
         // definitions always have capturedelay=true, phpstan would raise error
     }
+
+    public function hideInitially(string $paymentId): bool
+    {
+        return ($this->isAdyenPayment($paymentId) &&
+            ModuleCore::PAYMENT_DEFINTIONS[$paymentId]['hideInitially']);
+    }
 }

@@ -1,5 +1,6 @@
 {% extends 'page/checkout/payment.html.twig' %}
 {% set sModuleId = '@' ~ constant('\\OxidSolutionCatalysts\\Adyen\\Core\\Module::MODULE_ID') %}
+{% set adyenApplePay = oViewConf.getAdyenPaymentApplePayId() %}
 
 {% block checkout_payment_main %}
     {% if attribute(oViewConf,'checkAdyenHealth') is defined and oViewConf.checkAdyenHealth() and oView.isAdyenAssetsNecessary() %}
@@ -14,7 +15,11 @@
         {# Show Adyen Payments only if Adyen is healthy #}
         {% if oViewConf.checkAdyenHealth() %}
             {# We include it as template, so that it can be modified in custom themes #}
-            {% if oView.isValidAdyenAuthorisation() %}
+            {% if paymentmethod.hideInitially() %}
+                <div class="d-none">
+                    {{ parent() }}
+                </div>
+            {% elseif oView.isValidAdyenAuthorisation() %}
                 {% include sModuleId ~ "/payment/adyen_payment_inauthorisation.html.twig" %}
             {% else %}
                 {% include sModuleId ~ "/payment/adyen_payment.html.twig" %}
