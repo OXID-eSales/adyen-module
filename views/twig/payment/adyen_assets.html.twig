@@ -79,6 +79,10 @@
                             {% if isLog %}
                                 console.error('Apple Pay not available', e);
                             {% endif %}
+                            const input = document.getElementById('payment_{{ adyenApplePay }}')?.closest('.d-none');
+                            if (input) {
+                                input.remove();
+                            }
                         });
                 {% endif %}
                 {% if oView.handleAdyenAssets(adyenCreditCard) %}
