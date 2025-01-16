@@ -64,6 +64,39 @@ class ModuleTest extends UnitTestCase
     }
 
     /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::hideInitially
+     */
+    public function testHideInitiallyTrue()
+    {
+        $paymentId = ModuleCore::PAYMENT_APPLE_PAY_ID;
+        $moduleService = oxNew(ModuleService::class);
+
+        $this->assertTrue($moduleService->hideInitially($paymentId));
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::hideInitially
+     */
+    public function testHideInitiallyFalseInvalidPaymentId()
+    {
+        $paymentId = 'invalid';
+        $moduleService = oxNew(ModuleService::class);
+
+        $this->assertFalse($moduleService->hideInitially($paymentId));
+    }
+
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\Module::hideInitially
+     */
+    public function testHideInitiallyFalseNoHideInitially()
+    {
+        $paymentId = ModuleCore::PAYMENT_PAYPAL_ID;
+        $moduleService = oxNew(ModuleService::class);
+
+        $this->assertFalse($moduleService->hideInitially($paymentId));
+    }
+
+    /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\Module::handleAssets
      */
     public function testHandleAssetsTrue()
@@ -75,7 +108,6 @@ class ModuleTest extends UnitTestCase
 
         $paymentId = ModuleCore::PAYMENT_APPLE_PAY_ID;
         $this->assertTrue($moduleService->handleAssets($paymentId));
-
     }
 
     /**

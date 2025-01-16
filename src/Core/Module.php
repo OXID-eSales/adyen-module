@@ -104,6 +104,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => true,
             'handleAssets' => true,
+            'hideInitially' => false,
         ],
         self::PAYMENT_PAYPAL_ID => [
             'descriptions' => [
@@ -125,6 +126,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
         ],
         self::PAYMENT_GOOGLE_PAY_ID => [
             'descriptions' => [
@@ -146,6 +148,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
         ],
         self::PAYMENT_KLARNA_LATER_ID => [
             'descriptions' => [
@@ -167,6 +170,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
         ],
         self::PAYMENT_KLARNA_OVER_TIME_ID => [
             'descriptions' => [
@@ -188,6 +192,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
         ],
         self::PAYMENT_KLARNA_IMMEDIATE_ID => [
             'descriptions' => [
@@ -209,6 +214,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
         ],
         self::PAYMENT_TWINT_ID => [
             'descriptions' => [
@@ -230,6 +236,7 @@ final class Module
             'capturedelay' => true,
             'paymentCtrl' => false,
             'handleAssets' => false,
+            'hideInitially' => false,
             'supported_currencies' => ['CHF'],
         ],
         self::PAYMENT_APPLE_PAY_ID => [
@@ -250,8 +257,9 @@ final class Module
             'constraints' => self::PAYMENT_CONSTRAINTS,
             'sort' => 0,
             'capturedelay' => true,
-            'paymentCtrl' => false,
+            'paymentCtrl' => true,
             'handleAssets' => true,
+            'hideInitially' => true,
         ],
     ];
 }

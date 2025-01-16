@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.1.5] - 2024-03-05
 
 - [0007571](https://bugs.oxid-esales.com/view.php?id=7571): Fix It is possible to complete a purchase (with the Adyen payment method) without paying
+- show ApplePay only if it is possible
 
 ## [2.1.4] - 2024-02-23
 

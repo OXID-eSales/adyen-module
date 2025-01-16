@@ -63,6 +63,18 @@ class PaymentTest extends UnitTestCase
             $payment->showInPaymentCtrl()
         );
 
+
+        // Check: hideInitially
+        $isActive = $payment->getFieldData('oxactive') === '1' ;
+        $this->assertSame(
+            (
+                isset(Module::PAYMENT_DEFINTIONS[$paymentId]) &&
+                Module::PAYMENT_DEFINTIONS[$paymentId]['hideInitially'] &&
+                $isActive
+            ),
+            $payment->hideInitially()
+        );
+
         // Check: showInOrderCtrl
         $isActive = $payment->getFieldData('oxactive') === '1' ;
         $this->assertSame(
