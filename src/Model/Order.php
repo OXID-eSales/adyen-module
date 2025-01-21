@@ -12,6 +12,8 @@ namespace OxidSolutionCatalysts\Adyen\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\Eshop\Application\Model\Payment as EshopModelPayment;
 use OxidEsales\Eshop\Application\Model\Basket;
+use OxidEsales\Eshop\Core\Exception\ArticleInputException;
+use OxidEsales\Eshop\Core\Exception\NoArticleException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
@@ -21,6 +23,7 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentCancel;
 use OxidSolutionCatalysts\Adyen\Service\PaymentCapture;
 use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
+use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
@@ -91,7 +94,16 @@ class Order extends Order_parent
      */
     public function finalizeOrder(Basket $basket, $user, $recalcOrder = false)
     {
-        $result = parent::finalizeOrder($basket, $user, $recalcOrder);
+        try {
+            $result = parent::finalizeOrder($basket, $user, $recalcOrder);
+        } catch (NoArticleException $oEx) {
+            $this->removeAdyenPaymentFromSession();
+            throw $oEx;
+        } catch (ArticleInputException $oEx) {
+            $this->removeAdyenPaymentFromSession();
+            throw $oEx;
+        }
+
         $moduleService = $this->getServiceFromContainer(ModuleService::class);
         if ($moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype'))) {
             $pspReference = $this->getAdyenPSPReference();
@@ -468,5 +480,22 @@ class Order extends Order_parent
         $adyenHistory->setAdyenStatus($status);
         $adyenHistory->setAdyenAction($action);
         return (bool) $adyenHistory->save();
+    }
+
+    protected function removeAdyenPaymentFromSession(): void
+    {
+        $session = $this->getServiceFromContainer(SessionSettings::class);
+
+        // cancel authorization
+        $pspReference = $session->getPspReference();
+        $reference = $session->getOrderReference();
+        if ($pspReference && $reference) {
+            $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+            $paymentService->doAdyenCancel(
+                $pspReference,
+                $reference
+            );
+            $session->deletePaymentSession();
+        }
     }
 }
