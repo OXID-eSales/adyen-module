@@ -19,7 +19,7 @@ use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidEsales\Eshop\Application\Model\Payment as PaymentModel;
 use OxidSolutionCatalysts\Adyen\Model\User as AdyenUser;
-use OxidSolutionCatalysts\Adyen\Controller\OrderController;
+use OxidEsales\Eshop\Application\Controller\OrderController;
 
 /**
  * @extendable-class
