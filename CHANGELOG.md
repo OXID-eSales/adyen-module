@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.9] - 2025-??-??
+
 ## FIX
 - Fix github workflows docker compose
+- request Adyen cancellation when finalizeOrder fails due to stock exceptions
 
 ## [1.1.8] - 2024-11-19
 
