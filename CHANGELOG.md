@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.6] - 2025-??-??
+
+- request Adyen cancellation when finalizeOrder fails due to stock exceptions
+
 ## [2.1.5] - 2024-03-05
 
 - [0007571](https://bugs.oxid-esales.com/view.php?id=7571): Fix It is possible to complete a purchase (with the Adyen payment method) without paying
