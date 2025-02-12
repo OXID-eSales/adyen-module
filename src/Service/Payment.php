@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Service;
 
 use Exception;
+use OxidEsales\Eshop\Application\Model\Address;
 use OxidEsales\Eshop\Core\Registry;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidSolutionCatalysts\Adyen\Core\Module as ModuleCore;
@@ -72,11 +73,6 @@ class Payment extends PaymentBase
         return $this->paymentResult;
     }
 
-    /**
-     * @param double $amount Goods amount
-     * @param string $reference Unique Order-Reference
-     * @param array $paymentState
-     */
     public function collectPayments(
         float $amount,
         string $reference,
@@ -106,7 +102,7 @@ class Payment extends PaymentBase
         $payments->setReturnUrl(
             $this->context->getPaymentReturnUrl(
                 $viewConfig->getSessionChallengeToken(),
-                $this->oxNewService->oxNew(OrderController::class)->getDeliveryAddressMD5(),
+                $this->getDeliveryAddressMD5($user, ),
                 $this->sessionSettings->getPspReference(),
                 $this->sessionSettings->getResultCode(),
                 $this->sessionSettings->getAmountCurrency()
@@ -168,5 +164,18 @@ class Payment extends PaymentBase
     {
         return $payment->getId() === Module::PAYMENT_PAYPAL_ID
             && empty($this->moduleSettings->getPayPalMerchantId());
+    }
+
+    private function getDeliveryAddressMD5(User $oUser): string
+    {
+        $sDelAddress = $oUser->getEncodedDeliveryAddress();
+
+        if (Registry::getSession()->getVariable('deladrid')) {
+            $oDelAdress = oxNew(Address::class);
+            $oDelAdress->load(Registry::getSession()->getVariable('deladrid'));
+            $sDelAddress .= $oDelAdress->getEncodedDeliveryAddress();
+        }
+
+        return md5($sDelAddress);
     }
 }
