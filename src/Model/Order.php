@@ -97,27 +97,33 @@ class Order extends Order_parent
     {
         try {
             $result = parent::finalizeOrder($basket, $user, $recalcOrder);
-        } catch (NoArticleException $oEx) {
-            $this->removeAdyenPaymentFromSession();
-            throw $oEx;
-        } catch (ArticleInputException $oEx) {
-            $this->removeAdyenPaymentFromSession();
-            throw $oEx;
+        } catch (\Exception $ex) {
+            error_log('[finalizeOrder] Exception caught: ' . $ex->getMessage());
+            // Optionally log additional context:
+            error_log('[finalizeOrder] Payment Type: ' . $this->getAdyenStringData('oxpaymenttype'));
+            throw $ex;
         }
 
         $moduleService = $this->getServiceFromContainer(ModuleService::class);
-        if ($moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype'))) {
+        $paymentType = $this->getAdyenStringData('oxpaymenttype');
+        $isAdyenPayment = $moduleService->isAdyenPayment($paymentType);
+        error_log("[finalizeOrder] paymentType: $paymentType, isAdyenPayment: " . ($isAdyenPayment ? 'true' : 'false'));
+
+        if ($isAdyenPayment) {
             $pspReference = $this->getAdyenPSPReference();
-            // the final OrderStatus is set via Notification
+            error_log("[finalizeOrder] pspReference: $pspReference");
             if ($this->isAdyenOrder()) {
                 $this->setAdyenOrderStatus('NOT_FINISHED');
+                error_log("[finalizeOrder] Order is an Adyen order; setting status to NOT_FINISHED");
             }
             if (empty($pspReference)) {
                 $this->setAdyenOrderStatus('ERROR');
+                error_log("[finalizeOrder] pspReference is empty; setting order status to ERROR");
             }
         }
         return $result;
     }
+
 
     /**
      * @inheritDoc

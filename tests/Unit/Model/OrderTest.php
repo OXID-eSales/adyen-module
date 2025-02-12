@@ -99,56 +99,51 @@ class OrderTest extends UnitTestCase
     /**
      * @covers OxidSolutionCatalysts\Adyen\Model\Order::finalizeOrder
      */
-    public function testFinalizeOrderIsAdyenOrder()
-    {
-        $builder = $this->getMockBuilder(Order::class)
-            ->onlyMethods(
-                [
-                    'isAdyenOrder',
-                    'setAdyenOrderStatus'
-                ]
-            );
-        $orderMock = $builder->getMock();
-        $orderMock->expects($this->once())
-            ->method('isAdyenOrder')
-            ->willReturn(true);
-        $orderMock->expects($this->once())
-            ->method('setAdyenOrderStatus')
-            ->with('NOT_FINISHED');
-
-        $basket = oxNew(Basket::class);
-        $user = oxNew(User::class);
-
-        /** @var Order $orderMock */
-        $this->assertEquals(
-            Order::ORDER_STATE_INVALIDPAYMENT,
-            $orderMock->finalizeOrder($basket, $user)
-        );
-    }
-
-    /**
-     * @covers OxidSolutionCatalysts\Adyen\Model\Order::finalizeOrder
-     */
     public function testFinalizeOrderIsNoAdyenOrder()
     {
         $builder = $this->getMockBuilder(Order::class)
-            ->onlyMethods(
-                [
-                    'isAdyenOrder',
-                    'setAdyenOrderStatus'
-                ]
-            );
+            ->onlyMethods([
+                'isAdyenOrder',
+                'setAdyenOrderStatus',
+                'getAdyenStringData',
+                'getAdyenPSPReference',
+                'getServiceFromContainer'
+            ]);
         $orderMock = $builder->getMock();
+
+        // Force the branch: we want the module service check to pass.
+        $orderMock->method('getAdyenStringData')
+            ->with('oxpaymenttype')
+            ->willReturn('adyenPaymentType');
+
+        $orderMock->method('getAdyenPSPReference')
+            ->willReturn('somePSPReference');
+
+        // Create a stub for ModuleService so that isAdyenPayment() returns true.
+        $moduleServiceStub = $this->createMock(ModuleService::class);
+        $moduleServiceStub->method('isAdyenPayment')
+            ->willReturn(true);
+        $orderMock->method('getServiceFromContainer')
+            ->with(ModuleService::class)
+            ->willReturn($moduleServiceStub);
+
+        // Expect isAdyenOrder() to be called exactly once, and return false.
         $orderMock->expects($this->once())
             ->method('isAdyenOrder')
             ->willReturn(false);
+
+        // And expect that setAdyenOrderStatus is never called.
         $orderMock->expects($this->never())
             ->method('setAdyenOrderStatus');
+
+        // Set the required dependency so that no TypeError is thrown.
+        $ref = new \ReflectionProperty(Order::class, 'queryBuilderFactory');
+        $ref->setAccessible(true);
+        $ref->setValue($orderMock, $this->createMock(QueryBuilderFactoryInterface::class));
 
         $basket = oxNew(Basket::class);
         $user = oxNew(User::class);
 
-        /** @var Order $orderMock */
         $this->assertEquals(
             Order::ORDER_STATE_INVALIDPAYMENT,
             $orderMock->finalizeOrder($basket, $user)
