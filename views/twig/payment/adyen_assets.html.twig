@@ -49,9 +49,6 @@
         const adyenResultCodeEl = document.getElementById('{{ oViewConf.getAdyenHtmlParamResultCodeName() }}');
         const adyenAmountCurrencyEl = document.getElementById('{{ oViewConf.getAdyenHtmlParamAmountCurrencyName() }}');
         const adyenAmountValueEl = document.getElementById('{{ oViewConf.getAdyenHtmlParamAmountValueName() }}');
-        {% if isOrderPage %}
-            const orderSubmitButton = document.getElementById("orderConfirmAgbBottom");
-        {% endif %}
 
         const adyenAsync = async function () {
             {{ oViewConf.getTemplateConfiguration(oView, payment)|raw }}
@@ -91,14 +88,9 @@
                 {% endif %}
             {% elseif isOrderPage %}
                 {% if orderPaymentCreditCard %}
-                    orderSubmitButton.disabled = true;
-                    orderSubmitButton.title = '{{ oViewConf.getAdyenCreditCardTooltipText()|raw }}';
                     const cardComponent = checkout.create(
                         'card',
                         {
-                            onFieldValid : function() {
-                                orderSubmitButton.disabled = false;
-                            },
                             onLoad: function () {
                                 document.querySelector("#oscadyencreditcard-container button").style.display = 'none';
                             }
