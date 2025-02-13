@@ -74,11 +74,10 @@ class JSAPIConfigurationService
         ViewConfig $viewConfig
     ): array {
         /** @var AdyenViewConfig $viewConfig */
-        return ($viewConfig->getTopActiveClassName() === 'payment') ?
+        return
             [
                 'paymentMethodsResponse' => $viewConfig->getAdyenPaymentMethods(),
-            ] :
-            [];
+            ];
     }
 
     private function getOrderPageConfigFields(
