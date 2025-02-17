@@ -308,6 +308,14 @@ class ViewConfig extends ViewConfig_parent
             ->isApplePay($payment);
     }
 
+    public function isOrderPaymentCreditCard(
+        FrontendController $oView,
+        ?Payment $payment
+    ): string {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->isOrderPaymentCreditCard($oView, $payment);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
