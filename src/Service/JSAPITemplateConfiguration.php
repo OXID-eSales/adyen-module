@@ -54,6 +54,16 @@ class JSAPITemplateConfiguration
         return $paymentId === Module::PAYMENT_APPLE_PAY_ID;
     }
 
+    public function isOrderPaymentCreditCard(
+        FrontendController $controller,
+        ?Payment $payment
+    ): bool {
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+
+        return $controller instanceof Ordercontroller
+        && $paymentId === Module::PAYMENT_CREDITCARD_ID;
+    }
+
     private function getViewData(
         ViewConfig $viewConfig,
         FrontendController $controller,
