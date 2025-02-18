@@ -211,11 +211,6 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
     }
 
-    public function getAdyenCreditCardTooltipText(): string
-    {
-        return Registry::getLang()->translateString("OSC_ADYEN_ORDER_TOOLTIP");
-    }
-
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface

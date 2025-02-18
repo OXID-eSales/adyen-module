@@ -49,21 +49,4 @@ class OrderController extends OrderController_parent
 
         return null;
     }
-
-    /*
-     * before the adyen credit card payment can be finalized,
-     * it needs to be validated because this step is skipped for this payment type
-     */
-    public function execute()
-    {
-        if ($this->getPayment()->isAdyenCreditCardPayment()) {
-            $paymentController = oxNew(\OxidEsales\Eshop\Application\Controller\PaymentController::class);
-
-            if ($paymentController->validatePayment() !== "order") {
-                Registry::getUtils()->redirect(Registry::getConfig()->getShopHomeUrl() . 'cl=payment');
-            }
-        }
-
-        return parent::execute();
-    }
 }

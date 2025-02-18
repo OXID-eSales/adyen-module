@@ -20,5 +20,4 @@ $aLang = [
     'OSC_ADYEN_RETURN_NOT_SUCCESSFUL' => 'The payment was not successful for the following reason'
         . ', choose another payment method if applicable.',
     'OSC_ADYEN_PAYMENT_STATUS_PENDING' => 'The payment is currently pending.',
-    'OSC_ADYEN_ORDER_TOOLTIP' => 'Please fill out the credit card form to complete the order.',
 ];
