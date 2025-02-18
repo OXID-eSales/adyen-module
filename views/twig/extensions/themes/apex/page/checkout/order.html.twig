@@ -42,7 +42,6 @@
         </div>
 
         {% if payment.isAdyenCreditCardPayment() %}
-            {% set payment=oView.getPayment()%}
             <h2 class="h4 card-header card-title d-flex justify-content-between align-items-center">
                 {{ payment.oxpayments__oxdesc.value|raw }}
             </h2>

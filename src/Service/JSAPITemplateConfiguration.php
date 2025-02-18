@@ -60,7 +60,7 @@ class JSAPITemplateConfiguration
     ): bool {
         $paymentId = $payment instanceof Payment ? $payment->getId() : '';
 
-        return $controller instanceof Ordercontroller
+        return $controller instanceof OrderController
         && $paymentId === Module::PAYMENT_CREDITCARD_ID;
     }
 
