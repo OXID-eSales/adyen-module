@@ -16,7 +16,6 @@ class JSAPITemplateCheckoutCreate
         Module::PAYMENT_KLARNA_LATER_ID => 'klarna',
         Module::PAYMENT_KLARNA_IMMEDIATE_ID => 'klarna_paynow',
         Module::PAYMENT_KLARNA_OVER_TIME_ID => 'klarna_account',
-        Module::PAYMENT_CREDITCARD_ID => 'oscadyencreditcard',
     ];
 
     public function getCreateId(string $paymentId): string
