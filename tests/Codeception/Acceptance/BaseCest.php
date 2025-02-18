@@ -91,8 +91,11 @@ abstract class BaseCest
         $iframeCreditCardCVC = '.adyen-checkout__card__cvc__input iframe';
         $inputCVC = '[data-fieldtype="encryptedSecurityCode"]';
 
+        $inputCardHolder = '.adyen-checkout__card__holderName .adyen-checkout__card__holderName__input';
+
         $this->I->waitForElement($iframeCreditCardNumber, 60);
         $this->I->waitForElementNotVisible($spinner, 90);
+        $this->I->makeScreenshot('abc10');
 
         $this->I->switchToIFrame($iframeCreditCardNumber);
         $this->I->fillField($inputCreditCardNumber, $_ENV['CREDITCARDNUMBER']);
@@ -106,7 +109,9 @@ abstract class BaseCest
         $this->I->fillField($inputCVC, $_ENV['CREDITCARDCVC']);
         $this->I->switchToIFrame();
 
-        return $this->paymentSelection->goToNextStep();
+        $this->I->fillField($inputCardHolder, $_ENV['CREDITCARDNAME']);
+
+        return $this->paymentSelection;
     }
 
     /**

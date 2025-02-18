@@ -49,13 +49,14 @@ final class CreditCardCest extends BaseCest
      */
     private function _submitCreditCardPayment(AcceptanceTester $I)
     {
-        $orderPage = $this->_fillCreditCardDetails();
-        $orderPage->submitOrder();
+        $this->_fillCreditCardDetails();
+        $I->click('.adyen-checkout__button[type="submit"]');
     }
 
     public function checkOrderCreditCard(AcceptanceTester $I)
     {
         $this->_initializeTest();
+        $this->_choosePayment();
         $this->_submitCreditCardPayment($I);
         $thankYouPage = $this->_checkSuccessfulPayment();
         $this->orderNumber = $thankYouPage->grabOrderNumber();
