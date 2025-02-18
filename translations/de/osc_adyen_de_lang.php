@@ -20,5 +20,5 @@ $aLang = [
     'OSC_ADYEN_RETURN_NOT_SUCCESSFUL' => 'Die Zahlung war aus folgendem Grund nicht erfolgreich'
         . ', wählen sie ggf. eine andere Zahlart.',
     'OSC_ADYEN_PAYMENT_STATUS_PENDING' => 'Die Zahlung ist derzeit noch schwebend.',
-    'OSC_ADYEN_ORDER_TOOLTIP' => 'Bitte füllen Sie die Kreditkartendaten an um die Bestellung abzuschließen zu können.',
+    'OSC_ADYEN_ORDER_TOOLTIP' => 'Bitte füllen Sie die Kreditkartendaten aus, um die Bestellung abzuschließen zu können.',
 ];
