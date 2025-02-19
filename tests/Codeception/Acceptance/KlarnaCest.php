@@ -43,6 +43,11 @@ final class KlarnaCest extends BaseCest
         $this->checkOrderHistory($I);
     }
 
+    /**
+     * Test currently cannot be performed.
+     *
+     * @incomplete
+     */
     public function checkOrderKlarnaCancelled(AcceptanceTester $I): void
     {
         $I->wantToTest("Klarna cancelled (Adyen) on Frontend order");
