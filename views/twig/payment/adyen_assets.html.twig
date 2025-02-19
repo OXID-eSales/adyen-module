@@ -88,9 +88,15 @@
                 {% endif %}
             {% elseif isOrderPage %}
                 {% if orderPaymentCreditCard %}
+                    const submitAdyenCCButton = document.getElementById("submitAdyenCCButton");
+                    submitAdyenCCButton.disabled = true;
+                    submitAdyenCCButton.title = '{{ oViewConf.getAdyenCreditCardTooltipText()|raw }}';
                     const cardComponent = checkout.create(
                         'card',
                         {
+                            onFieldValid : function() {
+                                submitAdyenCCButton.disabled = false;
+                            },
                             onLoad: function () {
                                 document.querySelector("#oscadyencreditcard-container button").style.display = 'none';
                             }
