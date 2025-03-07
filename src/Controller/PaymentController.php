@@ -139,7 +139,8 @@ class PaymentController extends PaymentController_parent
         $newPaymentId       = $this->getStringRequestData('paymentid');
         $pspReference       = $session->getPspReference();
 
-        //if the payment is adyen credit card, it will be validated from the order step where a new paymentId is impossible
+        // if the payment is adyen credit card, it will be validated from the order step
+        // where a new paymentId is impossible
         $isAdyenCreditCard  = $this->getAdyenPaymentConfigService()->isAdyenCreditCardPayment($actualPaymentId);
         $paymentChanged     = !$isAdyenCreditCard && ($actualPaymentId !== $newPaymentId);
 

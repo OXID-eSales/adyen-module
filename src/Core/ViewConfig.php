@@ -213,7 +213,8 @@ class ViewConfig extends ViewConfig_parent
 
     public function getAdyenCreditCardTooltipText(): string
     {
-        return Registry::getLang()->translateString("OSC_ADYEN_ORDER_TOOLTIP");
+        $result = Registry::getLang()->translateString("OSC_ADYEN_ORDER_TOOLTIP");
+        return is_string($result) ? $result : '';
     }
 
     /**
@@ -311,7 +312,7 @@ class ViewConfig extends ViewConfig_parent
     public function isOrderPaymentCreditCard(
         FrontendController $oView,
         ?Payment $payment
-    ): string {
+    ): bool {
         return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
             ->isOrderPaymentCreditCard($oView, $payment);
     }
