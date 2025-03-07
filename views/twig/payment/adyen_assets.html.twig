@@ -52,6 +52,7 @@
 
         const adyenAsync = async function () {
             {{ oViewConf.getTemplateConfiguration(oView, payment)|raw }}
+            {% set orderPaymentCreditCard = oViewConf.isOrderPaymentCreditCard(oView, payment) %}
 
             const checkout = await AdyenCheckout(configuration);
             // Access the available payment methods for the session.
@@ -85,22 +86,32 @@
                             }
                         });
                 {% endif %}
-                {% if oView.handleAdyenAssets(adyenCreditCard) %}
+            {% elseif isOrderPage %}
+                {% if orderPaymentCreditCard %}
+                    const submitAdyenCCButton = document.getElementById("submitAdyenCCButton");
+                    submitAdyenCCButton.disabled = true;
+                    submitAdyenCCButton.title = '{{ oViewConf.getAdyenCreditCardTooltipText()|raw }}';
                     const cardComponent = checkout.create(
                         'card',
                         {
                             onFieldValid : function() {
-                                const paymentIdEl = document.getElementById('payment_{{adyenCreditCard}}');
-                                paymentIdEl.checked = true;
-                                nextStepEl.disabled = true;
+                                submitAdyenCCButton.disabled = false;
                             },
-
+                            onLoad: function () {
+                                document.querySelector("#oscadyencreditcard-container button").style.display = 'none';
+                            }
                         }
                     ).mount('#{{adyenCreditCard}}-container');
-                    cardComponent.paymentIdViewEl = document.getElementById('payment_{{adyenCreditCard}}').parentElement;
-                {% endif %}
-            {% elseif isOrderPage %}
-                {% if oViewConf.isApplePay(payment) %}
+
+                    submitForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        this.disabled = true;
+                        {% if isLog %}
+                            console.log("cardComp:", cardComponent)
+                        {% endif %}
+                        cardComponent.submit();
+                    });
+                {% elseif oViewConf.isApplePay(payment) %}
                     const applePayComponent = checkout.create('{{ templateCheckoutCreateId }}', configuration);
                         applePayComponent.isAvailable()
                             .then(() => {
@@ -171,21 +182,6 @@
                 }
                 return result;
             }
-
-            {% if isPaymentPage %}
-                nextStepEl.addEventListener("click", function(e) {
-                    if (this.dataset.adyensubmit !== '') {
-                        e.preventDefault();
-                        this.disabled = true;
-                        if (this.dataset.adyensubmit === '{{ adyenCreditCard }}') {
-                            cardComponent.submit();
-                        }
-                    }
-                }, false);
-                {% if paymentID is same as(adyenCreditCard) %}
-                    nextStepEl.disabled = true;
-                {% endif %}
-            {% endif %}
         }
         // Call adyenAsync
         adyenAsync();

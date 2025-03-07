@@ -41,7 +41,30 @@
             {% include sModuleId ~ "/payment/adyen_payment_psp.html.twig" %}
         </div>
 
+        {% if payment.isAdyenCreditCardPayment() %}
+            <h2 class="h4 card-header card-title d-flex justify-content-between align-items-center">
+                {{ payment.oxpayments__oxdesc.value|raw }}
+            </h2>
+            <div id="oscadyencreditcard-container" data-paymentid="payment_oscadyencreditcard" class="card-body">
+            </div>
+
+            <div class="">
+                <button id="submitAdyenCCButton" type="submit" class="adyen-checkout__button adyen-checkout__button--pay btn-lg pull-right largeButton" onclick="submitAdyenCreditCard()">
+                    <i class="fa fa-check"></i> {{ translate({ ident: "SUBMIT_ORDER" }) }}
+                </button>
+            </div>
+        {% endif %}
+
         <script type="text/javascript">
+            {% if payment.isAdyenCreditCardPayment() %}
+                function submitAdyenCreditCard() {
+                    submitForm = document.getElementById('orderConfirmAgbBottom');
+
+                    const event = new Event("submit", { bubbles: true, cancelable: true });
+                    submitForm.dispatchEvent(event);
+                }
+            {% endif %}
+
             document.getElementById('orderConfirmAgbBottom').appendChild(document.getElementById('adyenApexPsp'));
         </script>
     {% endif %}

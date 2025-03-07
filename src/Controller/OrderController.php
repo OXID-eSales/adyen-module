@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidSolutionCatalysts\Adyen\Model\Payment;
 use OxidSolutionCatalysts\Adyen\Service\TranslationMapper;
 use OxidSolutionCatalysts\Adyen\Service\OrderReturnService;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -40,6 +41,7 @@ class OrderController extends OrderController_parent
             }
 
             $translationMapper = $this->getServiceFromContainer(TranslationMapper::class);
+            /** @var \OxidEsales\Eshop\Application\Controller\OrderController $this */
             $this->addTplParam(
                 'paymentReturnReason',
                 $translationMapper->mapReturnResultCode($paymentDetail['resultCode'])
@@ -48,5 +50,25 @@ class OrderController extends OrderController_parent
         }
 
         return null;
+    }
+
+    /*
+     * before the adyen credit card payment can be finalized,
+     * it needs to be validated because this step is skipped for this payment type
+     */
+    public function execute()
+    {
+        /** @var \OxidEsales\Eshop\Application\Controller\OrderController $this */
+        $payment = $this->getPayment();
+        /** @var Payment $payment */
+        if ($payment->isAdyenCreditCardPayment()) {
+            $paymentController = oxNew(\OxidEsales\Eshop\Application\Controller\PaymentController::class);
+
+            if ($paymentController->validatePayment() !== "order") {
+                Registry::getUtils()->redirect(Registry::getConfig()->getShopHomeUrl() . 'cl=payment');
+            }
+        }
+
+        return parent::execute();
     }
 }

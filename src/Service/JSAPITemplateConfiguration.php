@@ -54,6 +54,16 @@ class JSAPITemplateConfiguration
         return $paymentId === Module::PAYMENT_APPLE_PAY_ID;
     }
 
+    public function isOrderPaymentCreditCard(
+        FrontendController $controller,
+        ?Payment $payment
+    ): bool {
+        $paymentId = $payment instanceof Payment ? $payment->getId() : '';
+
+        return $controller instanceof OrderController
+        && $paymentId === Module::PAYMENT_CREDITCARD_ID;
+    }
+
     private function getViewData(
         ViewConfig $viewConfig,
         FrontendController $controller,
@@ -72,6 +82,8 @@ class JSAPITemplateConfiguration
                 && $paymentId === Module::PAYMENT_GOOGLE_PAY_ID,
             'orderPaymentApplePay' => $controller instanceof OrderController
                 && $paymentId === Module::PAYMENT_APPLE_PAY_ID,
+            'orderPaymentCreditCard' => $controller instanceof Ordercontroller
+                && $paymentId === Module::PAYMENT_CREDITCARD_ID,
             'paymentConfigNeedsCard' => $this->paymentMethodsConfigurationNeedsCardField(
                 $controller,
                 $viewConfig,
@@ -168,7 +180,6 @@ class JSAPITemplateConfiguration
         /** @var AdyenViewConfig $viewConfig */
         return $controller instanceof PaymentController
             && $payment instanceof Payment
-            && $payment->showInPaymentCtrl()
             && $payment->getId() === $viewConfig->getAdyenPaymentCreditCardId();
     }
 }

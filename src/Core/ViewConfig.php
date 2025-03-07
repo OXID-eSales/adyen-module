@@ -211,6 +211,12 @@ class ViewConfig extends ViewConfig_parent
         return Module::ADYEN_ERROR_INVALIDSESSION_NAME;
     }
 
+    public function getAdyenCreditCardTooltipText(): string
+    {
+        $result = Registry::getLang()->translateString("OSC_ADYEN_ORDER_TOOLTIP");
+        return is_string($result) ? $result : '';
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -301,6 +307,14 @@ class ViewConfig extends ViewConfig_parent
     ): bool {
         return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
             ->isApplePay($payment);
+    }
+
+    public function isOrderPaymentCreditCard(
+        FrontendController $oView,
+        ?Payment $payment
+    ): bool {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->isOrderPaymentCreditCard($oView, $payment);
     }
 
     /**
