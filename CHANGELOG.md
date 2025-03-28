@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.7] - 2025-??-??
+## [2.1.7] - 2025-03-28
 
 - move CreditCard-Form to the last page in checkout
 
