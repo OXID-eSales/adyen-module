@@ -40,10 +40,12 @@ class UserAddress
 
     public function getAdyenShopperName(User $user): array
     {
-        /** @var AdyenUser|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var AdyenAddress|AdyenUser $dataObj */
-        $dataObj = $address ?: $user;
+        if ($user->getSelectedAddressId()) {
+            /** @var AdyenAddress|null $address */
+            $dataObj = $user->getSelectedAddress();
+        } else {
+            $dataObj = $user;
+        }
 
         return [
             'firstName' => $dataObj->getAdyenStringData('oxfname'),
@@ -53,10 +55,12 @@ class UserAddress
 
     public function getAdyenDeliveryAddress(User $user): array
     {
-        /** @var AdyenAddress|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var AdyenAddress|AdyenUser $dataObj */
-        $dataObj = $address ?: $user;
+        if ($user->getSelectedAddressId()) {
+            /** @var AdyenAddress|null $address */
+            $dataObj = $user->getSelectedAddress();
+        } else {
+            $dataObj = $user;
+        }
 
         /** @var AdyenCountry $country */
         $country = $this->oxNewService->oxNew(Country::class);
