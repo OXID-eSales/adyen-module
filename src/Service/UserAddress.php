@@ -40,37 +40,40 @@ class UserAddress
 
     public function getAdyenShopperName(User $user): array
     {
-        /** @var AdyenUser|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var AdyenAddress|AdyenUser $dataObj */
-        $dataObj = $address ?: $user;
-
+        $dataObj = $user;
+        if ($user->getSelectedAddressId()) {
+            $dataObj = $user->getSelectedAddress();
+        }
+        /** @var AdyenAddress|AdyenUser|null $dataObj */
         return [
-            'firstName' => $dataObj->getAdyenStringData('oxfname'),
-            'lastName' => $dataObj->getAdyenStringData('oxlname')
+            'firstName' => $dataObj ? $dataObj->getAdyenStringData('oxfname') : '',
+            'lastName' => $dataObj ? $dataObj->getAdyenStringData('oxlname') : ''
         ];
     }
 
     public function getAdyenDeliveryAddress(User $user): array
     {
-        /** @var AdyenAddress|null $address */
-        $address = $user->getSelectedAddress();
-        /** @var AdyenAddress|AdyenUser $dataObj */
-        $dataObj = $address ?: $user;
-
+        $dataObj = $user;
+        if ($user->getSelectedAddressId()) {
+            $dataObj = $user->getSelectedAddress();
+        }
+        /** @var AdyenAddress|AdyenUser|null $dataObj */
         /** @var AdyenCountry $country */
         $country = $this->oxNewService->oxNew(Country::class);
-        $country->load($dataObj->getAdyenStringData('oxcountryid'));
-        /** @var null|string $countryIso */
-        $countryIso = $country->getAdyenStringData('oxisoalpha2');
+        $countryIso = '';
+        if ($dataObj) {
+            $country->load($dataObj->getAdyenStringData('oxcountryid'));
+            /** @var null|string $countryIso */
+            $countryIso = $country->getAdyenStringData('oxisoalpha2');
+        }
 
         return [
-            'city' => $dataObj->getAdyenStringData('oxcity'),
+            'city' => $dataObj ? $dataObj->getAdyenStringData('oxcity') : '',
             'country' => $countryIso,
-            'houseNumberOrName' => $dataObj->getAdyenStringData('oxstreetnr'),
-            'postalCode' => $dataObj->getAdyenStringData('oxzip'),
-            'stateOrProvince' => $dataObj->getAdyenStringData('oxstateid'),
-            'street' => $dataObj->getAdyenStringData('oxstreet')
+            'houseNumberOrName' => $dataObj ? $dataObj->getAdyenStringData('oxstreetnr') : '',
+            'postalCode' => $dataObj ? $dataObj->getAdyenStringData('oxzip') : '',
+            'stateOrProvince' => $dataObj ? $dataObj->getAdyenStringData('oxstateid') : '',
+            'street' => $dataObj ? $dataObj->getAdyenStringData('oxstreet') : ''
         ];
     }
 }
