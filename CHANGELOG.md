@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.1.8] - 2025-06-??
 
 - Fix that Captured is shown two times in order history and therefore refundable amount is wrong
+- don't mark order as paid when authorizing payment
+- fix address selection
 
 ## [2.1.7] - 2025-03-28
 
