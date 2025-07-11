@@ -40,10 +40,9 @@ class UserAddress
 
     public function getAdyenShopperName(User $user): array
     {
+        $dataObj = $user;
         if ($user->getSelectedAddressId()) {
             $dataObj = $user->getSelectedAddress();
-        } else {
-            $dataObj = $user;
         }
         /** @var AdyenAddress|AdyenUser|null $dataObj */
         return [
@@ -54,13 +53,10 @@ class UserAddress
 
     public function getAdyenDeliveryAddress(User $user): array
     {
+        $dataObj = $user;
         if ($user->getSelectedAddressId()) {
-
             $dataObj = $user->getSelectedAddress();
-        } else {
-            $dataObj = $user;
         }
-
         /** @var AdyenAddress|AdyenUser|null $dataObj */
         /** @var AdyenCountry $country */
         $country = $this->oxNewService->oxNew(Country::class);
