@@ -30,6 +30,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) is too high, hard to refactor
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class ViewConfig extends ViewConfig_parent
 {

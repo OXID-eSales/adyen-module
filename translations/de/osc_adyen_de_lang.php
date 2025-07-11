@@ -13,7 +13,8 @@ $aLang = [
     'OSC_ADYEN_ACCOUNT_ORDER_REFERENCE_NOTE' => 'Die Referenz-ID lautet',
     'OSC_ADYEN_BUY_NOW_PAY_WITH'             => 'Jetzt kaufen und bezahlen mit',
     'OSC_ADYEN_IN_AUTHORISATION'             => 'Bezahlung mit Kreditkarte ist autorisiert.',
-    'OSC_ADYEN_REAUTHNECESSARY'              => 'Die Warenkorb-Summe hat sich geändert. Eine Re-Autorisierung ist notwendig.',
+    'OSC_ADYEN_REAUTHNECESSARY'              => 'Die Warenkorb-Summe hat sich geändert.'
+        . ' Eine Re-Autorisierung ist notwendig.',
     'OSC_ADYEN_RETURN_REASON_CANCELLED'      => 'Die Zahlung wurde abgebrochen.',
     'OSC_ADYEN_RETURN_REASON_REFUSED'        => 'Die Zahlung wurde abgelehnt.',
     'OSC_ADYEN_RETURN_REASON_ERROR'          => 'Es trat ein Fehler bei der Zahlung auf.',
