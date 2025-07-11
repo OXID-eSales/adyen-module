@@ -30,7 +30,6 @@ final class AuthorisationHandler extends WebhookHandlerBase
         if ($payment->isAdyenImmediateCapture()) {
             /** @var AdyenOrder $order */
             $order = $this->order;
-            $order->markAdyenOrderAsPaid();
 
             $this->setHistoryEntry(
                 $order->getId(),
