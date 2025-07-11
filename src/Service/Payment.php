@@ -102,7 +102,7 @@ class Payment extends PaymentBase
         $payments->setReturnUrl(
             $this->context->getPaymentReturnUrl(
                 $viewConfig->getSessionChallengeToken(),
-                $this->getDeliveryAddressMD5($user, ),
+                $this->getDeliveryAddressMD5($user),
                 $this->sessionSettings->getPspReference(),
                 $this->sessionSettings->getResultCode(),
                 $this->sessionSettings->getAmountCurrency()
@@ -169,10 +169,11 @@ class Payment extends PaymentBase
     private function getDeliveryAddressMD5(User $oUser): string
     {
         $sDelAddress = $oUser->getEncodedDeliveryAddress();
-
-        if (Registry::getSession()->getVariable('deladrid')) {
+        $sDelAddressId = Registry::getSession()->getVariable('deladrid');
+        $sDelAddressId = is_string($sDelAddressId) ? $sDelAddressId : '';
+        if ($sDelAddressId) {
             $oDelAdress = oxNew(Address::class);
-            $oDelAdress->load(Registry::getSession()->getVariable('deladrid'));
+            $oDelAdress->load($sDelAddressId);
             $sDelAddress .= $oDelAdress->getEncodedDeliveryAddress();
         }
 
