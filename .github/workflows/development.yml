@@ -90,12 +90,6 @@ jobs:
           echo "${{ secrets.MODULE_SETTINGS }}" > source/var/configuration/environment/1.yaml
           docker compose exec -T php php bin/oe-console oe:module:apply-configuration
 
-      - name: Create .env-file
-        continue-on-error: true
-        working-directory: source/test-module/tests
-        run: |
-          echo "${{ secrets.DOTENV }}" > .env
-
       - name: Stop containers
         run: |
           docker compose down
@@ -173,6 +167,13 @@ jobs:
           make up
           sleep 2
 
+      - name: Create .env-file
+        continue-on-error: true
+        run: |
+          docker compose exec -T php composer require --dev dg/bypass-finals
+          cd source/vendor/${{ env.PACKAGE_NAME }}/tests
+          echo "${{ secrets.ENVIRONMENT }}" >> .env 
+
       - name: Run tests
         run: |
           docker compose exec -T \
@@ -183,9 +184,6 @@ jobs:
             -e XDEBUG_MODE=coverage \
             -e ADDITIONAL_TEST_PATHS='/var/www/vendor/${{ env.PACKAGE_NAME }}/tests' \
             php php vendor/bin/runtests \
-              --coverage-clover=/var/www/coverage.xml \
-              --coverage-html=/var/www/coverage \
-              --coverage-text \
               --log-junit=/var/www/phpunit.xml \
               AllTestsUnit
 
@@ -197,6 +195,7 @@ jobs:
           path: |
             source/coverage.xml
             source/phpunit.xml
+            source/source/log/oxideshop.log
 
   codeception_tests:
     strategy:
