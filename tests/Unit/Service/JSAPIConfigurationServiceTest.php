@@ -63,6 +63,9 @@ class JSAPIConfigurationServiceTest extends TestCase
                 'shopperReference' => '123456789',
                 'shopperIP' => '127.0.0.1',
                 'showPayButton' => true,
+                'paymentMethodsResponse' => [
+                    'pay' => true
+                ]
             ],
             $service->getConfigFieldsAsArray($viewConfig, $user, $payment)
         );
@@ -131,6 +134,10 @@ class JSAPIConfigurationServiceTest extends TestCase
         $userMock->expects($this->any())
             ->method('getId')
             ->willReturn('123456789');
+
+        $userMock->expects($this->any())
+            ->method('getSelectedAddressId')
+            ->willReturn('1234');
 
         $userMock->expects($this->any())
             ->method('getSelectedAddress')

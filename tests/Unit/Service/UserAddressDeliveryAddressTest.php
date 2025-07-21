@@ -102,8 +102,11 @@ class UserAddressDeliveryAddressTest extends TestCase
         string $street
     ): User {
         $userMock = $this->getMockBuilder(User::class)
-            ->onlyMethods(['getSelectedAddress'])
+            ->onlyMethods(['getSelectedAddressId', 'getSelectedAddress'])
             ->getMock();
+        $userMock->expects($this->once())
+            ->method('getSelectedAddressId')
+            ->willReturn('12345');
         $userMock->expects($this->once())
             ->method('getSelectedAddress')
             ->willReturn(

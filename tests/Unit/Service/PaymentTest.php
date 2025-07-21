@@ -202,14 +202,16 @@ class PaymentTest extends TestCase
                     $this->createAdyenAPILineItemServiceMock($lineItems),
                     $this->createSessionSettingsMock($pspReference, $resultCode, $currencyName),
                     $this->createOxNewServiceMock(
-                        $payments,
-                        $deliveryAddressMD5
+                        $payments
                     ),
                     $this->createMock(UserAddress::class)
                 ]
             )
-            ->onlyMethods(['setPaymentResult', 'setPaymentExecutionError'])
+            ->onlyMethods(['getDeliveryAddressMD5', 'setPaymentResult', 'setPaymentExecutionError'])
             ->getMock();
+        $paymentMock->expects($this->exactly(1))
+            ->method('getDeliveryAddressMD5')
+            ->willReturn($deliveryAddressMD5);
         $paymentMock->expects($this->exactly(1))
             ->method('setPaymentResult')
             ->with($paymentsResponse);
@@ -308,19 +310,15 @@ class PaymentTest extends TestCase
         return $mock;
     }
 
-    private function createOxNewServiceMock(AdyenAPIPayments $payments, string $deliveryAddressMd5): OxNewService
+    private function createOxNewServiceMock(AdyenAPIPayments $payments): OxNewService
     {
         $mock = $this->getMockBuilder(OxNewService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['oxNew'])
             ->getMock();
-        $returnValueMap = [
-            AdyenAPIPayments::class => $payments,
-            OrderController::class => $this->createOrderControllerMock($deliveryAddressMd5),
-        ];
-        $mock->expects($this->exactly(2))
+        $mock->expects($this->exactly(1))
             ->method('oxNew')
-            ->willReturnCallback(fn($argument) => $returnValueMap[$argument]);
+            ->willReturn($payments);
 
         return $mock;
     }
@@ -334,19 +332,6 @@ class PaymentTest extends TestCase
         $mock->expects($this->once())
             ->method('getId')
             ->willReturn($userId);
-
-        return $mock;
-    }
-
-    private function createOrderControllerMock(string $deliveryAddressMD5): OrderController
-    {
-        $mock = $this->getMockBuilder(OrderController::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getDeliveryAddressMD5'])
-            ->getMock();
-        $mock->expects($this->once())
-            ->method('getDeliveryAddressMD5')
-            ->willReturn($deliveryAddressMD5);
 
         return $mock;
     }

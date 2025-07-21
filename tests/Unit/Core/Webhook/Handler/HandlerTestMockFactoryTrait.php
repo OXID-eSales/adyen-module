@@ -126,8 +126,8 @@ trait HandlerTestMockFactoryTrait
                     $eventDate,
                     $pspReference,
                     $parentPspReference,
-                    Module::ADYEN_STATUS_CAPTURED,
-                    Module::ADYEN_ACTION_CAPTURE
+                    Module::ADYEN_STATUS_AUTHORISED,
+                    Module::ADYEN_ACTION_AUTHORIZE
                 ]
             );
         $handlerMock->expects($this->once())

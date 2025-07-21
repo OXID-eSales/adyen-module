@@ -11,8 +11,10 @@ namespace OxidSolutionCatalysts\Adyen\Tests\Unit\Model;
 
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidSolutionCatalysts\Adyen\Model\Order;
+use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
 
 class OrderTest extends UnitTestCase
@@ -102,6 +104,7 @@ class OrderTest extends UnitTestCase
     public function testFinalizeOrderIsNoAdyenOrder()
     {
         $builder = $this->getMockBuilder(Order::class)
+            ->disableOriginalConstructor()
             ->onlyMethods([
                 'isAdyenOrder',
                 'setAdyenOrderStatus',
