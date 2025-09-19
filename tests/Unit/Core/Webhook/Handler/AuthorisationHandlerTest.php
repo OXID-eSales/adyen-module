@@ -35,7 +35,7 @@ class AuthorisationHandlerTest extends UnitTestCase
             $orderId,
             0,
             'OK',
-            1,
+            0,
             2
         );
 

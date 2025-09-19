@@ -166,7 +166,7 @@ class Payment extends PaymentBase
             && empty($this->moduleSettings->getPayPalMerchantId());
     }
 
-    private function getDeliveryAddressMD5(User $oUser): string
+    protected function getDeliveryAddressMD5(User $oUser): string
     {
         $sDelAddress = $oUser->getEncodedDeliveryAddress();
         $sDelAddressId = Registry::getSession()->getVariable('deladrid');
