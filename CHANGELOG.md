@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.8] - 2025-06-??
+## [2.1.8] - 2025-09-19
 
 - Fix that Captured is shown two times in order history and therefore refundable amount is wrong
 - don't mark order as paid when authorizing payment
