@@ -338,7 +338,7 @@ $aModule = [
             ]
         ],
         [
-            'group' => null,
+            'group' => 'osc_adyen_active_payments',
             'name' => ModuleSettings::ACTIVE_PAYMENTS,
             'type' => 'arr',
             'value' => []

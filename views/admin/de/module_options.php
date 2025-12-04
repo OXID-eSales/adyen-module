@@ -35,6 +35,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_LIVE' => 'Adyen Zugangsdaten Live',
     'SHOP_MODULE_GROUP_osc_adyen_CaptureDelay' => 'Erfassungsverzögerung für ausgewählte Zahlungsarten',
     'SHOP_MODULE_GROUP_osc_adyen_Languages' => 'Sprach-Konfiguration',
+    'SHOP_MODULE_GROUP_osc_adyen_active_payments' => 'Aktive Zahlungsarten',
     'SHOP_MODULE_GROUP_osc_adyen_Backend' => 'Adminbereich-Einstellungen',
     'SHOP_MODULE_GROUP_osc_adyen_KLARNA' => 'Klarna Einstellungen',
 
@@ -67,6 +68,7 @@ $aLang = [
     'HELP_SHOP_MODULE_' . ModuleSettings::LANGUAGES =>
         'Geben Sie für jede OXID-Sprache (Stammdaten > Sprachen > Sprache > Sprachkürzel) eine passende Sprach- und Regionlokalisierung
         (ISO 639-1 alpha-2 / ISO 3166-1 alpha-2) an. Für jede Einstellung eine Zeile (z.B. en => en_US)',
+    'SHOP_MODULE_osc_adyen_activePayments' => 'Aktive Zahlungsarten',
 ];
 $moduleOptionsCaptureDelay = new ModuleOptionsCaptureDelay();
 
