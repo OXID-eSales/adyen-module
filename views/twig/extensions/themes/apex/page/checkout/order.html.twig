@@ -43,7 +43,7 @@
 
         {% if payment.isAdyenCreditCardPayment() %}
             <h2 class="h4 card-header card-title d-flex justify-content-between align-items-center">
-                {{ payment.oxpayments__oxdesc.value|raw }}
+                {{ payment.oxpayments__oxdesc.value }}
             </h2>
             <div id="oscadyencreditcard-container" data-paymentid="payment_oscadyencreditcard" class="card-body">
             </div>

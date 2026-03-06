@@ -29,7 +29,7 @@ final class Event
     private string $eventType;
     private bool $isLive = false;
     private bool $isSuccess = false;
-    private bool $isHMACVerified = true;
+    private bool $isHMACVerified = false;
     private bool $isMerchantVerified = false;
     private string $eventDate;
     private string $pspReference;
@@ -72,7 +72,6 @@ final class Event
 
     public function isHMACVerified(): bool
     {
-        //return true;
         return $this->isHMACVerified;
     }
 
@@ -155,8 +154,7 @@ final class Event
         $currencyDecimals = $currencyObj->decimal ?? '';
         $this->amountValue = $this->getOxidAmount($rawAmountValue, (int)$currencyDecimals);
 
-        // whether getting HmacSignature mock from unit test or new HmacSignature object for production
-        $this->hmacSignatureUtil = $this->rawData['hmacSignatureUtil'] ?? new HmacSignature();
+        $this->hmacSignatureUtil = new HmacSignature();
     }
 
     protected function verifyHMACSignature(): void
@@ -165,8 +163,9 @@ final class Event
         $moduleSettings = $this->getServiceFromContainer(ModuleSettings::class);
         $hmacKey = $moduleSettings->getHmacSignature();
 
-        // verify the Signature if we have one
         if (!$hmacKey) {
+            $this->isHMACVerified = false;
+            Registry::getLogger()->error('Adyen HMAC key not configured - webhook rejected');
             return;
         }
 
@@ -175,7 +174,8 @@ final class Event
                 $hmacKey,
                 $this->item
             );
-        } catch (AdyenException $exception) {
+        } catch (\Throwable $exception) {
+            $this->isHMACVerified = false;
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
         }
     }

@@ -3,6 +3,7 @@
 namespace OxidSolutionCatalysts\Adyen\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidSolutionCatalysts\Adyen\Service\Controller\PaymentJSControllerService;
@@ -23,6 +24,12 @@ class AdyenJSController extends FrontendController
      */
     public function payments(): void
     {
+        if (!Registry::getSession()->checkSessionChallenge()) {
+            $this->getServiceFromContainer(ResponseHandler::class)->response()
+                ->setNotFound()->sendJson();
+            return;
+        }
+
         $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
         $sessionSettings = $this->getServiceFromContainer(SessionSettings::class);
         $paymentJSControllerService = $this->getServiceFromContainer(PaymentJSControllerService::class);
@@ -59,6 +66,12 @@ class AdyenJSController extends FrontendController
 
     public function details(): void
     {
+        if (!Registry::getSession()->checkSessionChallenge()) {
+            $this->getServiceFromContainer(ResponseHandler::class)->response()
+                ->setNotFound()->sendJson();
+            return;
+        }
+
         $response = $this->getServiceFromContainer(ResponseHandler::class)->response();
 
         $postData = $this->jsonToArray($this->getJsonPostData());

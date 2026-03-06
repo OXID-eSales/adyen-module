@@ -50,7 +50,7 @@ class AdyenWebhookController extends WidgetController
             $eventDispatcher = $this->getServiceFromContainer(OxNewService::class)->oxNew(EventDispatcher::class);
             $eventDispatcher->dispatch($event);
 
-            if (!$event->isHMACVerified()) {
+            if (!$event->isHMACVerified() || !$event->isMerchantVerified()) {
                 throw WebhookEventException::hmacValidationFailed();
             }
 
