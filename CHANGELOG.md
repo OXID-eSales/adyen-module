@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.11] - 2026-??-??
+
+### Security
+
+- Fix critical HMAC webhook bypass: change default `isHMACVerified` to `false` (fail-closed)
+- Fix HMAC bypass via injected `hmacSignatureUtil` in webhook payload: always use `new HmacSignature()`
+- Set `isHMACVerified = false` on any exception during HMAC validation (catch `\Throwable`)
+- Remove commented-out `return true` debug bypass in `Event::isHMACVerified()`
+- Add merchant account verification (`isMerchantVerified()`) to `AdyenWebhookController`
+- Add CSRF protection (`checkSessionChallenge`) to `AdyenJSController::payments()` and `details()`
+- Fix SQL operator precedence in `AdyenHistoryList::getOxidOrderIdByPSPReference()` using `expr()->orX()`
+- Replace direct `$_GET` access with `Registry::getRequest()` in `OrderReturnService`
+- Remove XDEBUG_SESSION_START parameter from Adyen fetch URL
+- Add SECURITY.md documenting known security considerations and intentionally unfixed items
+
 ## [1.1.10] - 2025-09-19
 
 ## FIX

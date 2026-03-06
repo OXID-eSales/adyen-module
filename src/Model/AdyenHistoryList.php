@@ -103,8 +103,12 @@ class AdyenHistoryList extends ListModel
 
         $queryBuilder->select('oxorderid')
             ->from(Module::ADYEN_HISTORY_TABLE)
-            ->where('pspreference = :pspreference')
-            ->orWhere('parentpspreference = :parentpspreference');
+            ->where(
+                $queryBuilder->expr()->orX(
+                    'pspreference = :pspreference',
+                    'parentpspreference = :parentpspreference'
+                )
+            );
 
         $parameters = [
             'pspreference' => $pspReference,

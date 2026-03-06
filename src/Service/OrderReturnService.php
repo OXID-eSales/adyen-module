@@ -2,6 +2,8 @@
 
 namespace OxidSolutionCatalysts\Adyen\Service;
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * service for use case when shopper came back from adyen
  */
@@ -17,9 +19,10 @@ class OrderReturnService
 
     public function isRedirectedFromAdyen(): bool
     {
-        $redirectResult = $_GET['redirectResult'] ?? '';
-        $controller = $_GET['cl'] ?? '';
-        $function = $_GET['fnc'] ?? '';
+        $request = Registry::getRequest();
+        $redirectResult = (string)$request->getRequestParameter('redirectResult');
+        $controller = (string)$request->getRequestParameter('cl');
+        $function = (string)$request->getRequestParameter('fnc');
 
         return !empty($redirectResult)
             && $controller === 'order'
@@ -28,7 +31,7 @@ class OrderReturnService
 
     public function getPaymentDetails(): array
     {
-        $redirectResult = $_GET['redirectResult'] ?? '';
+        $redirectResult = (string)Registry::getRequest()->getRequestParameter('redirectResult');
         $cacheKey = $this->getCacheKey($redirectResult);
 
         if (!array_key_exists($cacheKey, $this->paymentDetailCache)) {

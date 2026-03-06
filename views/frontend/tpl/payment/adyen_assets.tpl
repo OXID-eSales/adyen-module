@@ -150,7 +150,7 @@
                     });
 
             const httpPost = (endpoint, data) =>
-                fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&stoken=[{$sToken}][{if $oViewConf->isAdyenSandboxMode()}]&XDEBUG_SESSION_START=1[{/if}]', {
+                fetch('[{$sSelfLink}]cl=adyenjscontroller&fnc=' + endpoint + '&stoken=[{$sToken}]', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json, text/plain, */*',

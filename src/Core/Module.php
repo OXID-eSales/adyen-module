@@ -13,7 +13,7 @@ final class Module
 {
     public const MODULE_NAME_DE = 'Adyen Payment für OXID';
     public const MODULE_NAME_EN = 'Adyen Payment for OXID';
-    public const MODULE_VERSION = '1.1.10';
+    public const MODULE_VERSION = '1.1.11-rc.1';
     public const MODULE_VERSION_FULL = self::MODULE_VERSION . ' SDK-Version ' . self::ADYEN_SDK_VERSION;
     public const MODULE_PLATFORM_NAME = 'OXID';
     public const MODULE_PLATFORM_VERSION = '1.0';
