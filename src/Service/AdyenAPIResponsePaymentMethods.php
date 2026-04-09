@@ -88,7 +88,11 @@ class AdyenAPIResponsePaymentMethods extends AdyenAPIResponse
 
     public function getApplePayConfiguration(): ?array
     {
-        $paymentMethods = $this->getAdyenPaymentMethods();
+        try {
+            $paymentMethods = $this->getAdyenPaymentMethods();
+        } catch (AdyenException $exception) {
+            return null;
+        }
         $applePayPaymentMethod = $this->getPaymentMethodByType(
             $paymentMethods['paymentMethods'] ?? [],
             self::PAYMENT_TYPE_APPLE

@@ -78,8 +78,8 @@ $aModule = [
             'group'       => 'osc_adyen_API',
             'name'        => ModuleSettings::OPERATION_MODE,
             'type'        => 'select',
-            'constraints' => 'sandbox|live',
-            'value'       => 'sandbox'
+            'constraints' => 'test|live',
+            'value'       => 'test'
         ],
         [
             'group' => 'osc_adyen_API',

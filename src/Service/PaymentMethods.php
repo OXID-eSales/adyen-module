@@ -81,8 +81,13 @@ class PaymentMethods extends PaymentBase
     public function getAdyenPaymentMethods(): array
     {
         if (is_null($this->paymentMethods)) {
-            $paymentMethods = $this->collectAdyenPaymentMethods();
-            $this->paymentMethods = $paymentMethods->getAdyenPaymentMethods();
+            try {
+                $paymentMethods = $this->collectAdyenPaymentMethods();
+                $this->paymentMethods = $paymentMethods->getAdyenPaymentMethods();
+            } catch (AdyenException $exception) {
+                Registry::getLogger()->error($exception->getMessage(), ['exception' => $exception]);
+                $this->paymentMethods = [];
+            }
         }
         return $this->paymentMethods;
     }
