@@ -5,6 +5,35 @@
       href="https://checkoutshopper-{{ oViewConf.getAdyenOperationMode() }}.adyen.com/checkoutshopper/sdk/{{ oViewConf.getAdyenSDKVersion() }}/adyen.css"
       integrity="{{ oViewConf.getAdyenIntegrityCSS() }}"
       crossorigin="anonymous">
+<style>
+    /* Visual gate for redirect-based Adyen payment buttons (Twint, Klarna).
+       While the AGB checkbox(es) are not confirmed, the rendered Adyen
+       button is dimmed and not clickable; otherwise the shopper would leave
+       the page before OXID's AGB check ever runs. Inline because the module
+       has no CSS pipeline that emits a loaded stylesheet today. */
+    .osc-adyen-redirect-blocked {
+        position: relative;
+        opacity: 0.5;
+        pointer-events: none;
+        filter: grayscale(0.6);
+    }
+    .osc-adyen-redirect-blocked::after {
+        content: "";
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        cursor: not-allowed;
+    }
+    @keyframes osc-adyen-agb-pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.6); }
+        70%  { box-shadow: 0 0 0 12px rgba(217, 83, 79, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0); }
+    }
+    .osc-adyen-agb-missing {
+        outline: 2px solid #d9534f;
+        outline-offset: 2px;
+        animation: osc-adyen-agb-pulse 1.2s ease-out 2;
+    }
+</style>
 
 {% set sToken = oViewConf.getSessionChallengeToken() %}
 {% set sSelfLink = oViewConf.getSslSelfLink()|replace({"&amp;": "&"}) %}
@@ -87,6 +116,35 @@
                         });
                 {% endif %}
             {% elseif isOrderPage %}
+                {% set orderPaymentIsRedirect = oViewConf.isOrderPaymentIsRedirect(oView, payment) %}
+                {% if orderPaymentIsRedirect %}
+                    // Keep the redirect-payment button container in sync with the AGB checkbox(es).
+                    // Adyen renders a fully clickable button on mount, so we wrap it with a CSS
+                    // class that intercepts pointer events whenever the agreements are missing.
+                    const oscAdyenRedirectContainer = document.getElementById('{{ templatePayButtonContainerId }}');
+                    const oscAdyenSyncRedirectGuard = function () {
+                        if (!oscAdyenRedirectContainer) {
+                            return;
+                        }
+                        const agreements = oscAdyenReadAgreements();
+                        if (agreements === null) {
+                            return;
+                        }
+                        const blocked = (agreements.hasOrdAgb && !agreements.ordAgb)
+                            || (agreements.hasDownloadable && !agreements.downloadable)
+                            || (agreements.hasService && !agreements.service);
+                        oscAdyenRedirectContainer.classList.toggle('osc-adyen-redirect-blocked', blocked);
+                    };
+                    ['checkAgbTop', 'oxdownloadableproductsagreement', 'oxserviceproductsagreement']
+                        .forEach(function (id) {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.addEventListener('change', oscAdyenSyncRedirectGuard);
+                                el.addEventListener('click', oscAdyenSyncRedirectGuard);
+                            }
+                        });
+                    oscAdyenSyncRedirectGuard();
+                {% endif %}
                 {% if orderPaymentCreditCard %}
                     const submitAdyenCCButton = document.getElementById("submitAdyenCCButton");
                     submitAdyenCCButton.disabled = true;

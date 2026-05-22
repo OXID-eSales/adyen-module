@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.10] - unreleased
+
+### FIX
+- Twint and Klarna: enforce AGB acceptance before the redirect-payment button can be triggered, so the shopper cannot leave the order page without confirming the terms
+- Twint and Klarna: visually disable the payment button while required agreement checkboxes are unchecked
+- Twint and Klarna: accept the agreement state on return from the third-party page (the order form is gone after the redirect, so the hidden AGB inputs need to be reinstated server-side)
+
 ## [2.1.9] - 2026-04-09
 
 ### Security

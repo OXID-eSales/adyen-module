@@ -318,6 +318,14 @@ class ViewConfig extends ViewConfig_parent
             ->isOrderPaymentCreditCard($oView, $payment);
     }
 
+    public function isOrderPaymentIsRedirect(
+        FrontendController $oView,
+        ?Payment $payment
+    ): bool {
+        return $this->getServiceFromContainer(JSAPITemplateConfiguration::class)
+            ->isOrderPaymentIsRedirect($oView, $payment);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface

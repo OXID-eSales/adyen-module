@@ -19,6 +19,19 @@ class JSAPITemplateCheckoutCreate
         Module::PAYMENT_CREDITCARD_ID => 'oscadyencreditcard',
     ];
 
+    /**
+     * Payment methods that hand the browser fully off to a third-party page
+     * (full redirect) instead of finishing inline on the order page. After
+     * return, the form with ord_agb is gone, so OXID's AGB validation
+     * cannot rely on the post submit of the order form.
+     */
+    private array $redirectPaymentIds = [
+        Module::PAYMENT_TWINT_ID,
+        Module::PAYMENT_KLARNA_LATER_ID,
+        Module::PAYMENT_KLARNA_IMMEDIATE_ID,
+        Module::PAYMENT_KLARNA_OVER_TIME_ID,
+    ];
+
     public function getCreateId(string $paymentId): string
     {
         if (!isset($this->createIdMapping[$paymentId])) {
@@ -26,5 +39,10 @@ class JSAPITemplateCheckoutCreate
         }
 
         return $this->createIdMapping[$paymentId];
+    }
+
+    public function isRedirectPayment(string $paymentId): bool
+    {
+        return in_array($paymentId, $this->redirectPaymentIds, true);
     }
 }
