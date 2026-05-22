@@ -21,19 +21,22 @@ class JSAPITemplateConfiguration
     private JSAPIConfigurationService $configurationService;
     private AdyenAPIResponsePaymentMethods $ApiResponsePaymentMethodsService;
     private ModuleSettings $moduleSettings;
+    private JSAPITemplateCheckoutCreate $checkoutCreateService;
 
     public function __construct(
         TemplateEngineInterface $templateEngine,
         JSAPIConfigurationService $configurationService,
         AdyenAPIResponsePaymentMethods $ApiResponsePaymentMethodsService,
         LoggerInterface $logger,
-        ModuleSettings $moduleSettings
+        ModuleSettings $moduleSettings,
+        JSAPITemplateCheckoutCreate $checkoutCreateService
     ) {
         $this->templateEngine = $templateEngine;
         $this->logger = $logger;
         $this->configurationService = $configurationService;
         $this->ApiResponsePaymentMethodsService = $ApiResponsePaymentMethodsService;
         $this->moduleSettings = $moduleSettings;
+        $this->checkoutCreateService = $checkoutCreateService;
     }
 
     public function getConfiguration(
@@ -67,6 +70,8 @@ class JSAPITemplateConfiguration
                 && $paymentId === Module::PAYMENT_APPLE_PAY_ID,
             'orderPaymentCreditCard' => $controller instanceof Ordercontroller
                 && $paymentId === Module::PAYMENT_CREDITCARD_ID,
+            'orderPaymentIsRedirect' => $controller instanceof OrderController
+                && $this->checkoutCreateService->isRedirectPayment($paymentId),
             'paymentConfigNeedsCard' => $this->paymentMethodsConfigurationNeedsCardField(
                 $controller,
                 $viewConfig,

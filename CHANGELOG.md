@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.12] - unreleased
+
+### FIX
+- Twint and Klarna: enforce AGB acceptance before the redirect-payment button can be triggered, so the shopper cannot leave the order page without confirming the terms
+- Twint and Klarna: accept the unchanged delivery address on return from the third-party page (the delivery-address value passed in the return URL was md5-hashed and therefore never matched OXID core's raw-string comparison)
+- Twint and Klarna: visually disable the payment button while required agreement checkboxes are unchecked
+
 ## [1.1.11] - 2026-04-09
 
 ### Security

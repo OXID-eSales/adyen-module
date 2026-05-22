@@ -166,6 +166,14 @@ class Payment extends PaymentBase
             && empty($this->moduleSettings->getPayPalMerchantId());
     }
 
+    /**
+     * Despite the historical "MD5" name, OXID core's
+     * Order::validateDeliveryAddress() compares this against the raw
+     * concatenated getEncodedDeliveryAddress() output, not an md5 hash
+     * (see OXID core OrderController::getDeliveryAddressMD5 which also
+     * returns the raw string). Hashing here would cause every redirect
+     * return (Twint, Klarna) to be rejected as INVALIDDELADDRESSCHANGED.
+     */
     protected function getDeliveryAddressMD5(User $oUser): string
     {
         $sDelAddress = $oUser->getEncodedDeliveryAddress();
@@ -177,6 +185,6 @@ class Payment extends PaymentBase
             $sDelAddress .= $oDelAdress->getEncodedDeliveryAddress();
         }
 
-        return md5($sDelAddress);
+        return $sDelAddress;
     }
 }
