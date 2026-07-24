@@ -81,6 +81,56 @@ class OrderReturnServiceTest extends TestCase
         $this->assertEquals($expectedDetails, $actualDetails);
     }
 
+    /**
+     * @covers \OxidSolutionCatalysts\Adyen\Service\OrderReturnService::isAuthorizedAmountSufficient
+     * @dataProvider getDataProviderForAuthorizedAmount
+     */
+    public function testIsAuthorizedAmountSufficient(
+        bool $expectedResult,
+        array $paymentDetails,
+        float $orderTotal
+    ) {
+        $orderReturnService = new OrderReturnService(
+            $this->createApiResponsePaymentDetailsMock(0, '', [])
+        );
+
+        $this->assertSame(
+            $expectedResult,
+            $orderReturnService->isAuthorizedAmountSufficient($paymentDetails, $orderTotal)
+        );
+    }
+
+    public function getDataProviderForAuthorizedAmount()
+    {
+        return [
+            'authorized equals total' => [
+                true,
+                ['amount' => ['currency' => 'EUR', 'value' => 1000]],
+                10.0,
+            ],
+            'authorized higher than total' => [
+                true,
+                ['amount' => ['currency' => 'EUR', 'value' => 2000]],
+                10.0,
+            ],
+            'authorized lower than total (basket grew in parallel tab)' => [
+                false,
+                ['amount' => ['currency' => 'EUR', 'value' => 1000]],
+                20.0,
+            ],
+            'no amount reported -> cannot compare, do not block' => [
+                true,
+                ['resultCode' => 'Authorised'],
+                10.0,
+            ],
+            'non-positive order total -> do not block' => [
+                true,
+                ['amount' => ['currency' => 'EUR', 'value' => 1000]],
+                0.0,
+            ],
+        ];
+    }
+
     private function createApiResponsePaymentDetailsMock(
         int $getPaymentsDetailsInvokeAmount,
         $redirectResult,

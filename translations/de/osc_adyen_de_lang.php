@@ -18,6 +18,8 @@ $aLang = [
     'OSC_ADYEN_RETURN_REASON_CANCELLED'      => 'Die Zahlung wurde abgebrochen.',
     'OSC_ADYEN_RETURN_REASON_REFUSED'        => 'Die Zahlung wurde abgelehnt.',
     'OSC_ADYEN_RETURN_REASON_ERROR'          => 'Es trat ein Fehler bei der Zahlung auf.',
+    'OSC_ADYEN_RETURN_REASON_AMOUNT_MISMATCH' => 'Der autorisierte Betrag deckt die aktuelle'
+        . ' Warenkorb-Summe nicht ab. Bitte führen Sie die Zahlung erneut durch.',
     'OSC_ADYEN_RETURN_NOT_SUCCESSFUL'        => 'Die Zahlung war aus folgendem Grund nicht erfolgreich'
         . ', wählen sie ggf. eine andere Zahlart.',
     'OSC_ADYEN_PAYMENT_STATUS_PENDING'       => 'Die Zahlung ist derzeit noch schwebend.',

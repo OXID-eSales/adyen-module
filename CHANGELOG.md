@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### FIX
+- [0007976](https://bugs.oxid-esales.com/view.php?id=7976): Prevent orders from being finalized/recorded with an authorized amount that is lower than the order total. When a shopper started a redirect payment (e.g. Klarna) and then changed the basket in a parallel tab/session before completing it, Adyen only authorized the original (smaller) amount while the shop finalized the order for the current (larger) total. The backend then showed the full order value as "Authorized", and with delayed/two-step capture (Klarna captures only when the goods ship) this surfaced as an over-capture attempt at capture time. Two complementary changes:
+  - **Record the real authorized amount:** `Service/PaymentGateway::doFinishAdyenPayment()` now reads `paymentDetails.amount.value` from the Adyen `/payments/details` response on redirect return and converts it currency-aware (via `AdyenPayment::getOxidAmount()` / the currency's decimals, so JPY/KWD etc. are handled correctly) before writing the AUTHORIZE history entry; immediate capture also captures this authorized amount rather than the order total (`Model/Order::captureAdyenOrder()` still caps it to the remaining capturable sum). Flows where Adyen reports no amount (in-page PaymentCtrl) keep the previous behaviour (fall back to the order total).
+  - **Safety net (abort under-authorized orders):** `Controller/OrderController::return()` now compares the Adyen-authorized amount against the current basket gross total *before* finalizing (new `OrderReturnService::isAuthorizedAmountSufficient()`, integer minor-unit comparison). If the authorization does not cover the current cart, the pending Adyen authorization is cancelled (session-based `PaymentCancel`, mirroring `Model/Order::removeAdyenPaymentFromSession()`) and the shopper is kept on the order page with a new message (`OSC_ADYEN_RETURN_REASON_AMOUNT_MISMATCH`, de/en) to pay again — no under-authorized order is created. Normal orders (authorization covers the cart) are unaffected.
+  - The currency-decimals resolution used by both paths was centralized in `AdyenPayment::getCurrencyDecimalsByName()`. Added regression unit tests.
+  - Files touched: `src/Service/PaymentGateway.php`, `src/Service/OrderReturnService.php`, `src/Service/TranslationMapper.php`, `src/Controller/OrderController.php`, `src/Traits/AdyenPayment.php`, `translations/de/osc_adyen_de_lang.php`, `translations/en/osc_adyen_en_lang.php`, `tests/Unit/Service/PaymentGatewayTest.php`, `tests/Unit/Service/OrderReturnServiceTest.php`.
+
 ## [2.1.10] - 2026-06-11
 
 ### FIX

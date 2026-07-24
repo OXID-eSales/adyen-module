@@ -5,6 +5,7 @@ namespace OxidSolutionCatalysts\Adyen\Service;
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
 use OxidSolutionCatalysts\Adyen\Core\Module;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidSolutionCatalysts\Adyen\Traits\AdyenPayment;
 use OxidSolutionCatalysts\Adyen\Traits\RequestGetter;
 use OxidEsales\Eshop\Application\Model\Payment;
 use stdClass;
@@ -12,6 +13,7 @@ use stdClass;
 class PaymentGateway
 {
     use RequestGetter;
+    use AdyenPayment;
 
     private SessionSettings $sessionSettings;
     private PaymentGatewayOrderSavable $gatewayOrderSavable;
@@ -43,6 +45,11 @@ class PaymentGateway
         $amountCurrency = $this->getOrderCurrencyName($order);
         $orderReference = $this->sessionSettings->getOrderReference();
 
+        // Amount actually authorized by Adyen. Falls back to the order total for flows
+        // where Adyen does not report a dedicated authorized amount (e.g. the in-page
+        // PaymentCtrl flow); overridden below with the value Adyen returns on redirect.
+        $authorizedAmount = $amount;
+
         $canSave = $this->gatewayOrderSavable->prove($pspReference, $resultCode, $orderReference);
 
         if (!$canSave && $this->orderRedirectService->isRedirectedFromAdyen()) {
@@ -51,6 +58,20 @@ class PaymentGateway
             $pspReference = $paymentDetails['pspReference'];
             $orderReference = $paymentDetails['merchantReference'];
             $amountCurrency = $paymentDetails['amount']['currency'] ?? $amountCurrency;
+
+            // Use the amount Adyen actually authorized instead of the current order total.
+            // When the basket is modified in a parallel tab/session after the Adyen
+            // redirect was started, the order total can exceed what Adyen authorized;
+            // storing the order total would misreport the order as fully authorized and
+            // lead to an over-capture later (critical with delayed/two-step capture, e.g.
+            // Klarna, where the discrepancy only surfaces at capture time). See bug 0007976.
+            // The value comes in Adyen minor units and is converted currency-aware.
+            if (isset($paymentDetails['amount']['value'])) {
+                $authorizedAmount = $this->getOxidAmount(
+                    (float)$paymentDetails['amount']['value'],
+                    $this->getCurrencyDecimalsByName($amountCurrency)
+                );
+            }
 
             $canSave = true;
         }
@@ -67,16 +88,18 @@ class PaymentGateway
                 $pspReference,
                 $pspReference,
                 $order->getId(),
-                $amount,
+                $authorizedAmount,
                 $amountCurrency,
                 $resultCode,
                 Module::ADYEN_ACTION_AUTHORIZE
             );
             $order->save();
 
-            // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate"
+            // trigger Capture for all PaymentCtrl-Payments with Capture-Delay "immediate".
+            // Capture the authorized amount, never more than Adyen authorized (captureAdyenOrder
+            // additionally caps it to the remaining capturable order sum).
             if ($this->paymentConfigService->isAdyenImmediateCapture($paymentId)) {
-                $order->captureAdyenOrder($amount);
+                $order->captureAdyenOrder($authorizedAmount);
             }
 
             $success = true;
