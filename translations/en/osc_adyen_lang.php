@@ -17,6 +17,8 @@ $aLang = [
     'OSC_ADYEN_RETURN_REASON_CANCELLED' => 'The payment was cancelled.',
     'OSC_ADYEN_RETURN_REASON_REFUSED' => 'The payment was refused.',
     'OSC_ADYEN_RETURN_REASON_ERROR' => 'There was an error during payment.',
+    'OSC_ADYEN_RETURN_REASON_AMOUNT_MISMATCH' => 'The authorized amount does not cover the current'
+        . ' cart total. Please complete the payment again.',
     'OSC_ADYEN_RETURN_NOT_SUCCESSFUL' => 'The payment was not successful for the following reason'
         . ', choose another payment method if applicable.',
     'OSC_ADYEN_PAYMENT_STATUS_PENDING' => 'The payment is currently pending.',

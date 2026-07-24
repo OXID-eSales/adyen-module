@@ -9,6 +9,7 @@ class TranslationMapper
     public const OSC_ADYEN_RETURN_REASON_CANCELLED = 'OSC_ADYEN_RETURN_REASON_CANCELLED';
     public const OSC_ADYEN_RETURN_REASON_REFUSED = 'OSC_ADYEN_RETURN_REASON_REFUSED';
     public const OSC_ADYEN_RETURN_REASON_ERROR = 'OSC_ADYEN_RETURN_REASON_ERROR';
+    public const OSC_ADYEN_RETURN_REASON_AMOUNT_MISMATCH = 'OSC_ADYEN_RETURN_REASON_AMOUNT_MISMATCH';
 
     public function mapReturnResultCode(string $resultCode): string
     {

@@ -91,6 +91,83 @@ class PaymentGatewayTest extends UnitTestCase
     }
 
     /**
+     * Regression for bug 0007976: when the shopper returns from an Adyen redirect, the
+     * amount stored as "authorized" (and captured on immediate capture) must be the amount
+     * Adyen actually authorized (paymentDetails.amount.value, minor units) and NOT the
+     * possibly-larger current order total. Reproduces the Klarna/parallel-tab scenario
+     * where the basket grew after the redirect had started.
+     *
+     * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::doFinishAdyenPayment
+     */
+    public function testDoFinishAdyenPaymentUsesAdyenAuthorizedAmountOnRedirect()
+    {
+        $paymentId = Module::PAYMENT_CREDITCARD_ID;
+        $orderTotal = 10.0;
+        // Adyen reports 2.50 EUR (250 minor units) as authorized.
+        $authorizedAmount = 2.5;
+
+        $sessionSettingsMock = $this->createSessionSettingsMock(
+            1,
+            $paymentId,
+            $this->pspReference,
+            $this->resultCode,
+            $this->orderReference
+        );
+
+        // prove() fails, so the redirect-return branch is taken.
+        $paymentGatewayOrderSavableMock = $this->createPaymentGatewayOrderSavableMock(
+            false,
+            $this->pspReference,
+            $this->resultCode,
+            $this->orderReference,
+            1
+        );
+
+        $orderReturnServiceMock = $this->createMock(OrderReturnService::class);
+        $orderReturnServiceMock->method('isRedirectedFromAdyen')
+            ->willReturn(true);
+        $orderReturnServiceMock->method('getPaymentDetails')
+            ->willReturn([
+                'resultCode' => $this->resultCode,
+                'pspReference' => $this->pspReference,
+                'merchantReference' => $this->orderReference,
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => 250,
+                ],
+            ]);
+
+        // The order mock asserts that the authorized amount (2.50), not the order total
+        // (10.00), is what reaches setAdyenHistoryEntry() and captureAdyenOrder().
+        $orderMock = $this->createOrderMock(
+            $this->orderId,
+            $this->orderReference,
+            $this->pspReference,
+            $authorizedAmount,
+            'EUR',
+            $this->resultCode,
+            1,
+            1
+        );
+
+        $paymentConfigServiceMock = $this->createPaymentConfigServiceMock(
+            $paymentId
+        );
+
+        $paymentGateway = oxNew(
+            PaymentGatewayService::class,
+            $sessionSettingsMock,
+            $paymentGatewayOrderSavableMock,
+            $paymentConfigServiceMock,
+            $orderReturnServiceMock,
+            $this->getServiceFromContainer(OxNewService::class)
+        );
+
+        /** @var Order $orderMock */
+        $this->assertTrue($paymentGateway->doFinishAdyenPayment($orderTotal, $orderMock));
+    }
+
+    /**
      * @covers \OxidSolutionCatalysts\Adyen\Service\PaymentGateway::doFinishAdyenPayment
      */
     public function testDoFinishAdyenPaymentNoSavable()
@@ -237,7 +314,8 @@ class PaymentGatewayTest extends UnitTestCase
             ->method('save');
 
         $order->expects($this->exactly($captureAdyenOrderInvokedCount))
-            ->method('captureAdyenOrder');
+            ->method('captureAdyenOrder')
+            ->with($amount);
 
         return $order;
     }
