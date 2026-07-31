@@ -25,6 +25,8 @@ use OxidSolutionCatalysts\Adyen\Service\PaymentRefund;
 use OxidSolutionCatalysts\Adyen\Service\Module as ModuleService;
 use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
+use OxidSolutionCatalysts\Adyen\Core\RefundMailService;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
@@ -133,12 +135,27 @@ class Order extends Order_parent
     public function cancelOrder()
     {
         parent::cancelOrder();
+
+        $refundedAmount = null;
         if ($this->isAdyenRefundPossible()) {
             $amount = $this->getPossibleRefundAmount();
-            $this->refundAdyenOrder($amount);
+            // the cancel context suppresses the refund mail; this method sends one
+            // mail covering the cancellation and the refunded amount instead
+            if ($this->refundAdyenOrder($amount, ModuleSettings::REFUND_CONTEXT_CANCEL)) {
+                $refundedAmount = $amount;
+            }
         } else {
             $this->cancelAdyenOrder();
         }
+
+        if (!$this->isAdyenOrder()) {
+            return;
+        }
+
+        // a cancellation is worth a confirmation on its own, whether or not money
+        // was refunded along with it
+        $mailService = $this->getServiceFromContainer(RefundMailService::class);
+        $mailService->sendCancelMail($this, $refundedAmount, $this->getAdyenStringData('oxcurrency'));
     }
 
     public function isAdyenCapturePossible(): bool
@@ -256,12 +273,21 @@ class Order extends Order_parent
     }
 
     /**
+     * Refunds an amount for this order via Adyen and, on success, triggers the
+     * confirmation mail configured by the merchant.
+     *
+     * @param float $amount
+     * @param string $context one of the ModuleSettings::REFUND_CONTEXT_* values,
+     *                        the backend action that triggered this refund
+     * @return bool true if Adyen accepted the refund
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public function refundAdyenOrder(float $amount): void
-    {
+    public function refundAdyenOrder(
+        float $amount,
+        string $context = ModuleSettings::REFUND_CONTEXT_REFUND
+    ): bool {
         if (!$this->isAdyenRefundPossible()) {
-            return;
+            return false;
         }
 
         $pspReference = $this->getAdyenPspReference();
@@ -279,22 +305,33 @@ class Order extends Order_parent
             $reference
         );
 
-        if ($success) {
-            $refundResult = $paymentService->getRefundResult();
-
-            // everything is fine, we can save the references
-            if (isset($refundResult['paymentPspReference'])) {
-                $this->setAdyenHistoryEntry(
-                    $refundResult['pspReference'],
-                    $refundResult['paymentPspReference'],
-                    $this->getId(),
-                    $amount,
-                    $currency,
-                    $refundResult['status'] ?? "",
-                    Module::ADYEN_ACTION_REFUND
-                );
-            }
+        if (!$success) {
+            return false;
         }
+
+        $refundResult = $paymentService->getRefundResult();
+
+        // everything is fine, we can save the references
+        if (isset($refundResult['paymentPspReference'])) {
+            $this->setAdyenHistoryEntry(
+                $refundResult['pspReference'],
+                $refundResult['paymentPspReference'],
+                $this->getId(),
+                $amount,
+                $currency,
+                $refundResult['status'] ?? "",
+                Module::ADYEN_ACTION_REFUND
+            );
+        }
+
+        // Adyen accepted the refund, so this is the point where a confirmation
+        // mail may go out. The service decides whether one is sent at all and to
+        // whom; the cancel context suppresses it, because the cancellation flow
+        // sends a single mail covering cancellation and refunded amount.
+        $mailService = $this->getServiceFromContainer(RefundMailService::class);
+        $mailService->sendRefundMail($this, $amount, $currency, $context);
+
+        return true;
     }
 
     public function getCapturedAmount(): float

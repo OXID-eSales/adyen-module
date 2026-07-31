@@ -60,3 +60,8 @@ class_alias(
     \OxidEsales\Eshop\Application\Controller\PaymentController::class,
     \OxidSolutionCatalysts\Adyen\Controller\PaymentController_parent::class
 );
+
+class_alias(
+    \OxidEsales\Eshop\Core\Email::class,
+    \OxidSolutionCatalysts\Adyen\Core\Email_parent::class
+);

@@ -13,6 +13,7 @@ use OxidSolutionCatalysts\Adyen\Controller\Admin\AdminOrderController;
 use OxidSolutionCatalysts\Adyen\Controller\OrderController;
 use OxidSolutionCatalysts\Adyen\Controller\PaymentController;
 use OxidSolutionCatalysts\Adyen\Core\Module;
+use OxidSolutionCatalysts\Adyen\Core\Email;
 use OxidSolutionCatalysts\Adyen\Core\ViewConfig;
 use OxidSolutionCatalysts\Adyen\Model\Address;
 use OxidSolutionCatalysts\Adyen\Model\Country;
@@ -55,6 +56,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\User::class => User::class,
         // core
         \OxidEsales\Eshop\Core\ViewConfig::class => ViewConfig::class,
+        \OxidEsales\Eshop\Core\Email::class => Email::class,
         // admin-controller
         \OxidEsales\Eshop\Application\Controller\Admin\OrderList::class => OrderList::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderArticle::class => OrderArticle::class,
@@ -86,6 +88,10 @@ $aModule = [
         'modules/osc/adyen/account/order_adyen.tpl' => 'osc/adyen/views/frontend/tpl/account/order_adyen.tpl',
         // frontend - mails
         'modules/osc/adyen/email/order_adyen_html.tpl' => 'osc/adyen/views/frontend/tpl/email/order_adyen_html.tpl',
+        'modules/osc/adyen/email/html/refund.tpl' => 'osc/adyen/views/frontend/tpl/email/html/refund.tpl',
+        'modules/osc/adyen/email/plain/refund.tpl' => 'osc/adyen/views/frontend/tpl/email/plain/refund.tpl',
+        'modules/osc/adyen/email/html/cancel.tpl' => 'osc/adyen/views/frontend/tpl/email/html/cancel.tpl',
+        'modules/osc/adyen/email/plain/cancel.tpl' => 'osc/adyen/views/frontend/tpl/email/plain/cancel.tpl',
         'modules/osc/adyen/email/order_adyen_plain.tpl' => 'osc/adyen/views/frontend/tpl/email/order_adyen_plain.tpl',
         // adyen js api
         'modules/osc/adyen/payment/adyen_assets_configuration.tpl' => 'osc/adyen/views/frontend/tpl/payment/adyen_assets_configuration.tpl',
@@ -159,6 +165,20 @@ $aModule = [
         ],
     ],
     'settings' => [
+        [
+            'group'       => 'osc_adyen_mails',
+            'name'        => ModuleSettings::REFUND_MAIL_RECIPIENT,
+            'type'        => 'select',
+            'constraints' => '0|1|2|3',
+            'value'       => '0'
+        ],
+        [
+            'group'       => 'osc_adyen_mails',
+            'name'        => ModuleSettings::CANCEL_MAIL_RECIPIENT,
+            'type'        => 'select',
+            'constraints' => '0|1|2|3',
+            'value'       => '0'
+        ],
         [
             'group'       => 'osc_adyen_API',
             'name'        => ModuleSettings::OPERATION_MODE,
