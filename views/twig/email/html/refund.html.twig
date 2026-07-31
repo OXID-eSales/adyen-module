@@ -1,0 +1,59 @@
+{% set shop = oEmailView.getShop() %}
+{% set oViewConf = oEmailView.getViewConfig() %}
+
+{% capture assign = "style" %}
+    table.adyenrefund th, table.adyenrefund td {
+    border: 1px solid #d4d4d4;
+    font-size: 13px;
+    padding: 5px;
+    white-space: nowrap;
+    }
+
+    table.adyenrefund {
+    border-collapse: collapse;
+    }
+{% endcapture %}
+
+{% include "email/html/header.html.twig" with { title: ("OSC_ADYEN_REFUND_MAIL_TITLE"|translate) ~ " #" ~ order.oxorder__oxordernr.value, style: style } %}
+
+    {% block adyen_email_html_refund_intro %}
+        <p>
+            {% if isAdyenOwnerMail %}
+                {{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_INTRO_OWNER" }) }}
+            {% else %}
+                {{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_SALUTATION" }) }}
+                {{ order.oxorder__oxbillfname.getRawValue() }} {{ order.oxorder__oxbilllname.getRawValue() }},
+            {% endif %}
+        </p>
+        {% if not isAdyenOwnerMail %}
+            <p>{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_INTRO" }) }}</p>
+        {% endif %}
+    {% endblock %}
+
+    {% block adyen_email_html_refund_details %}
+        <table class="adyenrefund" border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tbody>
+                <tr valign="top">
+                    <th align="right" class="text-right">{{ translate({ ident: "ORDER_NUMBER", suffix: "COLON" }) }}</th>
+                    <td>{{ order.oxorder__oxordernr.value }}</td>
+                </tr>
+                <tr valign="top">
+                    <th align="right" class="text-right">{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_AMOUNT", suffix: "COLON" }) }}</th>
+                    <td>{{ adyenRefundedAmount|number_format(2, '.', '') }} {{ adyenCurrencyCode }}</td>
+                </tr>
+                <tr valign="top">
+                    <th align="right" class="text-right">{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_ORDER_TOTAL", suffix: "COLON" }) }}</th>
+                    <td>{{ format_price(order.oxorder__oxtotalordersum.value, { currency: currency }) }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br/>
+    {% endblock %}
+
+    {% block adyen_email_html_refund_note %}
+        {% if not isAdyenOwnerMail %}
+            <p>{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_NOTE" }) }}</p>
+        {% endif %}
+    {% endblock %}
+
+{% include "email/html/footer.html.twig" %}

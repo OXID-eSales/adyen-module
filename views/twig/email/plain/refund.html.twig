@@ -1,0 +1,26 @@
+{% set shop = oEmailView.getShop() %}
+{% set oViewConf = oEmailView.getViewConfig() %}
+{% block adyen_email_plain_refund_intro %}
+{% if isAdyenOwnerMail %}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_INTRO_OWNER" }) }}
+{% else %}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_SALUTATION" }) }} {{ order.oxorder__oxbillfname.getRawValue() }} {{ order.oxorder__oxbilllname.getRawValue() }},
+
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_INTRO" }) }}
+{% endif %}
+{% endblock %}
+
+{% block adyen_email_plain_refund_details %}
+{{ translate({ ident: "ORDER_NUMBER", suffix: "COLON" }) }} {{ order.oxorder__oxordernr.value }}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_AMOUNT", suffix: "COLON" }) }} {{ adyenRefundedAmount|number_format(2, '.', '') }} {{ adyenCurrencyCode }}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ order.oxorder__oxtotalordersum.value|number_format(2, '.', '') }} {{ order.oxorder__oxcurrency.value }}
+{% endblock %}
+
+{% block adyen_email_plain_refund_note %}
+{% if not isAdyenOwnerMail %}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_NOTE" }) }}
+{% endif %}
+{% endblock %}
+
+{{ shop.oxshops__oxname.getRawValue() }}
+{{ shop.oxshops__oxurl.value }}

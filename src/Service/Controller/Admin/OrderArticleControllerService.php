@@ -4,6 +4,7 @@ namespace OxidSolutionCatalysts\Adyen\Service\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidSolutionCatalysts\Adyen\Model\Order as AdyenOrder;
+use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 
 class OrderArticleControllerService
 {
@@ -19,7 +20,7 @@ class OrderArticleControllerService
             $order->isAdyenOrder() &&
             $order->isAdyenRefundPossible()
         ) {
-            $order->refundAdyenOrder($amount);
+            $order->refundAdyenOrder($amount, ModuleSettings::REFUND_CONTEXT_ARTICLE);
         }
     }
 }

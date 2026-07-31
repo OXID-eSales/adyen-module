@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0] - unreleased
+
+### NEW
+
+- [0007986](https://bugs.oxid-esales.com/view.php?id=7986): Confirmation mails for refunds and cancellations triggered in the backend. Two new module settings in the module configuration (group "Confirmation mails") decide who is notified, separately per event: `osc_adyen_RefundMailRecipient` and `osc_adyen_CancelMailRecipient`, each with `0` no mail (default), `1` customer, `2` shop owner, `3` both. Defaults are `0`, so updating the module does not start sending mail to existing customers unannounced. The refund mail is sent at the point where Adyen accepted the refund (`Model/Order::refundAdyenOrder()`, right after the history entry is written), which covers the refund button in the order view (`Controller/Admin/AdminOrderController::refundAdyenAmount()`) and removing an order position (`Service/Controller/Admin/OrderArticleControllerService::refundOrderIfNeeded()`); it names order number, refunded amount and order total. The cancellation mail is sent by the existing `Model/Order::cancelOrder()` override after the cancellation was processed — that override is the single place both backend cancel paths run through (storno button in the order list and the Adyen cancel button in the order view), and it is the only place that knows whether the cancellation refunded money: if it did, that mail states the refunded amount and the refund mail is suppressed, so the customer receives one mail instead of two. New `Core/Email` (chain extension, four Twig templates under `views/twig/email/{html,plain}/`, addressed as `@osc_adyen/email/html/refund` and so on) and `Core/RefundMailService`, which is the only place deciding whether and to whom a mail goes out; mail or logging failures are caught there, because the refund or cancellation has already happened and must not surface as an error page in the backend. Both classes are deliberately free of trigger logic so they can move to the central payment base module later; the same feature is being rolled out to PayPal (0007984), Amazon Pay (0007985), Stripe (0007987) and Unzer (0007989).
+- `Model/Order::refundAdyenOrder()` now takes the triggering backend action as a second parameter (`ModuleSettings::REFUND_CONTEXT_*`, default `refund`) and returns `bool` instead of `void`: `true` once Adyen accepted the refund. The cancellation flow needs that signal to decide whether its mail may name a refunded amount. Existing callers that ignore the return value are unaffected.
+
 ## [Unreleased]
 
 ### FIX

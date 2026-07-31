@@ -1,6 +1,9 @@
 parameters:
     ignoreErrors:
         - identifier: missingType.iterableValue
+        - '#Access to an undefined property OxidEsales\\Eshop\\Application\\Model\\Order::\$oxorder__oxbillfname#'
+        - '#Access to an undefined property OxidEsales\\Eshop\\Application\\Model\\Order::\$oxorder__oxbilllname#'
+        - '#Access to an undefined property OxidEsales\\Eshop\\Application\\Model\\Shop::\$oxshops__oxname#'
     bootstrapFiles:
         - phpstan-bootstrap.php
     stubFiles:
@@ -15,6 +18,7 @@ parameters:
         - stubs/PaymentGatewayModel.stub
         - stubs/PaymentModel.stub
         - stubs/ViewConfig.stub
+        - stubs/Email.stub
     level: max
     scanFiles:
         - ../../vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
