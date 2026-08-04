@@ -15,6 +15,7 @@ use OxidSolutionCatalysts\Adyen\Core\Webhook\Event;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\EventDispatcher;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventException;
 use OxidSolutionCatalysts\Adyen\Exception\WebhookEventTypeException;
+use OxidSolutionCatalysts\Adyen\Exception\WebhookUnknownEventTypeException;
 use OxidSolutionCatalysts\Adyen\Service\OxNewService;
 use OxidSolutionCatalysts\Adyen\Traits\Json;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
@@ -55,7 +56,12 @@ class AdyenWebhookController extends WidgetController
             }
 
             $this->sendAcceptedResponse();
-        } catch (WebhookEventTypeException | \Exception $exception) {
+        } catch (WebhookUnknownEventTypeException $exception) {
+            // 0135991: Force accepted response to avoid queue congestion
+            Registry::getLogger()->error($exception->getMessage(), [$exception]);
+            $this->sendAcceptedResponse();
+        }
+        catch (WebhookEventTypeException | \Exception $exception) {
             Registry::getLogger()->error($exception->getMessage(), [$exception]);
             $this->sendErrorResponse();
         }

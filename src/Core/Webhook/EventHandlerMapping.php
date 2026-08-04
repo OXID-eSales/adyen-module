@@ -12,7 +12,10 @@ namespace OxidSolutionCatalysts\Adyen\Core\Webhook;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\AuthorisationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancellationHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CancelRefundHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CaptureFailedHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\CaptureHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\ChargebackHandler;
+use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\NotificationOfChargebackHandler;
 use OxidSolutionCatalysts\Adyen\Core\Webhook\Handler\RefundHandler;
 
 class EventHandlerMapping
@@ -20,8 +23,11 @@ class EventHandlerMapping
     public const MAPPING = [
         AuthorisationHandler::AUTHORISATION_EVENT_CODE => AuthorisationHandler::class,
         CaptureHandler::CAPTURE_EVENT_CODE => CaptureHandler::class,
+        CaptureFailedHandler::CAPTURE_FAILED_EVENT_CODE => CaptureFailedHandler::class,
         RefundHandler::REFUND_EVENT_CODE => RefundHandler::class,
         CancellationHandler::CANCEL_EVENT_CODE => CancellationHandler::class,
-        CancelRefundHandler::CANCELORREFUND_EVENT_CODE => CancelRefundHandler::class
+        CancelRefundHandler::CANCELORREFUND_EVENT_CODE => CancelRefundHandler::class,
+        ChargebackHandler::CHARGEBACK_EVENT_CODE => ChargebackHandler::class,
+        NotificationOfChargebackHandler::NOTIFICATION_OF_CHARGEBACK_EVENT_CODE => NotificationOfChargebackHandler::class,
     ];
 }
