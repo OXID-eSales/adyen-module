@@ -268,6 +268,7 @@ class AdyenHistory extends BaseModel
             Module::ADYEN_STATUS_SETTLESCHEDULED,
             Module::ADYEN_STATUS_SETTLED,
             Module::ADYEN_STATUS_CHARGEBACK,
+            Module::ADYEN_STATUS_NOTIFICATION_OF_CHARGEBACK,
             Module::ADYEN_STATUS_REFUNDED,
             Module::ADYEN_STATUS_REFUNDFAILED,
             Module::ADYEN_STATUS_REFUNDEDREVERSED,
@@ -289,7 +290,8 @@ class AdyenHistory extends BaseModel
             Module::ADYEN_ACTION_AUTHORIZE,
             Module::ADYEN_ACTION_REFUND,
             Module::ADYEN_ACTION_CAPTURE,
-            Module::ADYEN_ACTION_CANCEL
+            Module::ADYEN_ACTION_CANCEL,
+            Module::ADYEN_ACTION_CHARGEBACK
         ];
         if (in_array($adyenAction, $possibleActions, true)) {
             $this->assign([
