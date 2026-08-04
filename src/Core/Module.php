@@ -47,6 +47,7 @@ final class Module
     public const ADYEN_ACTION_REFUND = 'refund';
     public const ADYEN_ACTION_CANCEL = 'cancel';
     public const ADYEN_ACTION_REPORT = 'report';
+    public const ADYEN_ACTION_CHARGEBACK = 'chargeback';
 
     public const ADYEN_STATUS_AUTHORISED = 'authorised';
     public const ADYEN_STATUS_CANCELLED = 'cancelled';
@@ -60,6 +61,7 @@ final class Module
     public const ADYEN_STATUS_SETTLESCHEDULED = 'settlescheduled';
     public const ADYEN_STATUS_SETTLED = 'settled';
     public const ADYEN_STATUS_CHARGEBACK = 'chargeback';
+    public const ADYEN_STATUS_NOTIFICATION_OF_CHARGEBACK = 'notificationofchargeback';
     public const ADYEN_STATUS_REFUNDED = 'refunded';
     public const ADYEN_STATUS_REFUNDFAILED = 'refundfailed';
     public const ADYEN_STATUS_REFUND_FAILED = 'refundfailed';
