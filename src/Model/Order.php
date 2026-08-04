@@ -474,6 +474,29 @@ class Order extends Order_parent
         ]);
     }
 
+    public function setAdyenOrderFolder(string $folder): void
+    {
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder->update($this->getCoreTableName())
+            ->set('oxfolder', ':folder')
+            ->where('oxid = :oxid');
+
+        $parameters = [
+            'oxid' => $this->getId(),
+            'folder' => $folder
+        ];
+
+        $queryBuilder->setParameters($parameters)
+            ->execute();
+
+        //updating order object
+        $this->assign([
+            'oxorder__oxfolder' => $folder
+        ]);
+    }
+
     /**
      * OXID-Core
      * @inheritDoc
