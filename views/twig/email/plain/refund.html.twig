@@ -12,8 +12,8 @@
 
 {% block adyen_email_plain_refund_details %}
 {{ translate({ ident: "ORDER_NUMBER", suffix: "COLON" }) }} {{ order.oxorder__oxordernr.value }}
-{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_AMOUNT", suffix: "COLON" }) }} {{ adyenRefundedAmount|number_format(2, '.', '') }} {{ adyenCurrencyCode }}
-{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ order.oxorder__oxtotalordersum.value|number_format(2, '.', '') }} {{ order.oxorder__oxcurrency.value }}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_AMOUNT", suffix: "COLON" }) }} {{ format_price(adyenRefundedAmount, { currency: currency }) }}
+{{ translate({ ident: "OSC_ADYEN_REFUND_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ format_price(order.oxorder__oxtotalordersum.value, { currency: currency }) }}
 {% endblock %}
 
 {% block adyen_email_plain_refund_note %}

@@ -12,9 +12,9 @@
 
 {% block adyen_email_plain_cancel_details %}
 {{ translate({ ident: "ORDER_NUMBER", suffix: "COLON" }) }} {{ order.oxorder__oxordernr.value }}
-{{ translate({ ident: "OSC_ADYEN_CANCEL_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ order.oxorder__oxtotalordersum.value|number_format(2, '.', '') }} {{ order.oxorder__oxcurrency.value }}
+{{ translate({ ident: "OSC_ADYEN_CANCEL_MAIL_ORDER_TOTAL", suffix: "COLON" }) }} {{ format_price(order.oxorder__oxtotalordersum.value, { currency: currency }) }}
 {% if adyenRefundedAmount is not null %}
-{{ translate({ ident: "OSC_ADYEN_CANCEL_MAIL_REFUNDED", suffix: "COLON" }) }} {{ adyenRefundedAmount|number_format(2, '.', '') }} {{ adyenCurrencyCode }}
+{{ translate({ ident: "OSC_ADYEN_CANCEL_MAIL_REFUNDED", suffix: "COLON" }) }} {{ format_price(adyenRefundedAmount, { currency: currency }) }}
 {% endif %}
 {% endblock %}
 
