@@ -44,7 +44,7 @@
                 [{if $adyenRefundedAmount !== null}]
                     <tr valign="top">
                         <th align="right" class="text-right">[{oxmultilang ident="OSC_ADYEN_CANCEL_MAIL_REFUNDED" suffix="COLON"}]</th>
-                        <td>[{$adyenRefundedAmount|string_format:"%.2f"}] [{$adyenCurrencyCode}]</td>
+                        <td>[{oxprice price=$adyenRefundedAmount currency=$currency}]</td>
                     </tr>
                 [{/if}]
             </tbody>

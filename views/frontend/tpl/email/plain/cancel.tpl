@@ -12,9 +12,9 @@
 
 [{block name="adyen_email_plain_cancel_details"}]
 [{oxmultilang ident="ORDER_NUMBER" suffix="COLON"}] [{$order->oxorder__oxordernr->value}]
-[{oxmultilang ident="OSC_ADYEN_CANCEL_MAIL_ORDER_TOTAL" suffix="COLON"}] [{$order->oxorder__oxtotalordersum->value|string_format:"%.2f"}] [{$order->oxorder__oxcurrency->value}]
+[{oxmultilang ident="OSC_ADYEN_CANCEL_MAIL_ORDER_TOTAL" suffix="COLON"}] [{oxprice price=$order->oxorder__oxtotalordersum->value currency=$currency}]
 [{if $adyenRefundedAmount !== null}]
-[{oxmultilang ident="OSC_ADYEN_CANCEL_MAIL_REFUNDED" suffix="COLON"}] [{$adyenRefundedAmount|string_format:"%.2f"}] [{$adyenCurrencyCode}]
+[{oxmultilang ident="OSC_ADYEN_CANCEL_MAIL_REFUNDED" suffix="COLON"}] [{oxprice price=$adyenRefundedAmount currency=$currency}]
 [{/if}]
 [{/block}]
 
