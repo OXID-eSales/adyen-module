@@ -41,7 +41,7 @@
         "dg/bypass-finals": "^1.4",
         "oxid-esales/oxideshop-ce": "dev-b-6.5.x"
     },
-    "conflicts": {
+    "conflict": {
         "oxid-esales/oxideshop-ce": "<6.12 | ^7.0"
     },
     "autoload": {
