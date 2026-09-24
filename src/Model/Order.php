@@ -15,6 +15,9 @@ use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Core\Exception\ArticleInputException;
 use OxidEsales\Eshop\Core\Exception\NoArticleException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidSolutionCatalysts\Adyen\Service\OrderIsAdyenCapturePossibleService;
 use OxidSolutionCatalysts\Adyen\Core\Module;
@@ -27,7 +30,6 @@ use OxidSolutionCatalysts\Adyen\Service\SessionSettings;
 use OxidSolutionCatalysts\Adyen\Traits\DataGetter;
 use OxidSolutionCatalysts\Adyen\Core\RefundMailService;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
-use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 
 /**
  *
@@ -37,7 +39,6 @@ use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
  */
 class Order extends Order_parent
 {
-    use ServiceContainer;
     use DataGetter;
 
     /**
@@ -65,8 +66,32 @@ class Order extends Order_parent
     public function init($tableName = null, $forceAllFields = false)
     {
         parent::init($tableName, $forceAllFields);
-        $this->queryBuilderFactory = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class);
-        $this->oxNewService = $this->getServiceFromContainer(OxNewService::class);
+        $this->queryBuilderFactory = $this->getAdyenServiceFromContainer(QueryBuilderFactoryInterface::class);
+        $this->oxNewService = $this->getAdyenServiceFromContainer(OxNewService::class);
+    }
+
+    /**
+     * Resolve a service without going through the shared getServiceFromContainer() name.
+     *
+     * This model is a chain extension. In an oxNew() chain every `$this->` call resolves to the
+     * implementation of the outermost class, so a module that sits above this one and carries an
+     * identically named trait method replaces this module's one - including its semantics. A trait
+     * that answers with null instead of throwing then turns the assignments in init() into a
+     * TypeError, because the properties are typed and not nullable. Resolving the service here,
+     * in a private method that no chain member can override, keeps this model working no matter
+     * which modules are combined in the shop.
+     *
+     * @template T
+     * @psalm-param class-string<T> $serviceName
+     * @return T
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function getAdyenServiceFromContainer(string $serviceName)
+    {
+        return ContainerFactory::getInstance()
+            ->getContainer()
+            ->get($serviceName);
     }
 
     /**
@@ -74,7 +99,7 @@ class Order extends Order_parent
      */
     public function isAdyenOrder(): bool
     {
-        $moduleService = $this->getServiceFromContainer(ModuleService::class);
+        $moduleService = $this->getAdyenServiceFromContainer(ModuleService::class);
 
         return (
             $moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype')) &&
@@ -107,7 +132,7 @@ class Order extends Order_parent
             throw $oEx;
         }
 
-        $moduleService = $this->getServiceFromContainer(ModuleService::class);
+        $moduleService = $this->getAdyenServiceFromContainer(ModuleService::class);
         if ($moduleService->isAdyenPayment($this->getAdyenStringData('oxpaymenttype'))) {
             $pspReference = $this->getAdyenPSPReference();
             // the final OrderStatus is set via Notification
@@ -148,13 +173,13 @@ class Order extends Order_parent
 
         // a cancellation is worth a confirmation on its own, whether or not money
         // was refunded along with it
-        $mailService = $this->getServiceFromContainer(RefundMailService::class);
+        $mailService = $this->getAdyenServiceFromContainer(RefundMailService::class);
         $mailService->sendCancelMail($this, $refundedAmount, $this->getAdyenStringData('oxcurrency'));
     }
 
     public function isAdyenCapturePossible(): bool
     {
-        $capturePossibleService = $this->getServiceFromContainer(
+        $capturePossibleService = $this->getAdyenServiceFromContainer(
             OrderIsAdyenCapturePossibleService::class
         );
 
@@ -206,7 +231,7 @@ class Order extends Order_parent
 
         $currency = $this->getAdyenStringData('oxcurrency');
 
-        $paymentService = $this->getServiceFromContainer(PaymentCapture::class);
+        $paymentService = $this->getAdyenServiceFromContainer(PaymentCapture::class);
         $success = $paymentService->doAdyenCapture(
             $amount,
             $pspReference,
@@ -240,7 +265,7 @@ class Order extends Order_parent
         $pspReference = $this->getAdyenStringData('adyenpspreference');
         $reference = $this->getAdyenOrderReference();
 
-        $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+        $paymentService = $this->getAdyenServiceFromContainer(PaymentCancel::class);
         $success = $paymentService->doAdyenCancel(
             $pspReference,
             $reference
@@ -292,7 +317,7 @@ class Order extends Order_parent
 
         $currency = $this->getAdyenStringData('oxcurrency');
 
-        $paymentService = $this->getServiceFromContainer(PaymentRefund::class);
+        $paymentService = $this->getAdyenServiceFromContainer(PaymentRefund::class);
         $success = $paymentService->doAdyenRefund(
             $amount,
             $pspReference,
@@ -322,7 +347,7 @@ class Order extends Order_parent
         // mail may go out. The service decides whether one is sent at all and to
         // whom; the cancel context suppresses it, because the cancellation flow
         // sends a single mail covering cancellation and refunded amount.
-        $mailService = $this->getServiceFromContainer(RefundMailService::class);
+        $mailService = $this->getAdyenServiceFromContainer(RefundMailService::class);
         $mailService->sendRefundMail($this, $amount, $currency, $context);
 
         return true;
@@ -545,13 +570,13 @@ class Order extends Order_parent
 
     protected function removeAdyenPaymentFromSession(): void
     {
-        $session = $this->getServiceFromContainer(SessionSettings::class);
+        $session = $this->getAdyenServiceFromContainer(SessionSettings::class);
 
         // cancel authorization
         $pspReference = $session->getPspReference();
         $reference = $session->getOrderReference();
         if ($pspReference && $reference) {
-            $paymentService = $this->getServiceFromContainer(PaymentCancel::class);
+            $paymentService = $this->getAdyenServiceFromContainer(PaymentCancel::class);
             $paymentService->doAdyenCancel(
                 $pspReference,
                 $reference

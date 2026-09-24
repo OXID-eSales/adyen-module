@@ -37,7 +37,7 @@
         "phpmd/phpmd": "^2.11",
         "oxid-esales/oxideshop-ce": "^7.0"
     },
-    "conflicts": {
+    "conflict": {
         "oxid-esales/oxideshop-ce": "<7.0"
     },
     "autoload": {
