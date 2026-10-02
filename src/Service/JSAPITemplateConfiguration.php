@@ -193,7 +193,7 @@ class JSAPITemplateConfiguration
     ): bool {
         /** @var AdyenPayment $payment */
         /** @var AdyenViewConfig $viewConfig */
-        return $controller instanceof PaymentController
+        return $controller instanceof OrderController
             && $payment instanceof Payment
             && $payment->getId() === $viewConfig->getAdyenPaymentCreditCardId();
     }

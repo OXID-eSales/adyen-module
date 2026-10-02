@@ -26,6 +26,9 @@ services:
   OxidSolutionCatalysts\Adyen\Core\Response:
     public: true
 
+  OxidSolutionCatalysts\Adyen\Core\RefundMailService:
+    public: true
+
   OxidSolutionCatalysts\Adyen\Logger:
     class: Monolog\Logger
     factory: ['@OxidSolutionCatalysts\Adyen\Logger\Factory', 'create']

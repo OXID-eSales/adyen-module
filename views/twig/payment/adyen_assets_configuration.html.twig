@@ -68,7 +68,7 @@ const configuration = {
             console.log('onChange:', state, component);
         }
     },
-    onSubmit: (state, component) => {
+    onSubmit: (state, component, actions) => {
         if (isLog) {
             console.log('onSubmit:', state.data);
         }
@@ -88,6 +88,8 @@ const configuration = {
                         console.log('AGB not confirmed, aborting redirect payment');
                     }
                     oscAdyenHighlightAgreements();
+                    // Neither resolve nor reject: reject would end in the SDK's
+                    // failed-payment handling, the shopper only has to tick the box.
                     component.setStatus('ready');
                     return;
                 }
@@ -105,16 +107,24 @@ const configuration = {
                     console.log('onSubmit-response:', response);
                 }
                 if (response.action) {
-                    component.handleAction(response.action);
+                    // Web SDK v6 handles the action itself once resolved
+                    actions.resolve({
+                        resultCode: response.resultCode,
+                        action: response.action
+                    });
                 } else {
+                    // pspReference and amount are needed for the OXID order
+                    // form, actions.resolve() would drop them
                     setPspReference(response);
+                    actions.resolve({ resultCode: response.resultCode });
                 }
             })
             .catch(error => {
+                actions.reject();
                 throw Error(error);
             });
     },
-    onAdditionalDetails: (state, component) => {
+    onAdditionalDetails: (state, component, actions) => {
         makeDetailsCall(state.data)
             .then(response => {
                 if (isPaymentPage) {
@@ -130,8 +140,10 @@ const configuration = {
                         nextStepEl.disabled = false;
                     }
                 }
+                actions.resolve({ resultCode: response.resultCode });
             })
             .catch(error => {
+                actions.reject();
                 throw Error(error);
             });
         if (isLog) {
@@ -149,12 +161,6 @@ const configuration = {
             paypal: {
                 intent: "authorize",
                 merchantId: "{{ payPalMerchantId|raw }}",
-                onShippingChange: function (data, actions) {
-                    // Listen to shipping changes.
-                    if (isLog) {
-                        console.log('onPayPalShippingChange:', data);
-                    }
-                },
                 onClick: () => {
                     // onClick is called when the button is clicked.
                 },
@@ -168,3 +174,17 @@ const configuration = {
         {% endif %}
     }
 };
+// Fields in configuration that AdyenCheckout (Web SDK v6) does not accept as
+// core properties. They are kept out of the AdyenCheckout call and only passed
+// to the components or read by the module's own JS.
+const oscAdyenComponentOnlyKeys = [
+    'paymentMethodsConfiguration',
+    'deliveryAddress',
+    'shopperName',
+    'shopperEmail',
+    'shopperReference',
+    'shopperIP',
+    'lineItems',
+    'merchantId',
+    'name'
+];
