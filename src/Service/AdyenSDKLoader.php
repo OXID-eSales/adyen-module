@@ -46,7 +46,7 @@ class AdyenSDKLoader
             Environment::TEST :
             Environment::LIVE;
 
-        $sdk = $this->oxNewService->oxNew(Client::class, [$adyenConfig]);
+        $sdk = $this->oxNewService->oxNew(AdyenClient::class, [$adyenConfig]);
         $sdk->setEnvironment(
             $environment,
             $this->moduleSettings->getEndPointUrlPrefix()

@@ -30,6 +30,8 @@ class JSAPIConfigurationService
         $configFieldsArray = [
             'environment' => $viewConfig->getAdyenOperationMode(),
             'clientKey' => $viewConfig->getAdyenClientKey(),
+            // mandatory for AdyenCheckout since Web SDK v6, on every page
+            'countryCode' => $viewConfig->getAdyenCountryIso(),
             'analytics' => [
                 'enabled' => $viewConfig->isAdyenAnalyticsActive(),
             ],
@@ -88,7 +90,6 @@ class JSAPIConfigurationService
         /** @var AdyenViewConfig $viewConfig */
         if ($viewConfig->getTopActiveClassName() === 'order') {
             $configFields = [
-                'countryCode' => $viewConfig->getAdyenCountryIso(),
                 'amount' => [
                     'currency' => $viewConfig->getAdyenAmountCurrency(),
                     'value' => $viewConfig->getAdyenAmountValue(),

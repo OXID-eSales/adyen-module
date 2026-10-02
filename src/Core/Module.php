@@ -13,14 +13,15 @@ final class Module
 {
     public const MODULE_NAME_DE = 'Adyen Payment für OXID';
     public const MODULE_NAME_EN = 'Adyen Payment for OXID';
-    public const MODULE_VERSION = '1.2.0-rc.3';
+    public const MODULE_VERSION = '1.2.0-rc.4';
     public const MODULE_VERSION_FULL = self::MODULE_VERSION . ' SDK-Version ' . self::ADYEN_SDK_VERSION;
     public const MODULE_PLATFORM_NAME = 'OXID';
     public const MODULE_PLATFORM_VERSION = '1.0';
     public const MODULE_PLATFORM_INTEGRATOR = 'OSC';
-    public const ADYEN_SDK_VERSION = '5.27.0';
-    public const ADYEN_INTEGRITY_JS = 'sha384-YGWSKjvKe65KQJXrOTMIv0OwvG+gpahBNej9I3iVl4eMXhdUZDUwnaQdsNV5OCWp';
-    public const ADYEN_INTEGRITY_CSS = 'sha384-2MpA/pwUY9GwUN1/eXoQL3SDsNMBV47TIywN1r5tb8JB4Shi7y5dyRZ7AwDsCnP8';
+    public const ADYEN_SDK_VERSION = '6.21.0';
+    public const ADYEN_INTEGRITY_JS = 'sha384-9ACJt6rr08TBRxTTQGUu2qUgAB7UUNvYJFVEqPnFP+8CMotP0VWsJ0ZQEibvyIxp';
+    public const ADYEN_INTEGRITY_CSS = 'sha384-0JJkPi5WFgV93vC2lk67gb4iRk/U81LdAR2fsTKRTfpILtk0p+AA8HDAyaOQhUAG';
+    public const ADYEN_CHECKOUT_API_VERSION = 'v71';
 
     public const MODULE_ID = 'osc_adyen';
 

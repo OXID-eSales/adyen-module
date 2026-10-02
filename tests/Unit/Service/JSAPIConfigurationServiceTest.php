@@ -43,6 +43,7 @@ class JSAPIConfigurationServiceTest extends TestCase
             [
                 'environment' => 'test',
                 'clientKey' => 'key',
+                'countryCode' => 'DE',
                 'analytics' => [
                     'enabled' => false,
                 ],
@@ -94,6 +95,10 @@ class JSAPIConfigurationServiceTest extends TestCase
         $mock->expects($this->any())
             ->method('getRemoteAddress')
             ->willReturn('127.0.0.1');
+
+        $mock->expects($this->any())
+            ->method('getAdyenCountryIso')
+            ->willReturn('DE');
 
         $mock->expects($this->any())
             ->method('getAdyenPaymentMethods')

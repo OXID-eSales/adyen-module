@@ -29,6 +29,7 @@ class AdyenSDKLoaderTest extends TestCase
 
         $loadedSdk = $sut->getAdyenSDK();
         $this->assertInstanceOf(Client::class, $loadedSdk);
+        $this->assertSame(Module::ADYEN_CHECKOUT_API_VERSION, $loadedSdk->getApiCheckoutVersion());
         $this->assertInstanceOf(Logger::class, $loadedSdk->getLogger());
         $this->assertSame($loggerName, $loadedSdk->getLogger()->getName());
     }

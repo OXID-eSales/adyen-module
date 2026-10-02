@@ -1,8 +1,8 @@
-<script src="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.js"
+<script src="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].cdn.adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.js"
         integrity="[{$oViewConf->getAdyenIntegrityJS()}]"
         crossorigin="anonymous"></script>
 <link rel="stylesheet"
-      href="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.css"
+      href="https://checkoutshopper-[{$oViewConf->getAdyenOperationMode()}].cdn.adyen.com/checkoutshopper/sdk/[{$oViewConf->getAdyenSDKVersion()}]/adyen.css"
       integrity="[{$oViewConf->getAdyenIntegrityCSS()}]"
       crossorigin="anonymous">
 <style>
@@ -88,18 +88,28 @@
         const adyenAsync = async function () {
             [{$oViewConf->getTemplateConfiguration($oView, $payment)}]
 
-            const checkout = await AdyenCheckout(configuration);
+            // Web SDK v6: components are no longer created via checkout.create(),
+            // and AdyenCheckout only accepts its own core properties. The
+            // module specific fields stay in configuration for our own use and
+            // are handed to the components directly.
+            const { AdyenCheckout, createComponent } = window.AdyenWeb;
+            const checkoutConfiguration = Object.fromEntries(
+                Object.entries(configuration).filter(([key]) => !oscAdyenComponentOnlyKeys.includes(key))
+            );
+            const oscAdyenComponentConfiguration = (type, extra = {}) => Object.assign(
+                {},
+                configuration,
+                configuration.paymentMethodsConfiguration[type] || {},
+                extra
+            );
+            const checkout = await AdyenCheckout(checkoutConfiguration);
             // Access the available payment methods for the session.
             [{if $isLog}]
                 console.log(checkout.paymentMethodsResponse);
             [{/if}]
             [{if $isPaymentPage}]
                 [{if $oView->handleAdyenAssets($adyenApplePay)}]
-                    const apple = checkout.create(
-                        'applepay',
-                        {
-                        }
-                    );
+                    const apple = createComponent('applepay', checkout, {});
                     apple.isAvailable()
                         .then(() => {  })
                         .catch(e => {
@@ -144,19 +154,23 @@
                 [{if $orderPaymentCreditCard}]
                     orderSubmitButton.disabled = true;
                     orderSubmitButton.title = '[{assign var="template_title" value="OSC_ADYEN_ORDER_TOOLTIP"|oxmultilangassign}]';
-                    const cardComponent = checkout.create(
+                    const cardComponent = createComponent(
                         'card',
-                        {
+                        checkout,
+                        oscAdyenComponentConfiguration('card', {
+                            // the order form has its own submit button
+                            showPayButton: false,
                             onFieldValid : function() {
                                 orderSubmitButton.disabled = false;
-                            },
-                            onLoad: function () {
-                                document.querySelector("#oscadyencreditcard-container button").style.display = 'none';
                             }
-                        }
+                        })
                     ).mount('#[{$adyenCreditCard}]-container');
                 [{elseif $orderPaymentApplePay}]
-                    const applePayComponent = checkout.create('[{$templateCheckoutCreateId}]', configuration);
+                    const applePayComponent = createComponent(
+                        '[{$templateCheckoutCreateId}]',
+                        checkout,
+                        oscAdyenComponentConfiguration('[{$templateCheckoutCreateId}]')
+                    );
                         applePayComponent.isAvailable()
                             .then(() => {
                                 [{if $isLog}]
@@ -170,7 +184,11 @@
                                 [{/if}]
                             });
                     [{else}]
-                        checkout.create('[{$templateCheckoutCreateId}]', configuration).mount('#[{$templatePayButtonContainerId}]');
+                        createComponent(
+                            '[{$templateCheckoutCreateId}]',
+                            checkout,
+                            oscAdyenComponentConfiguration('[{$templateCheckoutCreateId}]')
+                        ).mount('#[{$templatePayButtonContainerId}]');
                 [{/if}]
 
                 [{if $orderPaymentCreditCard}]
