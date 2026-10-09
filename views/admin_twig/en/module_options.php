@@ -52,7 +52,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_osc_adyen_KLARNA' => 'Klarna Settings',
 
     'SHOP_MODULE_' . ModuleSettings::OPERATION_MODE => 'Operation Mode',
-    'SHOP_MODULE_' . ModuleSettings::OPERATION_MODE . '_sandbox' => 'Sandbox',
+    'SHOP_MODULE_' . ModuleSettings::OPERATION_MODE . '_test' => 'Sandbox',
     'SHOP_MODULE_' . ModuleSettings::OPERATION_MODE . '_live' => 'Live',
     'SHOP_MODULE_' . ModuleSettings::LOGGING_ACTIVE => 'Logging active?',
     'SHOP_MODULE_' . ModuleSettings::ANALYTICS_ACTIVE => 'Analytics active?',
