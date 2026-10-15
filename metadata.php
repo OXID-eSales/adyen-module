@@ -77,20 +77,6 @@ $aModule = [
     ],
     'settings' => [
         [
-            'group'       => 'osc_adyen_mails',
-            'name'        => ModuleSettings::REFUND_MAIL_RECIPIENT,
-            'type'        => 'select',
-            'constraints' => '0|1|2|3',
-            'value'       => '0'
-        ],
-        [
-            'group'       => 'osc_adyen_mails',
-            'name'        => ModuleSettings::CANCEL_MAIL_RECIPIENT,
-            'type'        => 'select',
-            'constraints' => '0|1|2|3',
-            'value'       => '0'
-        ],
-        [
             'group'       => 'osc_adyen_API',
             'name'        => ModuleSettings::OPERATION_MODE,
             'type'        => 'select',
@@ -273,6 +259,20 @@ $aModule = [
             'name' => ModuleSettings::ACTIVE_PAYMENTS,
             'type' => 'arr',
             'value' => []
+        ],
+        [
+            'group'       => 'osc_adyen_mails',
+            'name'        => ModuleSettings::REFUND_MAIL_RECIPIENT,
+            'type'        => 'select',
+            'constraints' => '0|1|2|3',
+            'value'       => '0'
+        ],
+        [
+            'group'       => 'osc_adyen_mails',
+            'name'        => ModuleSettings::CANCEL_MAIL_RECIPIENT,
+            'type'        => 'select',
+            'constraints' => '0|1|2|3',
+            'value'       => '0'
         ],
     ],
 ];

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidSolutionCatalysts\Adyen\Core;
 
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Email as ShopEmail;
 use OxidSolutionCatalysts\Adyen\Service\ModuleSettings;
 use OxidSolutionCatalysts\Adyen\Traits\ServiceContainer;
 use Psr\Log\LoggerInterface;
@@ -162,8 +163,12 @@ class RefundMailService
         $recipientName = $recipient === ModuleSettings::MAIL_RECIPIENT_OWNER ? 'shop owner' : 'customer';
 
         try {
+            // Instantiate the shop class, not the module class: oxNew() on a module
+            // extension starts building the extension chain from the middle, which
+            // fails on the first call of a request and otherwise skips the other
+            // modules extending the mailer.
             /** @var Email $mailer */
-            $mailer = oxNew(Email::class);
+            $mailer = oxNew(ShopEmail::class);
             $sent = $send($mailer);
 
             $this->log(
