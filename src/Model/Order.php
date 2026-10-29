@@ -163,7 +163,9 @@ class Order extends Order_parent
             if ($this->refundAdyenOrder($amount, ModuleSettings::REFUND_CONTEXT_CANCEL)) {
                 $refundedAmount = $amount;
             }
-        } else {
+        } elseif ($this->isAdyenOrder()) {
+            // only an Adyen payment can be cancelled at Adyen: for any other order
+            // there is no pspReference, and Adyen answers the request with a 422
             $this->cancelAdyenOrder();
         }
 
