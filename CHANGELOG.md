@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.1-rc.1] - Unreleased
+
+### FIX
+
+- Cancelling an order in the backend sent a cancel request to Adyen for **every** order, whatever payment method it was paid with. `Model/Order::cancelOrder()` called `cancelAdyenOrder()` in the `else` branch of the refund check, and `isAdyenCancelPossible()` only looks at the captured amount, not at the payment method - so for a Stripe, PayPal or invoice order the module asked Adyen to cancel a payment with an empty `pspReference`, and Adyen answered with HTTP 422 "Required field 'paymentPspReference' is not provided". The exception was caught and logged, so the cancellation itself went through, but every non-Adyen cancellation left an error with a full stack trace in `oxideshop.log`, which also sent the analysis of an unrelated missing Stripe cancellation mail down the wrong path. The cancel request is now only sent for Adyen orders (`isAdyenOrder()`). Files touched: `src/Model/Order.php`.
+- The same change was made in the OXID 6 module `osc/adyen`.
+
 ## [2.2.0] - 2026-10-16
 
 ### NEW
@@ -22,9 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `countryCode` is mandatory for `AdyenCheckout` since Web SDK 6 and is now set on the payment page as well (`Service/JSAPIConfigurationService`), not only on the order page.
   - The same change was made in the OXID 6 module `osc/adyen`.
 
-## [Unreleased]
-
 ### FIX
+
 - Module settings: the "Sandbox" option of the operation mode was shown as "ERROR: Translation for SHOP_MODULE_osc_adyen_OperationMode_test not found!". The setting stores `test|live` (`metadata.php`, `ModuleSettings::OPERATION_MODE_SANDBOX`), but the admin language files defined the key with the suffix `_sandbox`, which is never looked up. The key is renamed to `_test` in `views/admin_twig/{de,en}/module_options.php`; the label stays "Sandbox". The same fix was made in the OXID 6.5 module `osc/adyen`.
 - Credit card on the order page: the card component was rendered without the "name on card" field, because the per payment method configuration (`hasHolderName`, `holderNameRequired`, `hideCVC`) never reached the template. `Service/JSAPITemplateConfiguration::paymentMethodsConfigurationNeedsCardField()` still checked for `PaymentController`, although the card component has been mounted on the order page since the card was moved to the last checkout step. The OXID 6 module made that switch to `OrderController` together with the move (AM-132, 2024-09); in this module the template part was ported but this condition was not. It now checks `OrderController`, as in `osc/adyen`.
 - Make `Model\Order` independent of the `getServiceFromContainer()` name. This model is a chain extension, and in an `oxNew()` chain every `$this->` call resolves to the implementation of the outermost class - so a module sitting above this one in the chain that carries an identically named trait method replaces this module's one, including its semantics. That is not theory: combined with the TeleCash module, whose trait answers with `null` for an unavailable service instead of throwing, `init()` assigned `null` to the typed, non-nullable properties `$queryBuilderFactory` and `$oxNewService` and every `oxNew(Order::class)` in the shop died with `TypeError: Cannot assign null to property ...$queryBuilderFactory` - checkout, order finalization and the admin order list alike. All twelve container lookups in this class now go through the new `private getAdyenServiceFromContainer()`, which resolves through `ContainerFactory` directly and, being private, cannot be replaced by any other chain member; the class no longer binds `Traits\ServiceContainer`, so it does not occupy that shared name for modules below it either. No behaviour change for this module on its own. TeleCash fixes the collision from its side as well by prefixing its trait members (see its changelog).
@@ -38,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.1.10] - 2026-06-11
 
 ### FIX
+
 - Twint and Klarna: enforce AGB acceptance before the redirect-payment button can be triggered, so the shopper cannot leave the order page without confirming the terms
 - Twint and Klarna: visually disable the payment button while required agreement checkboxes are unchecked
 - Twint and Klarna: accept the agreement state on return from the third-party page (the order form is gone after the redirect, so the hidden AGB inputs need to be reinstated server-side)
@@ -85,24 +92,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.1.1] - 2023-09-08
 
-# Fixed
+### Fixed
+
 - fix Core-Compatibilities-Issues with return-types
 
 ## [1.1.0] - 2023-08-28
 
-# Fixed
+### Fixed
+
 - prevent wrong delivery address shown up in PayPal modal
 
 ## [1.0.1] - 2023-05-19
 
-# Fixed
+### Fixed
+
 - prevent wrong submit payment (without paymentinformations) by clicking 'orderStep'-Link
 
-# Changed
+### Changed
+
 - actual Payments: CreditCard, PayPal, Google Pay, Klarna Sofortbezahlung, Klarna, klarna Ratenzahlung, Twint, Apple Pay
 
 ## [1.0.0] - 2023-02-01
 
-# Changed
+### Changed
+
 - initial release
 - actual Payments: CreditCard, PayPal
