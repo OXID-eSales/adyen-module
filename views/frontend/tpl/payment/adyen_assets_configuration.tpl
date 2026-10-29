@@ -159,7 +159,7 @@ const configuration = {
             },
         [{elseif $isOrderPage && $orderPaymentPayPal}]
             paypal: {
-                intent: "authorize",
+                intent: "[{$payPalIntent}]",
                 merchantId: "[{$payPalMerchantId}]",
                 onClick: () => {
                     // onClick is called when the button is clicked.

@@ -99,6 +99,12 @@ class JSAPITemplateConfiguration
                 ],
             ),
             'payPalMerchantId' => $this->moduleSettings->getPayPalMerchantId(),
+            // Adyen creates the PayPal order with the capture mode of the merchant account, and the
+            // PayPal SDK refuses an order whose intent differs from the one the button was
+            // rendered with: immediate capture needs "capture", manual and delayed "authorize"
+            'payPalIntent' => $this->moduleSettings->isImmediateCapture(Module::PAYMENT_PAYPAL_ID)
+                ? 'capture'
+                : 'authorize',
         ];
     }
 
