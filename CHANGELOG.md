@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.1-rc.1] - Unreleased
+
+### FIX
+
+- Cancelling an order in the backend sent a cancel request to Adyen for **every** order, whatever payment method it was paid with. `Model/Order::cancelOrder()` called `cancelAdyenOrder()` in the `else` branch of the refund check, and `isAdyenCancelPossible()` only looks at the captured amount, not at the payment method - so for a Stripe, PayPal or invoice order the module asked Adyen to cancel a payment with an empty `pspReference`, and Adyen answered with HTTP 422 "Required field 'paymentPspReference' is not provided". The exception was caught and logged, so the cancellation itself went through, but every non-Adyen cancellation left an error with a full stack trace in `oxideshop.log`, which also sent the analysis of an unrelated missing Stripe cancellation mail down the wrong path. The cancel request is now only sent for Adyen orders (`isAdyenOrder()`). Files touched: `src/Model/Order.php`.
+- The same change was made in the OXID 7 module `osc/adyen-module`.
+
 ## [1.2.0] - 2026-10-16
 
 ### NEW
@@ -22,9 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `countryCode` is mandatory for `AdyenCheckout` since Web SDK 6 and is now set on the payment page as well (`Service/JSAPIConfigurationService`), not only on the order page.
   - The same change was made in the OXID 7 module `osc/adyen-module`.
 
-## [1.1.12] - unreleased
-
 ### FIX
+
 - Module settings: the "Sandbox" option of the operation mode was shown as "ERROR: Translation for SHOP_MODULE_osc_adyen_OperationMode_test not found!". The setting stores `test|live` (`metadata.php`, `ModuleSettings::OPERATION_MODE_SANDBOX`), but the admin language files defined the key with the suffix `_sandbox`, which is never looked up. The key is renamed to `_test` in `views/admin/{de,en}/module_options.php`; the label stays "Sandbox". The same fix was made in the OXID 7 module `osc/adyen-module`.
 - Rename the `composer.json` key `conflicts` to `conflict`. Composer silently ignores the plural form, so the constraint meant to keep the module out of OXID eShop `<6.12 | ^7.0` was never evaluated and the module could be installed into a shop line it does not support — the incompatibility only surfaced at runtime. The key is renamed, the constraint itself is unchanged. Same fix as in the Amazon Pay module (2.2.1). The same fix was made in the OXID 7 module `osc/adyen-module`.
 - [0007976](https://bugs.oxid-esales.com/view.php?id=7976): Prevent orders from being finalized/recorded with an authorized amount that is lower than the order total. When a shopper started a redirect payment (e.g. Klarna) and then changed the basket in a parallel tab/session before completing it, Adyen only authorized the original (smaller) amount while the shop finalized the order for the current (larger) total. The backend then showed the full order value as "Authorized", and with delayed/two-step capture (Klarna captures only when the goods ship) this surfaced as an over-capture attempt at capture time. Two complementary changes:
@@ -52,27 +58,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.1.10] - 2025-09-19
 
-## FIX
+### FIX
+
 - don't mark order as paid when authorizing payment
 - fix address selection
 
 ## [1.1.9] - 2025-02-07
 
-## FIX
+### FIX
+
 - Fix github workflows docker compose
 - request Adyen cancellation when finalizeOrder fails due to stock exceptions
 
 ## [1.1.8] - 2024-11-19
 
 ### FIX
+
 - use Adyen assets on the payment page again so that ApplePay is hidden if necessary. Was accidentally removed in release v1.1.7
 
 ## [1.1.7] - 2024-10-18
 
 ### NEW
+
 - Creditcard-Fields move from Payment-Controller to the Order-Controller.
 
 ### FIX
+
 - Fix URLs with real slashes instead of DIRECTORY_SEPERATOR
 
 ## [1.1.6] - 2024-06-21
@@ -91,35 +102,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.1.3] - 2023-12-01
 
-# Fixed
+### Fixed
+
 - Compatibility-Issue with Unzer-Module
 - Maintanence-Mode in Module-Config-Section
 
 ## [1.1.2] - 2023-11-14
 
-# Fixed
+### Fixed
+
 - fix Update-Issues in case of missing service-registration
 
 ## [1.1.1] - 2023-09-08
 
-# Fixed
+### Fixed
+
 - fix Core-Compatibilities-Issues with return-types
 
 ## [1.1.0] - 2023-08-28
 
-# Fixed
+### Fixed
+
 - prevent wrong delivery address shown up in PayPal modal
 
 ## [1.0.1] - 2023-05-19
 
-# Fixed
+### Fixed
+
 - prevent wrong submit payment (without paymentinformations) by clicking 'orderStep'-Link
 
-# Changed
+### Changed
+
 - actual Payments: CreditCard, PayPal, Google Pay, Klarna Sofortbezahlung, Klarna, klarna Ratenzahlung, Twint, Apple Pay
 
 ## [1.0.0] - 2023-02-01
 
-# Changed
+### Changed
+
 - initial release
 - actual Payments: CreditCard, PayPal
