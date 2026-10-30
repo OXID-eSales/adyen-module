@@ -1,4 +1,8 @@
-[{if $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && $payment->showInOrderCtrl()}]
+[{* order.tpl assigns $payment inside its "shippingAndPayment" block, which other modules
+    replace entirely (Amazon Pay does in its express checkout) - so fetch it here; the
+    included adyen_assets.tpl and adyen_order_submit.tpl use it as well *}]
+[{assign var="payment" value=$oView->getPayment()}]
+[{if $payment && $oViewConf|method_exists:'checkAdyenHealth' && $oViewConf->checkAdyenHealth() && $payment->showInOrderCtrl()}]
     [{* We include it as template, so that it can be modified in custom themes *}]
     [{include file="modules/osc/adyen/payment/adyen_assets.tpl"}]
 
